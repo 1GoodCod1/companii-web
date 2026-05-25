@@ -24,7 +24,7 @@ export const ESTIMATE_STATUS_TONES: Record<string, 'gray' | 'blue' | 'violet' | 
 
 export const WIZARD_STEP_LABELS: Record<string, string> = {
   object: 'Obiect',
-  plan: 'Plan 2D/3D',
+  plan: 'Dimensiuni & Dotări',
   diagnostic: 'Diagnostic',
   stages: 'Etape & preț',
   review: 'Revizuire',

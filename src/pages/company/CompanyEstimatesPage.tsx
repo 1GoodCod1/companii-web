@@ -22,7 +22,7 @@ export function CompanyEstimatesPage() {
       <div className="space-y-6 animate-fade-in">
         <PageHero
           title="Smete inteligente"
-          description="Proiecte de deviz pe categorii — plan 2D/3D, etape, calcul automat și deviz pentru client."
+          description="Proiecte de deviz pe categorii — dimensiuni & volume, etape, calcul automat și deviz pentru client."
           action={
             <Link to="/company/smete/new" className={cabinetBtnPrimary}>
               <Plus className="w-4 h-4" />

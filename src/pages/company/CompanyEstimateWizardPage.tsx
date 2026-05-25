@@ -42,7 +42,6 @@ import {
   useDeleteEstimateLineMutation,
 } from '@/features/estimates/api/useEstimates';
 import { PlanEditor2D } from '@/features/estimates/components/PlanEditor2D';
-import { PlanPreview3D } from '@/features/estimates/components/PlanPreview3D';
 import { CustomPricingFields } from '@/features/estimates/components/CustomPricingFields';
 import {
   mergeCustomPricing,
@@ -60,6 +59,123 @@ import { downloadFile } from '@/api/files';
 
 const EMPTY_PLAN: Plan2dData = { rooms: [], points: [] };
 
+const DUPLICATE_DIAGNOSTIC_KEYS = [
+  'roofArea',
+  'gutterLengthM',
+  'roomCount',
+  'acUnits',
+  'finishArea',
+  'wallHeight',
+  'windowCount',
+  'doorCount',
+  'cabinetCount',
+  'wardrobeCount',
+  'cleanArea',
+  'networkPoints',
+  'apCount',
+  'cameraCount',
+  'panelCount',
+  'builtArea',
+  'storyCount',
+  'pavementArea',
+  'borderLengthM',
+  'facadeArea',
+  'scaffoldingArea',
+];
+
+const syncGlobalParamsToDiagnostic = (
+  plan: Plan2dData,
+  currentDiag: Record<string, unknown>,
+): Record<string, unknown> => {
+  const next = { ...currentDiag };
+  const params = (plan.globalParameters || {}) as any;
+
+  // 1. Map global parameters if set by user
+  if (params.baseArea != null) {
+    next.baseArea = params.baseArea;
+    next.roofArea = params.baseArea;
+    next.builtArea = params.baseArea;
+    next.pavementArea = params.baseArea;
+    next.cleanArea = params.baseArea;
+    next.finishArea = params.baseArea;
+  }
+  if (params.wallHeight != null) {
+    next.wallHeight = params.wallHeight;
+  }
+  if (params.floorsCount != null) {
+    next.storyCount = params.floorsCount;
+    next.roomCount = params.floorsCount;
+  }
+  if (params.roofSlope != null) {
+    next.roofSlope = params.roofSlope;
+  }
+  if (params.facadeArea != null) {
+    next.facadeArea = params.facadeArea;
+    next.scaffoldingArea = params.facadeArea;
+  }
+
+  // 2. Map Room counts & calculated area
+  if (plan.rooms && plan.rooms.length > 0) {
+    const totalArea = plan.rooms.reduce((acc, r) => acc + r.width * r.height, 0);
+    next.totalFloorArea = totalArea;
+    next.roomCount = plan.rooms.length;
+
+    // Set fallbacks if not set
+    if (next.roofArea == null) next.roofArea = totalArea;
+    if (next.builtArea == null) next.builtArea = totalArea;
+    if (next.pavementArea == null) next.pavementArea = totalArea;
+    if (next.cleanArea == null) next.cleanArea = totalArea;
+    if (next.finishArea == null) next.finishArea = totalArea;
+  }
+
+  // 3. Map point counts dynamically to diagnostic answers
+  const pointsCount = (type: string) => plan.points?.filter((p) => p.type === type).length ?? 0;
+
+  // Clima
+  const splitCount = pointsCount('indoor');
+  if (splitCount > 0) next.acUnits = splitCount;
+  const routeCount = pointsCount('route');
+  if (routeCount > 0) next.routeLengthM = routeCount * 5;
+
+  // Okna-dveri
+  const windowCount = pointsCount('window');
+  if (windowCount > 0) next.windowCount = windowCount;
+  const doorCount = pointsCount('door') + pointsCount('sliding_door');
+  if (doorCount > 0) next.doorCount = doorCount;
+
+  // Mobila
+  const cabinetCount = pointsCount('kitchen_cabinet') + pointsCount('table');
+  if (cabinetCount > 0) next.cabinetCount = cabinetCount;
+  const wardrobeCount = pointsCount('wardrobe') + pointsCount('bed');
+  if (wardrobeCount > 0) next.wardrobeCount = wardrobeCount;
+
+  // Cleaning
+  const cleanWindows = pointsCount('window_clean');
+  if (cleanWindows > 0) next.windowCount = cleanWindows;
+
+  // IT networks
+  const netPoints = pointsCount('ethernet');
+  if (netPoints > 0) next.networkPoints = netPoints;
+  const apPoints = pointsCount('ap');
+  if (apPoints > 0) next.apCount = apPoints;
+  const camPoints = pointsCount('camera');
+  if (camPoints > 0) next.cameraCount = camPoints;
+
+  // Solar panels
+  const panelPoints = pointsCount('solar_panel');
+  if (panelPoints > 0) next.panelCount = panelPoints;
+
+  // Acoperis
+  const gutterPoints = pointsCount('gutter');
+  if (gutterPoints > 0) next.gutterLengthM = gutterPoints * 6;
+
+  // Pavaj
+  const borderPoints = pointsCount('border');
+  if (borderPoints > 0) next.borderLengthM = borderPoints * 8;
+
+  return next;
+};
+
 type ExistingEstimateWizardProps = {
   project: EstimateProjectDto;
 };
@@ -73,7 +189,19 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
   const sendEstimate = useSendEstimateMutation();
 
   const config: EstimateBlueprintConfig | null = project.blueprint?.config ?? null;
-  const steps = config?.wizardSteps ?? ['object', 'plan', 'diagnostic', 'stages', 'review'];
+
+  const diagnosticQuestions = useMemo(() => {
+    const allQuestions = config?.diagnosticQuestions ?? [];
+    return allQuestions.filter((q) => !DUPLICATE_DIAGNOSTIC_KEYS.includes(q.key));
+  }, [config]);
+
+  const steps = useMemo(() => {
+    const defaultSteps = config?.wizardSteps ?? ['object', 'plan', 'diagnostic', 'stages', 'review'];
+    if (diagnosticQuestions.length === 0) {
+      return defaultSteps.filter((s) => s !== 'diagnostic');
+    }
+    return defaultSteps;
+  }, [config, diagnosticQuestions]);
 
   const [stepIndex, setStepIndex] = useState(0);
   const [title, setTitle] = useState(project.title);
@@ -218,11 +346,14 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
 
   const handleSavePlan = async () => {
     try {
+      const nextDiag = syncGlobalParamsToDiagnostic(plan2d, diagnostic);
       await savePlan.mutateAsync({ id: project.id, plan2d });
-      toast.success('Plan salvat.');
+      await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: persistCustomPricing(nextDiag) });
+      setDiagnostic(persistCustomPricing(nextDiag));
+      toast.success('Date salvate.');
       setStepIndex((i) => Math.min(i + 1, steps.length - 1));
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Eroare la salvare plan.');
+      toast.error((err as Error).message || 'Eroare la salvare.');
     }
   };
 
@@ -241,7 +372,10 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
   const handleStepChange = async (targetIndex: number) => {
     if (currentStep === 'plan') {
       try {
+        const nextDiag = syncGlobalParamsToDiagnostic(plan2d, diagnostic);
         await savePlan.mutateAsync({ id: project.id, plan2d });
+        await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: persistCustomPricing(nextDiag) });
+        setDiagnostic(persistCustomPricing(nextDiag));
       } catch (err) {
         console.error('Autosave plan failed:', err);
       }
@@ -260,11 +394,12 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
 
   const handleCalculate = async () => {
     try {
-      const nextDiagnostic = persistCustomPricing(diagnostic);
+      const nextDiag = syncGlobalParamsToDiagnostic(plan2d, diagnostic);
+      const nextDiagnostic = persistCustomPricing(nextDiag);
       await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: nextDiagnostic });
       setDiagnostic(nextDiagnostic);
 
-      // Auto-save the latest 2D/3D plan first to guarantee calculations reflect the actual drawing
+      // Auto-save the latest plan as well
       await savePlan.mutateAsync({ id: project.id, plan2d });
 
       await calculate.mutateAsync(project.id);
@@ -305,6 +440,8 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
   const canSendEstimate = project.status === 'CALCULATED' || project.status === 'APPROVED';
   const canConvertEstimate = project.status === 'ACCEPTED';
   const activeCustomPricing = readCustomPricing(persistCustomPricing(diagnostic));
+  const isServiceCategory = ['it-networks'].includes(project.category.slug);
+  const pricingUnitLabel = isServiceCategory ? 'Preț / oră (MDL)' : undefined;
 
   return (
     <>
@@ -349,7 +486,7 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
             Marjă (%)
             <input type="number" min={0} max={100} value={marginPct} onChange={(e) => setMarginPct(Number(e.target.value))} className={cabinetFieldClass} />
           </label>
-          <CustomPricingFields values={customPricing} onChange={setCustomPricing} />
+          <CustomPricingFields values={customPricing} onChange={setCustomPricing} unitLabel={pricingUnitLabel} />
           <button type="button" onClick={handleSaveObject} className={cabinetBtnPrimary}>
             <Save className="w-4 h-4" /> Salvează și continuă
           </button>
@@ -365,16 +502,9 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
             categorySlug={project.category.slug}
             onChange={setPlan2d}
           />
-          <PlanPreview3D
-            plan2d={plan2d}
-            plan3d={project.sitePlan?.plan3d}
-            config={config}
-            categoryName={project.category.name}
-            onChange={setPlan2d}
-          />
           <div className="flex gap-3">
             <button type="button" onClick={handleSavePlan} className={cabinetBtnPrimary}>
-              <Save className="w-4 h-4" /> Salvează plan
+              <Save className="w-4 h-4" /> Salvează dimensiuni & dotări
             </button>
             <button type="button" onClick={() => setStepIndex((i) => i + 1)} className={cabinetBtnSecondary}>
               Continuă fără salvare
@@ -386,7 +516,7 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
       {currentStep === 'diagnostic' && (
         <Panel className="p-6 max-w-2xl space-y-4">
           <h3 className="font-bold text-gray-900">Diagnostic — {project.category.name}</h3>
-          {(config?.diagnosticQuestions ?? []).map((q) => (
+          {diagnosticQuestions.map((q) => (
             <label key={q.key} className={cabinetLabelClass}>
               {q.label}
               {q.type === 'boolean' ? (
@@ -420,7 +550,7 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
               )}
             </label>
           ))}
-          <CustomPricingFields values={customPricing} onChange={setCustomPricing} compact />
+          <CustomPricingFields values={customPricing} onChange={setCustomPricing} compact unitLabel={pricingUnitLabel} />
           <button type="button" onClick={handleSaveDiagnostic} className={cabinetBtnPrimary}>
             Salvează diagnostic
           </button>
@@ -903,14 +1033,6 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
               })}
             </div>
           </Panel>
-
-          <PlanPreview3D
-            plan2d={plan2d}
-            plan3d={project.sitePlan?.plan3d}
-            config={config}
-            categoryName={project.category.name}
-            onChange={setPlan2d}
-          />
         </div>
       )}
     </>

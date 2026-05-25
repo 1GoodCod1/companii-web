@@ -11,6 +11,18 @@ export type EstimateProjectStatus =
 
 export type EstimateStageKind = 'LABOR' | 'MATERIAL' | 'MIXED';
 
+export type RoomShapeType = 'rectangle' | 'l-shape' | 't-shape' | 'u-shape';
+export type RoofType = 'flat' | 'gable' | 'hip';
+
+export type GlobalHouseParams = {
+  workContext: 'indoor' | 'roof' | 'facade' | 'general';
+  baseArea?: number;
+  wallHeight?: number;
+  floorsCount?: number;
+  roofSlope?: number;
+  facadeArea?: number;
+};
+
 export type Plan2dRoom = {
   id: string;
   name: string;
@@ -19,6 +31,10 @@ export type Plan2dRoom = {
   x?: number;
   y?: number;
   unit?: string;
+  shapeType?: RoomShapeType;
+  roofType?: RoofType;
+  roofPitch?: number; // e.g. degrees, 0 for flat
+  connectedRoomIds?: string[]; // IDs of other rooms combined with this one
 };
 
 export type Plan2dPoint = {
@@ -34,6 +50,7 @@ export type Plan2dPoint = {
 export type Plan2dData = {
   rooms: Plan2dRoom[];
   points: Plan2dPoint[];
+  globalParameters?: GlobalHouseParams;
 };
 
 export type BlueprintDiagnosticQuestion = {

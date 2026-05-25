@@ -355,6 +355,22 @@ export function ProceduralModel({ type, color }: { type: string; color: string }
           </mesh>
         </group>
       );
+    case 'gutter':
+    case 'jgeaburi':
+      return (
+        <group position={[0, 0.2, 0]}>
+          {/* Half cylinder for gutter */}
+          <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.06, 0.06, 0.4, 16, 1, false, 0, Math.PI]} />
+            <meshStandardMaterial color="#475569" roughness={0.6} side={THREE.DoubleSide} />
+          </mesh>
+          {/* Downspout pipe part */}
+          <mesh position={[0, -0.3, 0.04]}>
+             <cylinderGeometry args={[0.03, 0.03, 0.6, 8]} />
+             <meshStandardMaterial color="#475569" roughness={0.6} />
+          </mesh>
+        </group>
+      );
     default:
       // Slick interactive glow connection pin (Default Mesh fallback)
       return (
