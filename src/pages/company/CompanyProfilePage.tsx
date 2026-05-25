@@ -54,6 +54,8 @@ function createFormState(
     tvaCode: company?.tvaCode ?? '',
     contactPhone: company?.contactPhone ?? userDefaults?.phone ?? '',
     contactEmail: company?.contactEmail ?? userDefaults?.email ?? '',
+    showPublicPhone: company?.showPublicPhone ?? true,
+    showPublicEmail: company?.showPublicEmail ?? true,
     description: company?.description ?? '',
     logoUrl: company?.logoUrl ?? null,
   };
@@ -160,6 +162,8 @@ function CompanyProfileEditor({
   const [tvaCode, setTvaCode] = useState(initial.tvaCode);
   const [contactPhone, setContactPhone] = useState(initial.contactPhone);
   const [contactEmail, setContactEmail] = useState(initial.contactEmail);
+  const [showPublicPhone, setShowPublicPhone] = useState(initial.showPublicPhone);
+  const [showPublicEmail, setShowPublicEmail] = useState(initial.showPublicEmail);
   const [description, setDescription] = useState(initial.description);
 
   const [logoUrl, setLogoUrl] = useState<string | null>(initial.logoUrl);
@@ -292,6 +296,8 @@ function CompanyProfileEditor({
       tvaCode: isTvaPayer ? tvaCode.trim() : undefined,
       contactPhone: contactPhone.trim() || undefined,
       contactEmail: contactEmail.trim() || undefined,
+      showPublicPhone,
+      showPublicEmail,
       description: description.trim() || undefined,
     };
 
@@ -647,6 +653,33 @@ function CompanyProfileEditor({
                 className={cabinetFieldClass}
               />
             </div>
+
+            {isLegalOwner ? (
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
+                <label className="flex items-center gap-2.5 px-3.5 py-2.5 bg-slate-50/60 hover:bg-slate-100/80 transition-colors border border-slate-100 rounded-2xl cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="rounded text-violet-600 focus:ring-violet-500/20 w-4 h-4 cursor-pointer"
+                    checked={showPublicPhone}
+                    onChange={(e) => setShowPublicPhone(e.target.checked)}
+                  />
+                  <span className="text-xs font-semibold text-slate-700 leading-none select-none">
+                    Arată telefonul public pe pagina companiei
+                  </span>
+                </label>
+                <label className="flex items-center gap-2.5 px-3.5 py-2.5 bg-slate-50/60 hover:bg-slate-100/80 transition-colors border border-slate-100 rounded-2xl cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="rounded text-violet-600 focus:ring-violet-500/20 w-4 h-4 cursor-pointer"
+                    checked={showPublicEmail}
+                    onChange={(e) => setShowPublicEmail(e.target.checked)}
+                  />
+                  <span className="text-xs font-semibold text-slate-700 leading-none select-none">
+                    Arată emailul public pe pagina companiei
+                  </span>
+                </label>
+              </div>
+            ) : null}
           </div>
 
           <div>

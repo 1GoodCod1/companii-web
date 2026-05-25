@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MessageSquarePlus } from 'lucide-react';
+import { MessageSquarePlus, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { downloadFile } from '@/api/files';
 import {
   PageHero,
   Panel,
@@ -452,13 +453,49 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                       {(estimateDetail.stages as EstimateStageDto[]).map((stage) => (
                         <div key={stage.id} className="space-y-1">
                           <p className="text-xs font-bold text-gray-800">{stage.name}</p>
-                          <ul className="text-xs text-gray-600 space-y-0.5">
-                            {(stage.lines ?? []).slice(0, 5).map((line) => (
-                              <li key={line.id}>
-                                • {line.description} — {Number(line.qty)} {line.unit} ·{' '}
-                                {Number(line.lineTotal ?? 0).toLocaleString('ro-MD')} MDL
-                              </li>
-                            ))}
+                          <ul className="text-xs text-gray-600 space-y-1.5 mt-2">
+                            {(stage.lines ?? []).map((line) => {
+                              const isLabor =
+                                line.unit === 'ore' ||
+                                line.unit === 'h' ||
+                                line.description.toLowerCase().includes('manoperă') ||
+                                line.description.toLowerCase().includes('manopera');
+                              return (
+                                <li
+                                  key={line.id}
+                                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-white/70 p-2.5 shadow-xs border border-slate-100"
+                                >
+                                  <div>
+                                    <p className="font-semibold text-slate-800">{line.description}</p>
+                                    <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                                      {Number(line.qty)} {line.unit} ·{' '}
+                                      {Number(line.lineTotal ?? 0).toLocaleString('ro-MD')} MDL
+                                    </p>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    {!isLabor && line.materialStore && (
+                                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold text-slate-600 border border-slate-200">
+                                        Magazin: {line.materialStore}
+                                      </span>
+                                    )}
+                                    {!isLabor && line.receiptFileKey && (
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          downloadFile(
+                                            line.receiptFileKey!,
+                                            `Bon-${line.description.replace(/\s+/g, '_')}.pdf`,
+                                          )
+                                        }
+                                        className="inline-flex items-center gap-1 rounded-xl bg-violet-600 hover:bg-violet-700 px-2.5 py-1 text-[9px] font-extrabold text-white transition-all shadow-xs cursor-pointer"
+                                      >
+                                        <Eye className="w-3 h-3" /> Bon Fiscal
+                                      </button>
+                                    )}
+                                  </div>
+                                </li>
+                              );
+                            })}
                           </ul>
                         </div>
                       ))}

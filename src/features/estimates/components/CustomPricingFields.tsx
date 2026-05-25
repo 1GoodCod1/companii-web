@@ -21,12 +21,12 @@ export function CustomPricingFields({ values, onChange, compact }: Props) {
         <div>
           <h4 className="font-bold text-gray-900">Tarife personalizate</h4>
           <p className="text-xs text-gray-600 mt-1">
-            Opțional — suprascriu prețul / m², durata în zile și orele de manoperă la calculul smetei.
+            Opțional — suprascriu prețul / m², durata în zile, orele sau **prețul total fix pentru volumul întreg de manoperă** la calculul smetei.
           </p>
         </div>
       ) : null}
 
-      <div className={`grid gap-3 ${compact ? 'grid-cols-1' : 'sm:grid-cols-3'}`}>
+      <div className={`grid gap-3 ${compact ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'}`}>
         <label className={cabinetLabelClass}>
           Preț personalizat / m² (MDL)
           <input
@@ -39,6 +39,24 @@ export function CustomPricingFields({ values, onChange, compact }: Props) {
               onChange({
                 ...values,
                 customUnitPriceSqm: parseOptionalNumber(e.target.value),
+              })
+            }
+            className={cabinetFieldClass}
+          />
+        </label>
+
+        <label className={cabinetLabelClass}>
+          Preț total manoperă [Volum / Contract] (MDL)
+          <input
+            type="number"
+            min={0}
+            step={1}
+            placeholder="Ex: 5000"
+            value={values.customLaborTotal ?? ''}
+            onChange={(e) =>
+              onChange({
+                ...values,
+                customLaborTotal: parseOptionalNumber(e.target.value),
               })
             }
             className={cabinetFieldClass}

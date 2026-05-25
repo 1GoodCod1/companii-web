@@ -28,6 +28,7 @@ export type Plan2dPoint = {
   label?: string;
   x?: number;
   y?: number;
+  elevation?: number;
 };
 
 export type Plan2dData = {
@@ -68,6 +69,8 @@ export type EstimateLineDto = {
   unitPrice?: number;
   lineTotal?: number;
   source: string;
+  materialStore?: string | null;
+  receiptFileKey?: string | null;
 };
 
 export type EstimateStageDto = {

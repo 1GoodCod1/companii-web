@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
@@ -9,6 +9,11 @@ import {
   Hammer,
   Save,
   Send,
+  Paperclip,
+  Trash2,
+  Eye,
+  Check,
+  Plus,
 } from 'lucide-react';
 import {
   PageHero,
@@ -32,6 +37,9 @@ import {
   useSaveSitePlanMutation,
   useUpdateEstimateProjectMutation,
   useSendEstimateMutation,
+  useUpdateEstimateLineMutation,
+  useAddEstimateLineMutation,
+  useDeleteEstimateLineMutation,
 } from '@/features/estimates/api/useEstimates';
 import { PlanEditor2D } from '@/features/estimates/components/PlanEditor2D';
 import { PlanPreview3D } from '@/features/estimates/components/PlanPreview3D';
@@ -46,6 +54,9 @@ import {
   WIZARD_STEP_LABELS,
 } from '@/features/estimates/statusLabels';
 import type { EstimateBlueprintConfig, EstimateProjectDto, EstimateStageDto, Plan2dData } from '@/features/estimates/types';
+import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
+import { downloadFile } from '@/api/files';
 
 const EMPTY_PLAN: Plan2dData = { rooms: [], points: [] };
 
@@ -76,6 +87,111 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
   const [customPricing, setCustomPricing] = useState<CustomPricingValues>(() =>
     readCustomPricing((project.diagnosticAnswers as Record<string, unknown>) ?? {}),
   );
+
+  const updateLine = useUpdateEstimateLineMutation();
+  const addLineMutation = useAddEstimateLineMutation();
+  const deleteLineMutation = useDeleteEstimateLineMutation();
+  const [editingStore, setEditingStore] = useState<{ lineId: string; value: string } | null>(null);
+  const [uploadingLineId, setUploadingLineId] = useState<string | null>(null);
+
+  const handleUploadReceipt = async (lineId: string, stageId: string, file: File) => {
+    setUploadingLineId(lineId);
+    try {
+      const { uploadFile } = await import('@/api/files');
+      const uploaded = await uploadFile(file);
+      await updateLine.mutateAsync({
+        projectId: project.id,
+        stageId,
+        lineId,
+        receiptFileKey: uploaded.id,
+      });
+      toast.success('Chitanță încărcată.');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Nu s-a putut încărca chitanța.');
+    } finally {
+      setUploadingLineId(null);
+    }
+  };
+
+  const handleDeleteReceipt = async (lineId: string, stageId: string) => {
+    if (!confirm('Sigur doriți să ștergeți această chitanță?')) return;
+    try {
+      await updateLine.mutateAsync({
+        projectId: project.id,
+        stageId,
+        lineId,
+        receiptFileKey: null,
+      });
+      toast.success('Chitanță ștearsă.');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Nu s-a putut șterge.');
+    }
+  };
+
+  const handleSaveStore = async (lineId: string, stageId: string) => {
+    if (!editingStore || editingStore.lineId !== lineId) return;
+    try {
+      await updateLine.mutateAsync({
+        projectId: project.id,
+        stageId,
+        lineId,
+        materialStore: editingStore.value || null,
+      });
+      setEditingStore(null);
+      toast.success('Magazin salvat.');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Nu s-a putut salva magazinul.');
+    }
+  };
+
+  const handleUpdateLineQtyOrPrice = async (
+    lineId: string,
+    stageId: string,
+    field: 'qty' | 'unitPrice',
+    val: number,
+  ) => {
+    if (isNaN(val) || val < 0) return;
+    try {
+      await updateLine.mutateAsync({
+        projectId: project.id,
+        stageId,
+        lineId,
+        [field]: val,
+      });
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Nu s-a putut actualiza.');
+    }
+  };
+
+  const handleAddLine = async (stageId: string) => {
+    try {
+      await addLineMutation.mutateAsync({
+        projectId: project.id,
+        stageId,
+        description: 'Lucrare nouă',
+        qty: 1,
+        unit: 'buc',
+        unitPrice: 0,
+      });
+      toast.success('Linie adăugată.');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Nu s-a putut adăuga linia.');
+    }
+  };
+
+  const handleDeleteLine = async (lineId: string, stageId: string) => {
+    if (!confirm('Sigur doriți să ștergeți această linie?')) return;
+    try {
+      await deleteLineMutation.mutateAsync({
+        projectId: project.id,
+        stageId,
+        lineId,
+      });
+      toast.success('Linie ștearsă.');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Nu s-a putut șterge linia.');
+    }
+  };
 
   const currentStep = steps[stepIndex] ?? 'object';
 
@@ -122,11 +238,35 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
     }
   };
 
+  const handleStepChange = async (targetIndex: number) => {
+    if (currentStep === 'plan') {
+      try {
+        await savePlan.mutateAsync({ id: project.id, plan2d });
+      } catch (err) {
+        console.error('Autosave plan failed:', err);
+      }
+    }
+    if (currentStep === 'diagnostic') {
+      try {
+        const nextDiagnostic = persistCustomPricing(diagnostic);
+        await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: nextDiagnostic });
+        setDiagnostic(nextDiagnostic);
+      } catch (err) {
+        console.error('Autosave diagnostic failed:', err);
+      }
+    }
+    setStepIndex(targetIndex);
+  };
+
   const handleCalculate = async () => {
     try {
       const nextDiagnostic = persistCustomPricing(diagnostic);
       await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: nextDiagnostic });
       setDiagnostic(nextDiagnostic);
+
+      // Auto-save the latest 2D/3D plan first to guarantee calculations reflect the actual drawing
+      await savePlan.mutateAsync({ id: project.id, plan2d });
+
       await calculate.mutateAsync(project.id);
       toast.success('Smetă calculată.');
       setStepIndex(steps.indexOf('review'));
@@ -173,7 +313,7 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
           <button
             key={step}
             type="button"
-            onClick={() => setStepIndex(index)}
+            onClick={() => handleStepChange(index)}
             className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${
               index === stepIndex
                 ? 'bg-violet-600 text-white shadow-md'
@@ -230,6 +370,7 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
             plan3d={project.sitePlan?.plan3d}
             config={config}
             categoryName={project.category.name}
+            onChange={setPlan2d}
           />
           <div className="flex gap-3">
             <button type="button" onClick={handleSavePlan} className={cabinetBtnPrimary}>
@@ -292,36 +433,224 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div>
                 <h3 className="font-bold text-gray-900">Etape & calcul preț</h3>
-                <p className="text-sm text-gray-500">Recalculează liniile din plan, diagnostic, tarife personalizate și regulile categoriei.</p>
+                <p className="text-sm text-gray-500">
+                  Recalculează liniile din plan, diagnostic, tarife personalizate și regulile categoriei.
+                  Puteți edita direct descrierea, cantitatea, prețul și materialele fiecărei lucrări.
+                </p>
               </div>
               <button type="button" onClick={handleCalculate} disabled={calculate.isPending} className={cabinetBtnPrimary}>
                 <Calculator className="w-4 h-4" /> Calculează smeta
               </button>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
+
+            <div className="space-y-6">
               {(project.stages as EstimateStageDto[]).map((stage, index) => (
-                <div key={stage.id} className="rounded-2xl border border-gray-100 p-4 bg-gray-50/50">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-7 h-7 rounded-full bg-violet-600 text-white text-xs font-black flex items-center justify-center">
-                      {index + 1}
-                    </span>
-                    <p className="font-bold text-gray-900">{stage.name}</p>
+                <div key={stage.id} className="rounded-2xl border border-gray-100 bg-gray-50/50 p-4 space-y-3 shadow-xs">
+                  <div className="flex items-center justify-between border-b border-gray-100/80 pb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-7 h-7 rounded-full bg-violet-600 text-white text-xs font-black flex items-center justify-center">
+                        {index + 1}
+                      </span>
+                      <div>
+                        <p className="font-bold text-gray-900">{stage.name}</p>
+                        {stage.description && <p className="text-[10px] text-gray-500">{stage.description}</p>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-gray-500">
+                      {stage.laborHours != null && <span>~{Number(stage.laborHours)} ore</span>}
+                      {stage.durationDays != null && <span>{stage.durationDays} zile</span>}
+                      <span className="text-sm font-bold text-violet-700">
+                        {Number(stage.stageTotal ?? 0).toLocaleString('ro-MD')} MDL
+                      </span>
+                    </div>
                   </div>
-                  {stage.description && <p className="text-xs text-gray-500 mb-2">{stage.description}</p>}
-                  <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-2">
-                    {stage.laborHours != null ? <span>~{Number(stage.laborHours)} ore</span> : null}
-                    {stage.durationDays != null ? <span>{stage.durationDays} zile</span> : null}
-                  </div>
-                  <p className="text-sm font-semibold text-violet-700">
-                    {Number(stage.stageTotal ?? 0).toLocaleString('ro-MD')} MDL
-                  </p>
+
                   {stage.lines?.length ? (
-                    <ul className="mt-2 space-y-1 text-xs text-gray-600">
-                      {stage.lines.slice(0, 3).map((line) => (
-                        <li key={line.id}>• {line.description} — {Number(line.qty)} {line.unit}</li>
-                      ))}
-                    </ul>
-                  ) : null}
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full text-left text-xs">
+                        <thead>
+                          <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider">
+                            <th className="py-2">Descriere lucrare</th>
+                            <th className="py-2 w-20">Cant.</th>
+                            <th className="py-2 w-20">Unitate</th>
+                            <th className="py-2 w-28">Preț Unitar</th>
+                            <th className="py-2 w-28">Total</th>
+                            <th className="py-2">Magazin / Sursă</th>
+                            <th className="py-2 text-right">Bon</th>
+                            <th className="py-2 w-10"></th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100/50">
+                          {stage.lines.map((line) => {
+                            const isLabor =
+                              line.unit === 'ore' ||
+                              line.unit === 'h' ||
+                              line.description.toLowerCase().includes('manoperă') ||
+                              line.description.toLowerCase().includes('manopera');
+                            return (
+                              <tr key={line.id} className="hover:bg-violet-50/20 transition-colors">
+                                <td className="py-3">
+                                  <input
+                                    type="text"
+                                    defaultValue={line.description}
+                                    onBlur={(e) => {
+                                      const val = e.target.value.trim();
+                                      if (val && val !== line.description) {
+                                        updateLine.mutate({
+                                          projectId: project.id,
+                                          stageId: stage.id,
+                                          lineId: line.id,
+                                          description: val,
+                                        });
+                                      }
+                                    }}
+                                    className="w-full min-w-[160px] rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                                  />
+                                </td>
+                                <td className="py-3">
+                                  <input
+                                    type="number"
+                                    defaultValue={Number(line.qty)}
+                                    onBlur={(e) =>
+                                      handleUpdateLineQtyOrPrice(
+                                        line.id,
+                                        stage.id,
+                                        'qty',
+                                        Number(e.target.value),
+                                      )
+                                    }
+                                    className="w-16 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                                  />
+                                </td>
+                                <td className="py-3 text-gray-500 font-medium">{line.unit}</td>
+                                <td className="py-3">
+                                  <div className="flex items-center gap-1">
+                                    <input
+                                      type="number"
+                                      defaultValue={Number(line.unitPrice)}
+                                      onBlur={(e) =>
+                                        handleUpdateLineQtyOrPrice(
+                                          line.id,
+                                          stage.id,
+                                          'unitPrice',
+                                          Number(e.target.value),
+                                        )
+                                      }
+                                      className="w-20 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                                    />
+                                    <span className="text-[10px] text-gray-400">MDL</span>
+                                  </div>
+                                </td>
+                                <td className="py-3 font-extrabold text-gray-900">
+                                  {Number(line.lineTotal).toLocaleString('ro-MD')} MDL
+                                </td>
+                                <td className="py-3">
+                                  {isLabor ? (
+                                    <span className="text-[10px] text-gray-400 italic">Serviciu / Manoperă</span>
+                                  ) : (
+                                    <div className="flex items-center gap-1.5">
+                                      <input
+                                        type="text"
+                                        placeholder="Ex: Supraten, Leroy"
+                                        value={
+                                          editingStore?.lineId === line.id
+                                            ? editingStore.value
+                                            : line.materialStore || ''
+                                        }
+                                        onChange={(e) =>
+                                          setEditingStore({ lineId: line.id, value: e.target.value })
+                                        }
+                                        onBlur={() => handleSaveStore(line.id, stage.id)}
+                                        className="w-36 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                                      />
+                                      {editingStore?.lineId === line.id && (
+                                        <button
+                                          type="button"
+                                          onMouseDown={() => handleSaveStore(line.id, stage.id)}
+                                          className="rounded-md bg-emerald-100 p-1 text-emerald-700 hover:bg-emerald-200 transition-colors"
+                                        >
+                                          <Check className="w-3 h-3" />
+                                        </button>
+                                      )}
+                                    </div>
+                                  )}
+                                </td>
+                                <td className="py-3 text-right">
+                                  {isLabor ? null : (
+                                    <div className="inline-flex items-center gap-2">
+                                      {line.receiptFileKey ? (
+                                        <>
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              downloadFile(
+                                                line.receiptFileKey!,
+                                                `Bon-${line.description.replace(/\s+/g, '_')}.pdf`,
+                                              )
+                                            }
+                                            className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100 px-2 py-1 text-[10px] font-bold text-violet-700 hover:bg-violet-100 transition-colors"
+                                          >
+                                            <Eye className="w-3.5 h-3.5" /> Vezi
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleDeleteReceipt(line.id, stage.id)}
+                                            className="rounded-xl bg-red-50 border border-red-100 p-1 text-red-600 hover:bg-red-100 transition-colors"
+                                          >
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                          </button>
+                                        </>
+                                      ) : (
+                                        <label className="relative cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-dashed border-gray-200 bg-white px-2.5 py-1 text-[10px] font-bold text-gray-500 hover:bg-gray-50 transition-colors">
+                                          {uploadingLineId === line.id ? (
+                                            <span className="animate-pulse">Se încarcă...</span>
+                                          ) : (
+                                            <>
+                                              <Plus className="w-3 h-3" /> Bon
+                                            </>
+                                          )}
+                                          <input
+                                            type="file"
+                                            className="sr-only"
+                                            accept="image/*,application/pdf"
+                                            onChange={(e) => {
+                                              const file = e.target.files?.[0];
+                                              if (file) handleUploadReceipt(line.id, stage.id, file);
+                                            }}
+                                          />
+                                        </label>
+                                      )}
+                                    </div>
+                                  )}
+                                </td>
+                                <td className="py-3 text-center">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteLine(line.id, stage.id)}
+                                    title="Șterge linia"
+                                    className="rounded-lg bg-red-50 border border-red-100 p-1.5 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-gray-400 italic">Nu există linii. Apăsați «Calculează smeta» pentru a genera liniile automat.</p>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => handleAddLine(stage.id)}
+                    disabled={addLineMutation.isPending}
+                    className="w-full mt-2 rounded-xl border border-dashed border-violet-200 bg-violet-50/50 py-2 text-xs font-semibold text-violet-700 hover:bg-violet-100 transition-colors inline-flex items-center justify-center gap-1.5"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Adaugă lucrare nouă
+                  </button>
                 </div>
               ))}
             </div>
@@ -335,11 +664,15 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
             <h3 className="font-bold text-gray-900 mb-4">Rezumat smetă</h3>
             {(activeCustomPricing.customUnitPriceSqm ||
               activeCustomPricing.customDurationDays ||
-              activeCustomPricing.customLaborHours) && (
+              activeCustomPricing.customLaborHours ||
+              activeCustomPricing.customLaborTotal) && (
               <div className="mb-6 rounded-2xl border border-amber-100 bg-amber-50/50 p-4 text-sm text-gray-700 space-y-1">
                 <p className="font-bold text-gray-900">Tarife personalizate aplicate</p>
                 {activeCustomPricing.customUnitPriceSqm ? (
                   <p>Preț / m²: {activeCustomPricing.customUnitPriceSqm.toLocaleString('ro-MD')} MDL</p>
+                ) : null}
+                {activeCustomPricing.customLaborTotal ? (
+                  <p>Preț total fix manoperă: {activeCustomPricing.customLaborTotal.toLocaleString('ro-MD')} MDL</p>
                 ) : null}
                 {activeCustomPricing.customDurationDays ? (
                   <p>Durată: {activeCustomPricing.customDurationDays} zile</p>
@@ -398,11 +731,185 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
               )}
             </div>
           </Panel>
+
+          {/* Detailed Materials and Receipts Section */}
+          <Panel className="p-6">
+            <h3 className="font-extrabold text-gray-900 text-base flex items-center gap-2 mb-1">
+              <Paperclip className="w-5 h-5 text-violet-600 animate-pulse" /> Detalii materiale, prețuri și bonuri de plată
+            </h3>
+            <p className="text-xs text-gray-500 mb-6 leading-relaxed">
+              Mărește precizia smetei ajustând prețurile reale din magazine, adăugând denumirea magazinului de achiziție și atașând chitanțele / bonurile fiscale pentru transparență totală față de client.
+            </p>
+
+            <div className="space-y-6">
+              {(project.stages as EstimateStageDto[]).map((stage) => {
+                const materialLines = (stage.lines ?? []).filter((l) => l.source !== 'stage-default');
+                if (materialLines.length === 0) return null;
+
+                return (
+                  <div key={stage.id} className="rounded-2xl border border-gray-100 bg-gray-50/50 p-4 space-y-3 shadow-xs">
+                    <div className="font-extrabold text-sm text-gray-800 border-b border-gray-100/80 pb-2 flex items-center justify-between">
+                      <span className="text-gray-900 font-bold text-sm">Etapa: {stage.name}</span>
+                      <span className="text-xs font-semibold text-violet-600">Total etapă: {Number(stage.stageTotal).toLocaleString('ro-MD')} MDL</span>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full text-left text-xs">
+                        <thead>
+                          <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider">
+                            <th className="py-2">Descriere</th>
+                            <th className="py-2 w-20">Cantitate</th>
+                            <th className="py-2 w-20">Unitate</th>
+                            <th className="py-2 w-28">Preț Unitar</th>
+                            <th className="py-2 w-28">Total</th>
+                            <th className="py-2">Magazin / Sursă</th>
+                            <th className="py-2 text-right">Bon de Casă / Chec</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100/50">
+                          {materialLines.map((line) => {
+                            const isLabor =
+                              line.unit === 'ore' ||
+                              line.unit === 'h' ||
+                              line.description.toLowerCase().includes('manoperă') ||
+                              line.description.toLowerCase().includes('manopera');
+                            return (
+                              <tr key={line.id} className="hover:bg-violet-50/20 transition-colors">
+                                <td className="py-3 font-semibold text-gray-700">{line.description}</td>
+                                <td className="py-3">
+                                  <input
+                                    type="number"
+                                    defaultValue={Number(line.qty)}
+                                    onBlur={(e) =>
+                                      handleUpdateLineQtyOrPrice(
+                                        line.id,
+                                        stage.id,
+                                        'qty',
+                                        Number(e.target.value),
+                                      )
+                                    }
+                                    className="w-16 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                                  />
+                                </td>
+                                <td className="py-3 text-gray-500 font-medium">{line.unit}</td>
+                                <td className="py-3">
+                                  <div className="flex items-center gap-1">
+                                    <input
+                                      type="number"
+                                      defaultValue={Number(line.unitPrice)}
+                                      onBlur={(e) =>
+                                        handleUpdateLineQtyOrPrice(
+                                          line.id,
+                                          stage.id,
+                                          'unitPrice',
+                                          Number(e.target.value),
+                                        )
+                                      }
+                                      className="w-20 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                                    />
+                                    <span className="text-[10px] text-gray-400">MDL</span>
+                                  </div>
+                                </td>
+                                <td className="py-3 font-extrabold text-gray-900">
+                                  {Number(line.lineTotal).toLocaleString('ro-MD')} MDL
+                                </td>
+                                <td className="py-3">
+                                  {isLabor ? (
+                                    <span className="text-[10px] text-gray-400 italic">Serviciu / Manoperă</span>
+                                  ) : (
+                                    <div className="flex items-center gap-1.5">
+                                      <input
+                                        type="text"
+                                        placeholder="Ex: Supraten, Leroy"
+                                        value={
+                                          editingStore?.lineId === line.id
+                                            ? editingStore.value
+                                            : line.materialStore || ''
+                                        }
+                                        onChange={(e) =>
+                                          setEditingStore({ lineId: line.id, value: e.target.value })
+                                        }
+                                        onBlur={() => handleSaveStore(line.id, stage.id)}
+                                        className="w-36 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                                      />
+                                      {editingStore?.lineId === line.id && (
+                                        <button
+                                          type="button"
+                                          onMouseDown={() => handleSaveStore(line.id, stage.id)}
+                                          className="rounded-md bg-emerald-100 p-1 text-emerald-700 hover:bg-emerald-200 transition-colors"
+                                        >
+                                          <Check className="w-3 h-3" />
+                                        </button>
+                                      )}
+                                    </div>
+                                  )}
+                                </td>
+                                <td className="py-3 text-right">
+                                  {isLabor ? null : (
+                                    <div className="inline-flex items-center gap-2">
+                                      {line.receiptFileKey ? (
+                                        <>
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              downloadFile(
+                                                line.receiptFileKey!,
+                                                `Bon-${line.description.replace(/\s+/g, '_')}.pdf`,
+                                              )
+                                            }
+                                            className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100 px-2 py-1 text-[10px] font-bold text-violet-700 hover:bg-violet-100 transition-colors"
+                                          >
+                                            <Eye className="w-3.5 h-3.5" /> Vizualizează
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleDeleteReceipt(line.id, stage.id)}
+                                            className="rounded-xl bg-red-50 border border-red-100 p-1 text-red-600 hover:bg-red-100 transition-colors"
+                                          >
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                          </button>
+                                        </>
+                                      ) : (
+                                        <label className="relative cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-dashed border-gray-200 bg-white px-2.5 py-1 text-[10px] font-bold text-gray-500 hover:bg-gray-50 transition-colors">
+                                          {uploadingLineId === line.id ? (
+                                            <span className="animate-pulse">Se încarcă...</span>
+                                          ) : (
+                                            <>
+                                              <Plus className="w-3 h-3" /> Atașează Bon
+                                            </>
+                                          )}
+                                          <input
+                                            type="file"
+                                            className="sr-only"
+                                            accept="image/*,application/pdf"
+                                            onChange={(e) => {
+                                              const file = e.target.files?.[0];
+                                              if (file) handleUploadReceipt(line.id, stage.id, file);
+                                            }}
+                                          />
+                                        </label>
+                                      )}
+                                    </div>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Panel>
+
           <PlanPreview3D
             plan2d={plan2d}
             plan3d={project.sitePlan?.plan3d}
             config={config}
             categoryName={project.category.name}
+            onChange={setPlan2d}
           />
         </div>
       )}
@@ -415,6 +922,11 @@ export function CompanyEstimateWizardPage() {
   const navigate = useNavigate();
   const isNew = !id || id === 'new';
 
+  const { companyMe, activeCompanyId } = useCompanyPermissions();
+  const activeCompany = useMemo(() => {
+    return resolveActiveCompany(companyMe, activeCompanyId).company;
+  }, [companyMe, activeCompanyId]);
+
   const { data: categories } = useCategoriesQuery();
   const { data: blueprints } = useEstimateBlueprintsQuery();
   const { data: customers } = useCustomersQuery();
@@ -425,6 +937,13 @@ export function CompanyEstimateWizardPage() {
   const [customerId, setCustomerId] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [title, setTitle] = useState('');
+
+  // Auto-fill category selection with the active company's category!
+  useEffect(() => {
+    if (activeCompany?.categoryId) {
+      setCategoryId(activeCompany.categoryId);
+    }
+  }, [activeCompany]);
 
   const activeBlueprint = useMemo(() => {
     if (!categoryId) return null;
@@ -484,15 +1003,30 @@ export function CompanyEstimateWizardPage() {
                   ))}
                 </select>
               </label>
-              <label className={cabinetLabelClass}>
-                Categorie lucrare
-                <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={cabinetSelectClass}>
-                  <option value="">Selectați categoria</option>
-                  {categories?.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
-              </label>
+
+              {activeCompany?.categoryId ? (
+                <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-4 space-y-1.5 shadow-xs">
+                  <span className="text-[10px] font-extrabold text-violet-600 uppercase tracking-widest">
+                    Categorie de lucru (Auto-Detectată)
+                  </span>
+                  <p className="font-extrabold text-gray-900 text-sm">
+                    {categories?.find((c) => c.id === categoryId)?.name || 'Încărcare domeniu...'}
+                  </p>
+                  <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                    Smeta este configurată automat pentru domeniul companiei tale, blocând utilizarea altor categorii pentru a păstra izolarea perfectă și corectitudinea proceselor.
+                  </p>
+                </div>
+              ) : (
+                <label className={cabinetLabelClass}>
+                  Categorie lucrare
+                  <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={cabinetSelectClass}>
+                    <option value="">Selectați categoria</option>
+                    {categories?.map((c) => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
               {categoryId && activeBlueprint && (
                 <div className="rounded-2xl bg-violet-50 border border-violet-100 p-4 text-sm text-violet-900">
                   <p className="font-bold">{activeBlueprint.name}</p>

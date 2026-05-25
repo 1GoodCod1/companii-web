@@ -186,3 +186,90 @@ export async function downloadCompanyEstimatePdf(projectId: string, filename: st
 export async function downloadPortalEstimatePdf(projectId: string, filename: string) {
   return downloadApiBlob(`/portal/estimates/${projectId}/pdf`, filename);
 }
+
+export function useUpdateEstimateLineMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      projectId,
+      stageId,
+      lineId,
+      ...body
+    }: {
+      projectId: string;
+      stageId: string;
+      lineId: string;
+      description?: string;
+      qty?: number;
+      unit?: string;
+      unitPrice?: number;
+      materialStore?: string | null;
+      receiptFileKey?: string | null;
+    }) =>
+      apiFetch<EstimateProjectDto>(
+        `${base}/projects/${projectId}/stages/${stageId}/lines/${lineId}`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify(body),
+        },
+      ),
+    onSuccess: (_, { projectId }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(projectId) });
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
+    },
+  });
+}
+
+export function useAddEstimateLineMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      projectId,
+      stageId,
+      ...body
+    }: {
+      projectId: string;
+      stageId: string;
+      description: string;
+      qty: number;
+      unit: string;
+      unitPrice: number;
+    }) =>
+      apiFetch<EstimateProjectDto>(
+        `${base}/projects/${projectId}/stages/${stageId}/lines`,
+        {
+          method: 'POST',
+          body: JSON.stringify(body),
+        },
+      ),
+    onSuccess: (_, { projectId }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(projectId) });
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
+    },
+  });
+}
+
+export function useDeleteEstimateLineMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      projectId,
+      stageId,
+      lineId,
+    }: {
+      projectId: string;
+      stageId: string;
+      lineId: string;
+    }) =>
+      apiFetch<EstimateProjectDto>(
+        `${base}/projects/${projectId}/stages/${stageId}/lines/${lineId}`,
+        {
+          method: 'DELETE',
+        },
+      ),
+    onSuccess: (_, { projectId }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(projectId) });
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
+    },
+  });
+}

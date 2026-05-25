@@ -353,7 +353,7 @@ export function CompanyCustomersPage() {
                     </button>
                     {activePortalInviteLink && (
                       <div className="space-y-2">
-                        <label className={cabinetLabelClass}>Link portal (valabil 24 ore)</label>
+                        <label className={cabinetLabelClass}>Link portal (valabil 2 ore)</label>
                         <div className="flex gap-2">
                           <input
                             type="text"

@@ -62,6 +62,8 @@ export interface OwnedCompanyDto {
   tvaCode?: string | null;
   contactPhone?: string | null;
   contactEmail?: string | null;
+  showPublicPhone?: boolean;
+  showPublicEmail?: boolean;
   description?: string | null;
   slug?: string;
   isPublished?: boolean;

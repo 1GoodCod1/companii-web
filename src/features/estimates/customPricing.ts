@@ -2,12 +2,14 @@ export const CUSTOM_PRICING_KEYS = {
   unitPriceSqm: 'customUnitPriceSqm',
   durationDays: 'customDurationDays',
   laborHours: 'customLaborHours',
+  laborTotal: 'customLaborTotal',
 } as const;
 
 export type CustomPricingValues = {
   customUnitPriceSqm?: number;
   customDurationDays?: number;
   customLaborHours?: number;
+  customLaborTotal?: number;
 };
 
 export function readCustomPricing(
@@ -17,6 +19,7 @@ export function readCustomPricing(
     customUnitPriceSqm: readPositiveNumber(diagnostic?.[CUSTOM_PRICING_KEYS.unitPriceSqm]),
     customDurationDays: readPositiveNumber(diagnostic?.[CUSTOM_PRICING_KEYS.durationDays]),
     customLaborHours: readPositiveNumber(diagnostic?.[CUSTOM_PRICING_KEYS.laborHours]),
+    customLaborTotal: readPositiveNumber(diagnostic?.[CUSTOM_PRICING_KEYS.laborTotal]),
   };
 }
 
@@ -28,6 +31,7 @@ export function mergeCustomPricing(
   setOptionalNumber(next, CUSTOM_PRICING_KEYS.unitPriceSqm, values.customUnitPriceSqm);
   setOptionalNumber(next, CUSTOM_PRICING_KEYS.durationDays, values.customDurationDays);
   setOptionalNumber(next, CUSTOM_PRICING_KEYS.laborHours, values.customLaborHours);
+  setOptionalNumber(next, CUSTOM_PRICING_KEYS.laborTotal, values.customLaborTotal);
   return next;
 }
 

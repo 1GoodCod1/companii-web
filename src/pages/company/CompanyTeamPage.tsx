@@ -526,7 +526,7 @@ export function CompanyTeamPage() {
         {inviteMode === 'link' ? (
           <form onSubmit={handleGenerateLink} className="space-y-4">
             <p className="text-sm text-gray-500 leading-relaxed">
-              Generează un link valabil 24 ore. Trimite-l colegului pe WhatsApp, Telegram sau SMS.
+              Generează un link valabil 2 ore. Trimite-l colegului pe WhatsApp, Telegram sau SMS.
               Linkurile vechi devin invalide la regenerare.
             </p>
             <div>
