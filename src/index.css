@@ -1,0 +1,300 @@
+@import 'tailwindcss';
+
+/* Design Tokens & Theme Colors (OKLCH - Modern perceptual color space) */
+:root {
+  --primary-oklch: oklch(0.51 0.24 286.96); /* Vibrant violet/indigo */
+  --accent-oklch: oklch(0.64 0.22 312.44); /* Pink/purple accent */
+  --bg-dots-color: rgba(99, 102, 241, 0.05); /* Polka dots */
+  --bg-base: #f9fafb;
+  --text-base: #111827;
+  --focus-ring: oklch(0.62 0.19 285);
+}
+
+/* Custom Selection Highlight */
+::selection {
+  background-color: oklch(0.85 0.1 285);
+  color: oklch(0.2 0.15 285);
+}
+
+/* Smooth Scrolling & Full height defaults */
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+/* High-Performance Polka Dot Texture Background (from Google Guidance) */
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-base);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+
+  /* Polka dot grid texture directly generated in CSS */
+  --distance: 1.5rem;
+  --radius: 0.075rem;
+  --polka: radial-gradient(circle, var(--bg-dots-color) var(--radius), transparent calc(var(--radius) + 1px));
+  background-image: var(--polka), var(--polka);
+  background-position: 0 0, var(--distance) var(--distance);
+  background-size: calc(var(--distance) * 2) calc(var(--distance) * 2);
+  background-attachment: fixed;
+}
+
+/* Fluid Responsive Typography Clamp (Google Best Practice) — public/marketing pages */
+.page-content h1,
+.page-content h2,
+.page-content h3,
+.legal-document h1,
+.legal-document h2,
+.legal-document h3 {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.page-content h1 {
+  font-size: clamp(1.75rem, 1.2rem + 2.5vw, 3rem);
+  text-wrap: balance;
+}
+
+.page-content h2 {
+  font-size: clamp(1.4rem, 1.1rem + 1.5vw, 2.25rem);
+  text-wrap: balance;
+}
+
+.cabinet-content h1,
+.cabinet-content h2,
+.cabinet-content h3 {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-wrap: pretty;
+}
+
+p, li, blockquote {
+  text-wrap: pretty; /* Aliniere estetica pentru textul lung-form */
+}
+
+/* Legal document typography — readable long-form prose */
+.legal-document {
+  color: #374151;
+}
+
+.legal-title {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.03em;
+}
+
+.legal-lead,
+.legal-paragraph,
+.legal-list,
+.legal-subsection p {
+  font-size: 0.975rem;
+  line-height: 1.8;
+  color: #4b5563;
+}
+
+.legal-paragraph strong,
+.legal-list strong {
+  color: #111827;
+  font-weight: 600;
+}
+
+.legal-section-title {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.legal-section-content a,
+.legal-lead a {
+  color: #6d28d9;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.legal-section-content a:hover,
+.legal-lead a:hover {
+  color: #5b21b6;
+}
+
+.legal-toc a {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.legal-document-body {
+  border-top: 3px solid rgba(124, 58, 237, 0.12);
+}
+
+/* Modern accessible focus states */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
+/* Smooth customized scrollbars (standard properties) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.2) transparent;
+}
+
+/* Webkit scrollbar customization for smoother experience on older browsers */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.15);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.3);
+}
+
+/* Premium layered shadow tokens for cards and panels */
+.shadow-premium {
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 4px 12px rgba(99, 102, 241, 0.03),
+    0 12px 32px rgba(99, 102, 241, 0.04);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+.shadow-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 8px 20px rgba(99, 102, 241, 0.06),
+    0 16px 40px rgba(99, 102, 241, 0.08);
+}
+
+/* Glassmorphism panel styling */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(99, 102, 241, 0.06);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.03),
+    0 8px 24px rgba(99, 102, 241, 0.04);
+}
+
+/* Soft Edge Content Fade-out mask (from Google UX guides) */
+.fade-edge-bottom {
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+/* CSS-Only Chart and Data Grid optimizations */
+.data-table-compact th {
+  text-wrap: balance;
+}
+
+/* Discrete entry animations with modern @starting-style */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-modal-in {
+  animation: modalIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Landing page 3D perspective & ambient motion */
+.landing-perspective {
+  perspective: 1400px;
+  perspective-origin: 50% 20%;
+}
+
+.landing-dashboard-3d {
+  transform: rotateX(14deg) rotateY(-12deg) rotateZ(1deg);
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-dashboard-3d:hover {
+  transform: rotateX(8deg) rotateY(-6deg) rotateZ(0deg) translateY(-6px);
+}
+
+@keyframes landing-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.landing-float {
+  animation: landing-float 6s ease-in-out infinite;
+}
+
+@keyframes landing-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.05);
+  }
+}
+
+.landing-glow {
+  animation: landing-glow-pulse 8s ease-in-out infinite;
+}
+
+@keyframes landing-shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.landing-shimmer-text {
+  background: linear-gradient(90deg, #7c3aed 0%, #6366f1 35%, #a78bfa 50%, #6366f1 65%, #7c3aed 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: landing-shimmer 6s linear infinite;
+}

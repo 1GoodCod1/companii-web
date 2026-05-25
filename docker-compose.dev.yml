@@ -1,0 +1,24 @@
+# Dev: Vite listens on 5174 inside the container
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: companii-web-dev
+    ports:
+      - "5174:5174"
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./index.html:/app/index.html
+      - ./vite.config.ts:/app/vite.config.ts
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      - ./.env.docker:/app/.env:ro
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-/api/v1}
+      VITE_DEV_API_PROXY_TARGET: ${VITE_DEV_API_PROXY_TARGET:-http://host.docker.internal:4100}
+    restart: unless-stopped
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0 --port 5174"
