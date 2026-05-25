@@ -31,13 +31,14 @@ export interface PublicCompanyDetailDto extends PublicCompanyListItemDto {
   contactEmail?: string | null;
   isTvaPayer?: boolean;
   galleryImages?: CompanyGalleryImageDto[];
-  packages?: Array<{
+  services?: Array<{
     id: string;
-    title: string;
-    description: string;
-    price: number | string;
+    name: string;
+    description?: string;
+    defaultPrice: number | string;
     currency?: string;
-    durationMinutes: number;
+    durationMinutes?: number | null;
+    category?: { id: string; name: string; slug?: string } | null;
   }>;
   members?: unknown[];
   badges?: unknown[];

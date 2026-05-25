@@ -9,7 +9,6 @@ export const COMPANY_ROUTE_ROLES: Record<string, CompanyRole[]> = {
   '/clienti': ['OWNER', 'MANAGER'],
   '/lucrari': ['OWNER', 'MANAGER', 'MEMBER'],
   '/calendar': ['OWNER', 'MANAGER', 'MEMBER'],
-  '/packages': ['OWNER', 'MANAGER'],
   '/servicii': ['OWNER', 'MANAGER'],
   '/cereri': ['OWNER', 'MANAGER'],
   '/oferte': ['OWNER', 'MANAGER'],

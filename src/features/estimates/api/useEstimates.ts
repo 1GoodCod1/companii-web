@@ -154,17 +154,6 @@ export function useConvertEstimateMutation() {
   });
 }
 
-export function useDeleteEstimateProjectMutation() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) =>
-      apiFetch<{ success: boolean }>(`${base}/projects/${id}`, { method: 'DELETE' }),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
-    },
-  });
-}
-
 export function useSendEstimateMutation() {
   const qc = useQueryClient();
   return useMutation({
@@ -177,10 +166,6 @@ export function useSendEstimateMutation() {
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
     },
   });
-}
-
-export async function downloadCompanyEstimatePdf(projectId: string, filename: string) {
-  return downloadApiBlob(`/estimates/projects/${projectId}/pdf`, filename);
 }
 
 export async function downloadPortalEstimatePdf(projectId: string, filename: string) {

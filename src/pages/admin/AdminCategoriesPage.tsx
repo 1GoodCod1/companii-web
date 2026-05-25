@@ -83,7 +83,7 @@ export function AdminCategoriesPage() {
   };
 
   const inUseCount = (category: AdminCategoryDto) =>
-    (category._count?.companies ?? 0) + (category._count?.packages ?? 0);
+    (category._count?.companies ?? 0) + (category._count?.companyServices ?? 0);
 
   return (
     <div className="space-y-6 animate-fade-in">

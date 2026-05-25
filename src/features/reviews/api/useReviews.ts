@@ -9,7 +9,6 @@ import { cabinetQueryDefaults, publicDetailQueryOptions } from '@/api/queryPolic
 import { queryKeys } from '@/api/queryKeys';
 import { useAuthStore } from '@/stores/authStore';
 import type {
-  CanCreateReviewDto,
   CompanyReviewDto,
   CompanyReviewsPageDto,
   CreateReviewPayload,
@@ -33,27 +32,6 @@ export function useCompanyReviewsMeQuery(): UseQueryResult<CompanyReviewsPageDto
     queryKey: queryKeys.reviews.companyMe,
     queryFn: () => apiFetch<CompanyReviewsPageDto>('/reviews/company/me/list?limit=50'),
     enabled: !!activeCompanyId,
-    ...cabinetQueryDefaults,
-  });
-}
-
-export function useMyReviewsQuery(): UseQueryResult<CompanyReviewDto[], Error> {
-  return useQuery<CompanyReviewDto[], Error>({
-    queryKey: queryKeys.reviews.my,
-    queryFn: () => apiFetch<CompanyReviewDto[]>('/reviews/my'),
-    ...cabinetQueryDefaults,
-  });
-}
-
-export function useCanCreateReviewForInterventionQuery(
-  interventionId: string | undefined,
-  enabled = true,
-): UseQueryResult<CanCreateReviewDto, Error> {
-  return useQuery<CanCreateReviewDto, Error>({
-    queryKey: queryKeys.reviews.canCreateIntervention(interventionId ?? ''),
-    queryFn: () =>
-      apiFetch<CanCreateReviewDto>(`/reviews/can-create/intervention/${interventionId}`),
-    enabled: enabled && !!interventionId,
     ...cabinetQueryDefaults,
   });
 }

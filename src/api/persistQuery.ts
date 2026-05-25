@@ -7,7 +7,6 @@ export function shouldPersistQuery(query: Query): boolean {
   if (!Array.isArray(key) || key.length < 2) return false;
   const [root, second] = key;
   if (root === 'subscriptions' && second === 'plans') return true;
-  if (root === 'packages' && second === 'list') return true;
   if (root === 'companies' && second === 'list') return true;
   return false;
 }

@@ -18,6 +18,13 @@ export interface CompanySubscriptionDto {
   status: 'TRIAL' | 'ACTIVE' | 'SUSPENDED' | 'EXPIRED';
   currentPeriodEnd: string;
   plan: CompanyPlanDto;
+  usage?: {
+    activeTechnicians: number;
+    pendingTechnicianInvites: number;
+    interventionsThisMonth: number;
+    maxTechnicians: number | null;
+    maxInterventionsPerMonth: number | null;
+  };
 }
 
 export function planFeatures(plan: CompanyPlanDto): string[] {

@@ -213,7 +213,7 @@ function CompanyModerationContent({
               ['Clienți', company._count.customers],
               ['Lucrări', company._count.interventions],
               ['Recenzii', company._count.reviews],
-              ['Pachete', company._count.packages],
+              ['Servicii', company._count.services],
             ] as const
           ).map(([label, value]) => (
             <div key={label} className="rounded-xl bg-violet-50/50 px-3 py-2 text-center">

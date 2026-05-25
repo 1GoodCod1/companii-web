@@ -20,13 +20,6 @@ export interface CompanyReviewsPageDto {
   limit: number;
 }
 
-export interface CanCreateReviewDto {
-  canCreate: boolean;
-  interventionId?: string;
-  alreadyReviewed?: boolean;
-  notReviewable?: boolean;
-}
-
 export interface CreateReviewPayload {
   companyId: string;
   interventionId: string;

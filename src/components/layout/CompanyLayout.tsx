@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   List,
   MessageSquareQuote,
-  Package,
   Receipt,
   User,
   Users,
@@ -17,7 +16,7 @@ import {
 import { CabinetShell } from './CabinetShell';
 import { useMySubscriptionQuery } from '@/features/subscriptions/api/useSubscriptions';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
-import { COMPANY_NAV_PLAN, hasMinPlan } from '@/features/subscriptions/planAccess';
+import { COMPANY_ROUTE_MIN_PLAN, hasMinPlan } from '@/config/planEntitlements';
 import { canAccessCompanyRoute } from '@/features/companies/roleAccess';
 import type { CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
 import type { CabinetNavItem, CabinetNavSection } from '@/components/layout/cabinet-nav';
@@ -77,14 +76,6 @@ const NAV_DEFS: Array<
     labelKey: 'company.calendar',
     icon: <Calendar />,
     minPlanKey: '/calendar',
-  },
-  {
-    key: 'packages',
-    sectionKey: 'operations',
-    to: '/packages',
-    labelKey: 'company.packages',
-    icon: <Package />,
-    minPlanKey: '/packages',
   },
   {
     key: 'servicii',
@@ -160,7 +151,7 @@ function buildCompanySections(
     const roleAllowed = canAccessCompanyRoute(companyRole, item.to);
     if (!roleAllowed) return false;
 
-    const required = COMPANY_NAV_PLAN[item.minPlanKey];
+    const required = COMPANY_ROUTE_MIN_PLAN[item.minPlanKey];
     if (!required) return true;
     return hasMinPlan(currentPlan as CompanySubscriptionPlanCode | undefined, required);
   });

@@ -33,7 +33,7 @@ import {
   isTeamMemberNotFoundError,
   isTeamPlanLimitError,
   isTeamWrongAccountKindError,
-} from '@/features/company/teamInviteErrors';
+} from '@/features/companies/teamInviteErrors';
 import {
   TEAM_ROLE_CONFIG,
   groupMembersByRole,

@@ -18,7 +18,7 @@ import { CompanyDetailPage } from '@/pages/public/CompanyDetailPage';
 import { CompanyDashboardPage } from '@/pages/company/CompanyDashboardPage';
 import { CompanyProfilePage } from '@/pages/company/CompanyProfilePage';
 import { CompanyTeamPage } from '@/pages/company/CompanyTeamPage';
-import { CompanyPackagesPage } from '@/pages/company/CompanyPackagesPage';
+import { CompanyServicesPage } from '@/pages/company/CompanyServicesPage';
 import { CompanyCustomersPage } from '@/pages/company/CompanyCustomersPage';
 import { CompanyInterventionsPage } from '@/pages/company/CompanyInterventionsPage';
 import { CompanyCalendarPage } from '@/pages/company/CompanyCalendarPage';
@@ -29,7 +29,6 @@ import { CompanyReviewsPage } from '@/pages/company/CompanyReviewsPage';
 import { CompanyEstimatesPage } from '@/pages/company/CompanyEstimatesPage';
 import { CompanyEstimateWizardPage } from '@/pages/company/CompanyEstimateWizardPage';
 import { EstimateWorkSheetPage } from '@/pages/company/EstimateWorkSheetPage';
-import { CompanyServicesPage } from '@/pages/company/CompanyServicesPage';
 import { CompanyLeadsPage } from '@/pages/company/CompanyLeadsPage';
 import { PortalDashboardPage } from '@/pages/portal/PortalDashboardPage';
 import { PortalLucrariPage } from '@/pages/portal/PortalLucrariPage';
@@ -105,14 +104,6 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'packages',
-        element: (
-          <RequireCompanyRole routePath="/packages">
-            <CompanyPackagesPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
         path: 'clienti',
         element: (
           <RequireCompanyRole routePath="/clienti">
@@ -147,7 +138,7 @@ export const router = createBrowserRouter([
       {
         path: 'lucrari/:id/fisa',
         element: (
-          <RequireCompanyRole routePath="/lucrari">
+          <RequireCompanyRole routePath="/lucrari/fisa">
             <EstimateWorkSheetPage />
           </RequireCompanyRole>
         ),

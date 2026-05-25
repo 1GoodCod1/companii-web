@@ -8,7 +8,9 @@ import {
   isTechnicianRole,
   type CompanyRole,
 } from '@/features/companies/roleAccess';
+import { companyRoleCan } from '@/config/rolePermissions';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
+import type { CompanyPermissionAction } from '@/config/rolePermissions';
 
 export function useCompanyPermissions() {
   const user = useAuthStore((s) => s.user);
@@ -38,19 +40,20 @@ export function useCompanyPermissions() {
     isManagement,
     isTechnician,
     canAccessRoute: (routePath: string) => canAccessCompanyRoute(role, routePath),
-    canManageTeam: isManagement,
-    canInviteManagers: isOwner,
-    canManageSubscription: isOwner,
-    canEditLegalProfile: isLegalOwner,
-    canPublishCompany: isLegalOwner,
-    canListAllMembers: isManagement,
-    canAssignTechnicians: isManagement,
-    canCreateInterventions: isManagement,
-    canDeleteInterventions: isManagement,
-    canGenerateInvoices: isManagement,
-    canEditInterventionDetails: isManagement,
-    canEditAssignedInterventionFields: !!role && !isManagement,
-    canDeleteOwnNotes: !!memberId,
-    canDeleteAnyNote: isManagement,
+    can: (action: CompanyPermissionAction) => companyRoleCan(role, action),
+    canManageTeam: companyRoleCan(role, 'manage_team'),
+    canInviteManagers: companyRoleCan(role, 'invite_manager'),
+    canManageSubscription: companyRoleCan(role, 'manage_subscription'),
+    canEditLegalProfile: isLegalOwner && companyRoleCan(role, 'edit_legal_profile'),
+    canPublishCompany: isLegalOwner && companyRoleCan(role, 'publish_company'),
+    canListAllMembers: companyRoleCan(role, 'manage_team'),
+    canAssignTechnicians: companyRoleCan(role, 'create_interventions'),
+    canCreateInterventions: companyRoleCan(role, 'create_interventions'),
+    canDeleteInterventions: companyRoleCan(role, 'delete_interventions'),
+    canGenerateInvoices: companyRoleCan(role, 'manage_invoices'),
+    canEditInterventionDetails: companyRoleCan(role, 'update_intervention_details'),
+    canEditAssignedInterventionFields: companyRoleCan(role, 'update_assigned_intervention'),
+    canDeleteOwnNotes: companyRoleCan(role, 'delete_own_note') && !!memberId,
+    canDeleteAnyNote: companyRoleCan(role, 'delete_any_note'),
   };
 }

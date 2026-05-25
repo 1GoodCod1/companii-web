@@ -1,4 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Helmet } from 'react-helmet-async';
 import {
   ArrowLeft,
@@ -13,7 +15,9 @@ import {
   Sparkles,
   MessageSquare,
 } from 'lucide-react';
-import { useCompanyBySlugQuery } from '@/features/companies/api/useCompanies';
+import { useCompanyBySlugQuery, useRequestPublicServiceMutation } from '@/features/companies/api/useCompanies';
+import { AppModal } from '@/components/ui/AppModal';
+import { cabinetBtnPrimary, cabinetFieldClass, cabinetLabelClass } from '@/components/cabinet/cabinet-ui';
 import { CompanyLogo } from '@/components/public/CompanyLogo';
 import { CompanyGallery } from '@/components/public/CompanyGallery';
 import { CompanyReviewsSection } from '@/components/reviews/CompanyReviewsSection';
@@ -21,6 +25,37 @@ import { CompanyReviewsSection } from '@/components/reviews/CompanyReviewsSectio
 export function CompanyDetailPage() {
   const { slug = '' } = useParams();
   const { data, isLoading, isError } = useCompanyBySlugQuery(slug);
+  const requestService = useRequestPublicServiceMutation(slug);
+  const [requestModal, setRequestModal] = useState<{ serviceId: string; serviceName: string } | null>(null);
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleRequestSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!requestModal || !customerName.trim() || !customerPhone.trim()) {
+      toast.error('Completați numele și telefonul.');
+      return;
+    }
+    try {
+      await requestService.mutateAsync({
+        serviceId: requestModal.serviceId,
+        customerName: customerName.trim(),
+        customerPhone: customerPhone.trim(),
+        customerEmail: customerEmail.trim() || undefined,
+        message: message.trim() || undefined,
+      });
+      toast.success('Cererea a fost trimisă! Compania vă va contacta.');
+      setRequestModal(null);
+      setCustomerName('');
+      setCustomerPhone('');
+      setCustomerEmail('');
+      setMessage('');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Nu s-a putut trimite cererea.');
+    }
+  };
 
   if (isLoading) {
     return (
@@ -181,37 +216,50 @@ export function CompanyDetailPage() {
               <CompanyGallery images={gallery} />
             </section>
 
-            {/* Service Packages */}
-            {(company.packages?.length ?? 0) > 0 ? (
+            {(company.services?.length ?? 0) > 0 ? (
               <section className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
                 <div className="flex items-center gap-2 mb-6">
                   <Clock className="h-5 w-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
-                    Pachete de servicii
+                    Servicii & prețuri
                   </h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {company.packages?.map((pkg) => (
+                  {company.services?.map((service) => (
                     <article
-                      key={pkg.id}
+                      key={service.id}
                       className="group flex flex-col justify-between rounded-2xl bg-slate-50/70 p-5 border border-slate-100 hover:border-violet-100 hover:bg-white/80 transition-all duration-300 shadow-sm hover:shadow-premium"
                     >
                       <div>
                         <h3 className="font-bold text-slate-900 group-hover:text-violet-700 transition-colors tracking-tight text-wrap:pretty">
-                          {pkg.title}
+                          {service.name}
                         </h3>
-                        <p className="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed text-wrap:pretty">
-                          {pkg.description}
-                        </p>
+                        {service.description ? (
+                          <p className="text-xs text-slate-500 mt-2 line-clamp-3 leading-relaxed text-wrap:pretty">
+                            {service.description}
+                          </p>
+                        ) : null}
                       </div>
-                      <div className="mt-5 pt-4 border-t border-slate-100/80 flex items-center justify-between text-sm">
-                        <span className="font-extrabold text-violet-600 tabular-nums">
-                          {Number(pkg.price).toLocaleString('ro-MD')} {pkg.currency ?? 'MDL'}
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400">
-                          <Clock className="h-3 w-3" />
-                          {pkg.durationMinutes} min
-                        </span>
+                      <div className="mt-5 pt-4 border-t border-slate-100/80 space-y-3">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-extrabold text-violet-600 tabular-nums">
+                            {Number(service.defaultPrice).toLocaleString('ro-MD')}{' '}
+                            {service.currency ?? 'MDL'}
+                          </span>
+                          {service.durationMinutes ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400">
+                              <Clock className="h-3 w-3" />
+                              {service.durationMinutes} min
+                            </span>
+                          ) : null}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setRequestModal({ serviceId: service.id, serviceName: service.name })}
+                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity"
+                        >
+                          Solicită serviciul
+                        </button>
                       </div>
                     </article>
                   ))}
@@ -311,7 +359,7 @@ export function CompanyDetailPage() {
                     Informațiile de contact direct au fost ascunse de către proprietarul companiei.
                   </p>
                   <p className="text-[11px] text-slate-400 leading-normal text-wrap:pretty">
-                    Puteți plasa o cerere directă utilizând pachetele de servicii publicate.
+                    Puteți plasa o cerere directă din catalogul de servicii publicat.
                   </p>
                 </div>
               )}
@@ -319,6 +367,66 @@ export function CompanyDetailPage() {
           </aside>
         </div>
       </div>
+
+      <AppModal
+        open={requestModal !== null}
+        onClose={() => setRequestModal(null)}
+        title={requestModal ? `Solicită: ${requestModal.serviceName}` : 'Solicită serviciul'}
+      >
+        <form onSubmit={handleRequestSubmit} className="space-y-4">
+          <div>
+            <label className={cabinetLabelClass} htmlFor="req-name">
+              Nume *
+            </label>
+            <input
+              id="req-name"
+              className={cabinetFieldClass}
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className={cabinetLabelClass} htmlFor="req-phone">
+              Telefon *
+            </label>
+            <input
+              id="req-phone"
+              className={cabinetFieldClass}
+              value={customerPhone}
+              onChange={(e) => setCustomerPhone(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className={cabinetLabelClass} htmlFor="req-email">
+              Email
+            </label>
+            <input
+              id="req-email"
+              type="email"
+              className={cabinetFieldClass}
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className={cabinetLabelClass} htmlFor="req-msg">
+              Mesaj
+            </label>
+            <textarea
+              id="req-msg"
+              className={cabinetFieldClass}
+              rows={3}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+          </div>
+          <button type="submit" className={cabinetBtnPrimary} disabled={requestService.isPending}>
+            {requestService.isPending ? 'Se trimite…' : 'Trimite cererea'}
+          </button>
+        </form>
+      </AppModal>
     </>
   );
 }

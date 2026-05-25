@@ -9,10 +9,6 @@ export const queryKeys = {
     me: ['companies', 'me'] as const,
     detail: (slug: string) => ['companies', 'detail', slug] as const,
   },
-  packages: {
-    list: (companySlug?: string) => ['packages', 'list', companySlug] as const,
-    me: ['packages', 'me'] as const,
-  },
   subscriptions: {
     me: ['subscriptions', 'me'] as const,
     plans: ['subscriptions', 'plans'] as const,
@@ -26,7 +22,6 @@ export const queryKeys = {
     quote: (id: string) => ['fsm', 'quotes', 'detail', id] as const,
     invoices: ['fsm', 'invoices'] as const,
     invoice: (id: string) => ['fsm', 'invoices', 'detail', id] as const,
-    calendar: (from: string, to: string) => ['fsm', 'calendar', from, to] as const,
     calendarBoard: (from: string, to: string) => ['fsm', 'calendar-board', from, to] as const,
     leads: (status?: string) => ['fsm', 'leads', status] as const,
     lead: (id: string) => ['fsm', 'leads', id] as const,
@@ -41,9 +36,6 @@ export const queryKeys = {
     all: ['reviews'] as const,
     bySlug: (slug: string) => ['reviews', 'slug', slug] as const,
     companyMe: ['reviews', 'company', 'me'] as const,
-    my: ['reviews', 'my'] as const,
-    canCreateIntervention: (interventionId: string) =>
-      ['reviews', 'can-create', 'intervention', interventionId] as const,
   },
   estimates: {
     blueprints: ['estimates', 'blueprints'] as const,
@@ -51,7 +43,6 @@ export const queryKeys = {
     project: (id: string) => ['estimates', 'projects', id] as const,
     worksheetIntervention: (id: string) => ['estimates', 'worksheet', 'intervention', id] as const,
   },
-  waitlist: ['waitlist'] as const,
   admin: {
     stats: ['admin', 'stats'] as const,
     pending: ['admin', 'pending'] as const,

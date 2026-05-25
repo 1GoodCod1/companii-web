@@ -24,7 +24,7 @@ import type { CustomerDto, CustomerTimelineItemDto } from '@/features/fsm/types'
 import {
   buildPortalInviteUrl,
   useCreatePortalInviteMutation,
-} from '@/features/company/api/usePortalInvite';
+} from '@/features/companies/api/usePortalInvite';
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
 import { INTERVENTION_STATUS_LABELS } from '@/features/fsm/statusLabels';
 import { ESTIMATE_STATUS_LABELS, ESTIMATE_STATUS_TONES } from '@/features/estimates/statusLabels';

@@ -53,7 +53,7 @@ export interface AdminCompanyDto {
     customers: number;
     interventions: number;
     reviews: number;
-    packages: number;
+    services: number;
   };
 }
 
@@ -251,7 +251,7 @@ export interface AdminCategoryDto {
   id: string;
   name: string;
   slug: string;
-  _count?: { companies: number; packages: number };
+  _count?: { companies: number; companyServices: number };
 }
 
 export interface AdminClientDto {

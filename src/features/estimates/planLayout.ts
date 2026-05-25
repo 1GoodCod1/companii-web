@@ -32,7 +32,6 @@ export type Plan3dPreview = {
   }>;
 };
 
-const ROOM_PALETTE = ['#e0e7ff', '#dbeafe', '#dcfce7', '#fef3c7', '#fee2e2', '#ffedd5'];
 const ROOM_WALL = ['#6366f1', '#2563eb', '#16a34a', '#d97706', '#dc2626', '#ea580c'];
 
 const CATEGORY_ROOM_TEMPLATES: Record<string, Array<{ name: string; width: number; height: number }>> = {
@@ -190,12 +189,3 @@ export function summarizePlan(plan2d: Plan2dData, config?: EstimateBlueprintConf
     })),
   };
 }
-
-export function isoProject(x: number, z: number, scale: number): { x: number; y: number } {
-  return {
-    x: (x - z) * scale * 0.86,
-    y: (x + z) * scale * 0.5,
-  };
-}
-
-export { ROOM_PALETTE, WALL_HEIGHT_M };

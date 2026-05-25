@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import type { CompanyPlanDto, CompanySubscriptionPlanCode } from '../types';
 import type { PublicAuthCta } from '@/features/auth/usePublicAuthCta';
-import { canActivatePlan, plansForDisplay } from '../planAccess';
+import { canActivatePlan, plansForDisplay } from '@/config/planEntitlements';
 import { planFeatures, planPriceLabel } from '../types';
 
 const PLAN_ACCENTS: Record<

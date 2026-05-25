@@ -35,15 +35,6 @@ export function useCustomersQuery(options?: { enabled?: boolean }): UseQueryResu
   });
 }
 
-export function useCustomerQuery(id: string): UseQueryResult<CustomerDto, Error> {
-  return useQuery<CustomerDto, Error>({
-    queryKey: queryKeys.fsm.customer(id),
-    queryFn: () => apiFetch<CustomerDto>(`${fsm}/customers/${id}`),
-    ...cabinetQueryDefaults,
-    enabled: !!id,
-  });
-}
-
 export function useCreateCustomerMutation() {
   const qc = useQueryClient();
   return useMutation({
@@ -215,20 +206,6 @@ export function useDeleteInterventionNoteMutation(interventionId: string) {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(interventionId) });
     },
-  });
-}
-
-// --- CALENDAR ---
-
-export function useCalendarQuery(
-  from: string,
-  to: string,
-): UseQueryResult<InterventionDto[], Error> {
-  return useQuery<InterventionDto[], Error>({
-    queryKey: queryKeys.fsm.calendar(from, to),
-    queryFn: () => apiFetch<InterventionDto[]>(`${fsm}/calendar?from=${from}&to=${to}`),
-    ...cabinetQueryDefaults,
-    enabled: !!from && !!to,
   });
 }
 
@@ -473,7 +450,17 @@ export function useCompanyServicesQuery(): UseQueryResult<CompanyServiceDto[], E
 export function useCreateCompanyServiceMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: { name: string; defaultPrice: number; materialsCost?: number; vatRate?: number }) =>
+    mutationFn: (body: {
+      name: string;
+      defaultPrice: number;
+      description?: string;
+      categoryId?: string;
+      durationMinutes?: number;
+      isPublished?: boolean;
+      materialsCost?: number;
+      vatRate?: number;
+      sortOrder?: number;
+    }) =>
       apiFetch<CompanyServiceDto>(`${fsm}/services`, { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.fsm.services }),
   });
@@ -489,8 +476,13 @@ export function useUpdateCompanyServiceMutation() {
       id: string;
       name?: string;
       defaultPrice?: number;
+      description?: string;
+      categoryId?: string | null;
+      durationMinutes?: number | null;
+      isPublished?: boolean;
       materialsCost?: number | null;
       vatRate?: number | null;
+      sortOrder?: number;
     }) =>
       apiFetch<CompanyServiceDto>(`${fsm}/services/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
     onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.fsm.services }),

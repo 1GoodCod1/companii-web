@@ -318,8 +318,8 @@ export function CompanyCalendarPage() {
                   <li key={lead.id} className="rounded-2xl bg-white/70 px-4 py-3 space-y-2">
                     <p className="font-semibold text-sm text-gray-900">{lead.contactName}</p>
                     <p className="text-xs text-gray-500">{lead.contactPhone}</p>
-                    {lead.packageTitle ? (
-                      <p className="text-xs font-semibold text-violet-600">{lead.packageTitle}</p>
+                    {lead.serviceTitle ? (
+                      <p className="text-xs font-semibold text-violet-600">{lead.serviceTitle}</p>
                     ) : null}
                     <SoftBadge tone="amber">{lead.status}</SoftBadge>
                     {isManagement ? (

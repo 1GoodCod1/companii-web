@@ -283,8 +283,8 @@ export function CompanyDashboardPage() {
                         {lead.contactPhone}
                         {lead.contactEmail ? ` · ${lead.contactEmail}` : ''}
                       </p>
-                      {lead.packageTitle ? (
-                        <p className="text-xs font-semibold text-violet-600 mt-1">{lead.packageTitle}</p>
+                      {lead.serviceTitle ? (
+                        <p className="text-xs font-semibold text-violet-600 mt-1">{lead.serviceTitle}</p>
                       ) : null}
                       {lead.message ? (
                         <p className="text-xs text-gray-400 mt-1 line-clamp-2">{lead.message}</p>

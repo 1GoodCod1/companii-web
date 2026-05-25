@@ -5,7 +5,6 @@ export const isProductionBuild = import.meta.env.PROD;
 
 const PATHS_BUST_HTTP = new Set([
   '/companies',
-  '/packages',
   '/subscriptions/plans',
 ]);
 

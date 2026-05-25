@@ -123,13 +123,12 @@ export type InterventionPhotoDto = {
 };
 
 export type CompanyLeadStatus = 'NEW' | 'CONTACTED' | 'QUALIFIED' | 'CONVERTED' | 'LOST';
-export type CompanyLeadSource = 'PACKAGE_BOOKING' | 'MANUAL' | 'PHONE' | 'WEBSITE';
+export type CompanyLeadSource = 'SERVICE_REQUEST' | 'MANUAL' | 'PHONE' | 'WEBSITE';
 
 export interface CompanyLeadDto {
   id: string;
   companyId: string;
   customerId?: string | null;
-  bookingId?: string | null;
   contactName: string;
   contactPhone: string;
   contactEmail?: string | null;
@@ -138,7 +137,7 @@ export interface CompanyLeadDto {
   status: CompanyLeadStatus;
   source: CompanyLeadSource;
   categoryId?: string | null;
-  packageTitle?: string | null;
+  serviceTitle?: string | null;
   scheduledAt?: string | null;
   notes?: string | null;
   convertedAt?: string | null;
@@ -151,10 +150,18 @@ export interface CompanyServiceDto {
   id: string;
   companyId: string;
   name: string;
+  description?: string;
   defaultPrice: number;
+  currency?: string;
+  durationMinutes?: number | null;
+  categoryId?: string | null;
+  category?: { id: string; name: string; slug?: string } | null;
   materialsCost?: number | null;
   vatRate?: number | null;
+  isPublished?: boolean;
+  sortOrder?: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface CustomerTimelineItemDto {
@@ -207,7 +214,6 @@ export interface QuoteDto {
 export interface InvoiceDto {
   id: string;
   companyId: string;
-  bookingId?: string | null;
   interventionId?: string | null;
   number: string;
   amount: number;

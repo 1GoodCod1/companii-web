@@ -54,7 +54,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
       },
       {
         q: 'Ce diferență este între planurile Free, Pro și Business?',
-        a: 'Free acoperă profilul și funcțiile de bază. Pro deblochează clienți, lucrări și calendar. Business adaugă oferte, facturi și funcții avansate de business. Planul activ se vede în cabinet → Abonament.',
+        a: 'Free include profil public, catalog servicii, lucrări (până la 20/lună), calendar și 1 tehnician. Pro adaugă CRM clienți, cereri (leads), portal clienți, catalog intern de servicii și fișă de execuție pe teren (până la 10 tehnicieni, 150 lucrări/lună). Business adaugă smete inteligente, oferte, facturi TVA și export — fără limite de tehnicieni sau lucrări.',
       },
       {
         q: 'Pot invita colegi în echipă?',

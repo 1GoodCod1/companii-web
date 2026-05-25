@@ -86,7 +86,7 @@ export function CompanyLeadsPage() {
   const openEstimateConvert = (lead: CompanyLeadDto) => {
     setEstimateLead(lead);
     setCategoryId(lead.categoryId ?? lead.category?.id ?? categories?.[0]?.id ?? '');
-    setEstimateTitle(lead.packageTitle ?? `Smetă ${lead.contactName}`);
+    setEstimateTitle(lead.serviceTitle ?? `Smetă ${lead.contactName}`);
   };
 
   const handleConvertEstimate = async (e: React.FormEvent) => {
@@ -159,8 +159,8 @@ export function CompanyLeadsPage() {
                         {lead.contactPhone}
                         {lead.contactEmail ? ` · ${lead.contactEmail}` : ''}
                       </p>
-                      {lead.packageTitle ? (
-                        <p className="text-xs font-semibold text-violet-600">{lead.packageTitle}</p>
+                      {lead.serviceTitle ? (
+                        <p className="text-xs font-semibold text-violet-600">{lead.serviceTitle}</p>
                       ) : null}
                       {lead.message ? <p className="text-xs text-gray-400">{lead.message}</p> : null}
                       <p className="text-[10px] text-gray-400">

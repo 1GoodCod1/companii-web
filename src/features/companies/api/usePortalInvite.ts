@@ -27,10 +27,3 @@ export function buildPortalInviteUrl(token: string): string {
   if (typeof window === 'undefined') return `/portal/invite?token=${encodeURIComponent(token)}`;
   return `${window.location.origin}/portal/invite?token=${encodeURIComponent(token)}`;
 }
-
-export function buildPortalRegisterUrl(token: string): string {
-  if (typeof window === 'undefined') {
-    return `/register?invite=${encodeURIComponent(token)}&kind=END_CLIENT`;
-  }
-  return `${window.location.origin}/register?invite=${encodeURIComponent(token)}&kind=END_CLIENT`;
-}

@@ -148,11 +148,6 @@ export function useAcceptTeamInvitationMutation() {
   });
 }
 
-/** @deprecated Use useCreateTeamInviteLinkMutation */
-export function useInviteMemberMutation() {
-  return useCreateTeamInviteLinkMutation();
-}
-
 export function useCitiesQuery(): UseQueryResult<CatalogOptionDto[], Error> {
   return useQuery<CatalogOptionDto[], Error>({
     queryKey: ['companies', 'cities'] as const,
@@ -364,6 +359,27 @@ export function useLeaveCompanyMutation() {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: ['companies', 'members'] });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+    },
+  });
+}
+
+export function useRequestPublicServiceMutation(companySlug: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      serviceId: string;
+      customerName: string;
+      customerPhone: string;
+      customerEmail?: string;
+      message?: string;
+      scheduledAt?: string;
+    }) =>
+      apiFetch<{ leadId: string }>(`/companies/${companySlug}/services/${body.serviceId}/request`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.detail(companySlug) });
     },
   });
 }

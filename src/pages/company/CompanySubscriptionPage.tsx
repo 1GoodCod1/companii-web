@@ -101,6 +101,28 @@ export function CompanySubscriptionPage() {
             Valabil până la:{' '}
             <strong className="text-gray-700">{formatDate(subscription.currentPeriodEnd)}</strong>
           </p>
+          {subscription.usage ? (
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 text-xs">
+              <div className="rounded-xl bg-gray-50 border border-gray-100 px-4 py-3">
+                <p className="text-gray-400 font-semibold uppercase tracking-wider">Tehnicieni</p>
+                <p className="text-lg font-black text-gray-900 mt-1">
+                  {subscription.usage.activeTechnicians + subscription.usage.pendingTechnicianInvites}
+                  {subscription.usage.maxTechnicians != null
+                    ? ` / ${subscription.usage.maxTechnicians}`
+                    : ' · nelimitat'}
+                </p>
+              </div>
+              <div className="rounded-xl bg-gray-50 border border-gray-100 px-4 py-3">
+                <p className="text-gray-400 font-semibold uppercase tracking-wider">Lucrări luna aceasta</p>
+                <p className="text-lg font-black text-gray-900 mt-1">
+                  {subscription.usage.interventionsThisMonth}
+                  {subscription.usage.maxInterventionsPerMonth != null
+                    ? ` / ${subscription.usage.maxInterventionsPerMonth}`
+                    : ' · nelimitat'}
+                </p>
+              </div>
+            </div>
+          ) : null}
           {onFreePlan ? (
             <p className="text-xs text-violet-700 font-medium mt-3 bg-violet-50 rounded-xl px-4 py-3">
               Sunteți pe planul Free — activați Pro sau Business gratuit pentru 30 de zile.
