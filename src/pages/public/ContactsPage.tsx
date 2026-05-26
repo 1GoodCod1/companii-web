@@ -54,7 +54,7 @@ export function ContactsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {/* Contact Info */}
-        <div className="bg-white/80 backdrop-blur-md p-6 rounded-3xl border border-gray-100 shadow-premium space-y-6">
+        <div className="p-6 rounded-3xl border border-gray-100 glass-panel space-y-6">
           <h2 className="text-lg font-black text-gray-900 tracking-tight border-b border-gray-100 pb-3 uppercase tracking-wider text-xs text-gray-400">
             {t('contacts.infoTitle')}
           </h2>
@@ -91,7 +91,7 @@ export function ContactsPage() {
         </div>
 
         {/* Contact Form */}
-        <form onSubmit={handleSubmit} className="bg-white/80 backdrop-blur-md p-6 rounded-3xl border border-gray-100 shadow-premium space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 rounded-3xl border border-gray-100 glass-panel space-y-4">
           <h2 className="text-lg font-black text-gray-900 tracking-tight border-b border-gray-100 pb-3 uppercase tracking-wider text-xs text-gray-400">
             {t('contacts.formTitle')}
           </h2>

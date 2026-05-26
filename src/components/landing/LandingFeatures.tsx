@@ -55,9 +55,9 @@ export function LandingFeatures() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ delay: index * 0.08, duration: 0.5 }}
-                className="group rounded-3xl glass-panel p-6 shadow-premium hover:-translate-y-1 transition-transform duration-300"
+                className="rounded-3xl glass-panel p-6"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 text-violet-600 mb-4 group-hover:scale-110 transition-transform">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 text-violet-600 mb-4">
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">{feature.title}</h3>

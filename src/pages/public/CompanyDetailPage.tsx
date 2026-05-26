@@ -199,13 +199,13 @@ export function CompanyDetailPage() {
   if (isError || !data) {
     return (
       <div className="max-w-2xl mx-auto my-12 text-center">
-        <div className="glass-panel rounded-3xl p-12 border-red-100 shadow-premium">
+        <div className="glass-panel rounded-3xl p-12 border-red-100">
           <p className="text-base font-semibold text-red-600 mb-6">
             {t('companyDetail.notFound')}
           </p>
           <Link
             to={lp('/companies')}
-            className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-bold text-white shadow-premium hover:opacity-95 transition-all"
+            className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-bold text-white hover:opacity-95 transition-all"
           >
             {t('companyDetail.backToCatalog')}
           </Link>
@@ -240,7 +240,7 @@ export function CompanyDetailPage() {
         </Link>
 
         {/* Premium Unified Hero Card */}
-        <div className="relative rounded-[32px] overflow-hidden border border-slate-200/60 bg-white shadow-premium transition-all duration-300 hover:shadow-xl">
+        <div className="relative rounded-[32px] overflow-hidden border border-slate-200/60 bg-white glass-panel">
           {/* Deep corporate backdrop */}
           <div className="absolute top-0 inset-x-0 h-44 sm:h-52" style={{
             background: 'linear-gradient(135deg, #1e293b 0%, #334155 40%, #1e3a5f 70%, #0f172a 100%)'
@@ -332,7 +332,7 @@ export function CompanyDetailPage() {
           <div className="space-y-8 min-w-0">
             {/* Description Block */}
             {company.description ? (
-              <section className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
+              <section className="glass-panel rounded-[28px] p-6 sm:p-8  border border-white/40">
                 <div className="flex items-center gap-2 mb-4">
                   <Sparkles className="h-5 w-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
@@ -346,7 +346,7 @@ export function CompanyDetailPage() {
             ) : null}
 
             {/* Photo Gallery Frame (gallery remains unmodified, but wrapper is premium) */}
-            <section className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
+            <section className="glass-panel rounded-[28px] p-6 sm:p-8  border border-white/40">
               <div className="mb-6">
                 <h2 className="text-lg font-black text-slate-900 tracking-tight">
                   {t('companyDetail.galleryTitle')}
@@ -359,7 +359,7 @@ export function CompanyDetailPage() {
             </section>
 
             {(company.services?.length ?? 0) > 0 ? (
-              <section className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
+              <section className="glass-panel rounded-[28px] p-6 sm:p-8  border border-white/40">
                 <div className="flex items-center gap-2 mb-2">
                   <Clock className="h-5 w-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
@@ -385,7 +385,7 @@ export function CompanyDetailPage() {
                     return (
                     <article
                       key={service.id}
-                      className="group relative flex flex-col justify-between rounded-3xl bg-white border border-slate-100 hover:border-violet-200/80 transition-all duration-300 shadow-[0_4px_20px_-4px_rgba(99,102,241,0.04)] hover:shadow-[0_12px_30px_-6px_rgba(99,102,241,0.08)] hover:-translate-y-1 p-6"
+                      className="group relative flex flex-col justify-between rounded-3xl bg-white border border-slate-100 hover:border-violet-200/80 shadow-[0_4px_20px_-4px_rgba(99,102,241,0.04)] p-6"
                     >
                       {/* Premium Top Glow Bar on Hover */}
                       <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-500 rounded-t-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -450,7 +450,7 @@ export function CompanyDetailPage() {
             ) : null}
 
             {showRequestActions ? (
-              <section className="relative rounded-[32px] overflow-hidden border border-violet-100/60 bg-gradient-to-br from-violet-50/50 via-indigo-50/20 to-white p-6 sm:p-8 shadow-premium transition-all duration-300 hover:shadow-xl">
+              <section className="relative rounded-[32px] overflow-hidden border border-violet-100/60 bg-gradient-to-br from-violet-50/50 via-indigo-50/20 to-white p-6 sm:p-8 glass-panel">
                 {/* Visual Glow Decorators */}
                 <div className="absolute -right-20 -bottom-20 w-64 h-64 rounded-full bg-violet-600/5 blur-3xl pointer-events-none" />
                 <div className="absolute top-0 left-0 w-48 h-48 rounded-full bg-indigo-500/5 blur-2xl pointer-events-none" />
@@ -493,7 +493,7 @@ export function CompanyDetailPage() {
           {/* Sticky Sidebar Column */}
           <aside className="space-y-6 lg:sticky lg:top-8">
             {/* Structural metrics & Quick Info Widget */}
-            <div className="glass-panel rounded-[28px] p-6 shadow-premium border border-white/40 space-y-6">
+            <div className="glass-panel rounded-[28px] p-6  border border-white/40 space-y-6">
               <div className="flex items-center gap-2 pb-4 border-b border-slate-100">
                 <ShieldCheck className="h-5 w-5 text-emerald-600" />
                 <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">
@@ -530,7 +530,7 @@ export function CompanyDetailPage() {
             </div>
 
             {/* Public Contact Widget */}
-            <div className="glass-panel rounded-[28px] p-6 shadow-premium border border-white/40 space-y-5">
+            <div className="glass-panel rounded-[28px] p-6  border border-white/40 space-y-5">
               <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
                 <MessageSquare className="h-5 w-5 text-violet-600" />
                 <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">
@@ -543,7 +543,7 @@ export function CompanyDetailPage() {
                   {company.contactPhone ? (
                     <a
                       href={`tel:${company.contactPhone.replace(/\s/g, '')}`}
-                      className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:opacity-95 text-white font-extrabold text-sm shadow-premium transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+                      className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:opacity-95 text-white font-extrabold text-sm"
                     >
                       <Phone className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110" />
                       {t('companyDetail.callCompany')}
@@ -553,7 +553,7 @@ export function CompanyDetailPage() {
                   {company.contactEmail ? (
                     <a
                       href={`mailto:${company.contactEmail}`}
-                      className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-sm transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+                      className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-sm"
                     >
                       <Mail className="h-4 w-4 shrink-0 text-slate-400 group-hover:text-violet-600 transition-colors" />
                       {t('companyDetail.sendEmail')}

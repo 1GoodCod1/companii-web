@@ -120,7 +120,7 @@ export function SubscriptionsPage() {
           </div>
         )}
 
-        <section className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl p-8 shadow-premium text-center space-y-3">
+        <section className="border border-gray-100 rounded-3xl p-8 glass-panel text-center space-y-3">
           <h2 className="text-lg font-black text-gray-900 tracking-tight">
             {t('subscriptions.customPlan.title')}
           </h2>

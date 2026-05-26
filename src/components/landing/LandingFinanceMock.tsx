@@ -124,7 +124,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
       <motion.div
         animate={{ y: [0, -6, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute -right-3 top-12 hidden lg:block rounded-2xl bg-white/95 backdrop-blur-md px-4 py-3 shadow-premium border border-emerald-100/60"
+        className="absolute -right-3 top-12 hidden lg:block rounded-2xl px-4 py-3 glass-panel border border-emerald-100/60"
       >
         <p className="text-[10px] text-gray-400">{t('landingMocks.finance.vatBadge')}</p>
         <p className="text-sm font-bold text-gray-800">{t('landingMocks.finance.vatValue')}</p>

@@ -26,7 +26,7 @@ export function CookieConsentBanner() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[100] p-4 sm:p-6 pointer-events-none">
-      <div className="pointer-events-auto mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white/95 backdrop-blur-md shadow-2xl p-4 sm:p-5">
+      <div className="pointer-events-auto mx-auto max-w-3xl rounded-2xl border border-gray-200 shadow-2xl p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1 space-y-1">
             <p className="text-sm font-bold text-gray-900">{t('cookieConsent.title')}</p>

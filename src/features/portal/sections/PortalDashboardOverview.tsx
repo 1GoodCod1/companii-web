@@ -67,7 +67,7 @@ export function PortalDashboardOverview({ data }: { data: PortalDashboardDto }) 
         <Link
           key={card.to + card.label}
           to={card.to}
-          className={`block rounded-3xl bg-gradient-to-br ${card.tone} p-5 shadow-premium hover:-translate-y-0.5 transition-transform`}
+          className={`block rounded-3xl bg-gradient-to-br ${card.tone} p-5 glass-panel`}
         >
           <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{card.label}</p>
           <p className="mt-3 text-3xl font-black text-gray-900">{card.value}</p>

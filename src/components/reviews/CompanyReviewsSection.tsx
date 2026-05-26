@@ -15,7 +15,7 @@ export function CompanyReviewsSection({ slug, rating, totalReviews }: CompanyRev
   const reviews = data?.items ?? [];
 
   return (
-    <section className="glass-panel rounded-3xl p-6 sm:p-8 shadow-premium space-y-5">
+    <section className="glass-panel rounded-3xl p-6 sm:p-8 space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold text-gray-900">{t('companyDetail.reviews.title')}</h2>

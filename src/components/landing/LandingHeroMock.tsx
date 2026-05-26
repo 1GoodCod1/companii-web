@@ -116,7 +116,7 @@ export function LandingHeroMock() {
         initial={{ opacity: 0, x: -12 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.7, duration: 0.5 }}
-        className="absolute -left-2 sm:-left-6 top-1/2 -translate-y-1/2 hidden md:block rounded-xl bg-white px-3 py-2.5 shadow-premium border border-emerald-100/80"
+        className="absolute -left-2 sm:-left-6 top-1/2 -translate-y-1/2 hidden md:block rounded-xl bg-white px-3 py-2.5 glass-panel border border-emerald-100/80"
       >
         <p className="text-[10px] text-gray-400">{t('landingMocks.hero.statusUpdated')}</p>
         <p className="text-xs font-bold text-emerald-600">{t('landingMocks.hero.statusExample')}</p>

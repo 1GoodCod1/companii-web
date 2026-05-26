@@ -4,7 +4,7 @@ export const companiiRu = {
     register: 'Регистрация',
     companies: 'Компании',
     language: 'Язык',
-    howItWorks: 'Как это работает',
+    howItWorks: 'Гид',
     subscriptions: 'Подписки',
     contacts: 'Контакты',
     faq: 'FAQ',
@@ -68,6 +68,11 @@ export const companiiRu = {
       accountActivated: 'Аккаунт успешно активирован!',
       hasAccount: 'Уже есть аккаунт?',
       emailPlaceholder: 'exemplu@email.md',
+      companyPhoneHint:
+        'Необязательно. Номер должен быть уникальным — если он уже используется, очистите поле или войдите в существующий аккаунт.',
+      phoneTakenFieldHint:
+        'Номер уже занят другим аккаунтом. Очистите поле «Телефон» и отправьте форму снова — email менять не нужно.',
+      phoneTakenLoginHint: 'Войти с этим номером →',
     },
     cabinetCta: {
       endClient: 'Клиентский портал',
@@ -80,6 +85,10 @@ export const companiiRu = {
     },
     errors: {
       emailTaken: 'Этот email уже зарегистрирован. Войдите или используйте другой email.',
+      phoneTaken:
+        'Этот номер телефона уже привязан к другому аккаунту — проблема не в email.',
+      registrationConflict:
+        'Не удалось завершить регистрацию. Если аккаунт уже есть — войдите.',
       invalidCredentials: 'Неверный email/телефон или пароль.',
       tooManyAttempts: 'Слишком много попыток. Попробуйте снова через несколько минут.',
       authFailed: 'Ошибка при аутентификации.',

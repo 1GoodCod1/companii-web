@@ -112,7 +112,7 @@ export function CabinetProfileCard({
         <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
           {t('nav.language', 'Limbă')}
         </span>
-        <LanguageSwitcher compact />
+        <LanguageSwitcher />
       </div>
 
       {/* Change Password Trigger Button */}

@@ -33,7 +33,7 @@ export function PlanWorkItemsPanel({
   };
 
   return (
-    <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-premium space-y-5">
+    <div className="rounded-3xl border border-slate-100 bg-white p-6 glass-panel space-y-5">
       <div>
         <h3 className="font-extrabold text-slate-900 text-sm uppercase tracking-wider">
           {t('company.estimateWizard.workItems.title')}

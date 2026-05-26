@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, PlayCircle } from 'lucide-react';
 import { SEOHead } from '@/components/seo/SEOHead';
@@ -11,6 +11,7 @@ import { LandingFinanceMock } from '@/components/landing/LandingFinanceMock';
 import { LandingTimeline } from '@/components/landing/LandingTimeline';
 import { LandingFeatures } from '@/components/landing/LandingFeatures';
 import { LandingCta } from '@/components/landing/LandingCta';
+import { FaberSplashScreen } from '@/components/brand/FaberSplashScreen';
 
 export function LandingPage() {
   const { t } = useTranslation();
@@ -24,6 +25,13 @@ export function LandingPage() {
   const dashboardY = useTransform(scrollYProgress, [0, 1], [0, 40]);
   const dashboardOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.5]);
 
+  const [showSplash, setShowSplash] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !sessionStorage.getItem('faber_splash_played');
+    }
+    return true;
+  });
+
   const stats = t('landing.stats', { returnObjects: true }) as Array<{
     value: string;
     label: string;
@@ -31,6 +39,9 @@ export function LandingPage() {
 
   return (
     <>
+      {showSplash && (
+        <FaberSplashScreen onComplete={() => setShowSplash(false)} />
+      )}
       <SEOHead
         title={t('landing.seo.title')}
         description={t('landing.seo.description')}
@@ -85,7 +96,7 @@ export function LandingPage() {
               <div className="mt-10 flex flex-wrap gap-4">
                 <Link
                   to={primaryCta.to}
-                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-500/25 hover:from-violet-700 hover:to-indigo-700 transition-all hover:shadow-xl hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-500/25 hover:from-violet-700 hover:to-indigo-700 transition-colors"
                 >
                   {primaryCta.label}
                   <ArrowRight className="h-4 w-4" />

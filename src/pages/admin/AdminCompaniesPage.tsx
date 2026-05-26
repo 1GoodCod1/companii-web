@@ -56,7 +56,7 @@ export function AdminCompaniesPage() {
       {isLoading ? (
         <p className="text-sm text-gray-400">{t('admin.companiesPage.loading')}</p>
       ) : (
-        <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl shadow-premium overflow-hidden">
+        <div className="border border-gray-100 rounded-3xl glass-panel overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-gray-50/80 text-[10px] font-black uppercase tracking-widest text-gray-400">

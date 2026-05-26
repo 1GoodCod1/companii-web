@@ -28,7 +28,7 @@ export function PlanGlobalParameters({
   const ns = 'company.estimateWizard.planEditor.globalParams';
 
   return (
-    <div className="rounded-3xl border border-indigo-100/80 bg-gradient-to-br from-white via-slate-50/50 to-indigo-50/30 p-6 shadow-premium space-y-6 relative overflow-hidden">
+    <div className="rounded-3xl border border-indigo-100/80 bg-gradient-to-br from-white via-slate-50/50 to-indigo-50/30 p-6 glass-panel space-y-6 relative overflow-hidden">
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
       <div className="flex items-center justify-between border-b border-indigo-100/50 pb-3 relative z-10">

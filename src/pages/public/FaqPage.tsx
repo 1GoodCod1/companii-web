@@ -69,7 +69,7 @@ export function FaqPage() {
                   return (
                     <div
                       key={key}
-                      className="bg-white/80 backdrop-blur-md rounded-2xl border border-gray-100 shadow-premium overflow-hidden transition-all duration-300"
+                      className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
                     >
                       <button
                         type="button"

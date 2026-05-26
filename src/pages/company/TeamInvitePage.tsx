@@ -70,7 +70,7 @@ export function TeamInvitePage() {
 
   return (
     <div className="max-w-lg mx-auto py-20 px-4 animate-fade-in">
-      <div className="bg-white/80 backdrop-blur-md border border-gray-100 p-8 rounded-3xl shadow-premium space-y-5">
+      <div className="border border-gray-100 p-8 rounded-3xl glass-panel space-y-5">
         <span className="inline-block text-[10px] font-bold uppercase tracking-[0.2em] text-violet-700 bg-violet-50 px-3 py-1.5 rounded-full border border-violet-100">
           {t('company.teamInvitePage.eyebrow')}
         </span>

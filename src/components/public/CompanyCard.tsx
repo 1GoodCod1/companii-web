@@ -84,7 +84,7 @@ export function CompanyCard({ company }: { company: PublicCompanyListItemDto }) 
   return (
     <Link
       to={lp(`/companies/${company.slug}`)}
-      className="group flex h-full flex-col overflow-hidden rounded-3xl glass-panel shadow-premium hover:-translate-y-1 transition-all duration-300"
+      className="group flex h-full flex-col overflow-hidden rounded-3xl glass-panel"
     >
       <CardCover
         company={company}

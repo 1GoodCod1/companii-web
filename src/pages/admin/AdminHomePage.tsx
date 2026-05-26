@@ -30,7 +30,7 @@ export function AdminHomePage() {
         {statCards.map((card) => (
           <div
             key={card.label}
-            className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl p-5 shadow-premium"
+            className="border border-gray-100 rounded-3xl p-5 glass-panel"
           >
             <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
               {card.label}
@@ -42,7 +42,7 @@ export function AdminHomePage() {
         ))}
       </div>
 
-      <section className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl shadow-premium overflow-hidden">
+      <section className="border border-gray-100 rounded-3xl glass-panel overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100">
           <h2 className="text-xs font-black uppercase tracking-widest text-amber-700">
             {t('admin.homePage.pendingTitle')}

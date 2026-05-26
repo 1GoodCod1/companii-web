@@ -45,6 +45,7 @@ export default defineConfig(({ mode }) => {
     loadedEnv.VITE_PRECOMPRESS !== 'false' &&
     mode !== 'development' &&
     mode !== 'analyze';
+  const usePolling = loadedEnv.VITE_USE_POLLING === 'true';
 
   return {
     plugins: [
@@ -83,9 +84,16 @@ export default defineConfig(({ mode }) => {
       port: 5174,
       host: '0.0.0.0',
       watch: {
-        usePolling: loadedEnv.VITE_USE_POLLING === 'true',
-        interval: loadedEnv.VITE_USE_POLLING === 'true' ? 300 : undefined,
+        usePolling,
+        interval: usePolling ? 300 : undefined,
       },
+      hmr: usePolling
+        ? {
+            host: 'localhost',
+            port: 5174,
+            clientPort: 5174,
+          }
+        : undefined,
       proxy: {
         '/api': {
           target: apiProxyTarget,

@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Globe } from 'lucide-react';
 import { setLanguage, type AppLanguage } from '@/i18n';
 import {
   isPublicPathLocalizable,
@@ -11,10 +10,9 @@ import { cn } from '@/lib/utils';
 
 type Props = {
   className?: string;
-  compact?: boolean;
 };
 
-export function LanguageSwitcher({ className, compact = false }: Props) {
+export function LanguageSwitcher({ className }: Props) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,10 +26,12 @@ export function LanguageSwitcher({ className, compact = false }: Props) {
   };
 
   return (
-    <div className={cn('inline-flex items-center gap-1', className)}>
-      {!compact && (
-        <Globe className="h-3.5 w-3.5 text-gray-400 shrink-0" aria-hidden />
+    <div
+      className={cn(
+        'inline-flex h-8 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50/80 p-0.5 shrink-0',
+        className,
       )}
+    >
       {(['ro', 'ru'] as const).map((lang) => (
         <button
           key={lang}
@@ -39,10 +39,10 @@ export function LanguageSwitcher({ className, compact = false }: Props) {
           onClick={() => handleChange(lang)}
           aria-label={`${t('nav.language')}: ${lang === 'ro' ? 'Română' : 'Русский'}`}
           className={cn(
-            'px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors',
+            'min-w-[1.75rem] rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide transition-colors',
             i18n.language === lang
-              ? 'bg-violet-100 text-violet-700'
-              : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100',
+              ? 'bg-white text-violet-700 shadow-xs'
+              : 'text-gray-500 hover:text-gray-800',
           )}
         >
           {lang}

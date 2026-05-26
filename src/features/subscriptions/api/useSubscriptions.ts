@@ -4,6 +4,7 @@ import { cabinetQueryDefaults, publicPlansQueryOptions } from '@/api/queryPolici
 import { queryKeys } from '@/api/queryKeys';
 import { useAuthStore } from '@/stores/authStore';
 import { useCompanyContextStore } from '@/stores/companyContextStore';
+import { refreshAuthSession } from '@/features/auth/api/useAuth';
 import type { ClaimableSubscriptionPlanCode, CompanyPlanDto, CompanySubscriptionDto, CompanySubscriptionPlanCode } from '@/types/subscriptions';
 
 export function useSubscriptionPlansQuery(): UseQueryResult<CompanyPlanDto[], Error> {
@@ -34,7 +35,10 @@ export function useClaimFreePlanMutation() {
         method: 'POST',
         body: JSON.stringify({ planCode }),
       }),
-    onSuccess: () => {
+    onSuccess: async () => {
+      await refreshAuthSession();
+      void qc.invalidateQueries({ queryKey: queryKeys.auth.me });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: queryKeys.subscriptions.me });
       void qc.invalidateQueries({ queryKey: queryKeys.subscriptions.plans });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.customers });

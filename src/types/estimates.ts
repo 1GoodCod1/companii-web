@@ -29,8 +29,8 @@ export type Plan2dRoom = {
   unit?: string;
   shapeType?: RoomShapeType;
   roofType?: RoofType;
-  roofPitch?: number; 
-  connectedRoomIds?: string[]; 
+  roofPitch?: number;
+  connectedRoomIds?: string[];
 };
 
 export type Plan2dPoint = {
@@ -136,7 +136,7 @@ export type EstimateProjectDto = EstimateProjectListDto & {
 };
 
 export type WorkSheetDto = {
-    intervention?: {
+  intervention?: {
     id: string;
     number: string;
     type: string;

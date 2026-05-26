@@ -44,7 +44,7 @@ export function InterventionCard({
   const ns = 'company.fsm.calendar.interventionCard';
 
   return (
-    <article className={cn(cabinetPanelClass, 'p-4 space-y-3 hover:shadow-md transition-shadow')}>
+    <article className={cn(cabinetPanelClass, 'p-4 space-y-3')}>
       <div className="flex justify-between items-start gap-2">
         <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">{item.number}</span>
         <SoftBadge tone={statusTone(item.status)}>{item.status}</SoftBadge>

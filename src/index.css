@@ -8,6 +8,7 @@
   --bg-base: #f9fafb;
   --text-base: #111827;
   --focus-ring: oklch(0.62 0.19 285);
+  --public-header-height: 3.75rem;
 }
 
 /* Custom Selection Highlight */
@@ -169,32 +170,45 @@ select:focus-visible {
   background: rgba(99, 102, 241, 0.3);
 }
 
-/* Premium layered shadow tokens for cards and panels */
-.shadow-premium {
-  box-shadow: 
-    0 1px 2px rgba(0, 0, 0, 0.03),
-    0 4px 12px rgba(99, 102, 241, 0.03),
-    0 12px 32px rgba(99, 102, 241, 0.04);
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+/* Opaque public navbar — content must never show through on scroll */
+.public-site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid rgb(243 244 246);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  isolation: isolate;
 }
 
-.shadow-premium:hover {
-  transform: translateY(-3px);
-  box-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.04),
-    0 12px 28px rgba(99, 102, 241, 0.06),
-    0 24px 50px rgba(99, 102, 241, 0.08);
+/* Static panel surfaces — no hover lift, shadow shift, or backdrop blur changes */
+.glass-panel,
+.shadow-premium,
+.glass-panel:hover,
+.shadow-premium:hover,
+.glass-panel.shadow-premium,
+.glass-panel.shadow-premium:hover {
+  transform: none !important;
+  transition: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
-/* Glassmorphism panel styling */
-.glass-panel {
-  background-color: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(99, 102, 241, 0.06);
-  box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.03),
-    0 8px 24px rgba(99, 102, 241, 0.04);
+.glass-panel:not([class*='bg-gradient']),
+.shadow-premium:not([class*='bg-gradient']) {
+  background-color: #fff !important;
+  border: 1px solid rgba(99, 102, 241, 0.08);
+}
+
+/* Block Tailwind hover shadow utilities on panel surfaces (not buttons/links) */
+:where(div, section, article, aside, form, main, header, footer):is(.shadow-premium, .glass-panel):hover {
+  --tw-shadow: 0 0 #0000 !important;
+  --tw-shadow-color: initial !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  box-shadow: none !important;
 }
 
 /* Soft Edge Content Fade-out mask (from Google UX guides) */
@@ -256,7 +270,7 @@ body.modal-open {
 }
 
 .landing-dashboard-3d:hover {
-  transform: rotateX(8deg) rotateY(-6deg) rotateZ(0deg) translateY(-6px);
+  transform: rotateX(8deg) rotateY(-6deg) rotateZ(0deg);
 }
 
 @keyframes landing-float {

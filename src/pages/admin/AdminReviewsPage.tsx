@@ -28,7 +28,7 @@ export function AdminReviewsPage() {
       {isLoading ? (
         <p className="text-sm text-gray-400">{t('admin.reviewsPage.loading')}</p>
       ) : (
-        <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl shadow-premium overflow-hidden">
+        <div className="border border-gray-100 rounded-3xl glass-panel overflow-hidden">
           {!reviews?.length ? (
             <p className="p-6 text-sm text-gray-500">{t('admin.reviewsPage.empty')}</p>
           ) : (

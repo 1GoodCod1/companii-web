@@ -81,7 +81,7 @@ export function LandingTimeline() {
                     <Icon className="h-6 w-6" />
                   </div>
 
-                  <div className="rounded-3xl glass-panel p-6 sm:p-7 shadow-premium hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)] transition-shadow">
+                  <div className="rounded-3xl glass-panel p-6 sm:p-7">
                     <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3 md:hidden">
                         <div

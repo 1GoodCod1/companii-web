@@ -63,7 +63,7 @@ export function CompaniesListPage() {
       />
 
       <div className="space-y-8 animate-fade-in pb-8">
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-violet-50/40 to-indigo-50/30 p-6 sm:p-8 shadow-premium">
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-violet-50/40 to-indigo-50/30 p-6 sm:p-8 glass-panel">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-violet-400/10 blur-3xl" />
           <div className="relative max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-600 mb-2">
@@ -74,7 +74,7 @@ export function CompaniesListPage() {
           </div>
         </section>
 
-        <section className="glass-panel rounded-3xl p-4 sm:p-5 shadow-premium">
+        <section className="glass-panel rounded-3xl p-4 sm:p-5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="relative md:col-span-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />

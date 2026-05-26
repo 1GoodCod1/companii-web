@@ -71,7 +71,7 @@ export function PlanCards({
           <article
             key={plan.id}
             className={cn(
-              'relative bg-white/80 backdrop-blur-md rounded-3xl border p-6 shadow-premium flex flex-col',
+              'relative rounded-3xl border p-6 glass-panel flex flex-col',
               accent.ring,
               isCurrent && 'ring-2 ring-emerald-200 border-emerald-200',
             )}
@@ -110,7 +110,7 @@ export function PlanCards({
             </div>
 
             <ul className="space-y-2.5 flex-1 mb-6">
-              {planFeatures(plan).map((feature) => (
+              {planFeatures(plan, t).map((feature) => (
                 <li key={feature} className="flex items-start gap-2 text-xs font-medium text-gray-600">
                   <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
                   <span>{feature}</span>

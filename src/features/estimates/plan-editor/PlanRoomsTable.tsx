@@ -25,7 +25,7 @@ export function PlanRoomsTable({
   const ns = 'company.estimateWizard.planEditor.roomsTable';
 
   return (
-    <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-premium space-y-4">
+    <div className="rounded-3xl border border-slate-100 bg-white p-6 glass-panel space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
         <div>
           <h3 className="font-extrabold text-slate-900 text-sm uppercase tracking-wider">

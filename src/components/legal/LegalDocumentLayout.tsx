@@ -56,7 +56,7 @@ export function LegalDocumentLayout({
       {toc && toc.length > 0 ? (
         <nav
           aria-label={tocAriaLabel}
-          className="legal-toc rounded-2xl border border-gray-100 bg-white/70 backdrop-blur-md p-5 md:p-6 shadow-premium"
+          className="legal-toc rounded-2xl border border-gray-100 p-5 md:p-6 glass-panel"
         >
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-3">
             {tocTitle}
@@ -81,7 +81,7 @@ export function LegalDocumentLayout({
         </nav>
       ) : null}
 
-      <div className="legal-document-body rounded-3xl border border-gray-100 bg-white/85 backdrop-blur-md p-6 md:p-8 shadow-premium space-y-8">
+      <div className="legal-document-body rounded-3xl border border-gray-100 p-6 md:p-8 glass-panel space-y-8">
         {children}
       </div>
 

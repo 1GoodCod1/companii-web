@@ -30,6 +30,7 @@ export function LoginPage() {
   const [params] = useSearchParams();
   const inviteToken = params.get('invite') ?? undefined;
   const teamInviteToken = params.get('teamInvite') ?? undefined;
+  const queryLogin = params.get('login') ?? params.get('email') ?? '';
   const returnUrl = params.get('returnUrl');
   const safeReturnUrl =
     returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : null;
@@ -69,150 +70,160 @@ export function LoginPage() {
     invitePreview?.customerEmail ||
     invitePreview?.customerPhone ||
     teamPreview?.invitedEmail ||
+    queryLogin ||
     '';
   const effectiveLogin = loginPresetApplied || !presetLogin ? loginValue : presetLogin;
 
   return (
-    <div className="max-w-md mx-auto py-20 px-4 animate-fade-in">
-      <div className="bg-white/80 backdrop-blur-md border border-gray-100 p-8 rounded-3xl shadow-premium">
-        <h1 className="text-2xl font-black mb-2 text-gray-900 tracking-tight text-center">{t('auth.login')}</h1>
-        <p className="text-xs text-center text-gray-400 mb-6">{t('auth.loginHint')}</p>
-
-        {teamPreview ? (
-          <p className="mb-4 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-xs font-semibold text-indigo-800">
-            {t('auth.teamInviteBanner', {
-              company: teamPreview.companyName,
-              role: isManagerRole(teamPreview.role)
-                ? t('auth.roleManager')
-                : t('auth.roleTechnician'),
-            })}
-          </p>
-        ) : null}
-
-        {invitePreview ? (
-          <p className="mb-4 rounded-xl border border-violet-100 bg-violet-50 px-4 py-3 text-xs font-semibold text-violet-800">
-            {t('auth.portalInviteBanner', {
-              customer: invitePreview.customerName,
-              company: invitePreview.companyName,
-            })}
-          </p>
-        ) : null}
-
-        <form
-          className="space-y-4"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setFormError(null);
-
-            try {
-              const res = await login.mutateAsync({
-                login: effectiveLogin.trim(),
-                password,
-                rememberMe,
-              });
-              if (inviteToken && isEndClientAccount(res.user.accountKind)) {
-                await acceptInvite.mutateAsync(inviteToken);
-                toast.success(t('auth.inviteAccepted'));
-              }
-              if (teamInviteToken && isCompanyStaffAccount(res.user.accountKind)) {
-                await acceptTeamInvite.mutateAsync(teamInviteToken);
-                toast.success(t('auth.teamJoined'));
-              }
-              if (isEndClientAccount(res.user.accountKind)) {
-                nav(safeReturnUrl ?? ROUTE_ABS.PORTAL);
-              } else if (isPlatformAdminAccount(res.user.accountKind)) nav(ROUTE_ABS.ADMIN);
-              else if (teamInviteToken) nav(companyAbsolutePath(COMPANY_ROUTE.TEAM));
-              else {
-                nav(
-                  resolveCompanyHomeRoute({
-                    companyRole: res.user.companyRole,
-                    activeCompanyId: res.user.activeCompanyId,
-                  }),
-                );
-              }
-            } catch (err) {
-              const message = getAuthErrorMessage(err);
-              setFormError(message);
-              toast.error(message);
-            }
-          }}
-        >
-          {formError ? (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700 leading-relaxed">
-              {formError}
-            </div>
-          ) : null}
-
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
-              {t('auth.loginField')}
-            </label>
-            <input
-              type="text"
-              required
-              placeholder={t('auth.loginPlaceholder')}
-              className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white"
-              value={effectiveLogin}
-              onChange={(e) => {
-                setLoginPresetApplied(true);
-                setLoginValue(e.target.value);
-              }}
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
-              {t('auth.password')}
-            </label>
-            <input
-              type="password"
-              required
-              placeholder="••••••••"
-              className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="flex justify-between items-center py-1">
-            <label className="flex items-center gap-2.5 text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer">
-              <input
-                type="checkbox"
-                className="rounded text-violet-600 focus:ring-violet-500/20 border-gray-200 w-4 h-4 cursor-pointer"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
-              {t('auth.rememberMe', 'Ține-mă minte')}
-            </label>
-            <Link
-              to="/forgot-password"
-              className="text-xs font-bold text-violet-600 hover:text-violet-750 uppercase tracking-wider transition-colors"
-            >
-              {t('auth.forgotPassword', 'Ai uitat parola?')}
-            </Link>
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white py-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md cursor-pointer text-sm tracking-wide mt-2"
-            disabled={login.isPending || acceptInvite.isPending || acceptTeamInvite.isPending}
-          >
-            {login.isPending ? t('auth.loggingIn') : t('auth.login')}
-          </button>
-        </form>
-        <p className="mt-6 text-xs font-semibold text-center text-gray-400 uppercase tracking-wider">
-          {t('auth.noAccount')}{' '}
-          <Link
-            to={
-              teamInviteToken
-                ? `/register?teamInvite=${encodeURIComponent(teamInviteToken)}&kind=${ACCOUNT_KIND.COMPANY_STAFF}`
-                : inviteToken
-                  ? `/register?invite=${encodeURIComponent(inviteToken)}&kind=${ACCOUNT_KIND.END_CLIENT}`
-                  : `/${PUBLIC_ROUTE.REGISTER}`
-            }
-            className="text-violet-600 hover:text-violet-700 font-bold transition-colors"
-          >
-            {t('auth.register')}
-          </Link>
+    <div className="w-full animate-fade-in py-2">
+      <div className="space-y-2 mb-8 text-center lg:text-left">
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          {t('auth.login')}
+        </h1>
+        <p className="text-xs text-slate-400 font-medium">
+          {t('auth.loginHint')}
         </p>
       </div>
+
+      {teamPreview ? (
+        <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50/50 px-4 py-3 text-xs font-semibold text-indigo-800 leading-relaxed">
+          {t('auth.teamInviteBanner', {
+            company: teamPreview.companyName,
+            role: isManagerRole(teamPreview.role)
+              ? t('auth.roleManager')
+              : t('auth.roleTechnician'),
+          })}
+        </div>
+      ) : null}
+
+      {invitePreview ? (
+        <div className="mb-5 rounded-2xl border border-violet-100 bg-violet-50/50 px-4 py-3 text-xs font-semibold text-violet-850 leading-relaxed">
+          {t('auth.portalInviteBanner', {
+            customer: invitePreview.customerName,
+            company: invitePreview.companyName,
+          })}
+        </div>
+      ) : null}
+
+      <form
+        className="space-y-5"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          setFormError(null);
+
+          try {
+            const res = await login.mutateAsync({
+              login: effectiveLogin.trim(),
+              password,
+              rememberMe,
+            });
+            if (inviteToken && isEndClientAccount(res.user.accountKind)) {
+              await acceptInvite.mutateAsync(inviteToken);
+              toast.success(t('auth.inviteAccepted'));
+            }
+            if (teamInviteToken && isCompanyStaffAccount(res.user.accountKind)) {
+              await acceptTeamInvite.mutateAsync(teamInviteToken);
+              toast.success(t('auth.teamJoined'));
+            }
+            if (isEndClientAccount(res.user.accountKind)) {
+              nav(safeReturnUrl ?? ROUTE_ABS.PORTAL);
+            } else if (isPlatformAdminAccount(res.user.accountKind)) nav(ROUTE_ABS.ADMIN);
+            else if (teamInviteToken) nav(companyAbsolutePath(COMPANY_ROUTE.TEAM));
+            else {
+              nav(
+                resolveCompanyHomeRoute({
+                  companyRole: res.user.companyRole,
+                  activeCompanyId: res.user.activeCompanyId,
+                }),
+              );
+            }
+          } catch (err) {
+            const message = getAuthErrorMessage(err);
+            setFormError(message);
+            toast.error(message);
+          }
+        }}
+      >
+        {formError ? (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700 leading-relaxed">
+            {formError}
+          </div>
+        ) : null}
+
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+            {t('auth.loginField')}
+          </label>
+          <input
+            type="text"
+            required
+            placeholder={t('auth.loginPlaceholder')}
+            className="w-full border border-slate-200 focus:border-slate-400 focus:ring-4 focus:ring-slate-100 rounded-xl px-4 py-3 text-sm outline-none transition-all bg-slate-50/50 hover:bg-slate-50/80 focus:bg-white text-slate-855 font-medium placeholder-slate-400"
+            value={effectiveLogin}
+            onChange={(e) => {
+              setLoginPresetApplied(true);
+              setLoginValue(e.target.value);
+            }}
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+            {t('auth.password')}
+          </label>
+          <input
+            type="password"
+            required
+            placeholder="••••••••"
+            className="w-full border border-slate-200 focus:border-slate-400 focus:ring-4 focus:ring-slate-100 rounded-xl px-4 py-3 text-sm outline-none transition-all bg-slate-50/50 hover:bg-slate-50/80 focus:bg-white text-slate-855 font-medium placeholder-slate-400"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+
+        <div className="flex justify-between items-center py-1">
+          <label className="flex items-center gap-2.5 text-xs font-bold text-slate-450 uppercase tracking-wider cursor-pointer select-none">
+            <input
+              type="checkbox"
+              className="rounded text-violet-600 focus:ring-violet-500/20 border-slate-200 w-4 h-4 cursor-pointer"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
+            {t('auth.rememberMe', 'Ține-mă minte')}
+          </label>
+          <Link
+            to="/forgot-password"
+            className="text-xs font-bold text-violet-650 hover:text-violet-750 uppercase tracking-wider transition-colors"
+          >
+            {t('auth.forgotPassword', 'Ai uitat parola?')}
+          </Link>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 active:scale-[0.99] text-white py-3 rounded-xl font-bold transition-all shadow-md shadow-violet-500/10 hover:shadow-lg hover:shadow-violet-500/15 cursor-pointer text-sm tracking-wide mt-2"
+          disabled={login.isPending || acceptInvite.isPending || acceptTeamInvite.isPending}
+        >
+          {login.isPending ? t('auth.loggingIn') : t('auth.login')}
+        </button>
+      </form>
+
+      <p className="mt-8 text-xs font-bold text-center lg:text-left text-slate-400 uppercase tracking-wider">
+        {t('auth.noAccount')}{' '}
+        <Link
+          to={
+            teamInviteToken
+              ? `/register?teamInvite=${encodeURIComponent(teamInviteToken)}&kind=${ACCOUNT_KIND.COMPANY_STAFF}`
+              : inviteToken
+                ? `/register?invite=${encodeURIComponent(inviteToken)}&kind=${ACCOUNT_KIND.END_CLIENT}`
+                : `/${PUBLIC_ROUTE.REGISTER}`
+          }
+          className="text-violet-650 hover:text-violet-750 font-extrabold transition-colors border-b-2 border-transparent hover:border-violet-650"
+        >
+          {t('auth.register')}
+        </Link>
+      </p>
     </div>
   );
 }
+

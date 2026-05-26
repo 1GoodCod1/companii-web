@@ -27,13 +27,13 @@ export function AdminSubscriptionsPage() {
           ? Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={index}
-                className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl p-6 shadow-premium h-40"
+                className="border border-gray-100 rounded-3xl p-6 glass-panel h-40"
               />
             ))
           : planCounts.map(({ plan, count }) => (
               <article
                 key={plan.id}
-                className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl p-6 shadow-premium"
+                className="border border-gray-100 rounded-3xl p-6 glass-panel"
               >
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
                   {plan.name}

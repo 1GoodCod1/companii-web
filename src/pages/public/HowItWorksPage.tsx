@@ -20,10 +20,10 @@ import {
 const COMPANY_STEP_ICONS = [Building2, Calculator, CalendarDays, FileCheck] as const;
 const CLIENT_STEP_ICONS = [KeyRound, Send, CheckCircle2, ShieldCheck] as const;
 const STEP_CARD_TONES = [
-  'hover:border-violet-200',
-  'hover:border-indigo-200',
-  'hover:border-amber-200',
-  'hover:border-emerald-200',
+  'border-slate-100',
+  'border-slate-100',
+  'border-slate-100',
+  'border-slate-100',
 ] as const;
 const STEP_ICON_TONES = [
   'bg-violet-50 text-violet-750',
@@ -56,7 +56,7 @@ function RoleSteps({
         return (
           <div
             key={step.title}
-            className={`bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-100 shadow-premium hover:-translate-y-1 ${STEP_CARD_TONES[index] ?? STEP_CARD_TONES[0]} transition-all duration-300 relative flex flex-col justify-between group`}
+            className={`bg-white p-6 rounded-3xl border border-slate-100 ${STEP_CARD_TONES[index] ?? STEP_CARD_TONES[0]} relative flex flex-col justify-between group`}
           >
             <span
               className={`absolute top-4 right-6 font-black text-6xl select-none transition-colors ${STEP_NUMBER_TONES[index] ?? STEP_NUMBER_TONES[0]}`}
@@ -65,7 +65,7 @@ function RoleSteps({
             </span>
             <div className="space-y-4">
               <div
-                className={`p-3.5 rounded-2xl w-13 h-13 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform duration-300 ${STEP_ICON_TONES[index] ?? STEP_ICON_TONES[0]}`}
+                className={`p-3.5 rounded-2xl w-13 h-13 flex items-center justify-center shadow-xs ${STEP_ICON_TONES[index] ?? STEP_ICON_TONES[0]}`}
               >
                 <Icon className="w-6 h-6" />
               </div>
@@ -185,7 +185,7 @@ export function HowItWorksPage() {
         </section>
 
         {/* Trust banner */}
-        <section className="relative z-10 bg-gradient-to-br from-violet-50/40 via-indigo-50/20 to-slate-50/30 p-8 rounded-3xl border border-violet-100/80 text-center max-w-2xl mx-auto space-y-6 shadow-premium overflow-hidden">
+        <section className="relative z-10 bg-gradient-to-br from-violet-50/40 via-indigo-50/20 to-slate-50/30 p-8 rounded-3xl border border-violet-100/80 text-center max-w-2xl mx-auto space-y-6 glass-panel overflow-hidden">
           <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-violet-400/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
 
           <h3 className="text-2xl font-black text-slate-950 uppercase tracking-tight">

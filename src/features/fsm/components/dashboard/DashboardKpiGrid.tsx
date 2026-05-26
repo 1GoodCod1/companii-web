@@ -6,7 +6,7 @@ export function DashboardKpiGrid({ kpis }: { kpis: DashboardKpi[] }) {
       {kpis.map((kpi) => (
         <article
           key={kpi.label}
-          className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${kpi.accent.tone} p-5 shadow-premium`}
+          className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${kpi.accent.tone} p-5 glass-panel`}
         >
           <div className="flex items-start justify-between gap-3">
             <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">{kpi.label}</span>

@@ -59,7 +59,7 @@ export function AdminAuditPage() {
       {isLoading ? (
         <p className="text-sm text-gray-400">{t('admin.auditPage.loading')}</p>
       ) : (
-        <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl shadow-premium overflow-hidden">
+        <div className="border border-gray-100 rounded-3xl glass-panel overflow-hidden">
           {!logs?.length ? (
             <p className="p-6 text-sm text-gray-500">{t('cabinet.common.noRecords')}</p>
           ) : (

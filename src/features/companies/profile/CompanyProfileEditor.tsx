@@ -362,7 +362,7 @@ export function CompanyProfileEditor({
       ) : null}
 
       {ownedCompany && canPublishCompany ? (
-        <section className="glass-panel rounded-3xl p-5 sm:p-6 shadow-premium space-y-4">
+        <section className="glass-panel rounded-3xl p-5 sm:p-6 space-y-4">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <h2 className="text-base font-bold text-gray-900">
@@ -430,7 +430,7 @@ export function CompanyProfileEditor({
       ) : null}
 
       {ownedCompany && !isLegalOwner ? (
-        <section className="glass-panel rounded-3xl p-5 sm:p-6 shadow-premium space-y-3">
+        <section className="glass-panel rounded-3xl p-5 sm:p-6  space-y-3">
           <div className="flex flex-wrap gap-2">
             <SoftBadge tone={ownedCompany.isVerified ? 'emerald' : 'amber'}>
               {ownedCompany.isVerified
@@ -462,7 +462,7 @@ export function CompanyProfileEditor({
         onSubmit={handleSubmit}
         className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start"
       >
-        <div className="glass-panel rounded-3xl p-5 sm:p-6 shadow-premium space-y-4">
+        <div className="glass-panel rounded-3xl p-5 sm:p-6  space-y-4">
         <FormSection
           title={t('company.profileEditor.form.legalTitle')}
           description={
@@ -685,7 +685,7 @@ export function CompanyProfileEditor({
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-6">
-          <div className="glass-panel rounded-3xl p-5 sm:p-6 shadow-premium">
+          <div className="glass-panel rounded-3xl p-5 sm:p-6 ">
             <CompanyBrandingSection
               variant="sidebar"
               companyName={name}
@@ -706,7 +706,7 @@ export function CompanyProfileEditor({
             />
           </div>
 
-          <div className="glass-panel rounded-3xl p-5 sm:p-6 shadow-premium">
+          <div className="glass-panel rounded-3xl p-5 sm:p-6 ">
             <button
               type="submit"
               disabled={isSaving}
@@ -726,7 +726,7 @@ export function CompanyProfileEditor({
       </form>
 
       {canLeaveCompany ? (
-        <section className="glass-panel rounded-3xl p-5 sm:p-6 shadow-premium space-y-4 border border-red-100">
+        <section className="glass-panel rounded-3xl p-5 sm:p-6  space-y-4 border border-red-100">
           <div>
             <h2 className="text-base font-bold text-gray-900">
               {t('company.profileEditor.form.leaveTeamTitle')}

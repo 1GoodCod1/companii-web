@@ -1,10 +1,10 @@
 export const companiiRo = {
   nav: {
-    login: 'Autentificare',
+    login: 'Intrare',
     register: 'Înregistrare',
     companies: 'Companii',
     language: 'Limbă',
-    howItWorks: 'Cum funcționează',
+    howItWorks: 'Ghid',
     subscriptions: 'Abonamente',
     contacts: 'Contacte',
     faq: 'FAQ',
@@ -67,6 +67,11 @@ export const companiiRo = {
       accountActivated: 'Cont activat cu succes!',
       hasAccount: 'Ai deja cont?',
       emailPlaceholder: 'exemplu@email.md',
+      companyPhoneHint:
+        'Opțional. Numărul trebuie să fie unic — dacă e deja folosit, șterge câmpul sau autentifică-te în contul existent.',
+      phoneTakenFieldHint:
+        'Numărul e deja folosit de alt cont. Șterge câmpul «Telefon» și trimite din nou — emailul e în regulă.',
+      phoneTakenLoginHint: 'Autentifică-te cu acest număr →',
     },
     cabinetCta: {
       endClient: 'Portal client',
@@ -79,6 +84,10 @@ export const companiiRo = {
     },
     errors: {
       emailTaken: 'Acest email este deja înregistrat. Autentificați-vă sau folosiți alt email.',
+      phoneTaken:
+        'Acest număr de telefon este deja legat de alt cont — problema nu e la email.',
+      registrationConflict:
+        'Nu am putut finaliza înregistrarea. Dacă ai deja cont — autentifică-te.',
       invalidCredentials: 'Email/telefon sau parolă incorectă.',
       tooManyAttempts: 'Prea multe încercări. Încercați din nou peste câteva minute.',
       authFailed: 'A apărut o eroare la autentificare.',

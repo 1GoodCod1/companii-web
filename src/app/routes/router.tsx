@@ -9,6 +9,7 @@ import { localizePath } from '@/lib/i18n/localeRoutes';
 import { CompanyLayout } from '@/components/layout/CompanyLayout';
 import { PortalLayout } from '@/components/layout/PortalLayout';
 import { AdminLayout } from '@/components/layout/AdminLayout';
+import { AuthLayout } from '@/components/layout/AuthLayout';
 import {
   LandingPage,
   CompaniesListPage,
@@ -118,7 +119,7 @@ export const router = createBrowserRouter([
       {
         element: (
           <Suspense fallback={null}>
-            <PublicLayout />
+            <AuthLayout />
           </Suspense>
         ),
         children: authPublicRoutes,

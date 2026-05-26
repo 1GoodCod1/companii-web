@@ -9,7 +9,7 @@ export const cabinetBtnPrimary =
   'inline-flex items-center justify-center bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-xs hover:shadow-md disabled:opacity-50 cursor-pointer';
 export const cabinetBtnSecondary =
   'inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-slate-100 transition-colors cursor-pointer';
-export const cabinetPanelClass = 'glass-panel rounded-3xl shadow-premium';
+export const cabinetPanelClass = 'glass-panel rounded-3xl';
 
 export function PageHero({
   eyebrow,
@@ -23,7 +23,7 @@ export function PageHero({
   action?: ReactNode;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-violet-50/30 to-indigo-50/20 p-6 shadow-premium">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-violet-50/30 to-indigo-50/20 p-6 border border-violet-100/60">
       <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-violet-400/10 blur-3xl" />
       <div className="relative flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-2xl">

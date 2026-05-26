@@ -3,8 +3,23 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
+import { FaberLogo } from '@/components/brand/FaberLogo';
 import { stripLocalePrefix } from '@/lib/i18n/localeRoutes';
 import { cn } from '@/lib/utils';
+
+const NAV_LINK_CLASS =
+  'text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap';
+
+const NAV_CTA_CLASS =
+  'inline-flex h-8 items-center justify-center rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-3 text-[11px] font-semibold uppercase tracking-wide text-white transition-colors hover:from-violet-700 hover:to-indigo-700 whitespace-nowrap';
+
+const PUBLIC_NAV_ITEMS = [
+  { path: '/how-it-works', labelKey: 'nav.howItWorks' },
+  { path: '/companies', labelKey: 'nav.companies' },
+  { path: '/subscriptions', labelKey: 'nav.subscriptions', hideForEndClient: true },
+  { path: '/faq', labelKey: 'nav.faq' },
+  { path: '/contacts', labelKey: 'nav.contacts' },
+] as const;
 
 export function PublicLayout() {
   const { t } = useTranslation();
@@ -16,64 +31,55 @@ export function PublicLayout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f9fafb]">
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link to={lp('/')} className="flex items-center gap-2">
-            <span className="p-2 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-xl text-white font-black text-xs shadow-xs">
-              FC
-            </span>
-            <span className="font-black text-gray-900 tracking-tight text-md">
-              Faber Companii
-            </span>
+      <header className="public-site-header">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 lg:gap-6">
+          <Link to={lp('/')} className="shrink-0">
+            <FaberLogo size="sm" />
           </Link>
 
-          <nav className="flex items-center gap-5 text-xs font-bold uppercase tracking-wider">
-            <Link to={lp('/how-it-works')} className="text-gray-500 hover:text-gray-900 transition-colors">
-              {t('nav.howItWorks')}
-            </Link>
-            <Link to={lp('/companies')} className="text-gray-500 hover:text-gray-900 transition-colors">
-              {t('nav.companies')}
-            </Link>
-            {user?.accountKind !== 'END_CLIENT' && (
-              <Link to={lp('/subscriptions')} className="text-gray-500 hover:text-gray-900 transition-colors">
-                {t('nav.subscriptions')}
-              </Link>
-            )}
-            <Link to={lp('/faq')} className="text-gray-500 hover:text-gray-900 transition-colors">
-              {t('nav.faq')}
-            </Link>
-            <Link to={lp('/contacts')} className="text-gray-500 hover:text-gray-900 transition-colors">
-              {t('nav.contacts')}
-            </Link>
-            <LanguageSwitcher />
-            <span className="h-4 w-px bg-gray-200" />
+          <div className="flex min-w-0 items-center justify-center overflow-hidden">
+            <nav
+              className="flex max-w-full flex-nowrap items-center gap-4 lg:gap-5 text-[11px] font-bold uppercase tracking-wide"
+              aria-label="Main"
+            >
+              {PUBLIC_NAV_ITEMS.map((item) => {
+                if ('hideForEndClient' in item && item.hideForEndClient && user?.accountKind === 'END_CLIENT') {
+                  return null;
+                }
+                return (
+                  <Link key={item.path} to={lp(item.path)} className={NAV_LINK_CLASS}>
+                    {t(item.labelKey)}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2 border-l border-gray-200 pl-3">
             {isAuthed ? (
-              <Link
-                to={cabinetRoute}
-                className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white px-5 py-2.5 rounded-xl transition-all shadow-xs hover:shadow-md"
-              >
+              <Link to={cabinetRoute} className={NAV_CTA_CLASS}>
                 {cabinetLabel}
               </Link>
             ) : (
               <>
-                <Link to="/login" className="text-gray-500 hover:text-gray-900 transition-colors">
+                <Link to="/login" className={NAV_LINK_CLASS}>
                   {t('nav.login')}
                 </Link>
-                <Link
-                  to="/register"
-                  className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white px-4 py-2 rounded-xl transition-all shadow-xs hover:shadow-sm"
-                >
+                <Link to="/register" className={NAV_CTA_CLASS}>
                   {t('nav.register')}
                 </Link>
               </>
             )}
-          </nav>
+            <LanguageSwitcher />
+          </div>
         </div>
       </header>
 
+      <div className="shrink-0" style={{ height: 'var(--public-header-height)' }} aria-hidden />
+
       <main
         className={cn(
-          'page-content flex-1 w-full',
+          'page-content relative z-0 flex-1 w-full',
           isLanding ? 'px-0 py-0 overflow-x-hidden' : 'max-w-6xl mx-auto px-6 py-10',
         )}
       >
@@ -83,13 +89,8 @@ export function PublicLayout() {
       <footer className="bg-white border-t border-gray-100 py-12 mt-20">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <span className="p-2 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-xl text-white font-black text-xs">
-                FC
-              </span>
-              <span className="font-black text-gray-900 tracking-tight text-sm">
-                Faber Companii
-              </span>
+            <div>
+              <FaberLogo size="sm" />
             </div>
             <p className="text-xs text-gray-400 font-medium leading-relaxed">
               {t('footer.tagline')}
