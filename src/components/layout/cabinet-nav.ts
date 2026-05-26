@@ -5,6 +5,7 @@ export type CabinetNavItem = {
   to: string;
   labelKey: string;
   icon: ReactNode;
+  badge?: number | string;
 };
 
 export type CabinetNavSection = {

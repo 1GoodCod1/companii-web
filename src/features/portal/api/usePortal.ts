@@ -6,6 +6,24 @@ import type { CustomerDto, QuoteDto, InvoiceDto } from '@/features/fsm/types';
 import type { EstimateProjectListDto, EstimateProjectDto } from '@/features/estimates/types';
 import type { CompanyReviewDto, PortalInterventionDto } from '@/features/reviews/types';
 
+import type { CompanyLeadDto } from '@/features/fsm/types';
+
+export type PortalLeadDto = Pick<
+  CompanyLeadDto,
+  | 'id'
+  | 'status'
+  | 'source'
+  | 'serviceTitle'
+  | 'message'
+  | 'address'
+  | 'estimatedBudget'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'category'
+> & {
+  company: { id: string; name: string; slug: string };
+};
+
 export interface PortalDashboardDto {
   customer: CustomerDto;
   interventions: PortalInterventionDto[];
@@ -13,6 +31,14 @@ export interface PortalDashboardDto {
   invoices: InvoiceDto[];
   reviews: CompanyReviewDto[];
   estimates: EstimateProjectListDto[];
+}
+
+export function usePortalLeadsQuery(): UseQueryResult<PortalLeadDto[], Error> {
+  return useQuery<PortalLeadDto[], Error>({
+    queryKey: queryKeys.portal.leads,
+    queryFn: () => apiFetch<PortalLeadDto[]>('/portal/leads'),
+    ...cabinetQueryDefaults,
+  });
 }
 
 export function usePortalDashboardQuery(): UseQueryResult<PortalDashboardDto, Error> {

@@ -20,6 +20,7 @@ import {
   useLeadsQuery,
   useUpdateLeadMutation,
   useConvertLeadMutation,
+  useCompleteLeadMutation,
 } from '@/features/fsm/api/useFsm';
 import type { CompanyLeadDto, CompanyLeadStatus } from '@/features/fsm/types';
 
@@ -28,7 +29,8 @@ const STATUS_FILTERS: Array<{ value?: CompanyLeadStatus; label: string }> = [
   { value: 'NEW', label: 'Noi' },
   { value: 'CONTACTED', label: 'Contactate' },
   { value: 'QUALIFIED', label: 'Calificate' },
-  { value: 'CONVERTED', label: 'Convertite' },
+  { value: 'IN_PROGRESS', label: 'În lucru' },
+  { value: 'CONVERTED', label: 'Finalizate' },
   { value: 'LOST', label: 'Pierdute' },
 ];
 
@@ -36,16 +38,29 @@ const LEAD_STATUS_LABELS: Record<CompanyLeadStatus, string> = {
   NEW: 'Nouă',
   CONTACTED: 'Contactată',
   QUALIFIED: 'Calificată',
-  CONVERTED: 'Convertită',
+  IN_PROGRESS: 'În lucru',
+  CONVERTED: 'Finalizată',
   LOST: 'Pierdută',
 };
 
-const LEAD_STATUS_TONES: Record<CompanyLeadStatus, 'gray' | 'amber' | 'blue' | 'emerald' | 'violet'> = {
+const LEAD_STATUS_TONES: Record<
+  CompanyLeadStatus,
+  'gray' | 'amber' | 'blue' | 'emerald' | 'violet'
+> = {
   NEW: 'amber',
   CONTACTED: 'blue',
   QUALIFIED: 'violet',
+  IN_PROGRESS: 'blue',
   CONVERTED: 'emerald',
   LOST: 'gray',
+};
+
+const LEAD_SOURCE_LABELS: Record<CompanyLeadDto['source'], string> = {
+  SERVICE_REQUEST: 'Cerere serviciu',
+  PROJECT_REQUEST: 'Cerere proiect',
+  MANUAL: 'Manual',
+  PHONE: 'Telefon',
+  WEBSITE: 'Site',
 };
 
 export function CompanyLeadsPage() {
@@ -55,6 +70,7 @@ export function CompanyLeadsPage() {
   const { data: categories } = useCategoriesQuery();
   const updateLead = useUpdateLeadMutation();
   const convertLead = useConvertLeadMutation();
+  const completeLead = useCompleteLeadMutation();
 
   const [estimateLead, setEstimateLead] = useState<CompanyLeadDto | null>(null);
   const [categoryId, setCategoryId] = useState('');
@@ -76,10 +92,31 @@ export function CompanyLeadsPage() {
 
   const handleConvertIntervention = async (leadId: string) => {
     try {
-      await convertLead.mutateAsync({ id: leadId, mode: 'intervention' });
-      toast.success('Cerere preluată ca lucrare.');
+      const result = await convertLead.mutateAsync({ id: leadId, mode: 'intervention' });
+      const keptOpen = (result as { keptOpen?: boolean })?.keptOpen;
+      toast.success(
+        keptOpen ? 'Lucrare creată — cererea rămâne deschisă.' : 'Cerere preluată ca lucrare.',
+      );
     } catch (err: unknown) {
       toast.error((err as Error).message || 'Nu s-a putut converti cererea.');
+    }
+  };
+
+  const handleCompleteLead = async (leadId: string) => {
+    try {
+      await completeLead.mutateAsync(leadId);
+      toast.success('Cerere finalizată.');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Nu s-a putut finaliza cererea.');
+    }
+  };
+
+  const handleConvertCustomer = async (leadId: string) => {
+    try {
+      await convertLead.mutateAsync({ id: leadId, mode: 'customer' });
+      toast.success('Client salvat în CRM.');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Nu s-a putut salva clientul.');
     }
   };
 
@@ -116,7 +153,7 @@ export function CompanyLeadsPage() {
       <div className="space-y-6 animate-fade-in">
         <PageHero
           title="Cereri & lead-uri"
-          description="Cereri din pachete, site sau introduse manual — calificați și convertiți în clienți, lucrări sau smete."
+          description="Cereri din servicii publice, proiecte sau introduse manual — calificați, convertiți în smete sau lucrări și finalizați când fluxul e complet."
         />
 
         <div className="flex flex-wrap gap-2">
@@ -163,8 +200,27 @@ export function CompanyLeadsPage() {
                         <p className="text-xs font-semibold text-violet-600">{lead.serviceTitle}</p>
                       ) : null}
                       {lead.message ? <p className="text-xs text-gray-400">{lead.message}</p> : null}
+                      {lead.estimatedBudget != null && lead.estimatedBudget > 0 ? (
+                        <p className="text-xs font-semibold text-violet-700">
+                          Buget estimativ: {Number(lead.estimatedBudget).toLocaleString('ro-MD')} MDL
+                        </p>
+                      ) : null}
+                      {lead.address ? (
+                        <p className="text-xs text-gray-500">Adresă: {lead.address}</p>
+                      ) : null}
+                      {lead.estimateProject ? (
+                        <p className="text-xs">
+                          <Link
+                            to={`/company/smete/${lead.estimateProject.id}`}
+                            className="font-semibold text-violet-600 underline"
+                          >
+                            Smetă {lead.estimateProject.number} — {lead.estimateProject.title}
+                          </Link>
+                        </p>
+                      ) : null}
                       <p className="text-[10px] text-gray-400">
-                        {new Date(lead.createdAt).toLocaleString('ro-MD')} · {lead.source}
+                        {new Date(lead.createdAt).toLocaleString('ro-MD')} ·{' '}
+                        {LEAD_SOURCE_LABELS[lead.source] ?? lead.source}
                       </p>
                     </div>
                     {lead.status !== 'CONVERTED' && lead.status !== 'LOST' ? (
@@ -173,17 +229,29 @@ export function CompanyLeadsPage() {
                         onChange={(e) => handleStatusChange(lead, e.target.value as CompanyLeadStatus)}
                         className={cabinetSelectClass}
                       >
-                        {(['NEW', 'CONTACTED', 'QUALIFIED', 'LOST'] as CompanyLeadStatus[]).map((status) => (
-                          <option key={status} value={status}>
-                            {LEAD_STATUS_LABELS[status]}
-                          </option>
-                        ))}
+                        {(['NEW', 'CONTACTED', 'QUALIFIED', 'IN_PROGRESS', 'LOST'] as CompanyLeadStatus[]).map(
+                          (status) => (
+                            <option key={status} value={status}>
+                              {LEAD_STATUS_LABELS[status]}
+                            </option>
+                          ),
+                        )}
                       </select>
                     ) : null}
                   </div>
 
                   {lead.status !== 'CONVERTED' && lead.status !== 'LOST' ? (
                     <div className="flex flex-wrap gap-2">
+                      {!lead.customerId ? (
+                        <button
+                          type="button"
+                          onClick={() => handleConvertCustomer(lead.id)}
+                          disabled={convertLead.isPending}
+                          className={cabinetBtnSecondary}
+                        >
+                          Salvează în CRM
+                        </button>
+                      ) : null}
                       <button
                         type="button"
                         onClick={() => handleConvertIntervention(lead.id)}
@@ -192,14 +260,26 @@ export function CompanyLeadsPage() {
                       >
                         Preia → Lucrare
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => openEstimateConvert(lead)}
-                        disabled={convertLead.isPending}
-                        className={cabinetBtnSecondary}
-                      >
-                        → Smetă
-                      </button>
+                      {!lead.estimateProjectId ? (
+                        <button
+                          type="button"
+                          onClick={() => openEstimateConvert(lead)}
+                          disabled={convertLead.isPending}
+                          className={cabinetBtnSecondary}
+                        >
+                          → Smetă
+                        </button>
+                      ) : null}
+                      {lead.status === 'IN_PROGRESS' ? (
+                        <button
+                          type="button"
+                          onClick={() => handleCompleteLead(lead.id)}
+                          disabled={completeLead.isPending}
+                          className={cabinetBtnSecondary}
+                        >
+                          Finalizează cererea
+                        </button>
+                      ) : null}
                       <button
                         type="button"
                         onClick={() => handleStatusChange(lead, 'LOST')}
@@ -210,7 +290,7 @@ export function CompanyLeadsPage() {
                     </div>
                   ) : lead.status === 'CONVERTED' ? (
                     <p className="text-xs text-emerald-600 font-semibold">
-                      Convertită
+                      Finalizată
                       {lead.convertedAt
                         ? ` · ${new Date(lead.convertedAt).toLocaleDateString('ro-MD')}`
                         : ''}

@@ -13,8 +13,17 @@ import {
   cabinetLabelClass,
   cabinetSelectClass,
 } from '@/components/cabinet/cabinet-ui';
+import {
+  DURATION_UNIT_OPTIONS,
+  durationFormToMinutes,
+  formatServiceDuration,
+  minutesToDurationForm,
+  type DurationUnit,
+} from '@/utils/serviceDuration';
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
 import { useCategoriesQuery } from '@/features/companies/api/useCompanies';
+import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
+import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
 import { useMySubscriptionQuery } from '@/features/subscriptions/api/useSubscriptions';
 import { hasMinPlan } from '@/config/planEntitlements';
 import type { CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
@@ -29,18 +38,22 @@ import type { CompanyServiceDto } from '@/features/fsm/types';
 const emptyForm = {
   name: '',
   description: '',
-  categoryId: '',
   defaultPrice: '',
-  durationMinutes: '60',
+  durationValue: '',
+  durationUnit: 'hours' as DurationUnit,
   isPublished: true,
   materialsCost: '',
-  vatRate: '20',
 };
 
 export function CompanyServicesPage() {
   const { data: services, isLoading } = useCompanyServicesQuery();
   const { data: categories } = useCategoriesQuery();
   const { data: subscription } = useMySubscriptionQuery();
+  const { activeCompanyId, companyMe } = useCompanyPermissions();
+  const { company: activeCompany } = resolveActiveCompany(companyMe, activeCompanyId);
+  const defaultCategoryId = activeCompany?.categoryId ?? '';
+  const defaultCategoryName =
+    categories?.find((category) => category.id === defaultCategoryId)?.name ?? '— nesetată —';
   const createService = useCreateCompanyServiceMutation();
   const updateService = useUpdateCompanyServiceMutation();
   const deleteService = useDeleteCompanyServiceMutation();
@@ -59,16 +72,16 @@ export function CompanyServicesPage() {
   };
 
   const openEdit = (service: CompanyServiceDto) => {
+    const duration = minutesToDurationForm(service.durationMinutes);
     setEditing(service);
     setForm({
       name: service.name,
       description: service.description ?? '',
-      categoryId: service.category?.id ?? service.categoryId ?? '',
       defaultPrice: String(service.defaultPrice),
-      durationMinutes: service.durationMinutes != null ? String(service.durationMinutes) : '60',
+      durationValue: duration.value,
+      durationUnit: duration.unit,
       isPublished: service.isPublished ?? false,
       materialsCost: service.materialsCost != null ? String(service.materialsCost) : '',
-      vatRate: service.vatRate != null ? String(service.vatRate) : '20',
     });
     setShowModal(true);
   };
@@ -79,28 +92,42 @@ export function CompanyServicesPage() {
       toast.error('Completați numele și prețul.');
       return;
     }
+    if (!defaultCategoryId) {
+      toast.error('Setați categoria companiei în profil înainte de a adăuga servicii.');
+      return;
+    }
 
-    const payload = {
-      name: form.name.trim(),
-      description: form.description.trim(),
-      categoryId: form.categoryId || undefined,
-      defaultPrice: Number(form.defaultPrice),
-      durationMinutes: Number(form.durationMinutes || 60),
-      isPublished: form.isPublished,
-      ...(canUseInternalPricing
-        ? {
-            materialsCost: form.materialsCost ? Number(form.materialsCost) : undefined,
-            vatRate: form.vatRate ? Number(form.vatRate) : undefined,
-          }
-        : {}),
-    };
+    const durationMinutes = form.durationValue.trim()
+      ? durationFormToMinutes(form.durationValue, form.durationUnit) ?? undefined
+      : undefined;
 
     try {
       if (editing) {
-        await updateService.mutateAsync({ id: editing.id, ...payload });
+        await updateService.mutateAsync({
+          id: editing.id,
+          name: form.name.trim(),
+          description: form.description.trim(),
+          defaultPrice: Number(form.defaultPrice),
+          isPublished: form.isPublished,
+          durationMinutes: durationMinutes ?? null,
+          ...(canUseInternalPricing
+            ? {
+                materialsCost: form.materialsCost.trim() ? Number(form.materialsCost) : null,
+              }
+            : {}),
+        });
         toast.success('Serviciu actualizat.');
       } else {
-        await createService.mutateAsync(payload);
+        await createService.mutateAsync({
+          name: form.name.trim(),
+          description: form.description.trim(),
+          defaultPrice: Number(form.defaultPrice),
+          isPublished: form.isPublished,
+          ...(durationMinutes != null ? { durationMinutes } : {}),
+          ...(canUseInternalPricing && form.materialsCost.trim()
+            ? { materialsCost: Number(form.materialsCost) }
+            : {}),
+        });
         toast.success('Serviciu adăugat.');
       }
       setShowModal(false);
@@ -147,7 +174,9 @@ export function CompanyServicesPage() {
             />
           ) : (
             <div className="divide-y divide-gray-100">
-              {(services ?? []).map((service) => (
+              {(services ?? []).map((service) => {
+                const durationLabel = formatServiceDuration(service.durationMinutes);
+                return (
                 <div key={service.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -163,7 +192,7 @@ export function CompanyServicesPage() {
                     ) : null}
                     <p className="text-sm text-violet-700 font-bold mt-1">
                       {Number(service.defaultPrice).toLocaleString('ro-MD')} {service.currency ?? 'MDL'}
-                      {service.durationMinutes ? ` · ${service.durationMinutes} min` : ''}
+                      {durationLabel ? ` · ${durationLabel}` : ''}
                       {service.category?.name ? ` · ${service.category.name}` : ''}
                     </p>
                   </div>
@@ -176,7 +205,8 @@ export function CompanyServicesPage() {
                     </button>
                   </div>
                 </div>
-              ))}
+              );
+              })}
             </div>
           )}
         </Panel>
@@ -189,7 +219,7 @@ export function CompanyServicesPage() {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <label className={cabinetLabelClass}>
-            Denumire
+            Denumire *
             <input
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
@@ -198,7 +228,7 @@ export function CompanyServicesPage() {
             />
           </label>
           <label className={cabinetLabelClass}>
-            Descriere
+            Descriere (opțional)
             <textarea
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
@@ -206,23 +236,20 @@ export function CompanyServicesPage() {
               rows={3}
             />
           </label>
-          <label className={cabinetLabelClass}>
+          <div className={cabinetLabelClass}>
             Categorie
-            <select
-              value={form.categoryId}
-              onChange={(e) => setForm((f) => ({ ...f, categoryId: e.target.value }))}
-              className={cabinetSelectClass}
-            >
-              <option value="">— opțional —</option>
-              {(categories ?? []).map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </label>
+            <input
+              value={defaultCategoryName}
+              className={`${cabinetFieldClass} bg-gray-50 text-gray-600 cursor-not-allowed`}
+              readOnly
+              tabIndex={-1}
+            />
+            <p className="text-[11px] font-medium text-gray-400 mt-1">
+              Moștenită din profilul companiei — se modifică doar acolo.
+            </p>
+          </div>
           <label className={cabinetLabelClass}>
-            Preț (MDL)
+            Preț (MDL) *
             <input
               type="number"
               min={0}
@@ -233,17 +260,33 @@ export function CompanyServicesPage() {
               required
             />
           </label>
-          <label className={cabinetLabelClass}>
-            Durată (minute)
-            <input
-              type="number"
-              min={15}
-              step={15}
-              value={form.durationMinutes}
-              onChange={(e) => setForm((f) => ({ ...f, durationMinutes: e.target.value }))}
-              className={cabinetFieldClass}
-            />
-          </label>
+          <div className={cabinetLabelClass}>
+            Durată (opțional)
+            <div className="grid grid-cols-[1fr_auto] gap-2">
+              <input
+                type="number"
+                min={1}
+                step={1}
+                value={form.durationValue}
+                onChange={(e) => setForm((f) => ({ ...f, durationValue: e.target.value }))}
+                className={cabinetFieldClass}
+                placeholder="Ex: 2"
+              />
+              <select
+                value={form.durationUnit}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, durationUnit: e.target.value as DurationUnit }))
+                }
+                className={cabinetSelectClass}
+              >
+                {DURATION_UNIT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
           <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
             <input
               type="checkbox"
@@ -254,33 +297,20 @@ export function CompanyServicesPage() {
             Public pe profilul companiei
           </label>
           {canUseInternalPricing ? (
-            <>
-              <label className={cabinetLabelClass}>
-                Cost materiale (opțional, Pro+)
-                <input
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  value={form.materialsCost}
-                  onChange={(e) => setForm((f) => ({ ...f, materialsCost: e.target.value }))}
-                  className={cabinetFieldClass}
-                />
-              </label>
-              <label className={cabinetLabelClass}>
-                TVA % (Pro+)
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  value={form.vatRate}
-                  onChange={(e) => setForm((f) => ({ ...f, vatRate: e.target.value }))}
-                  className={cabinetFieldClass}
-                />
-              </label>
-            </>
+            <label className={cabinetLabelClass}>
+              Cost materiale (opțional)
+              <input
+                type="number"
+                min={0}
+                step="0.01"
+                value={form.materialsCost}
+                onChange={(e) => setForm((f) => ({ ...f, materialsCost: e.target.value }))}
+                className={cabinetFieldClass}
+              />
+            </label>
           ) : (
             <p className="text-xs text-gray-500 bg-gray-50 rounded-xl px-3 py-2">
-              Cost materiale și TVA pentru devize — disponibile din planul Pro.
+              Cost materiale pentru devize — disponibil din planul Pro.
             </p>
           )}
           <div className="flex gap-3 pt-2">

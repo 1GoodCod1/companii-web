@@ -30,6 +30,7 @@ export const queryKeys = {
   },
   portal: {
     dashboard: ['portal', 'dashboard'] as const,
+    leads: ['portal', 'leads'] as const,
     estimate: (id: string) => ['portal', 'estimates', id] as const,
   },
   reviews: {

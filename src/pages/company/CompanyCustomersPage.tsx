@@ -26,6 +26,7 @@ import {
   useCreatePortalInviteMutation,
 } from '@/features/companies/api/usePortalInvite';
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
+import { CustomerImportModal } from '@/features/fsm/components/CustomerImportModal';
 import { INTERVENTION_STATUS_LABELS } from '@/features/fsm/statusLabels';
 import { ESTIMATE_STATUS_LABELS, ESTIMATE_STATUS_TONES } from '@/features/estimates/statusLabels';
 
@@ -78,6 +79,7 @@ export function CompanyCustomersPage() {
 
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Form State
@@ -219,9 +221,14 @@ export function CompanyCustomersPage() {
         title="Clienți"
         description="Gestionează baza de date a clienților tăi, istoricul lucrărilor și detaliile de contact."
         action={
-          <button type="button" onClick={handleOpenCreate} className={cabinetBtnPrimary}>
-            + Adaugă client
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={() => setShowImportModal(true)} className={cabinetBtnSecondary}>
+              Import Excel / CSV
+            </button>
+            <button type="button" onClick={handleOpenCreate} className={cabinetBtnPrimary}>
+              + Adaugă client
+            </button>
+          </div>
         }
       />
 
@@ -530,6 +537,8 @@ export function CompanyCustomersPage() {
               </div>
             </form>
       </AppModal>
+
+      <CustomerImportModal open={showImportModal} onClose={() => setShowImportModal(false)} />
     </div>
     </CompanyManagementGate>
   );

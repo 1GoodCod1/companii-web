@@ -122,8 +122,19 @@ export type InterventionPhotoDto = {
   sortOrder: number;
 };
 
-export type CompanyLeadStatus = 'NEW' | 'CONTACTED' | 'QUALIFIED' | 'CONVERTED' | 'LOST';
-export type CompanyLeadSource = 'SERVICE_REQUEST' | 'MANUAL' | 'PHONE' | 'WEBSITE';
+export type CompanyLeadStatus =
+  | 'NEW'
+  | 'CONTACTED'
+  | 'QUALIFIED'
+  | 'IN_PROGRESS'
+  | 'CONVERTED'
+  | 'LOST';
+export type CompanyLeadSource =
+  | 'SERVICE_REQUEST'
+  | 'PROJECT_REQUEST'
+  | 'MANUAL'
+  | 'PHONE'
+  | 'WEBSITE';
 
 export interface CompanyLeadDto {
   id: string;
@@ -138,6 +149,14 @@ export interface CompanyLeadDto {
   source: CompanyLeadSource;
   categoryId?: string | null;
   serviceTitle?: string | null;
+  estimatedBudget?: number | null;
+  estimateProjectId?: string | null;
+  estimateProject?: {
+    id: string;
+    number: string;
+    title: string;
+    status: string;
+  } | null;
   scheduledAt?: string | null;
   notes?: string | null;
   convertedAt?: string | null;

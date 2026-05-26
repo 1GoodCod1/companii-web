@@ -361,7 +361,10 @@ export async function downloadInvoicesCsv() {
 
 // --- LEADS ---
 
-export function useLeadsQuery(status?: CompanyLeadStatus): UseQueryResult<CompanyLeadDto[], Error> {
+export function useLeadsQuery(
+  status?: CompanyLeadStatus,
+  options?: { enabled?: boolean },
+): UseQueryResult<CompanyLeadDto[], Error> {
   const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
   return useQuery({
     queryKey: queryKeys.fsm.leads(status),
@@ -370,7 +373,7 @@ export function useLeadsQuery(status?: CompanyLeadStatus): UseQueryResult<Compan
       return apiFetch<CompanyLeadDto[]>(`${fsm}/leads${q}`);
     },
     ...cabinetQueryDefaults,
-    enabled: !!activeCompanyId,
+    enabled: (options?.enabled ?? true) && !!activeCompanyId,
   });
 }
 
@@ -408,6 +411,17 @@ export function useConvertLeadMutation() {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.customers });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
+    },
+  });
+}
+
+export function useCompleteLeadMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      apiFetch<CompanyLeadDto>(`${fsm}/leads/${id}/complete`, { method: 'POST' }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['fsm', 'leads'] });
     },
   });
 }

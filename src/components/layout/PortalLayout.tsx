@@ -1,4 +1,4 @@
-import { Calculator, CreditCard, FileText, LayoutDashboard, Wrench } from 'lucide-react';
+import { Calculator, ClipboardList, CreditCard, FileText, LayoutDashboard, Wrench } from 'lucide-react';
 import { CabinetShell } from './CabinetShell';
 import type { CabinetNavSection } from '@/components/layout/cabinet-nav';
 
@@ -8,6 +8,7 @@ const sections: CabinetNavSection[] = [
     labelKey: 'portal.sections.main',
     items: [
       { key: 'dashboard', to: '', labelKey: 'portal.dashboard', icon: <LayoutDashboard /> },
+      { key: 'cereri', to: '/cereri', labelKey: 'portal.cereri', icon: <ClipboardList /> },
       { key: 'lucrari', to: '/lucrari', labelKey: 'portal.lucrari', icon: <Wrench /> },
       { key: 'oferte', to: '/oferte', labelKey: 'portal.oferte', icon: <FileText /> },
       { key: 'smete', to: '/smete', labelKey: 'portal.smete', icon: <Calculator /> },

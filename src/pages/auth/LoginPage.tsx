@@ -21,6 +21,9 @@ export function LoginPage() {
   const [params] = useSearchParams();
   const inviteToken = params.get('invite') ?? undefined;
   const teamInviteToken = params.get('teamInvite') ?? undefined;
+  const returnUrl = params.get('returnUrl');
+  const safeReturnUrl =
+    returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : null;
   const login = useLoginMutation();
   const acceptInvite = useAcceptPortalInvitationMutation();
   const acceptTeamInvite = useAcceptTeamInvitationMutation();
@@ -35,6 +38,10 @@ export function LoginPage() {
 
   useEffect(() => {
     if (user && accessToken) {
+      if (safeReturnUrl && user.accountKind === 'END_CLIENT') {
+        nav(safeReturnUrl, { replace: true });
+        return;
+      }
       if (user.accountKind === 'END_CLIENT') nav('/portal', { replace: true });
       else if (user.accountKind === 'PLATFORM_ADMIN') nav('/admin', { replace: true });
       else {
@@ -47,7 +54,7 @@ export function LoginPage() {
         );
       }
     }
-  }, [user, accessToken, nav]);
+  }, [user, accessToken, nav, safeReturnUrl]);
 
   const presetLogin =
     invitePreview?.customerEmail ||
@@ -97,8 +104,9 @@ export function LoginPage() {
                 await acceptTeamInvite.mutateAsync(teamInviteToken);
                 toast.success('Ai intrat în echipă!');
               }
-              if (res.user.accountKind === 'END_CLIENT') nav('/portal');
-              else if (res.user.accountKind === 'PLATFORM_ADMIN') nav('/admin');
+              if (res.user.accountKind === 'END_CLIENT') {
+                nav(safeReturnUrl ?? '/portal');
+              } else if (res.user.accountKind === 'PLATFORM_ADMIN') nav('/admin');
               else if (teamInviteToken) nav('/company/team');
               else {
                 nav(

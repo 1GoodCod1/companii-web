@@ -1,5 +1,5 @@
-import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { Helmet } from 'react-helmet-async';
 import {
@@ -14,44 +14,154 @@ import {
   Clock,
   Sparkles,
   MessageSquare,
+  HardHat,
 } from 'lucide-react';
-import { useCompanyBySlugQuery, useRequestPublicServiceMutation } from '@/features/companies/api/useCompanies';
+import {
+  useCompanyBySlugQuery,
+  useRequestPublicServiceMutation,
+  useRequestPublicProjectMutation,
+} from '@/features/companies/api/useCompanies';
 import { AppModal } from '@/components/ui/AppModal';
-import { cabinetBtnPrimary, cabinetFieldClass, cabinetLabelClass } from '@/components/cabinet/cabinet-ui';
+import {
+  cabinetBtnPrimary,
+  cabinetFieldClass,
+  cabinetLabelClass,
+} from '@/components/cabinet/cabinet-ui';
 import { CompanyLogo } from '@/components/public/CompanyLogo';
 import { CompanyGallery } from '@/components/public/CompanyGallery';
 import { CompanyReviewsSection } from '@/components/reviews/CompanyReviewsSection';
+import { formatServiceDuration } from '@/utils/serviceDuration';
+import { useAuthStore } from '@/stores/authStore';
+import { useMeQuery } from '@/features/auth/api/useAuth';
+
+function ClientProfileSummary({
+  name,
+  phone,
+  email,
+}: {
+  name: string;
+  phone: string;
+  email: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-violet-100 bg-violet-50/60 px-4 py-3 text-xs space-y-1">
+      <p className="font-bold text-violet-800 uppercase tracking-wide text-[10px]">Datele tale</p>
+      <p className="font-semibold text-slate-800">{name}</p>
+      <p className="text-slate-600">{phone}</p>
+      <p className="text-slate-600">{email}</p>
+    </div>
+  );
+}
 
 export function CompanyDetailPage() {
   const { slug = '' } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = useAuthStore((s) => s.user);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const isAuthenticated = !!user && !!accessToken;
+  const isEndClient = user?.accountKind === 'END_CLIENT';
+  const { data: me } = useMeQuery(isAuthenticated && isEndClient);
   const { data, isLoading, isError } = useCompanyBySlugQuery(slug);
   const requestService = useRequestPublicServiceMutation(slug);
+  const requestProject = useRequestPublicProjectMutation(slug);
   const [requestModal, setRequestModal] = useState<{ serviceId: string; serviceName: string } | null>(null);
-  const [customerName, setCustomerName] = useState('');
-  const [customerPhone, setCustomerPhone] = useState('');
-  const [customerEmail, setCustomerEmail] = useState('');
+  const [projectModalOpen, setProjectModalOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [projectTitle, setProjectTitle] = useState('');
+  const [projectAddress, setProjectAddress] = useState('');
+  const [projectCategoryId, setProjectCategoryId] = useState('');
+  const [projectEstimatedBudget, setProjectEstimatedBudget] = useState('');
+  const [projectMessage, setProjectMessage] = useState('');
+
+  const profileName =
+    [me?.firstName, me?.lastName].filter(Boolean).join(' ').trim() ||
+    me?.email?.split('@')[0] ||
+    '';
+  const profilePhone = me?.phone?.trim() ?? '';
+  const profileEmail = me?.email ?? '';
+
+  const requireClientAuth = useCallback(() => {
+    if (!isAuthenticated) {
+      navigate(`/login?returnUrl=${encodeURIComponent(location.pathname)}`);
+      return false;
+    }
+    if (!isEndClient) {
+      toast.error('Doar conturile de client pot trimite cereri.');
+      return false;
+    }
+    if (!profilePhone) {
+      toast.error('Completați telefonul în contul de client înainte de a trimite cereri.');
+      navigate('/register?kind=END_CLIENT');
+      return false;
+    }
+    return true;
+  }, [isAuthenticated, isEndClient, location.pathname, navigate, profilePhone]);
+
+  const openServiceRequest = (serviceId: string, serviceName: string) => {
+    if (!requireClientAuth()) return;
+    setMessage('');
+    setRequestModal({ serviceId, serviceName });
+  };
+
+  const openProjectRequest = () => {
+    if (!requireClientAuth()) return;
+    setProjectTitle('');
+    setProjectAddress('');
+    setProjectCategoryId(data?.category?.id ?? '');
+    setProjectEstimatedBudget('');
+    setProjectMessage('');
+    setProjectModalOpen(true);
+  };
 
   const handleRequestSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!requestModal || !customerName.trim() || !customerPhone.trim()) {
-      toast.error('Completați numele și telefonul.');
-      return;
-    }
+    if (!requestModal) return;
     try {
       await requestService.mutateAsync({
         serviceId: requestModal.serviceId,
-        customerName: customerName.trim(),
-        customerPhone: customerPhone.trim(),
-        customerEmail: customerEmail.trim() || undefined,
         message: message.trim() || undefined,
       });
       toast.success('Cererea a fost trimisă! Compania vă va contacta.');
       setRequestModal(null);
-      setCustomerName('');
-      setCustomerPhone('');
-      setCustomerEmail('');
       setMessage('');
+    } catch (err: unknown) {
+      toast.error((err as Error).message || 'Nu s-a putut trimite cererea.');
+    }
+  };
+
+  const resetProjectForm = () => {
+    setProjectTitle('');
+    setProjectAddress('');
+    setProjectCategoryId('');
+    setProjectEstimatedBudget('');
+    setProjectMessage('');
+  };
+
+  const handleProjectSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!projectMessage.trim()) {
+      toast.error('Completați descrierea lucrării.');
+      return;
+    }
+    const budgetValue = projectEstimatedBudget.trim()
+      ? Number(projectEstimatedBudget.replace(/\s/g, '').replace(',', '.'))
+      : undefined;
+    if (budgetValue != null && (Number.isNaN(budgetValue) || budgetValue < 0)) {
+      toast.error('Bugetul estimativ trebuie să fie un număr valid.');
+      return;
+    }
+    try {
+      await requestProject.mutateAsync({
+        message: projectMessage.trim(),
+        address: projectAddress.trim() || undefined,
+        categoryId: projectCategoryId || data?.category?.id || undefined,
+        projectTitle: projectTitle.trim() || undefined,
+        estimatedBudget: budgetValue,
+      });
+      toast.success('Cererea de proiect a fost trimisă! Compania vă va contacta.');
+      setProjectModalOpen(false);
+      resetProjectForm();
     } catch (err: unknown) {
       toast.error((err as Error).message || 'Nu s-a putut trimite cererea.');
     }
@@ -218,14 +328,29 @@ export function CompanyDetailPage() {
 
             {(company.services?.length ?? 0) > 0 ? (
               <section className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
-                <div className="flex items-center gap-2 mb-6">
+                <div className="flex items-center gap-2 mb-2">
                   <Clock className="h-5 w-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
                     Servicii & prețuri
                   </h2>
                 </div>
+                {!isEndClient ? (
+                  <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+                    Pentru a solicita un serviciu,{' '}
+                    <Link to={`/login?returnUrl=${encodeURIComponent(location.pathname)}`} className="font-semibold text-violet-600 hover:underline">
+                      autentificați-vă
+                    </Link>{' '}
+                    cu un cont de client sau{' '}
+                    <Link to="/register?kind=END_CLIENT" className="font-semibold text-violet-600 hover:underline">
+                      creați unul
+                    </Link>
+                    .
+                  </p>
+                ) : null}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {company.services?.map((service) => (
+                  {company.services?.map((service) => {
+                    const durationLabel = formatServiceDuration(service.durationMinutes);
+                    return (
                     <article
                       key={service.id}
                       className="group flex flex-col justify-between rounded-2xl bg-slate-50/70 p-5 border border-slate-100 hover:border-violet-100 hover:bg-white/80 transition-all duration-300 shadow-sm hover:shadow-premium"
@@ -246,26 +371,51 @@ export function CompanyDetailPage() {
                             {Number(service.defaultPrice).toLocaleString('ro-MD')}{' '}
                             {service.currency ?? 'MDL'}
                           </span>
-                          {service.durationMinutes ? (
+                          {durationLabel ? (
                             <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400">
                               <Clock className="h-3 w-3" />
-                              {service.durationMinutes} min
+                              {durationLabel}
                             </span>
                           ) : null}
                         </div>
                         <button
                           type="button"
-                          onClick={() => setRequestModal({ serviceId: service.id, serviceName: service.name })}
+                          onClick={() => openServiceRequest(service.id, service.name)}
                           className="w-full py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity"
                         >
                           Solicită serviciul
                         </button>
                       </div>
                     </article>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             ) : null}
+
+            <section className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <HardHat className="h-5 w-5 text-violet-600" />
+                    <h2 className="text-lg font-black text-slate-900 tracking-tight">
+                      Cerere proiect / lucrare complexă
+                    </h2>
+                  </div>
+                  <p className="text-xs text-slate-500 leading-relaxed max-w-xl">
+                    Descrieți lucrarea dorită — renovări, instalații, proiecte pe termen lung. Compania
+                    vă va contacta pentru evaluare și smetă. Necesită cont de client autentificat.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={openProjectRequest}
+                  className="shrink-0 py-3 px-6 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity"
+                >
+                  Trimite cerere proiect
+                </button>
+              </div>
+            </section>
 
             {/* Reviews Container */}
             <div className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
@@ -374,42 +524,7 @@ export function CompanyDetailPage() {
         title={requestModal ? `Solicită: ${requestModal.serviceName}` : 'Solicită serviciul'}
       >
         <form onSubmit={handleRequestSubmit} className="space-y-4">
-          <div>
-            <label className={cabinetLabelClass} htmlFor="req-name">
-              Nume *
-            </label>
-            <input
-              id="req-name"
-              className={cabinetFieldClass}
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label className={cabinetLabelClass} htmlFor="req-phone">
-              Telefon *
-            </label>
-            <input
-              id="req-phone"
-              className={cabinetFieldClass}
-              value={customerPhone}
-              onChange={(e) => setCustomerPhone(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label className={cabinetLabelClass} htmlFor="req-email">
-              Email
-            </label>
-            <input
-              id="req-email"
-              type="email"
-              className={cabinetFieldClass}
-              value={customerEmail}
-              onChange={(e) => setCustomerEmail(e.target.value)}
-            />
-          </div>
+          <ClientProfileSummary name={profileName} phone={profilePhone} email={profileEmail} />
           <div>
             <label className={cabinetLabelClass} htmlFor="req-msg">
               Mesaj
@@ -424,6 +539,94 @@ export function CompanyDetailPage() {
           </div>
           <button type="submit" className={cabinetBtnPrimary} disabled={requestService.isPending}>
             {requestService.isPending ? 'Se trimite…' : 'Trimite cererea'}
+          </button>
+        </form>
+      </AppModal>
+
+      <AppModal
+        open={projectModalOpen}
+        onClose={() => {
+          setProjectModalOpen(false);
+          resetProjectForm();
+        }}
+        title="Cerere proiect / lucrare complexă"
+      >
+        <form onSubmit={handleProjectSubmit} className="space-y-4">
+          <ClientProfileSummary name={profileName} phone={profilePhone} email={profileEmail} />
+          <div>
+            <label className={cabinetLabelClass} htmlFor="proj-title">
+              Titlu proiect
+            </label>
+            <input
+              id="proj-title"
+              className={cabinetFieldClass}
+              value={projectTitle}
+              onChange={(e) => setProjectTitle(e.target.value)}
+              placeholder="Ex: Renovare apartament 2 camere"
+            />
+          </div>
+          <div>
+            <label className={cabinetLabelClass} htmlFor="proj-category">
+              Tip lucrare
+            </label>
+            {data?.category ? (
+              <input
+                id="proj-category"
+                className={`${cabinetFieldClass} bg-slate-50 text-slate-700`}
+                value={data.category.name}
+                readOnly
+              />
+            ) : (
+              <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
+                Compania nu are categorie setată în profil. Cererea va fi trimisă fără tip lucrare.
+              </p>
+            )}
+          </div>
+          <div>
+            <label className={cabinetLabelClass} htmlFor="proj-budget">
+              Buget estimativ (MDL)
+            </label>
+            <input
+              id="proj-budget"
+              type="number"
+              min={0}
+              step={100}
+              className={cabinetFieldClass}
+              value={projectEstimatedBudget}
+              onChange={(e) => setProjectEstimatedBudget(e.target.value)}
+              placeholder="Ex: 25000"
+            />
+            <p className="text-[11px] text-slate-400 mt-1">
+              Opțional — suma aproximativă pe care o aveți în vedere pentru proiect.
+            </p>
+          </div>
+          <div>
+            <label className={cabinetLabelClass} htmlFor="proj-address">
+              Adresă / locație
+            </label>
+            <input
+              id="proj-address"
+              className={cabinetFieldClass}
+              value={projectAddress}
+              onChange={(e) => setProjectAddress(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className={cabinetLabelClass} htmlFor="proj-msg">
+              Descriere lucrare *
+            </label>
+            <textarea
+              id="proj-msg"
+              className={cabinetFieldClass}
+              rows={4}
+              value={projectMessage}
+              onChange={(e) => setProjectMessage(e.target.value)}
+              placeholder="Detaliați ce doriți realizat, termenul dorit, suprafața etc."
+              required
+            />
+          </div>
+          <button type="submit" className={cabinetBtnPrimary} disabled={requestProject.isPending}>
+            {requestProject.isPending ? 'Se trimite…' : 'Trimite cererea'}
           </button>
         </form>
       </AppModal>

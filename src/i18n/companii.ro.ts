@@ -48,6 +48,7 @@ export const companiiRo = {
   },
   portal: {
     dashboard: 'Contul meu',
+    cereri: 'Cererile mele',
     lucrari: 'Lucrările mele',
     oferte: 'Oferte',
     smete: 'Smete',

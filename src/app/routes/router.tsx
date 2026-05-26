@@ -30,6 +30,7 @@ import { CompanyEstimatesPage } from '@/pages/company/CompanyEstimatesPage';
 import { CompanyEstimateWizardPage } from '@/pages/company/CompanyEstimateWizardPage';
 import { EstimateWorkSheetPage } from '@/pages/company/EstimateWorkSheetPage';
 import { CompanyLeadsPage } from '@/pages/company/CompanyLeadsPage';
+import { PortalCereriPage } from '@/pages/portal/PortalCereriPage';
 import { PortalDashboardPage } from '@/pages/portal/PortalDashboardPage';
 import { PortalLucrariPage } from '@/pages/portal/PortalLucrariPage';
 import { PortalOfertePage } from '@/pages/portal/PortalOfertePage';
@@ -218,6 +219,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <PortalDashboardPage /> },
+      { path: 'cereri', element: <PortalCereriPage /> },
       { path: 'lucrari', element: <PortalLucrariPage /> },
       { path: 'oferte', element: <PortalOfertePage /> },
       { path: 'smete', element: <PortalSmetePage /> },

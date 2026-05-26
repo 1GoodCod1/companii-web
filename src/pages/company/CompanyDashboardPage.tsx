@@ -269,7 +269,7 @@ export function CompanyDashboardPage() {
             />
 
             {!newLeads?.length ? (
-              <EmptyState message="Nicio cerere nouă din pachete sau site." />
+              <EmptyState message="Nicio cerere nouă din servicii sau site." />
             ) : (
               <div className="space-y-3">
                 {newLeads.slice(0, 5).map((lead: CompanyLeadDto) => (

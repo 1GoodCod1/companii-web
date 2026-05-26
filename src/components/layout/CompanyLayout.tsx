@@ -16,6 +16,8 @@ import {
 import { CabinetShell } from './CabinetShell';
 import { useMySubscriptionQuery } from '@/features/subscriptions/api/useSubscriptions';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
+import { useLeadsQuery } from '@/features/fsm/api/useFsm';
+import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
 import { COMPANY_ROUTE_MIN_PLAN, hasMinPlan } from '@/config/planEntitlements';
 import { canAccessCompanyRoute } from '@/features/companies/roleAccess';
 import type { CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
@@ -159,7 +161,7 @@ function buildCompanySections(
   return SECTION_ORDER.flatMap((sectionKey) => {
     const items = visible
       .filter((item) => item.sectionKey === sectionKey)
-      .map(({ key, to, labelKey, icon }) => ({ key, to, labelKey, icon }));
+      .map(({ key, to, labelKey, icon, badge }) => ({ key, to, labelKey, icon, badge }));
 
     if (items.length === 0) return [];
 
@@ -187,6 +189,13 @@ export function CompanyLayout() {
     subscription?.plan?.code ??
     (activeCompany?.subscription?.plan?.code as CompanySubscriptionPlanCode | undefined);
   const profileRole = resolveCompanyRole(user?.companyRole, companyMe, activeCompanyId);
+  const { isManagement } = useCompanyPermissions();
+  const cereriPlanAllowed = hasMinPlan(currentPlan, 'PRO');
+  const cereriRoleAllowed = canAccessCompanyRoute(profileRole, '/cereri');
+  const { data: newLeads } = useLeadsQuery('NEW', {
+    enabled: isManagement && cereriPlanAllowed && cereriRoleAllowed && !!activeCompanyId,
+  });
+  const newLeadCount = newLeads?.length ?? 0;
 
   useEffect(() => {
     if (!companyMe) return;
@@ -216,7 +225,14 @@ export function CompanyLayout() {
     }
   }, [companyMe, user?.activeCompanyId, user?.companyRole, activeCompanyId, setActiveCompanyId]);
 
-  const sections = buildCompanySections(currentPlan, profileRole);
+  const sections = buildCompanySections(currentPlan, profileRole).map((section) => ({
+    ...section,
+    items: section.items.map((item) =>
+      item.key === 'cereri' && newLeadCount > 0
+        ? { ...item, badge: newLeadCount > 99 ? '99+' : newLeadCount }
+        : item,
+    ),
+  }));
 
   return (
     <CabinetShell

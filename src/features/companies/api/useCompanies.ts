@@ -368,18 +368,46 @@ export function useRequestPublicServiceMutation(companySlug: string) {
   return useMutation({
     mutationFn: (body: {
       serviceId: string;
-      customerName: string;
-      customerPhone: string;
-      customerEmail?: string;
       message?: string;
       scheduledAt?: string;
     }) =>
-      apiFetch<{ leadId: string }>(`/companies/${companySlug}/services/${body.serviceId}/request`, {
-        method: 'POST',
-        body: JSON.stringify(body),
-      }),
+      apiFetch<{ leadId: string; customerId: string; customerCreated: boolean }>(
+        `/companies/${companySlug}/services/${body.serviceId}/request`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            message: body.message,
+            scheduledAt: body.scheduledAt,
+          }),
+        },
+      ),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.detail(companySlug) });
+      void qc.invalidateQueries({ queryKey: queryKeys.portal.leads });
+    },
+  });
+}
+
+export function useRequestPublicProjectMutation(companySlug: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      message: string;
+      address?: string;
+      categoryId?: string;
+      projectTitle?: string;
+      estimatedBudget?: number;
+    }) =>
+      apiFetch<{ leadId: string; customerId: string; customerCreated: boolean }>(
+        `/companies/${companySlug}/request-project`,
+        {
+          method: 'POST',
+          body: JSON.stringify(body),
+        },
+      ),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.detail(companySlug) });
+      void qc.invalidateQueries({ queryKey: queryKeys.portal.leads });
     },
   });
 }
