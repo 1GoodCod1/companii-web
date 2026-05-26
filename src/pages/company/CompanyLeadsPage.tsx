@@ -187,40 +187,63 @@ export function CompanyLeadsPage() {
               {sortedLeads.map((lead) => (
                 <article key={lead.id} className="px-4 py-5 space-y-3">
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="min-w-0 space-y-1">
+                    <div className="min-w-0 flex-1 space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-semibold text-gray-900">{lead.contactName}</h3>
+                        <h3 className="font-extrabold text-slate-900 text-sm sm:text-base leading-snug">{lead.contactName}</h3>
                         <SoftBadge tone={LEAD_STATUS_TONES[lead.status]}>{LEAD_STATUS_LABELS[lead.status]}</SoftBadge>
+                        {lead.source === 'SERVICE_REQUEST' ? (
+                          <SoftBadge tone="violet">
+                            🔧 Serviciu: {lead.serviceTitle || 'Nespecificat'}
+                          </SoftBadge>
+                        ) : lead.source === 'PROJECT_REQUEST' ? (
+                          <SoftBadge tone="blue">
+                            🏗️ Proiect Complex
+                          </SoftBadge>
+                        ) : (
+                          <SoftBadge tone="gray">
+                            {LEAD_SOURCE_LABELS[lead.source] ?? lead.source}
+                          </SoftBadge>
+                        )}
                       </div>
-                      <p className="text-xs text-gray-500">
-                        {lead.contactPhone}
-                        {lead.contactEmail ? ` · ${lead.contactEmail}` : ''}
+                      
+                      <p className="text-xs text-slate-500 font-medium">
+                        📞 {lead.contactPhone}
+                        {lead.contactEmail ? ` · ✉️ ${lead.contactEmail}` : ''}
                       </p>
-                      {lead.serviceTitle ? (
-                        <p className="text-xs font-semibold text-violet-600">{lead.serviceTitle}</p>
+
+                      {lead.message ? (
+                        <div className="rounded-xl bg-slate-50/80 border border-slate-100 p-3.5 text-xs text-slate-600 leading-relaxed max-w-2xl font-medium">
+                          {lead.message}
+                        </div>
                       ) : null}
-                      {lead.message ? <p className="text-xs text-gray-400">{lead.message}</p> : null}
-                      {lead.estimatedBudget != null && lead.estimatedBudget > 0 ? (
-                        <p className="text-xs font-semibold text-violet-700">
-                          Buget estimativ: {Number(lead.estimatedBudget).toLocaleString('ro-MD')} MDL
-                        </p>
-                      ) : null}
-                      {lead.address ? (
-                        <p className="text-xs text-gray-500">Adresă: {lead.address}</p>
-                      ) : null}
+
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
+                        {lead.estimatedBudget != null && Number(lead.estimatedBudget) > 0 ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-700">
+                            💰 Buget: {Number(lead.estimatedBudget).toLocaleString('ro-MD')} MDL
+                          </span>
+                        ) : null}
+
+                        {lead.address ? (
+                          <span className="text-xs text-slate-500 font-semibold">
+                            📍 {lead.address}
+                          </span>
+                        ) : null}
+                      </div>
+
                       {lead.estimateProject ? (
-                        <p className="text-xs">
+                        <p className="text-xs pt-1">
                           <Link
                             to={`/company/smete/${lead.estimateProject.id}`}
-                            className="font-semibold text-violet-600 underline"
+                            className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100/50 px-3 py-1 text-xs font-bold text-violet-700 hover:bg-violet-100 transition-colors"
                           >
-                            Smetă {lead.estimateProject.number} — {lead.estimateProject.title}
+                            📝 Smetă {lead.estimateProject.number} — {lead.estimateProject.title}
                           </Link>
                         </p>
                       ) : null}
-                      <p className="text-[10px] text-gray-400">
-                        {new Date(lead.createdAt).toLocaleString('ro-MD')} ·{' '}
-                        {LEAD_SOURCE_LABELS[lead.source] ?? lead.source}
+                      
+                      <p className="text-[10px] text-slate-400 font-medium">
+                        Adăugat la: {new Date(lead.createdAt).toLocaleString('ro-MD')}
                       </p>
                     </div>
                     {lead.status !== 'CONVERTED' && lead.status !== 'LOST' ? (

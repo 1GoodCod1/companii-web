@@ -132,6 +132,11 @@ export type EstimateProjectDto = EstimateProjectListDto & {
   sitePlan?: { plan2d: Plan2dData; plan3d?: unknown } | null;
   measurements?: Array<{ key: string; label?: string; value: number; unit: string }>;
   stages: EstimateStageDto[];
+  sourceLead?: {
+    id: string;
+    estimatedBudget?: number | string | null;
+    message?: string | null;
+  } | null;
 };
 
 export type WorkSheetDto = {

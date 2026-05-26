@@ -115,16 +115,16 @@ export const FAQ_SECTIONS: FaqSection[] = [
         a: 'Pachetele sunt servicii predefinite (ex: „Instalare boiler”) cu preț și descriere. Le folosiți rapid la crearea lucrărilor și le puteți afișa pe profilul public al companiei.',
       },
       {
-        q: 'Cum emit oferte (devize)?',
-        a: 'Din cabinet → Oferte creați devize legate de clienți și lucrări. Clientul le poate consulta în portal. Disponibil pe plan Business.',
+        q: 'Cum funcționează calculatorul de smete inteligente?',
+        a: 'Faber Companii oferă un editor integrat pentru parametrizarea dimensiunilor încăperilor și a dotărilor. Pe baza acestora și a unui diagnostic rapid (înălțime pereți, dotări, suprafețe), motorul de calcul determină automat consumul de materiale, orele de manoperă și tarifele personalizate, generând devizul complet în secunde.',
       },
       {
-        q: 'Cum emit facturi?',
-        a: 'Facturile se gestionează în cabinet → Facturi, legate de lucrări finalizate. Clientul le descarcă din portal. Funcționalitate Business.',
+        q: 'Cum emit oferte și facturi?',
+        a: 'Din cabinet → Smete / Oferte și cabinet → Facturi puteți emite devize comerciale și facturi cu calcul automat al TVA și al marjei de profit. Acestea devin instant vizibile clientului în portalul său securizat.',
       },
       {
-        q: 'Pot exporta sau tipări documentele?',
-        a: 'Documentele generate în platformă pot fi vizualizate online de client; exportul PDF și integrări contabile extinse sunt în roadmap — contactați-ne pentru nevoi specifice.',
+        q: 'Pot exporta sau tipări documentele în format PDF?',
+        a: 'Da. Toate Smetele, Ofertele și Facturile pot fi descărcate ca PDF și tipărite direct din cabinet sau din portalul clientului. Documentele generate folosesc fonturi Unicode și oferă suport complet nativ pentru diacriticele limbii române (ș, ț, ă, â, î).',
       },
     ],
   },

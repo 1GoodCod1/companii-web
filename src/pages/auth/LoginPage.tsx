@@ -158,15 +158,23 @@ export function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <label className="flex items-center gap-2.5 text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer py-1">
-            <input
-              type="checkbox"
-              className="rounded text-violet-600 focus:ring-violet-500/20 border-gray-200 w-4 h-4 cursor-pointer"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-            />
-            {t('auth.rememberMe', 'Ține-mă minte')}
-          </label>
+          <div className="flex justify-between items-center py-1">
+            <label className="flex items-center gap-2.5 text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer">
+              <input
+                type="checkbox"
+                className="rounded text-violet-600 focus:ring-violet-500/20 border-gray-200 w-4 h-4 cursor-pointer"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              {t('auth.rememberMe', 'Ține-mă minte')}
+            </label>
+            <Link
+              to="/forgot-password"
+              className="text-xs font-bold text-violet-600 hover:text-violet-750 uppercase tracking-wider transition-colors"
+            >
+              {t('auth.forgotPassword', 'Ai uitat parola?')}
+            </Link>
+          </div>
           <button
             type="submit"
             className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white py-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md cursor-pointer text-sm tracking-wide mt-2"

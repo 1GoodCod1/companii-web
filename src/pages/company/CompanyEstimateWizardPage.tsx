@@ -41,7 +41,7 @@ import {
   useAddEstimateLineMutation,
   useDeleteEstimateLineMutation,
 } from '@/features/estimates/api/useEstimates';
-import { PlanEditor2D } from '@/features/estimates/components/PlanEditor2D';
+import { PlanEditor } from '@/features/estimates/components/PlanEditor';
 import { CustomPricingFields } from '@/features/estimates/components/CustomPricingFields';
 import {
   mergeCustomPricing,
@@ -466,6 +466,26 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
 
       {currentStep === 'object' && (
         <Panel className="p-6 max-w-2xl space-y-4">
+          {project.sourceLead?.estimatedBudget && (
+            <div className="rounded-2xl border border-violet-100 bg-gradient-to-r from-violet-50/50 to-indigo-50/50 p-5 mb-2 shadow-xs flex items-start gap-4">
+              <div className="p-2.5 rounded-xl bg-violet-100 text-violet-700 shrink-0">
+                <Calculator className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold text-violet-800 uppercase tracking-wider">
+                  Buget estimativ solicitat de client
+                </p>
+                <p className="text-xl font-black text-slate-900 mt-1">
+                  {Number(project.sourceLead.estimatedBudget).toLocaleString('ro-MD')} MDL
+                </p>
+                {project.sourceLead.message && (
+                  <p className="text-xs text-slate-500 mt-1.5 leading-relaxed italic">
+                    "{project.sourceLead.message}"
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
           <label className={cabinetLabelClass}>
             Titlu proiect
             <input value={title} onChange={(e) => setTitle(e.target.value)} className={cabinetFieldClass} />
@@ -495,7 +515,7 @@ function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
 
       {currentStep === 'plan' && (
         <div className="space-y-6">
-          <PlanEditor2D
+          <PlanEditor
             value={plan2d}
             config={config}
             categoryName={project.category.name}

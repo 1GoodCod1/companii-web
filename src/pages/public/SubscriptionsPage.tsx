@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import {
   useMySubscriptionQuery,
   useSubscriptionPlansQuery,
@@ -13,6 +13,11 @@ import { useState } from 'react';
 export function SubscriptionsPage() {
   const { data, isLoading, isError } = useSubscriptionPlansQuery();
   const { isAuthed, user, cabinetRoute, planCardCta } = usePublicAuthCta();
+  const isEndClient = user?.accountKind === 'END_CLIENT';
+
+  if (isAuthed && isEndClient) {
+    return <Navigate to="/portal" replace />;
+  }
   const hasCompany = user?.accountKind === 'COMPANY_STAFF' && !!user.activeCompanyId;
 
   const { data: subData } = useMySubscriptionQuery();

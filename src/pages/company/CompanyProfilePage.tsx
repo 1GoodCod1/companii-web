@@ -29,7 +29,7 @@ import {
 } from '@/components/company/CompanyBrandingSection';
 import type { CatalogOptionDto, OwnedCompanyDto } from '@/features/companies/types';
 import { uploadFile, uploadFiles } from '@/api/files';
-import { validateImageFile } from '@/utils/validateFile';
+import { validateMediaFile, isVideoFile, getVideoDuration, MAX_VIDEO_DURATION, MAX_VIDEO_COUNT } from '@/utils/validateFile';
 import { useMeQuery } from '@/features/auth/api/useAuth';
 import toast from 'react-hot-toast';
 import { resolveActiveCompany, MANAGER_PROFILE_FIELDS } from '@/features/companies/resolveActiveCompany';
@@ -190,21 +190,54 @@ function CompanyProfileEditor({
   );
 
   const handleGalleryPick = useCallback(
-    (fileList: FileList | File[]) => {
+    async (fileList: FileList | File[]) => {
       const existingCount = (ownedCompany?.galleryImages?.length ?? 0) + pendingGallery.length;
       const room = MAX_GALLERY - existingCount;
       if (room <= 0) {
-        toast.error(`Maximum ${MAX_GALLERY} poze în galerie.`);
+        toast.error(`Maximum ${MAX_GALLERY} fișiere în galerie.`);
         return;
       }
 
+      // Count existing videos
+      const existingVideos =
+        (ownedCompany?.galleryImages ?? []).filter((img) => {
+          const u = img.url.split('?')[0]?.toLowerCase() ?? '';
+          return u.endsWith('.mp4') || u.endsWith('.mov') || u.endsWith('.webm');
+        }).length +
+        pendingGallery.filter((p) => isVideoFile(p.file)).length;
+
+      let videoCount = existingVideos;
       const next: PendingGalleryItem[] = [];
+
       for (const file of Array.from(fileList).slice(0, room)) {
-        const err = validateImageFile(file);
+        const err = validateMediaFile(file);
         if (err) {
-          toast.error(err === 'files.tooLarge' ? 'Poză prea mare (max 10 MB)' : 'Format invalid');
+          toast.error(
+            err === 'files.tooLarge'
+              ? `Fișier prea mare (max ${isVideoFile(file) ? '100' : '10'} MB)`
+              : 'Format invalid (JPG, PNG, WEBP, MP4, MOV, WEBM)',
+          );
           continue;
         }
+
+        if (isVideoFile(file)) {
+          if (videoCount >= MAX_VIDEO_COUNT) {
+            toast.error(`Maximum ${MAX_VIDEO_COUNT} videoclipuri în galerie.`);
+            continue;
+          }
+          try {
+            const duration = await getVideoDuration(file);
+            if (duration > MAX_VIDEO_DURATION) {
+              toast.error(`Durata video maximă este de ${MAX_VIDEO_DURATION / 60} minute.`);
+              continue;
+            }
+          } catch {
+            toast.error('Nu s-a putut verifica durata video.');
+            continue;
+          }
+          videoCount += 1;
+        }
+
         next.push({
           id: `${Date.now()}-${Math.random()}`,
           file,
@@ -214,7 +247,7 @@ function CompanyProfileEditor({
       }
       if (next.length > 0) setPendingGallery((prev) => [...prev, ...next]);
     },
-    [ownedCompany?.galleryImages?.length, pendingGallery.length],
+    [ownedCompany?.galleryImages, pendingGallery],
   );
 
   const handlePendingGalleryRemove = useCallback((id: string) => {

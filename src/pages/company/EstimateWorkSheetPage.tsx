@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Circle, ClipboardList, MapPin, Phone, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { PageHero, Panel, SoftBadge, EmptyState } from '@/components/cabinet/cabinet-ui';
-import { PlanEditor2D } from '@/features/estimates/components/PlanEditor2D';
+import { PlanEditor } from '@/features/estimates/components/PlanEditor';
 import { useWorksheetByInterventionQuery } from '@/features/estimates/api/useEstimates';
 import { useUpdateChecklistMutation } from '@/features/fsm/api/useFsm';
 import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
@@ -93,7 +93,7 @@ export function EstimateWorkSheetPage() {
       </div>
 
       {sheet.sitePlan?.plan2d && (
-        <PlanEditor2D
+        <PlanEditor
           value={sheet.sitePlan.plan2d}
           readOnly={true}
           onChange={() => {}}

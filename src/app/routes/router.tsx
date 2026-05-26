@@ -13,6 +13,8 @@ import { TermsPage } from '@/pages/public/TermsPage';
 import { SubscriptionsPage } from '@/pages/public/SubscriptionsPage';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
+import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
 import { CompaniesListPage } from '@/pages/public/CompaniesListPage';
 import { CompanyDetailPage } from '@/pages/public/CompanyDetailPage';
 import { CompanyDashboardPage } from '@/pages/company/CompanyDashboardPage';
@@ -66,6 +68,8 @@ export const router = createBrowserRouter([
       { path: 'subscriptions', element: <SubscriptionsPage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'register', element: <RegisterPage /> },
+      { path: 'forgot-password', element: <ForgotPasswordPage /> },
+      { path: 'reset-password', element: <ResetPasswordPage /> },
       { path: 'portal/invite', element: <PortalInvitePage /> },
       { path: 'team/invite', element: <TeamInvitePage /> },
       { path: 'companies', element: <CompaniesListPage /> },

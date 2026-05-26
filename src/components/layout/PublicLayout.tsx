@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 export function PublicLayout() {
   const { t } = useTranslation();
   const location = useLocation();
-  const { isAuthed, cabinetRoute, cabinetLabel } = usePublicAuthCta();
+  const { isAuthed, cabinetRoute, cabinetLabel, user } = usePublicAuthCta();
   const isLanding = location.pathname === '/' || location.pathname === '/companii';
 
   return (
@@ -22,7 +22,7 @@ export function PublicLayout() {
               Faber Companii
             </span>
           </Link>
-
+          
           <nav className="flex items-center gap-5 text-xs font-bold uppercase tracking-wider">
             <Link to="/how-it-works" className="text-gray-500 hover:text-gray-900 transition-colors">
               Cum funcționează
@@ -30,9 +30,11 @@ export function PublicLayout() {
             <Link to="/companies" className="text-gray-500 hover:text-gray-900 transition-colors">
               {t('nav.companies')}
             </Link>
-            <Link to="/subscriptions" className="text-gray-500 hover:text-gray-900 transition-colors">
-              Abonamente
-            </Link>
+            {user?.accountKind !== 'END_CLIENT' && (
+              <Link to="/subscriptions" className="text-gray-500 hover:text-gray-900 transition-colors">
+                Abonamente
+              </Link>
+            )}
             <Link to="/faq" className="text-gray-500 hover:text-gray-900 transition-colors">
               FAQ
             </Link>
@@ -103,9 +105,11 @@ export function PublicLayout() {
               <li>
                 <Link to="/companies" className="hover:text-violet-600 transition-colors">Companii înscrise</Link>
               </li>
-              <li>
-                <Link to="/subscriptions" className="hover:text-violet-600 transition-colors">Abonamente</Link>
-              </li>
+              {user?.accountKind !== 'END_CLIENT' && (
+                <li>
+                  <Link to="/subscriptions" className="hover:text-violet-600 transition-colors">Abonamente</Link>
+                </li>
+              )}
               <li>
                 <Link to="/faq" className="hover:text-violet-600 transition-colors">Întrebări frecvente</Link>
               </li>

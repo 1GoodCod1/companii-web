@@ -42,6 +42,13 @@ export interface AuthMeResponse {
   firstName?: string | null;
   lastName?: string | null;
   accountKind?: AuthUserSnapshot['accountKind'];
+  portalCustomer?: {
+    id: string;
+    fullName: string;
+    phone: string;
+    email?: string | null;
+    address: string;
+  } | null;
 }
 
 export function useMeQuery(enabled = true): UseQueryResult<AuthMeResponse, Error> {
@@ -221,4 +228,34 @@ export async function refreshAuthSession(): Promise<void> {
   } catch {
     if (!accessToken) clear();
   }
+}
+
+export function useForgotPasswordMutation() {
+  return useMutation({
+    mutationFn: (body: { email: string }) =>
+      apiFetch<{ message: string }>('/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+  });
+}
+
+export function useResetPasswordMutation() {
+  return useMutation({
+    mutationFn: (body: { token: string; password: string }) =>
+      apiFetch<{ message: string }>('/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+  });
+}
+
+export function useChangePasswordMutation() {
+  return useMutation({
+    mutationFn: (body: { currentPassword: string; newPassword: string }) =>
+      apiFetch<{ message: string }>('/auth/change-password', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }),
+  });
 }

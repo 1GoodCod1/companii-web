@@ -73,9 +73,8 @@ export function LandingPage() {
                 <span className="landing-shimmer-text">într-un singur panou</span>
               </h1>
 
-              <p className="mt-6 text-lg sm:text-xl text-gray-500 leading-relaxed max-w-xl">
-                Echipă pe teren, clienți, programări, oferte comerciale și facturi cu TVA — fără
-                Excel, fără grupuri WhatsApp, fără pierderi de comenzi.
+              <p className="mt-6 text-lg sm:text-xl text-gray-500 leading-relaxed max-w-xl text-wrap:pretty">
+                Calcul automat de smete, CRM clienți, calendar pe teren, dimensionare încăperi, oferte și facturi PDF cu diacritice românești — fără Excel și fără grupuri WhatsApp.
               </p>
 
               <p className="mt-4 text-sm text-gray-400 max-w-lg leading-relaxed">

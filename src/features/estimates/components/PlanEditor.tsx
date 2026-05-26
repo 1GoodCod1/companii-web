@@ -33,7 +33,7 @@ function uid() {
   return crypto.randomUUID();
 }
 
-export function PlanEditor2D({
+export function PlanEditor({
   value,
   config,
   categoryName,
@@ -363,7 +363,7 @@ export function PlanEditor2D({
                     <tr key={room.id} className="hover:bg-slate-50/40">
                       <td className="py-2 px-3">
                         <input
-                          type="text"
+                           type="text"
                           disabled={readOnly}
                           value={room.name}
                           onChange={(e) => updateRoom(room.id, { name: e.target.value })}

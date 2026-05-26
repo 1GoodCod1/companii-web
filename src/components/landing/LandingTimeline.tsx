@@ -29,9 +29,9 @@ const steps = [
   {
     icon: FileSpreadsheet,
     step: '04',
-    title: 'Oferte & devize',
+    title: 'Smete inteligente & Parametrizare',
     description:
-      'Generezi oferte comerciale cu linii de cost, le trimiți clientului și le convertești direct în lucrări.',
+      'Calculezi automat cantitățile de materiale și orele de manoperă prin configurarea dimensiunilor în editorul integrat sau prin chestionare de diagnostic.',
     tone: 'border-blue-200 bg-blue-50/50 text-blue-700',
   },
   {

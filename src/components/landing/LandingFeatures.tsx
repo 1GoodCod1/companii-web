@@ -21,13 +21,13 @@ const features = [
   },
   {
     icon: CreditCard,
-    title: 'Facturare cu TVA',
-    text: 'Calcule automate pentru plătitori TVA. Status plăți, restanțe, rapoarte financiare clare.',
+    title: 'Smetă Smart & Parametri',
+    text: 'Configurare dimensiuni încăperi și inventar de echipamente, cu calcul automat de materiale, manoperă și marjă de profit.',
   },
   {
     icon: Smartphone,
-    title: 'Portal pentru clienți',
-    text: 'Clienții văd lucrările, ofertele și facturile lor — fără apeluri repetate „cât am de plată?".',
+    title: 'Portal Client & Buget',
+    text: 'Clienții plasează cereri directe cu buget și adresă pre-completate. Descarcă oferte și facturi PDF cu diacritice românești.',
   },
   {
     icon: ShieldCheck,

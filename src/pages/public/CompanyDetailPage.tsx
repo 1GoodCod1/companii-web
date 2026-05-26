@@ -61,6 +61,7 @@ export function CompanyDetailPage() {
   const accessToken = useAuthStore((s) => s.accessToken);
   const isAuthenticated = !!user && !!accessToken;
   const isEndClient = user?.accountKind === 'END_CLIENT';
+  const showRequestActions = !isAuthenticated || isEndClient;
   const { data: me } = useMeQuery(isAuthenticated && isEndClient);
   const { data, isLoading, isError } = useCompanyBySlugQuery(slug);
   const requestService = useRequestPublicServiceMutation(slug);
@@ -107,7 +108,7 @@ export function CompanyDetailPage() {
   const openProjectRequest = () => {
     if (!requireClientAuth()) return;
     setProjectTitle('');
-    setProjectAddress('');
+    setProjectAddress(me?.portalCustomer?.address || '');
     setProjectCategoryId(data?.category?.id ?? '');
     setProjectEstimatedBudget('');
     setProjectMessage('');
@@ -224,68 +225,83 @@ export function CompanyDetailPage() {
           Toate companiile
         </Link>
 
-        {/* Hero Header Banner */}
-        <div className="relative rounded-[32px] overflow-hidden shadow-premium bg-slate-900 border border-white/10">
-          {/* Ambient Glowing Blobs behind Card */}
-          <div className="absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-violet-600/25 blur-[120px] pointer-events-none" />
-          <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 rounded-full bg-indigo-500/20 blur-[130px] pointer-events-none" />
+        {/* Premium Unified Hero Card */}
+        <div className="relative rounded-[32px] overflow-hidden border border-slate-200/60 bg-white shadow-premium transition-all duration-300 hover:shadow-xl">
+          {/* Deep corporate backdrop */}
+          <div className="absolute top-0 inset-x-0 h-44 sm:h-52" style={{
+            background: 'linear-gradient(135deg, #1e293b 0%, #334155 40%, #1e3a5f 70%, #0f172a 100%)'
+          }} />
+          
+          {/* Subtle warm accent glow */}
+          <div className="absolute top-0 inset-x-0 h-44 sm:h-52 opacity-30" style={{
+            backgroundImage: 'radial-gradient(ellipse at 70% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 55%), radial-gradient(ellipse at 20% 80%, rgba(51, 65, 85, 0.3) 0%, transparent 50%)'
+          }} />
+          
+          {/* Fine grid lines for blueprint feel */}
+          <div className="absolute top-0 inset-x-0 h-44 sm:h-52 opacity-[0.06]" style={{
+            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.15) 1px, transparent 1px)',
+            backgroundSize: '24px 24px'
+          }} />
+          
+          {/* Decorative glass accents */}
+          <div className="absolute top-10 right-12 w-32 h-16 rounded-2xl bg-white/[0.06] backdrop-blur-md border border-white/[0.08] hidden md:block" />
+          <div className="absolute top-24 right-28 w-12 h-12 rounded-full bg-white/[0.04] backdrop-blur-lg border border-white/[0.06] hidden md:block" />
 
-          {/* Premium Abstract Gradient Backdrop */}
-          <div className="h-40 sm:h-52 md:h-60 w-full bg-gradient-to-br from-[oklch(0.55_0.24_286.96)] via-[oklch(0.48_0.22_295.0)] to-[oklch(0.35_0.20_310.0)] relative opacity-95">
-            {/* Polka Dot texture overlap */}
-            <div className="absolute inset-0 opacity-15" style={{
-              backgroundImage: 'radial-gradient(circle, white 1.5px, transparent 1.5px)',
-              backgroundSize: '24px 24px'
-            }} />
-          </div>
-
-          {/* Overlapping Info Card */}
-          <div className="glass-panel relative rounded-b-[32px] px-6 sm:px-10 pb-8 pt-0 -mt-16 sm:-mt-20 border-t-0 border-x-0 border-b-white/10">
-            <div className="flex flex-col sm:flex-row sm:items-end gap-6">
-              {/* Logo Frame */}
-              <div className="shrink-0 -mt-10 sm:-mt-14 relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-indigo-500 rounded-3xl blur opacity-30 group-hover:opacity-40 transition-opacity" />
-                <CompanyLogo
-                  name={company.name}
-                  logoUrl={company.logoUrl}
-                  size="xl"
-                  className="relative shrink-0 rounded-3xl border-4 border-white shadow-xl bg-white"
-                />
+          {/* Hero Content Section */}
+          <div className="relative pt-24 sm:pt-32 px-6 sm:px-10 pb-8">
+            <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-8">
+              {/* Logo Frame with Double Gradient Glow */}
+              <div className="shrink-0 -mt-14 relative group self-start md:self-auto">
+                <div className="absolute -inset-1 bg-gradient-to-tr from-slate-600 to-indigo-500 rounded-[30px] blur opacity-30 group-hover:opacity-55 transition-opacity duration-500" />
+                <div className="relative p-1 bg-white rounded-[30px] shadow-2xl">
+                  <CompanyLogo
+                    name={company.name}
+                    logoUrl={company.logoUrl}
+                    size="xl"
+                    className="shrink-0 rounded-[26px] border border-slate-100 bg-white"
+                  />
+                </div>
               </div>
 
-              {/* Identity details */}
-              <div className="flex-1 min-w-0 pt-2 sm:pt-4">
+              {/* Identity details with Premium Tags */}
+              <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
-                  <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-none text-wrap:balance">
+                  <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-none text-wrap:balance">
                     {company.name}
                   </h1>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-[10px] font-bold text-emerald-700 shadow-sm animate-pulse-slow">
-                    <BadgeCheck className="h-3.5 w-3.5" />
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-[10px] font-bold text-emerald-700 shadow-xs">
+                    <BadgeCheck className="h-3.5 w-3.5 fill-emerald-100" />
                     Verificată
                   </span>
                 </div>
 
                 {company.category ? (
-                  <p className="text-sm font-bold text-violet-600 tracking-wide uppercase mb-3">
+                  <span className="inline-block rounded-xl bg-violet-50 border border-violet-100 px-3.5 py-1 text-xs font-bold text-violet-700 tracking-wide uppercase mb-4">
                     {company.category.name}
-                  </p>
+                  </span>
                 ) : null}
 
-                {/* Micro tags */}
-                <div className="flex flex-wrap gap-x-4 gap-y-2.5 text-sm text-slate-500">
+                {/* Refined modern info tags */}
+                <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-600 pt-2 border-t border-slate-100">
                   {company.city ? (
-                    <span className="inline-flex items-center gap-1.5 font-medium">
-                      <MapPin className="h-4 w-4 text-slate-400" />
+                    <span className="inline-flex items-center gap-2 font-medium">
+                      <div className="p-1 rounded-lg bg-slate-100 text-slate-500">
+                        <MapPin className="h-4 w-4" />
+                      </div>
                       {company.city.name}
                     </span>
                   ) : null}
-                  <span className="inline-flex items-center gap-1.5 font-medium">
-                    <Users className="h-4 w-4 text-slate-400" />
-                    {company.teamSize} tehnicieni
+                  <span className="inline-flex items-center gap-2 font-medium">
+                    <div className="p-1 rounded-lg bg-slate-100 text-slate-500">
+                      <Users className="h-4 w-4" />
+                    </div>
+                    {company.teamSize} membri în echipă
                   </span>
-                  <span className="inline-flex items-center gap-1.5 font-medium">
-                    <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                    <span className="font-bold text-slate-800">{rating.toFixed(1)}</span>
+                  <span className="inline-flex items-center gap-2 font-medium">
+                    <div className="p-1 rounded-lg bg-amber-50 text-amber-500 border border-amber-100/50">
+                      <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                    </div>
+                    <span className="font-extrabold text-slate-800">{rating.toFixed(1)}</span>
                     <span className="text-slate-400">· {company.totalReviews} recenzii</span>
                   </span>
                 </div>
@@ -317,10 +333,10 @@ export function CompanyDetailPage() {
             <section className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
               <div className="mb-6">
                 <h2 className="text-lg font-black text-slate-900 tracking-tight">
-                  Galerie foto
+                  Galerie media
                 </h2>
                 <p className="text-xs text-slate-400 mt-1">
-                  Lucrări realizate și imagini de pe teren. Faceți click pe poză pentru mărire.
+                  Lucrări realizate, imagini și videoclipuri de pe teren.
                 </p>
               </div>
               <CompanyGallery images={gallery} />
@@ -334,7 +350,7 @@ export function CompanyDetailPage() {
                     Servicii & prețuri
                   </h2>
                 </div>
-                {!isEndClient ? (
+                {!isAuthenticated ? (
                   <p className="text-xs text-slate-500 mb-6 leading-relaxed">
                     Pentru a solicita un serviciu,{' '}
                     <Link to={`/login?returnUrl=${encodeURIComponent(location.pathname)}`} className="font-semibold text-violet-600 hover:underline">
@@ -347,44 +363,68 @@ export function CompanyDetailPage() {
                     .
                   </p>
                 ) : null}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {company.services?.map((service) => {
                     const durationLabel = formatServiceDuration(service.durationMinutes);
                     return (
                     <article
                       key={service.id}
-                      className="group flex flex-col justify-between rounded-2xl bg-slate-50/70 p-5 border border-slate-100 hover:border-violet-100 hover:bg-white/80 transition-all duration-300 shadow-sm hover:shadow-premium"
+                      className="group relative flex flex-col justify-between rounded-3xl bg-white border border-slate-100 hover:border-violet-200/80 transition-all duration-300 shadow-[0_4px_20px_-4px_rgba(99,102,241,0.04)] hover:shadow-[0_12px_30px_-6px_rgba(99,102,241,0.08)] hover:-translate-y-1 p-6"
                     >
-                      <div>
-                        <h3 className="font-bold text-slate-900 group-hover:text-violet-700 transition-colors tracking-tight text-wrap:pretty">
-                          {service.name}
-                        </h3>
-                        {service.description ? (
-                          <p className="text-xs text-slate-500 mt-2 line-clamp-3 leading-relaxed text-wrap:pretty">
-                            {service.description}
-                          </p>
-                        ) : null}
-                      </div>
-                      <div className="mt-5 pt-4 border-t border-slate-100/80 space-y-3">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-extrabold text-violet-600 tabular-nums">
+                      {/* Premium Top Glow Bar on Hover */}
+                      <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-500 rounded-t-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between gap-4">
+                          <h3 className="font-extrabold text-slate-900 group-hover:text-violet-700 transition-colors tracking-tight text-wrap:pretty text-base">
+                            {service.name}
+                          </h3>
+                          
+                          {/* Price in a glowing badge */}
+                          <span className="shrink-0 inline-flex items-center bg-violet-50 text-violet-700 font-extrabold text-sm px-3.5 py-1.5 rounded-2xl border border-violet-100/50 tabular-nums">
                             {Number(service.defaultPrice).toLocaleString('ro-MD')}{' '}
                             {service.currency ?? 'MDL'}
                           </span>
+                        </div>
+                        
+                        {service.description ? (
+                          <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed text-wrap:pretty font-medium">
+                            {service.description}
+                          </p>
+                        ) : (
+                          <p className="text-xs text-slate-300 italic leading-relaxed font-medium">
+                            Nicio descriere adăugată pentru acest serviciu.
+                          </p>
+                        )}
+                      </div>
+                      
+                      <div className="mt-6 pt-4 border-t border-slate-100/60 flex flex-col gap-3">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
+                            Disponibilitate serviciu
+                          </span>
                           {durationLabel ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400">
-                              <Clock className="h-3 w-3" />
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-[10px] font-bold text-slate-600 rounded-xl">
+                              <Clock className="h-3 w-3 text-slate-400" />
                               {durationLabel}
                             </span>
-                          ) : null}
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-[10px] font-bold text-slate-400 rounded-xl">
+                              <Clock className="h-3 w-3 text-slate-300" />
+                              Durată variabilă
+                            </span>
+                          )}
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => openServiceRequest(service.id, service.name)}
-                          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity"
-                        >
-                          Solicită serviciul
-                        </button>
+                        
+                        {showRequestActions ? (
+                          <button
+                            type="button"
+                            onClick={() => openServiceRequest(service.id, service.name)}
+                            className="w-full py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-extrabold uppercase tracking-wider shadow-sm hover:shadow-md hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 cursor-pointer"
+                          >
+                            Solicită serviciul
+                          </button>
+                        ) : null}
                       </div>
                     </article>
                     );
@@ -393,38 +433,45 @@ export function CompanyDetailPage() {
               </section>
             ) : null}
 
-            <section className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <HardHat className="h-5 w-5 text-violet-600" />
-                    <h2 className="text-lg font-black text-slate-900 tracking-tight">
-                      Cerere proiect / lucrare complexă
-                    </h2>
+            {showRequestActions ? (
+              <section className="relative rounded-[32px] overflow-hidden border border-violet-100/60 bg-gradient-to-br from-violet-50/50 via-indigo-50/20 to-white p-6 sm:p-8 shadow-premium transition-all duration-300 hover:shadow-xl">
+                {/* Visual Glow Decorators */}
+                <div className="absolute -right-20 -bottom-20 w-64 h-64 rounded-full bg-violet-600/5 blur-3xl pointer-events-none" />
+                <div className="absolute top-0 left-0 w-48 h-48 rounded-full bg-indigo-500/5 blur-2xl pointer-events-none" />
+                
+                <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-violet-100 text-violet-700 shrink-0">
+                        <HardHat className="h-5 w-5" />
+                      </div>
+                      <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                        Cerere proiect / lucrare complexă
+                      </h2>
+                    </div>
+                    <p className="text-sm text-slate-600 leading-relaxed max-w-2xl font-medium">
+                      Descrieți lucrarea dorită — renovări, instalații, proiecte pe termen lung. Compania
+                      vă va contacta pentru evaluare și smetă.{!isAuthenticated && ' Necesită cont de client autentificat.'}
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-500 leading-relaxed max-w-xl">
-                    Descrieți lucrarea dorită — renovări, instalații, proiecte pe termen lung. Compania
-                    vă va contacta pentru evaluare și smetă. Necesită cont de client autentificat.
-                  </p>
+                  
+                  <button
+                    type="button"
+                    onClick={openProjectRequest}
+                    className="shrink-0 inline-flex items-center justify-center gap-2 py-4 px-8 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-violet-500/10 hover:shadow-xl hover:shadow-violet-500/15 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4" /> Trimite cerere proiect
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={openProjectRequest}
-                  className="shrink-0 py-3 px-6 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity"
-                >
-                  Trimite cerere proiect
-                </button>
-              </div>
-            </section>
+              </section>
+            ) : null}
 
-            {/* Reviews Container */}
-            <div className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
-              <CompanyReviewsSection
-                slug={company.slug}
-                rating={rating}
-                totalReviews={company.totalReviews}
-              />
-            </div>
+            {/* Reviews */}
+            <CompanyReviewsSection
+              slug={company.slug}
+              rating={rating}
+              totalReviews={company.totalReviews}
+            />
           </div>
 
           {/* Sticky Sidebar Column */}

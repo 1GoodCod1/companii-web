@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ImagePlus, Trash2, Upload } from 'lucide-react';
+import { ImagePlus, Trash2, Upload, Film } from 'lucide-react';
 import { CompanyLogo } from '@/components/public/CompanyLogo';
 import {
   cabinetBtnSecondary,
@@ -10,6 +10,7 @@ import {
 import type { CompanyGalleryImageDto } from '@/features/companies/types';
 import { MediaImage } from '@/components/ui/MediaImage';
 import { validateImageFile } from '@/utils/validateFile';
+import { isVideoUrl } from '@/utils/validateFile';
 
 export type PendingGalleryItem = {
   id: string;
@@ -126,7 +127,7 @@ export function CompanyBrandingSection({
           <input
             ref={galleryInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
+            accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/quicktime,video/webm"
             multiple
             className="hidden"
             disabled={disabled}
@@ -139,24 +140,42 @@ export function CompanyBrandingSection({
             className={`${cabinetBtnSecondary} gap-2 ${isSidebar ? 'w-full justify-center' : ''}`}
           >
             <ImagePlus className="h-4 w-4" />
-            Adaugă poze
+            Adaugă poze / video
           </button>
         </div>
 
         {galleryImages.length === 0 && pendingGallery.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-8 text-center text-sm text-gray-400">
-            Încărcați fotografii cu lucrările companiei — vor apărea pe pagina publică.
+            Încărcați fotografii sau videoclipuri cu lucrările companiei — vor apărea pe pagina publică.
+            <span className="block text-[11px] text-slate-400 mt-1">Max 3 videoclipuri · max 2 minute fiecare</span>
           </div>
         ) : (
           <div className={`grid gap-3 ${isSidebar ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-3'}`}>
             {galleryImages.map((image) => (
               <div key={image.id} className="group relative overflow-hidden rounded-2xl bg-slate-100 aspect-[4/3]">
-                <MediaImage
-                  src={image.url}
-                  alt={image.caption ?? 'Foto galerie'}
-                  className="h-full w-full object-cover"
-                  fallbackClassName="h-full w-full bg-slate-200"
-                />
+                {isVideoUrl(image.url) ? (
+                  <div className="relative h-full w-full">
+                    <video
+                      src={image.url}
+                      className="h-full w-full object-cover"
+                      muted
+                      playsInline
+                      preload="metadata"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                        <Film className="h-5 w-5 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <MediaImage
+                    src={image.url}
+                    alt={image.caption ?? 'Foto galerie'}
+                    className="h-full w-full object-cover"
+                    fallbackClassName="h-full w-full bg-slate-200"
+                  />
+                )}
                 <button
                   type="button"
                   disabled={disabled}
@@ -177,7 +196,24 @@ export function CompanyBrandingSection({
             {pendingGallery.map((item) => (
               <div key={item.id} className="space-y-2">
                 <div className="group relative overflow-hidden rounded-2xl bg-slate-100 aspect-[4/3]">
-                  <img src={item.preview} alt="Previzualizare" className="h-full w-full object-cover" />
+                  {item.file.type.startsWith('video/') ? (
+                    <div className="relative h-full w-full">
+                      <video
+                        src={item.preview}
+                        className="h-full w-full object-cover"
+                        muted
+                        playsInline
+                        preload="metadata"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                          <Film className="h-5 w-5 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <img src={item.preview} alt="Previzualizare" className="h-full w-full object-cover" />
+                  )}
                   <button
                     type="button"
                     disabled={disabled}
@@ -208,9 +244,9 @@ export function CompanyBrandingSection({
     return (
       <div className="space-y-5">
         <div>
-          <h2 className="text-base font-bold text-gray-900">Logo & galerie foto</h2>
+          <h2 className="text-base font-bold text-gray-900">Logo & galerie media</h2>
           <p className="mt-1 text-sm text-gray-500">
-            Logo-ul și fotografiile apar pe profilul public din catalog.
+            Logo-ul, fotografiile și videoclipurile apar pe profilul public din catalog.
           </p>
         </div>
         {content}
@@ -220,8 +256,8 @@ export function CompanyBrandingSection({
 
   return (
     <FormSection
-      title="Logo & galerie foto"
-      description="Logo-ul și fotografiile apar pe profilul public din catalog."
+      title="Logo & galerie media"
+      description="Logo-ul, fotografiile și videoclipurile apar pe profilul public din catalog."
     >
       {content}
     </FormSection>
