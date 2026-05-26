@@ -7,6 +7,7 @@ services:
       target: production
       args:
         VITE_API_URL: ${VITE_API_URL:-https://api.companii.faber.md/api/v1}
+        VITE_ENV: ${VITE_ENV:-production}
     container_name: companii-web-prod
     ports:
       - "8082:80"

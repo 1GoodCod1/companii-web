@@ -1,10 +1,15 @@
+import { Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { RootLayout } from '@/components/layout/RootLayout';
 import { PublicLayout } from '@/components/layout/PublicLayout';
 import { CompanyLayout } from '@/components/layout/CompanyLayout';
 import { PortalLayout } from '@/components/layout/PortalLayout';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { LandingPage } from '@/pages/public/LandingPage';
+import {
+  LandingPage,
+  CompaniesListPage,
+  CompanyDetailPage,
+} from './lazy-pages';
 import { HowItWorksPage } from '@/pages/public/HowItWorksPage';
 import { FaqPage } from '@/pages/public/FaqPage';
 import { ContactsPage } from '@/pages/public/ContactsPage';
@@ -15,8 +20,6 @@ import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
-import { CompaniesListPage } from '@/pages/public/CompaniesListPage';
-import { CompanyDetailPage } from '@/pages/public/CompanyDetailPage';
 import { CompanyDashboardPage } from '@/pages/company/CompanyDashboardPage';
 import { CompanyProfilePage } from '@/pages/company/CompanyProfilePage';
 import { CompanyTeamPage } from '@/pages/company/CompanyTeamPage';
@@ -67,7 +70,11 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       {
-        element: <PublicLayout />,
+        element: (
+          <Suspense fallback={null}>
+            <PublicLayout />
+          </Suspense>
+        ),
         children: [
           { index: true, element: <LandingPage /> },
           { path: PUBLIC_ROUTE.COMPANII, element: <LandingPage /> },

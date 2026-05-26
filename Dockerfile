@@ -1,7 +1,9 @@
 FROM node:25-alpine AS builder
 WORKDIR /app
-ARG VITE_API_URL=http://localhost:4100/api/v1
+ARG VITE_API_URL=https://api.companii.faber.md/api/v1
+ARG VITE_ENV=production
 ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_ENV=$VITE_ENV
 COPY package*.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci --prefer-offline --no-audit
 COPY . .

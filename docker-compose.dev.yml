@@ -20,5 +20,6 @@ services:
     environment:
       VITE_API_URL: ${VITE_API_URL:-/api/v1}
       VITE_DEV_API_PROXY_TARGET: ${VITE_DEV_API_PROXY_TARGET:-http://host.docker.internal:4100}
+      VITE_ENV: ${VITE_ENV:-development}
     restart: unless-stopped
     command: sh -c "npm ci && npm run dev -- --host 0.0.0.0 --port 5174"

@@ -73,10 +73,12 @@ async function refreshAccessToken(): Promise<boolean> {
           }
           return false;
         }
-        const prev = useAuthStore.getState().user;
-        useAuthStore
-          .getState()
-          .setTokens(tokens.accessToken, (tokens.user as typeof prev) ?? prev);
+        const state = useAuthStore.getState();
+        const prev = state.user;
+        const nextUser = (tokens.user as typeof prev) ?? prev;
+        if (state.accessToken !== tokens.accessToken || state.user !== nextUser) {
+          state.setTokens(tokens.accessToken, nextUser);
+        }
         if (env.useHttpOnly) markHttpOnlySessionHint(true);
         return true;
       } catch {
@@ -87,6 +89,28 @@ async function refreshAccessToken(): Promise<boolean> {
     })();
   }
   return pendingRefresh;
+}
+
+const DEFAULT_REQUEST_TIMEOUT_MS = 30_000;
+
+function composeAbortSignal(
+  external: AbortSignal | null | undefined,
+  timeoutMs: number,
+): { signal: AbortSignal; cancelTimer: () => void } {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(new DOMException('Request timeout', 'TimeoutError')), timeoutMs);
+  const onExternalAbort = () => {
+    controller.abort(external?.reason);
+  };
+  if (external) {
+    if (external.aborted) controller.abort(external.reason);
+    else external.addEventListener('abort', onExternalAbort, { once: true });
+  }
+  const cancelTimer = () => {
+    clearTimeout(timer);
+    external?.removeEventListener('abort', onExternalAbort);
+  };
+  return { signal: controller.signal, cancelTimer };
 }
 
 export async function apiFetch<T>(
@@ -120,11 +144,30 @@ export async function apiFetch<T>(
     headers.set('Pragma', 'no-cache');
   }
 
-  const res = await fetch(`${env.apiUrl}${path}`, {
-    ...init,
-    credentials: 'include',
-    headers,
-  });
+  const { signal, cancelTimer } = composeAbortSignal(
+    init.signal ?? null,
+    DEFAULT_REQUEST_TIMEOUT_MS,
+  );
+
+  let res: Response;
+  try {
+    res = await fetch(`${env.apiUrl}${path}`, {
+      ...init,
+      credentials: 'include',
+      headers,
+      signal,
+    });
+  } catch (err) {
+    cancelTimer();
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      // Surface external cancellations transparently; surface timeouts as 408.
+      if (init.signal?.aborted) throw err;
+      throw new ApiError('Request timeout', 408);
+    }
+    throw err;
+  } finally {
+    cancelTimer();
+  }
 
   if (res.status === 401 && !retried) {
     const isAuthRoute =
@@ -165,7 +208,14 @@ export async function apiFetch<T>(
   return json as T;
 }
 
-export async function downloadApiBlob(path: string, filename: string, retried = false): Promise<void> {
+const STREAM_DOWNLOAD_THRESHOLD_BYTES = 5 * 1024 * 1024;
+
+export async function downloadApiBlob(
+  path: string,
+  filename: string,
+  retried = false,
+  options: { signal?: AbortSignal } = {},
+): Promise<void> {
   const { accessToken, user } = useAuthStore.getState();
   const companyId =
     useCompanyContextStore.getState().activeCompanyId ?? user?.activeCompanyId ?? null;
@@ -173,19 +223,33 @@ export async function downloadApiBlob(path: string, filename: string, retried = 
   if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
   if (companyId) headers.set('x-company-id', companyId);
 
-  const res = await fetch(`${env.apiUrl}${path}`, {
-    credentials: 'include',
-    headers,
-  });
+  const { signal, cancelTimer } = composeAbortSignal(
+    options.signal ?? null,
+    Math.max(DEFAULT_REQUEST_TIMEOUT_MS, 120_000),
+  );
+
+  let res: Response;
+  try {
+    res = await fetch(`${env.apiUrl}${path}`, {
+      credentials: 'include',
+      headers,
+      signal,
+    });
+  } catch (err) {
+    cancelTimer();
+    throw err;
+  }
 
   if (res.status === 401 && !retried) {
+    cancelTimer();
     if (env.useHttpOnly || accessToken) {
       const refreshed = await refreshAccessToken();
-      if (refreshed) return downloadApiBlob(path, filename, true);
+      if (refreshed) return downloadApiBlob(path, filename, true, options);
     }
   }
 
   if (!res.ok) {
+    cancelTimer();
     let body: unknown;
     try {
       body = await res.json();
@@ -200,11 +264,47 @@ export async function downloadApiBlob(path: string, filename: string, retried = 
     throw new ApiError(msg, res.status, body);
   }
 
-  const blob = await res.blob();
+  const contentLength = Number(res.headers.get('content-length') ?? '0');
+  if (
+    res.body &&
+    contentLength > STREAM_DOWNLOAD_THRESHOLD_BYTES &&
+    typeof window !== 'undefined' &&
+    'showSaveFilePicker' in window === false
+  ) {
+    try {
+      const chunks: BlobPart[] = [];
+      const reader = res.body.getReader();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) chunks.push(value);
+      }
+      const blob = new Blob(chunks, {
+        type: res.headers.get('content-type') ?? 'application/octet-stream',
+      });
+      triggerBlobDownload(blob, filename);
+      return;
+    } finally {
+      cancelTimer();
+    }
+  }
+
+  try {
+    const blob = await res.blob();
+    triggerBlobDownload(blob, filename);
+  } finally {
+    cancelTimer();
+  }
+}
+
+function triggerBlobDownload(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
   anchor.href = url;
   anchor.download = filename;
+  anchor.rel = 'noopener';
+  document.body.appendChild(anchor);
   anchor.click();
-  URL.revokeObjectURL(url);
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1_000);
 }

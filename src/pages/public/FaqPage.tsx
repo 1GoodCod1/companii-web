@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FAQ_SECTIONS } from '@/pages/public/faqContent';
+import { FAQ_SECTIONS } from '@/components/public/faqContent';
 
 function faqKey(sectionId: string, index: number) {
   return `${sectionId}-${index}`;

@@ -25,37 +25,24 @@ export function loadRememberMe(): boolean {
 }
 
 export function persistAccessSession(
-  accessToken: string,
-  user: AuthUserSnapshot | null,
+  _accessToken: string,
+  _user: AuthUserSnapshot | null,
 ): void {
   try {
     if (typeof window === 'undefined') return;
-    window.sessionStorage.setItem(AUTH_ACCESS_TOKEN_KEY, accessToken);
-    if (user) {
-      window.sessionStorage.setItem(AUTH_ACCESS_USER_KEY, JSON.stringify(user));
-    } else {
-      window.sessionStorage.removeItem(AUTH_ACCESS_USER_KEY);
-    }
+    window.sessionStorage.removeItem(AUTH_ACCESS_TOKEN_KEY);
+    window.sessionStorage.removeItem(AUTH_ACCESS_USER_KEY);
+    window.localStorage.removeItem(AUTH_ACCESS_TOKEN_KEY);
+    window.localStorage.removeItem(AUTH_ACCESS_USER_KEY);
   } catch {
-    /* private mode / quota */
+    /* ignore */
   }
 }
-
 export function loadAccessSession(): {
   accessToken: string;
   user: AuthUserSnapshot;
 } | null {
-  try {
-    if (typeof window === 'undefined') return null;
-    const accessToken = window.sessionStorage.getItem(AUTH_ACCESS_TOKEN_KEY);
-    const rawUser = window.sessionStorage.getItem(AUTH_ACCESS_USER_KEY);
-    if (!accessToken?.trim() || !rawUser) return null;
-    const user = JSON.parse(rawUser) as AuthUserSnapshot;
-    if (!user?.sub || !user?.email) return null;
-    return { accessToken, user };
-  } catch {
-    return null;
-  }
+  return null;
 }
 
 export function clearAccessSession(): void {
@@ -63,12 +50,13 @@ export function clearAccessSession(): void {
     if (typeof window === 'undefined') return;
     window.sessionStorage.removeItem(AUTH_ACCESS_TOKEN_KEY);
     window.sessionStorage.removeItem(AUTH_ACCESS_USER_KEY);
+    window.localStorage.removeItem(AUTH_ACCESS_TOKEN_KEY);
+    window.localStorage.removeItem(AUTH_ACCESS_USER_KEY);
   } catch {
     /* ignore */
   }
 }
 
-/** Set after explicit logout so bootstrap does not call /auth/refresh on next load. */
 export function setLogoutFlag(): void {
   try {
     if (typeof window === 'undefined') return;
