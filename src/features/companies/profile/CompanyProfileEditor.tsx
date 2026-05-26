@@ -112,7 +112,6 @@ export function CompanyProfileEditor({
         return;
       }
 
-      // Count existing videos
       const existingVideos =
         (ownedCompany?.galleryImages ?? []).filter((img) => {
           const u = img.url.split('?')[0]?.toLowerCase() ?? '';
@@ -193,7 +192,9 @@ export function CompanyProfileEditor({
     if (pendingGallery.length === 0) return;
     const files = pendingGallery.map((item) => item.file);
     const uploaded =
-      files.length === 1 ? [await uploadFile(files[0]!)] : await uploadFiles(files);
+      files.length === 1
+        ? [await uploadFile(files[0]!, { visibility: 'PUBLIC' })]
+        : await uploadFiles(files, { visibility: 'PUBLIC' });
 
     for (let i = 0; i < uploaded.length; i += 1) {
       await addGalleryImage.mutateAsync({

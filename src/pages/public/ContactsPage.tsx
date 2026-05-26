@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 
 export function ContactsPage() {
@@ -6,6 +6,16 @@ export function ContactsPage() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
+  const pendingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (pendingTimerRef.current) {
+        clearTimeout(pendingTimerRef.current);
+        pendingTimerRef.current = null;
+      }
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -14,12 +24,16 @@ export function ContactsPage() {
       return;
     }
     setSending(true);
-    setTimeout(() => {
+    if (pendingTimerRef.current) clearTimeout(pendingTimerRef.current);
+    pendingTimerRef.current = setTimeout(() => {
+      pendingTimerRef.current = null;
       setSending(false);
       setName('');
       setEmail('');
       setMessage('');
-      toast.success('Mesajul dvs. a fost trimis! Echipa noastră vă va contacta în cel mai scurt timp.');
+      toast.success(
+        'Mesajul dvs. a fost trimis! Echipa noastră vă va contacta în cel mai scurt timp.',
+      );
     }, 1200);
   };
 

@@ -1,7 +1,7 @@
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import { Helmet } from 'react-helmet-async';
+import { SEOHead } from '@/components/seo/SEOHead';
 import {
   ArrowLeft,
   BadgeCheck,
@@ -207,16 +207,16 @@ export function CompanyDetailPage() {
   const company = data;
   const rating = Number(company.rating);
   const gallery = company.galleryImages ?? [];
-
-  // Determine if contact options are available
   const hasPublicContact = !!(company.contactPhone || company.contactEmail);
 
   return (
     <>
-      <Helmet>
-        <title>{company.name} — Faber Companii</title>
-        <meta name="description" content={company.description ?? `Profil public ${company.name}`} />
-      </Helmet>
+      <SEOHead
+        title={company.name}
+        description={company.description ?? `Profil public ${company.name} pe Faber Companii.`}
+        ogType="profile"
+        ogImage={company.logoUrl ?? undefined}
+      />
 
       <div className="space-y-8 animate-fade-in pb-12 max-w-6xl mx-auto">
         {/* Back Link */}

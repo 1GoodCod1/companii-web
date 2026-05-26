@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+Allow: /companii
+Allow: /companies
+Allow: /companies/*
+Allow: /how-it-works
+Allow: /faq
+Allow: /contacts
+Allow: /privacy
+Allow: /terms
+Allow: /subscriptions
+
+Disallow: /company
+Disallow: /company/*
+Disallow: /portal
+Disallow: /portal/*
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /api/
+
+Sitemap: https://companii.faber.md/sitemap.xml

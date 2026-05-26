@@ -6,13 +6,19 @@ import {
   AUTH_LOGOUT_FLAG_KEY,
 } from '@/constants/storage';
 import { safeStorage } from '@/lib/safeStorage';
+import { env } from '@/config/env';
 import type { AuthUserSnapshot } from '@/types/auth';
 
 export function markHttpOnlySessionHint(present: boolean): void {
+  if (!env.useHttpOnly) {
+    safeStorage.removeItem(LS_HTTPONLY_SESSION_HINT_KEY);
+    return;
+  }
   safeStorage.setItem(LS_HTTPONLY_SESSION_HINT_KEY, present ? '1' : '0');
 }
 
 export function isHttpOnlyGuestHint(): boolean {
+  if (!env.useHttpOnly) return false;
   return safeStorage.getItem(LS_HTTPONLY_SESSION_HINT_KEY) === '0';
 }
 

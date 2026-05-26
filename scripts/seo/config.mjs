@@ -1,0 +1,27 @@
+export const SITE_URL = (
+  process.env.SEO_SITE_URL || 'https://companii.faber.md'
+).replace(/\/+$/, '');
+
+export const API_URL = (
+  process.env.SEO_API_URL ||
+  process.env.VITE_API_URL ||
+  'http://127.0.0.1:4100'
+).replace(/\/+$/, '');
+
+export const API_PREFIX = process.env.SEO_API_PREFIX || '/api/v1';
+
+export const STATIC_ROUTES = [
+  '/',
+  '/companii',
+  '/companies',
+  '/how-it-works',
+  '/faq',
+  '/contacts',
+  '/privacy',
+  '/terms',
+  '/subscriptions',
+];
+
+export const SEO_URL_KINDS = ['companies', 'categories', 'landings'];
+export const SITEMAP_CHUNK_SIZE = 45_000;
+export const SEO_API_PAGE_LIMIT = 500;

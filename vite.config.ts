@@ -3,12 +3,10 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { visualizer } from 'rollup-plugin-visualizer';
-import Sitemap from 'vite-plugin-sitemap';
 import viteCompression from 'vite-plugin-compression';
 import {
   DEV_API_ORIGIN,
   PROD_API_ORIGIN,
-  PROD_SITE_URL,
 } from './src/config/urls';
 
 function collectConnectSrcOrigins(mode: string): string {
@@ -75,17 +73,6 @@ export default defineConfig(({ mode }) => {
           threshold: 256,
           verbose: false,
         }),
-      Sitemap({
-        hostname: PROD_SITE_URL,
-        dynamicRoutes: [
-          '/',
-          '/companii',
-          '/companies',
-          '/login',
-          '/register',
-        ],
-        robots: [{ userAgent: '*', allow: '/' }],
-      }),
     ].filter(Boolean),
     resolve: {
       alias: {

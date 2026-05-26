@@ -1,10 +1,13 @@
 import { create } from 'zustand';
 import {
   clearAccessSession,
+  markHttpOnlySessionHint,
   persistAccessSession,
 } from '@/features/auth/persist';
 import type { AuthUserSnapshot } from '@/types/auth';
 import { useCompanyContextStore } from '@/stores/companyContextStore';
+import { env } from '@/config/env';
+import { runLogoutCleanup } from '@/features/auth/logout-cleanup';
 
 export type { AccountKind, AuthUserSnapshot } from '@/types/auth';
 
@@ -42,8 +45,14 @@ export const useAuthStore = create<AuthState>((set) => ({
     });
   },
   clear: () => {
+    const { accessToken } = useAuthStore.getState();
+    void fireLogoutRequest(accessToken);
+
     clearAccessSession();
     useCompanyContextStore.getState().setActiveCompanyId(null);
+    if (env.useHttpOnly) markHttpOnlySessionHint(false);
+    void runLogoutCleanup();
+
     set({
       accessToken: null,
       user: null,
@@ -51,3 +60,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     });
   },
 }));
+
+function fireLogoutRequest(accessToken: string | null): void {
+  if (typeof fetch !== 'function') return;
+  const headers = new Headers({ 'Content-Type': 'application/json' });
+  if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
+  void fetch(`${env.apiUrl}/auth/logout`, {
+    method: 'POST',
+    credentials: 'include',
+    headers,
+    body: JSON.stringify({}),
+    keepalive: true,
+  }).catch(() => {
+    /* ignore */
+  });
+}

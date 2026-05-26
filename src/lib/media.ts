@@ -3,7 +3,6 @@ import { env } from '@/config/env';
 const UPLOAD_PATH_RE = /^\/uploads\/.+/i;
 const UPLOAD_FILE_RE = /^[a-f0-9-]{36}\.(png|jpe?g|webp|gif)$/i;
 
-/** API origin without `/api/v1` suffix — used for absolute media URLs in production. */
 export function apiOrigin(): string {
   return env.apiUrl.replace(/\/api\/v1\/?$/, '');
 }
@@ -23,14 +22,12 @@ function normalizeUploadPath(raw: string): string | null {
   return null;
 }
 
-/**
- * Resolve any stored media reference (upload path, external URL, blob preview) to a browser-loadable URL.
- */
 export function resolveMediaUrl(url: string | null | undefined): string | null {
   if (!url) return null;
 
   const trimmed = url.trim();
   if (!trimmed) return null;
+  if (trimmed.startsWith('b2://')) return null;
 
   if (/^(https?:|blob:|data:)/i.test(trimmed)) {
     return trimmed;
@@ -48,4 +45,19 @@ export function resolveMediaUrl(url: string | null | undefined): string | null {
   }
 
   return trimmed;
+}
+
+export function resolvePrivateMediaUrl(fileId: string): string {
+  return `${apiOrigin()}/api/v1/files/${encodeURIComponent(fileId)}/download`;
+}
+
+export function resolveFileMediaUrl(file: {
+  id: string;
+  path?: string | null;
+  url?: string | null;
+}): string | null {
+  const direct = resolveMediaUrl(file.url ?? file.path);
+  if (direct) return direct;
+  if (file.id) return resolvePrivateMediaUrl(file.id);
+  return null;
 }

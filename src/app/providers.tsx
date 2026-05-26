@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
@@ -9,6 +9,7 @@ import { createQueryClient } from '@/api/queryClient';
 import { queryPersistOptions } from '@/api/persistQuery';
 import { QUERY_CACHE_PERSIST_KEY } from '@/constants/storage';
 import { safeStorage } from '@/lib/safeStorage';
+import { bindLogoutCleanup } from '@/features/auth/logout-cleanup';
 
 const persister = createAsyncStoragePersister({
   storage: safeStorage,
@@ -17,6 +18,13 @@ const persister = createAsyncStoragePersister({
 
 export function AppProviders({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => createQueryClient());
+
+  useEffect(() => {
+    const unregister = bindLogoutCleanup(queryClient, persister);
+    return () => {
+      unregister();
+    };
+  }, [queryClient]);
 
   return (
     <HelmetProvider>

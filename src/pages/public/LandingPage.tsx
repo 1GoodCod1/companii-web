@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { ArrowRight, PlayCircle } from 'lucide-react';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
 import { LandingHeroMock } from '@/components/landing/LandingHeroMock';
 import { LandingFinanceMock } from '@/components/landing/LandingFinanceMock';
@@ -29,13 +29,11 @@ export function LandingPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Faber Companii — CRM & FSM pentru companii de servicii din Moldova</title>
-        <meta
-          name="description"
-          content="Echipă, clienți, lucrări, oferte și facturi într-un singur loc. CRM complet pentru field service — fără haos în WhatsApp."
-        />
-      </Helmet>
+      <SEOHead
+        title="CRM & FSM pentru companii de servicii din Moldova"
+        description="Echipă, clienți, lucrări, oferte și facturi într-un singur loc. CRM complet pentru field service — fără haos în WhatsApp."
+        keywords="CRM Moldova, FSM, field service, gestionare companie, facturare, oferte, lucrări"
+      />
 
       {/* Hero */}
       <section

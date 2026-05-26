@@ -260,7 +260,8 @@ export function useRemoveGalleryImageMutation() {
 }
 
 export async function uploadCompanyLogo(file: File): Promise<string> {
-  const uploaded = await uploadFile(file);
+  // Logos must render in <img> across the public site -> PUBLIC bucket.
+  const uploaded = await uploadFile(file, { visibility: 'PUBLIC' });
   return uploaded.url;
 }
 

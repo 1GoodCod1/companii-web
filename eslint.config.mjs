@@ -37,4 +37,14 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    files: ['scripts/**/*.{mjs,js,cjs}'],
+    languageOptions: {
+      globals: { ...globals.node },
+      sourceType: 'module',
+    },
+    rules: {
+      'no-console': 'off',
+    },
+  },
 );

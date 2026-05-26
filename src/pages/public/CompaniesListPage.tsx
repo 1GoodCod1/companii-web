@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { SEOHead } from '@/components/seo/SEOHead';
 import { motion } from 'framer-motion';
 import { Building2, Search } from 'lucide-react';
 import { CompanyCard } from '@/components/public/CompanyCard';
@@ -46,13 +46,11 @@ export function CompaniesListPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Companii de servicii — Faber Companii</title>
-        <meta
-          name="description"
-          content="Descoperă companii verificate de instalatori, electricieni, curățenie și alte servicii din Moldova."
-        />
-      </Helmet>
+      <SEOHead
+        title="Companii de servicii"
+        description="Descoperă companii verificate de instalatori, electricieni, curățenie și alte servicii din Moldova."
+        keywords="companii Moldova, servicii, instalatori, electricieni, curățenie"
+      />
 
       <div className="space-y-8 animate-fade-in pb-8">
         <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-violet-50/40 to-indigo-50/30 p-6 sm:p-8 shadow-premium">
