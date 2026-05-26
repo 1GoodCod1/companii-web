@@ -1,3 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 export function PortalLoading() {
-  return <p className="text-sm text-gray-400 animate-pulse">Se încarcă contul tău...</p>;
+  const { t } = useTranslation();
+  return (
+    <p className="text-sm text-gray-400 animate-pulse">{t('portal.dashboardPage.loading')}</p>
+  );
 }

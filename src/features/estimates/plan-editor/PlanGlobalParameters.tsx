@@ -6,6 +6,7 @@ import {
   Compass,
   Maximize,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { Plan2dData } from '@/types/estimates';
 
 type GlobalParams = NonNullable<Plan2dData['globalParameters']>;
@@ -23,6 +24,9 @@ export function PlanGlobalParameters({
   readOnly,
   categoryName,
 }: Props) {
+  const { t } = useTranslation();
+  const ns = 'company.estimateWizard.planEditor.globalParams';
+
   return (
     <div className="rounded-3xl border border-indigo-100/80 bg-gradient-to-br from-white via-slate-50/50 to-indigo-50/30 p-6 shadow-premium space-y-6 relative overflow-hidden">
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
@@ -30,7 +34,7 @@ export function PlanGlobalParameters({
       <div className="flex items-center justify-between border-b border-indigo-100/50 pb-3 relative z-10">
         <div className="flex items-center gap-2.5 text-indigo-950 font-black text-xs uppercase tracking-widest">
           <Settings className="w-5 h-5 text-indigo-600 animate-spin-slow" />
-          <span>Configurare Context Proiect & Parametri Globali</span>
+          <span>{t(`${ns}.title`)}</span>
         </div>
         {categoryName && (
           <span className="text-[9px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-100/80 px-2.5 py-0.5 rounded-lg select-none">
@@ -43,7 +47,7 @@ export function PlanGlobalParameters({
         <div className="space-y-1">
           <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
             <Home className="w-3.5 h-3.5 text-slate-400" />
-            Suprafață la sol (m²)
+            {t(`${ns}.baseArea`)}
           </label>
           <input
             type="number"
@@ -61,7 +65,7 @@ export function PlanGlobalParameters({
         <div className="space-y-1">
           <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
             <Ruler className="w-3.5 h-3.5 text-slate-400" />
-            Înălțime Pereți (m)
+            {t(`${ns}.wallHeight`)}
           </label>
           <input
             type="number"
@@ -81,7 +85,7 @@ export function PlanGlobalParameters({
         <div className="space-y-1">
           <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
             <Layers className="w-3.5 h-3.5 text-slate-400" />
-            Niveluri (Etaje)
+            {t(`${ns}.floors`)}
           </label>
           <input
             type="number"
@@ -100,7 +104,7 @@ export function PlanGlobalParameters({
           <div className="space-y-1 animate-fade-in col-span-1">
             <label className="block text-[9px] font-black text-rose-600 uppercase tracking-widest flex items-center gap-1">
               <Compass className="w-3.5 h-3.5 text-rose-500 animate-pulse" />
-              Înclinație acoperiș (°)
+              {t(`${ns}.roofSlope`)}
             </label>
             <input
               type="number"
@@ -121,7 +125,7 @@ export function PlanGlobalParameters({
           <div className="space-y-1 animate-fade-in col-span-1">
             <label className="block text-[9px] font-black text-sky-600 uppercase tracking-widest flex items-center gap-1">
               <Maximize className="w-3.5 h-3.5 text-sky-500 animate-pulse" />
-              Suprafață fațadă (m²)
+              {t(`${ns}.facadeArea`)}
             </label>
             <input
               type="number"

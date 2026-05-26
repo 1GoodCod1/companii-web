@@ -1,5 +1,6 @@
-import { WIZARD_STEP_LABELS } from '@/constants/estimates.constants';
+import { useTranslation } from 'react-i18next';
 import type { EstimateProjectDto } from '@/types/estimates';
+import { wizardStepLabel } from '@/utils/i18nStatusLabels';
 import { useEstimateWizard } from './useEstimateWizard';
 import { ObjectStep } from './steps/ObjectStep';
 import { PlanStep } from './steps/PlanStep';
@@ -12,6 +13,7 @@ type ExistingEstimateWizardProps = {
 };
 
 export function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
+  const { t } = useTranslation();
   const wizard = useEstimateWizard(project);
   const { steps, stepIndex, currentStep, handleStepChange } = wizard;
 
@@ -31,7 +33,7 @@ export function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps)
                   : 'bg-gray-100 text-gray-500'
             }`}
           >
-            {index + 1}. {WIZARD_STEP_LABELS[step]}
+            {index + 1}. {wizardStepLabel(step, t)}
           </button>
         ))}
       </div>

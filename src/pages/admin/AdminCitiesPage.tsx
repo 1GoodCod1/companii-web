@@ -1,7 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/components/ui/AppModal';
 import { getErrorMessage } from '@/utils/errors';
+import {
+  buildCatalogTranslations,
+  readCatalogRuName,
+} from '@/utils/catalogTranslations';
 import {
   PageHero,
   Panel,
@@ -21,6 +26,7 @@ import {
 } from '@/features/admin/api/useAdmin';
 
 export function AdminCitiesPage() {
+  const { t } = useTranslation();
   const { data: cities, isLoading } = useAdminCitiesQuery();
   const createCity = useCreateAdminCityMutation();
   const updateCity = useUpdateAdminCityMutation();
@@ -29,11 +35,13 @@ export function AdminCitiesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<AdminCityDto | null>(null);
   const [name, setName] = useState('');
+  const [nameRu, setNameRu] = useState('');
   const [slug, setSlug] = useState('');
 
   const openCreate = () => {
     setEditing(null);
     setName('');
+    setNameRu('');
     setSlug('');
     setModalOpen(true);
   };
@@ -41,6 +49,7 @@ export function AdminCitiesPage() {
   const openEdit = (city: AdminCityDto) => {
     setEditing(city);
     setName(city.name);
+    setNameRu(readCatalogRuName(city.translations));
     setSlug(city.slug);
     setModalOpen(true);
   };
@@ -48,81 +57,95 @@ export function AdminCitiesPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!name.trim()) {
-      toast.error('Introduceți numele orașului.');
+      toast.error(t('admin.citiesPage.nameRequired'));
       return;
     }
+
+    const translations = buildCatalogTranslations(name, nameRu);
+    const payload = {
+      name: name.trim(),
+      slug: slug.trim() || undefined,
+      translations,
+    };
 
     try {
       if (editing) {
         await updateCity.mutateAsync({
           id: editing.id,
-          name: name.trim(),
-          slug: slug.trim() || undefined,
+          ...payload,
         });
-        toast.success('Orașul a fost actualizat.');
+        toast.success(t('admin.citiesPage.toastUpdated'));
       } else {
-        await createCity.mutateAsync({
-          name: name.trim(),
-          slug: slug.trim() || undefined,
-        });
-        toast.success('Orașul a fost creat.');
+        await createCity.mutateAsync(payload);
+        toast.success(t('admin.citiesPage.toastCreated'));
       }
       setModalOpen(false);
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Operația a eșuat.'));
+      toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
     }
   };
 
   const handleDelete = async (city: AdminCityDto) => {
-    if (!confirm(`Ștergeți orașul „${city.name}”?`)) return;
+    if (!confirm(t('admin.citiesPage.confirmDelete', { name: city.name }))) return;
     try {
       await deleteCity.mutateAsync(city.id);
-      toast.success('Orașul a fost șters.');
+      toast.success(t('admin.citiesPage.toastDeleted'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut șterge orașul.'));
+      toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
     }
   };
 
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHero
-        eyebrow="Catalog"
-        title="Orașe"
-        description="Gestionați orașele disponibile în catalogul companiilor."
+        eyebrow={t('admin.citiesPage.eyebrow')}
+        title={t('admin.citiesPage.title')}
+        description={t('admin.citiesPage.description')}
         action={
           <button type="button" onClick={openCreate} className={cabinetBtnPrimary}>
-            + Oraș nou
+            {t('admin.citiesPage.createBtn')}
           </button>
         }
       />
 
       <Panel>
-        <PanelHeader title="Lista orașelor" description="Folosite la profilul companiilor și filtrare publică." />
+        <PanelHeader title={t('admin.citiesPage.listTitle')} description={t('admin.citiesPage.listDescription')} />
 
         {isLoading ? (
-          <p className="text-sm text-gray-400 py-8 text-center">Se încarcă...</p>
+          <p className="text-sm text-gray-400 py-8 text-center">{t('cabinet.common.loading')}</p>
         ) : !cities?.length ? (
-          <EmptyState message="Nu există orașe în catalog." action={<button type="button" onClick={openCreate} className={cabinetBtnSecondary}>Adaugă primul oraș</button>} />
+          <EmptyState
+            message={t('admin.citiesPage.empty')}
+            action={
+              <button type="button" onClick={openCreate} className={cabinetBtnSecondary}>
+                {t('admin.citiesPage.emptyAction')}
+              </button>
+            }
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-gray-50/80 text-[10px] font-black uppercase tracking-widest text-gray-400">
                 <tr>
-                  <th className="px-4 py-3 text-left">Nume</th>
-                  <th className="px-4 py-3 text-left">Slug</th>
-                  <th className="px-4 py-3 text-left">Companii</th>
-                  <th className="px-4 py-3 text-right">Acțiuni</th>
+                  <th className="px-4 py-3 text-left">{t('admin.citiesPage.colName')}</th>
+                  <th className="px-4 py-3 text-left">{t('admin.citiesPage.colNameRu')}</th>
+                  <th className="px-4 py-3 text-left">{t('admin.citiesPage.colSlug')}</th>
+                  <th className="px-4 py-3 text-left">{t('admin.citiesPage.colCompanies')}</th>
+                  <th className="px-4 py-3 text-right">{t('admin.citiesPage.colActions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {cities.map((city) => (
                   <tr key={city.id}>
                     <td className="px-4 py-3 font-semibold text-gray-900">{city.name}</td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {readCatalogRuName(city.translations) || '—'}
+                    </td>
                     <td className="px-4 py-3 text-gray-500">{city.slug}</td>
                     <td className="px-4 py-3 text-gray-500">{city._count?.companies ?? 0}</td>
                     <td className="px-4 py-3 text-right space-x-2">
                       <button type="button" onClick={() => openEdit(city)} className={cabinetBtnSecondary}>
-                        Editează
+                        {t('cabinet.common.edit')}
                       </button>
                       <button
                         type="button"
@@ -130,7 +153,7 @@ export function AdminCitiesPage() {
                         disabled={(city._count?.companies ?? 0) > 0 || deleteCity.isPending}
                         className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-red-600 hover:bg-red-50 disabled:opacity-40"
                       >
-                        Șterge
+                        {t('cabinet.common.delete')}
                       </button>
                     </td>
                   </tr>
@@ -141,10 +164,14 @@ export function AdminCitiesPage() {
         )}
       </Panel>
 
-      <AppModal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? 'Editează oraș' : 'Oraș nou'}>
+      <AppModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editing ? t('admin.citiesPage.modalEdit') : t('admin.citiesPage.modalCreate')}
+      >
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
           <div>
-            <label className={cabinetLabelClass}>Nume *</label>
+            <label className={cabinetLabelClass}>{t('admin.citiesPage.nameLabel')}</label>
             <input
               type="text"
               required
@@ -154,7 +181,17 @@ export function AdminCitiesPage() {
             />
           </div>
           <div>
-            <label className={cabinetLabelClass}>Slug (opțional)</label>
+            <label className={cabinetLabelClass}>{t('admin.citiesPage.nameRuLabel')}</label>
+            <input
+              type="text"
+              placeholder="ex: Кишинёв"
+              value={nameRu}
+              onChange={(e) => setNameRu(e.target.value)}
+              className={cabinetFieldClass}
+            />
+          </div>
+          <div>
+            <label className={cabinetLabelClass}>{t('admin.citiesPage.slugLabel')}</label>
             <input
               type="text"
               placeholder="ex: chisinau"
@@ -165,14 +202,14 @@ export function AdminCitiesPage() {
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" onClick={() => setModalOpen(false)} className={cabinetBtnSecondary}>
-              Anulează
+              {t('cabinet.common.cancel')}
             </button>
             <button
               type="submit"
               disabled={createCity.isPending || updateCity.isPending}
               className={cabinetBtnPrimary}
             >
-              {editing ? 'Salvează' : 'Creează'}
+              {editing ? t('cabinet.common.save') : t('cabinet.common.create')}
             </button>
           </div>
         </form>

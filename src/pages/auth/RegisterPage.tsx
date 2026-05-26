@@ -65,13 +65,13 @@ export function RegisterPage() {
     return (
       <div className="max-w-md mx-auto py-20 px-4 text-center space-y-4">
         <p className="text-sm font-semibold text-gray-800">
-          Profilul client este deja legat la un cont portal.
+          {t('auth.registerPage.portalAlreadyLinked')}
         </p>
         <Link
           to={`/login?invite=${encodeURIComponent(portalInviteToken)}`}
           className="inline-flex rounded-xl bg-violet-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white"
         >
-          Mergi la autentificare
+          {t('auth.registerPage.goToLogin')}
         </Link>
       </div>
     );
@@ -80,12 +80,14 @@ export function RegisterPage() {
   if (teamInviteToken && teamPreview?.alreadyMember) {
     return (
       <div className="max-w-md mx-auto py-20 px-4 text-center space-y-4">
-        <p className="text-sm font-semibold text-gray-800">Ești deja membru al acestei echipe.</p>
+        <p className="text-sm font-semibold text-gray-800">
+          {t('auth.registerPage.alreadyTeamMember')}
+        </p>
         <Link
           to={`/login?teamInvite=${encodeURIComponent(teamInviteToken)}`}
           className="inline-flex rounded-xl bg-violet-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white"
         >
-          Mergi la autentificare
+          {t('auth.registerPage.goToLogin')}
         </Link>
       </div>
     );
@@ -98,24 +100,34 @@ export function RegisterPage() {
     <div className="max-w-md mx-auto py-20 px-4 animate-fade-in">
       <div className="bg-white/80 backdrop-blur-md border border-gray-100 p-8 rounded-3xl shadow-premium">
         <h1 className="text-2xl font-black mb-6 text-gray-900 tracking-tight text-center">
-          {isPortalInviteFlow ? 'Activare cont portal' : isTeamInviteFlow ? 'Intrare în echipă' : t('auth.register')}
+          {isPortalInviteFlow
+            ? t('auth.portalActivateTitle')
+            : isTeamInviteFlow
+              ? t('auth.teamJoinTitle')
+              : t('auth.register')}
         </h1>
 
         {inviteLoading && (portalInviteToken || teamInviteToken) ? (
-          <p className="mb-4 text-center text-sm text-gray-400">Se încarcă invitația...</p>
+          <p className="mb-4 text-center text-sm text-gray-400">
+            {t('auth.registerPage.loadingInvite')}
+          </p>
         ) : null}
 
         {teamPreview ? (
           <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50/80 px-4 py-4 space-y-2">
             <p className="text-xs font-semibold text-indigo-900">
-              Invitație în echipa <strong>{teamPreview.companyName}</strong>
+              {t('auth.registerPage.teamInviteTitle', { company: teamPreview.companyName })}
             </p>
             <p className="text-xs text-indigo-800">
-              Rol: <strong>{isManagerRole(teamPreview.role) ? 'Manager' : 'Tehnician'}</strong>
+              {t('auth.registerPage.roleLabel', {
+                role: isManagerRole(teamPreview.role)
+                  ? t('auth.roleManager')
+                  : t('auth.roleTechnician'),
+              })}
             </p>
             {teamPreview.invitedEmail ? (
               <p className="text-[11px] text-indigo-700/80">
-                Contul trebuie creat cu emailul <strong>{teamPreview.invitedEmail}</strong>
+                {t('auth.registerPage.emailMustMatch', { email: teamPreview.invitedEmail })}
               </p>
             ) : null}
           </div>
@@ -124,32 +136,33 @@ export function RegisterPage() {
         {invitePreview ? (
           <div className="mb-5 rounded-2xl border border-violet-100 bg-violet-50/80 px-4 py-4 space-y-3">
             <p className="text-xs font-semibold text-violet-900">
-              Invitație de la <strong>{invitePreview.companyName}</strong>
+              {t('auth.registerPage.portalInviteTitle', { company: invitePreview.companyName })}
             </p>
             <dl className="grid grid-cols-1 gap-2 text-xs">
               <div className="flex justify-between gap-3">
-                <dt className="text-violet-700/70 font-bold uppercase tracking-wider">Nume</dt>
+                <dt className="text-violet-700/70 font-bold uppercase tracking-wider">
+                  {t('auth.registerPage.nameLabel')}
+                </dt>
                 <dd className="font-semibold text-gray-900 text-right">{invitePreview.customerName}</dd>
               </div>
               <div className="flex justify-between gap-3">
-                <dt className="text-violet-700/70 font-bold uppercase tracking-wider">Telefon</dt>
+                <dt className="text-violet-700/70 font-bold uppercase tracking-wider">
+                  {t('auth.registerPage.phoneLabel')}
+                </dt>
                 <dd className="font-semibold text-gray-900 text-right">{invitePreview.customerPhone}</dd>
               </div>
               {invitePreview.customerEmail ? (
                 <div className="flex justify-between gap-3">
-                  <dt className="text-violet-700/70 font-bold uppercase tracking-wider">Email</dt>
+                  <dt className="text-violet-700/70 font-bold uppercase tracking-wider">
+                    {t('auth.registerPage.emailLabel')}
+                  </dt>
                   <dd className="font-semibold text-gray-900 text-right break-all">
                     {invitePreview.customerEmail}
                   </dd>
                 </div>
               ) : null}
             </dl>
-            <p className="text-[11px] leading-relaxed text-violet-800/80">
-              {t(
-                'auth.inviteRegisterHint',
-                'Datele sunt preluate din fișa companiei. Setați parola — restul se leagă automat, fără conflicte.',
-              )}
-            </p>
+            <p className="text-[11px] leading-relaxed text-violet-800/80">{t('auth.inviteRegisterHint')}</p>
           </div>
         ) : null}
 
@@ -194,7 +207,7 @@ export function RegisterPage() {
             }
 
             if (isPortalInviteFlow && needsInviteEmail && !email.trim()) {
-              const message = t('auth.inviteEmailRequired', 'Introduceți emailul pentru cont.');
+              const message = t('auth.inviteEmailRequired');
               setFormError(message);
               toast.error(message);
               return;
@@ -217,7 +230,7 @@ export function RegisterPage() {
                 portalInviteToken: portalInviteToken,
                 teamInviteToken: teamInviteToken,
               });
-              toast.success('Cont activat cu succes!');
+              toast.success(t('auth.registerPage.accountActivated'));
               if (isTeamInviteFlow) nav('/company/team', { replace: true });
               else if (isPortalInviteFlow) nav('/portal', { replace: true });
               else if (isEndClientAccount(accountKind)) nav(ROUTE_ABS.PORTAL, { replace: true });
@@ -262,7 +275,7 @@ export function RegisterPage() {
                     }
                     className="text-violet-700 font-black uppercase tracking-wider hover:underline"
                   >
-                    Mergi la autentificare →
+                    {t('auth.registerPage.goToLoginArrow')}
                   </Link>
                 </p>
               ) : null}
@@ -305,7 +318,7 @@ export function RegisterPage() {
                 <input
                   type="email"
                   required
-                  placeholder="exemplu@email.md"
+                  placeholder={t('auth.registerPage.emailPlaceholder')}
                   className={`${fieldClass} ${
                     emailTaken ? 'border-amber-400 focus:border-amber-500' : ''
                   }`}
@@ -328,14 +341,12 @@ export function RegisterPage() {
               <input
                 type="email"
                 required
-                placeholder="exemplu@email.md"
+                placeholder={t('auth.registerPage.emailPlaceholder')}
                 className={fieldClass}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <p className="text-[11px] text-gray-400">
-                Compania nu a salvat emailul — îl folosim doar pentru autentificare.
-              </p>
+              <p className="text-[11px] text-gray-400">{t('auth.registerPage.emailFallbackHint')}</p>
             </div>
           ) : null}
 
@@ -361,7 +372,7 @@ export function RegisterPage() {
           {!isPortalInviteFlow && !isTeamInviteFlow && isCompanyStaffAccount(accountKind) ? (
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
-                {t('auth.phone')} ({t('auth.optional', 'opțional')})
+                {t('auth.phone')} ({t('auth.optional')})
               </label>
               <input
                 type="tel"
@@ -415,14 +426,14 @@ export function RegisterPage() {
             }
           >
             {register.isPending
-              ? 'Se procesează...'
+              ? t('auth.registerPage.processing')
               : isPortalInviteFlow || isTeamInviteFlow
-                ? 'Activează contul'
+                ? t('auth.registerPage.activateAccount')
                 : t('auth.register')}
           </button>
         </form>
         <p className="mt-6 text-xs font-semibold text-center text-gray-400 uppercase tracking-wider">
-          Ai deja cont?{' '}
+          {t('auth.registerPage.hasAccount')}{' '}
           <Link
             to={
               teamInviteToken

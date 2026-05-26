@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowRight } from 'lucide-react';
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export function NewEstimateForm({ activeCompany }: Props) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: categories } = useCategoriesQuery();
   const { data: blueprints } = useEstimateBlueprintsQuery();
@@ -42,7 +44,7 @@ export function NewEstimateForm({ activeCompany }: Props) {
 
   const handleCreate = async () => {
     if (!customerId || !categoryId) {
-      toast.error('Selectați clientul și categoria.');
+      toast.error(t('company.estimateWizard.newForm.selectCustomerAndCategory'));
       return;
     }
     try {
@@ -52,10 +54,10 @@ export function NewEstimateForm({ activeCompany }: Props) {
         title: title || undefined,
         siteType: 'apartment',
       });
-      toast.success('Smetă creată.');
+      toast.success(t('company.estimateWizard.newForm.created'));
       navigate(`/company/smete/${created.id}`, { replace: true });
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut crea smeta.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.newForm.createFailed')));
     }
   };
 
@@ -63,9 +65,9 @@ export function NewEstimateForm({ activeCompany }: Props) {
     <Panel className="p-6 max-w-2xl">
       <div className="space-y-4">
         <label className={cabinetLabelClass}>
-          Client
+          {t('company.estimateWizard.newForm.client')}
           <select value={customerId} onChange={(e) => setCustomerId(e.target.value)} className={cabinetSelectClass}>
-            <option value="">Selectați clientul</option>
+            <option value="">{t('company.estimateWizard.newForm.selectCustomer')}</option>
             {customers?.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.fullName} · {c.phone}
@@ -77,21 +79,20 @@ export function NewEstimateForm({ activeCompany }: Props) {
         {activeCompany?.categoryId ? (
           <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-4 space-y-1.5 shadow-xs">
             <span className="text-[10px] font-extrabold text-violet-600 uppercase tracking-widest">
-              Categorie de lucru (Auto-Detectată)
+              {t('company.estimateWizard.newForm.categoryAutoDetected')}
             </span>
             <p className="font-extrabold text-gray-900 text-sm">
-              {categories?.find((c) => c.id === categoryId)?.name || 'Încărcare domeniu...'}
+              {categories?.find((c) => c.id === categoryId)?.name || t('company.estimateWizard.newForm.loadingDomain')}
             </p>
             <p className="text-xs text-gray-500 leading-relaxed font-medium">
-              Smeta este configurată automat pentru domeniul companiei tale, blocând utilizarea altor categorii pentru a
-              păstra izolarea perfectă și corectitudinea proceselor.
+              {t('company.estimateWizard.newForm.categoryAutoDescription')}
             </p>
           </div>
         ) : (
           <label className={cabinetLabelClass}>
-            Categorie lucrare
+            {t('company.estimateWizard.newForm.workCategory')}
             <select value={selectedCategoryId} onChange={(e) => setSelectedCategoryId(e.target.value)} className={cabinetSelectClass}>
-              <option value="">Selectați categoria</option>
+              <option value="">{t('company.estimateWizard.newForm.selectCategory')}</option>
               {categories?.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -105,23 +106,25 @@ export function NewEstimateForm({ activeCompany }: Props) {
           <div className="rounded-2xl bg-violet-50 border border-violet-100 p-4 text-sm text-violet-900">
             <p className="font-bold">{activeBlueprint.name}</p>
             <p className="mt-1 text-violet-700/80">
-              {activeBlueprint.config.defaultStages.length} etape · plan personalizat pentru această categorie
+              {t('company.estimateWizard.newForm.blueprintStages', {
+                count: activeBlueprint.config.defaultStages.length,
+              })}
             </p>
           </div>
         )}
 
         <label className={cabinetLabelClass}>
-          Titlu (opțional)
+          {t('company.estimateWizard.newForm.titleOptional')}
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className={cabinetFieldClass}
-            placeholder="Ex: Renovare baie"
+            placeholder={t('company.estimateWizard.newForm.titlePlaceholder')}
           />
         </label>
 
         <button type="button" onClick={handleCreate} disabled={createProject.isPending} className={cabinetBtnPrimary}>
-          Creează smetă <ArrowRight className="w-4 h-4" />
+          {t('company.estimateWizard.newForm.createEstimate')} <ArrowRight className="w-4 h-4" />
         </button>
       </div>
     </Panel>

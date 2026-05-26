@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowRight, PlayCircle } from 'lucide-react';
 import { SEOHead } from '@/components/seo/SEOHead';
+import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
 import { LandingHeroMock } from '@/components/landing/LandingHeroMock';
 import { LandingFinanceMock } from '@/components/landing/LandingFinanceMock';
@@ -10,14 +12,9 @@ import { LandingTimeline } from '@/components/landing/LandingTimeline';
 import { LandingFeatures } from '@/components/landing/LandingFeatures';
 import { LandingCta } from '@/components/landing/LandingCta';
 
-const stats = [
-  { value: '5', label: 'module FSM integrate' },
-  { value: '10 min', label: 'setup inițial' },
-  { value: '0 MDL', label: 'plan Free permanent' },
-  { value: '100%', label: 'cloud, fără instalare' },
-];
-
 export function LandingPage() {
+  const { t } = useTranslation();
+  const lp = useLocalizedPath();
   const { primaryCta } = usePublicAuthCta();
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -27,12 +24,18 @@ export function LandingPage() {
   const dashboardY = useTransform(scrollYProgress, [0, 1], [0, 40]);
   const dashboardOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.5]);
 
+  const stats = t('landing.stats', { returnObjects: true }) as Array<{
+    value: string;
+    label: string;
+  }>;
+
   return (
     <>
       <SEOHead
-        title="CRM & FSM pentru companii de servicii din Moldova"
-        description="Echipă, clienți, lucrări, oferte și facturi într-un singur loc. CRM complet pentru field service — fără haos în WhatsApp."
-        keywords="CRM Moldova, FSM, field service, gestionare companie, facturare, oferte, lucrări"
+        title={t('landing.seo.title')}
+        description={t('landing.seo.description')}
+        keywords={t('landing.seo.keywords')}
+        hreflang
       />
 
       {/* Hero */}
@@ -63,21 +66,20 @@ export function LandingPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-400 opacity-60" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-violet-600" />
                 </span>
-                CRM & Field Service Management
+                {t('landing.hero.badge')}
               </motion.span>
 
               <h1 className="font-black text-gray-900 tracking-tight leading-[1.05]">
-                Tot business-ul tău de servicii,{' '}
-                <span className="landing-shimmer-text">într-un singur panou</span>
+                {t('landing.hero.title')}{' '}
+                <span className="landing-shimmer-text">{t('landing.hero.titleHighlight')}</span>
               </h1>
 
               <p className="mt-6 text-lg sm:text-xl text-gray-500 leading-relaxed max-w-xl text-wrap:pretty">
-                Calcul automat de smete, CRM clienți, calendar pe teren, dimensionare încăperi, oferte și facturi PDF cu diacritice românești — fără Excel și fără grupuri WhatsApp.
+                {t('landing.hero.subtitle')}
               </p>
 
               <p className="mt-4 text-sm text-gray-400 max-w-lg leading-relaxed">
-                Faber Companii este platforma FSM creată pentru instalatori, electricieni, firme de
-                curățenie și orice companie cu tehnicieni mobili din Republica Moldova.
+                {t('landing.hero.description')}
               </p>
 
               <div className="mt-10 flex flex-wrap gap-4">
@@ -89,11 +91,11 @@ export function LandingPage() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  to="/how-it-works"
+                  to={lp('/how-it-works')}
                   className="inline-flex items-center gap-2 rounded-xl glass-panel px-7 py-3.5 text-sm font-semibold text-gray-700 hover:bg-white transition-colors"
                 >
                   <PlayCircle className="h-4 w-4 text-violet-600" />
-                  Vezi cum funcționează
+                  {t('landing.hero.howItWorksLink')}
                 </Link>
               </div>
             </motion.div>
@@ -141,14 +143,13 @@ export function LandingPage() {
             className="text-center max-w-3xl mx-auto mb-14"
           >
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-600 mb-3">
-              Control financiar
+              {t('landing.finance.eyebrow')}
             </p>
             <h2 className="font-black text-gray-900 tracking-tight">
-              Facturi, TVA și încasări — calculate automat
+              {t('landing.finance.title')}
             </h2>
             <p className="mt-4 text-gray-500 leading-relaxed">
-              Lucrarea finalizată devine factură cu un click. Vezi plățile, restanțele și raportul
-              lunar fără Excel sau contabil separat pentru fiecare deviz.
+              {t('landing.finance.description')}
             </p>
           </motion.div>
 

@@ -80,16 +80,21 @@ export function LoginPage() {
 
         {teamPreview ? (
           <p className="mb-4 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-xs font-semibold text-indigo-800">
-            Invitație în echipa <strong>{teamPreview.companyName}</strong> ca{' '}
-            <strong>{isManagerRole(teamPreview.role) ? 'Manager' : 'Tehnician'}</strong>.
+            {t('auth.teamInviteBanner', {
+              company: teamPreview.companyName,
+              role: isManagerRole(teamPreview.role)
+                ? t('auth.roleManager')
+                : t('auth.roleTechnician'),
+            })}
           </p>
         ) : null}
 
         {invitePreview ? (
           <p className="mb-4 rounded-xl border border-violet-100 bg-violet-50 px-4 py-3 text-xs font-semibold text-violet-800">
-            Invitație pentru <strong>{invitePreview.customerName}</strong> de la{' '}
-            <strong>{invitePreview.companyName}</strong>. Autentificați-vă cu emailul sau telefonul
-            din fișă.
+            {t('auth.portalInviteBanner', {
+              customer: invitePreview.customerName,
+              company: invitePreview.companyName,
+            })}
           </p>
         ) : null}
 
@@ -107,11 +112,11 @@ export function LoginPage() {
               });
               if (inviteToken && isEndClientAccount(res.user.accountKind)) {
                 await acceptInvite.mutateAsync(inviteToken);
-                toast.success('Invitația a fost acceptată.');
+                toast.success(t('auth.inviteAccepted'));
               }
               if (teamInviteToken && isCompanyStaffAccount(res.user.accountKind)) {
                 await acceptTeamInvite.mutateAsync(teamInviteToken);
-                toast.success('Ai intrat în echipă!');
+                toast.success(t('auth.teamJoined'));
               }
               if (isEndClientAccount(res.user.accountKind)) {
                 nav(safeReturnUrl ?? ROUTE_ABS.PORTAL);
@@ -145,7 +150,7 @@ export function LoginPage() {
             <input
               type="text"
               required
-              placeholder="email@exemplu.md sau +37369123456"
+              placeholder={t('auth.loginPlaceholder')}
               className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white"
               value={effectiveLogin}
               onChange={(e) => {
@@ -189,11 +194,11 @@ export function LoginPage() {
             className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white py-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md cursor-pointer text-sm tracking-wide mt-2"
             disabled={login.isPending || acceptInvite.isPending || acceptTeamInvite.isPending}
           >
-            {login.isPending ? 'Se autentifică...' : t('auth.login')}
+            {login.isPending ? t('auth.loggingIn') : t('auth.login')}
           </button>
         </form>
         <p className="mt-6 text-xs font-semibold text-center text-gray-400 uppercase tracking-wider">
-          Nu ai cont?{' '}
+          {t('auth.noAccount')}{' '}
           <Link
             to={
               teamInviteToken

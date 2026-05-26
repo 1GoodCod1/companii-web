@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { AppModal } from '@/components/ui/AppModal';
 import {
   cabinetBtnPrimary,
@@ -28,11 +29,24 @@ export function CompanyServiceFormModal({
   onSubmit: (event: React.FormEvent) => void;
   onFormChange: (updater: (prev: ServiceFormState) => ServiceFormState) => void;
 }) {
+  const { t } = useTranslation();
+
+  const durationUnitLabel = (value: ServiceFormState['durationUnit']) =>
+    t(`company.fsm.services.form.durationUnits.${value}`);
+
   return (
-    <AppModal open={open} onClose={onClose} title={editing ? 'Editează serviciu' : 'Serviciu nou'}>
+    <AppModal
+      open={open}
+      onClose={onClose}
+      title={
+        editing
+          ? t('company.fsm.services.form.titleEdit')
+          : t('company.fsm.services.form.titleCreate')
+      }
+    >
       <form onSubmit={onSubmit} className="space-y-4">
         <label className={cabinetLabelClass}>
-          Denumire *
+          {t('company.fsm.services.form.fields.name')}
           <input
             value={form.name}
             onChange={(e) => onFormChange((f) => ({ ...f, name: e.target.value }))}
@@ -41,7 +55,7 @@ export function CompanyServiceFormModal({
           />
         </label>
         <label className={cabinetLabelClass}>
-          Descriere (opțional)
+          {t('company.fsm.services.form.fields.description')}
           <textarea
             value={form.description}
             onChange={(e) => onFormChange((f) => ({ ...f, description: e.target.value }))}
@@ -50,7 +64,7 @@ export function CompanyServiceFormModal({
           />
         </label>
         <div className={cabinetLabelClass}>
-          Categorie
+          {t('company.fsm.services.form.fields.category')}
           <input
             value={defaultCategoryName}
             className={`${cabinetFieldClass} bg-gray-50 text-gray-600 cursor-not-allowed`}
@@ -58,11 +72,11 @@ export function CompanyServiceFormModal({
             tabIndex={-1}
           />
           <p className="text-[11px] font-medium text-gray-400 mt-1">
-            Moștenită din profilul companiei — se modifică doar acolo.
+            {t('company.fsm.services.form.fields.categoryHint')}
           </p>
         </div>
         <label className={cabinetLabelClass}>
-          Preț (MDL) *
+          {t('company.fsm.services.form.fields.price')}
           <input
             type="number"
             min={0}
@@ -74,7 +88,7 @@ export function CompanyServiceFormModal({
           />
         </label>
         <div className={cabinetLabelClass}>
-          Durată (opțional)
+          {t('company.fsm.services.form.fields.duration')}
           <div className="grid grid-cols-[1fr_auto] gap-2">
             <input
               type="number"
@@ -83,7 +97,7 @@ export function CompanyServiceFormModal({
               value={form.durationValue}
               onChange={(e) => onFormChange((f) => ({ ...f, durationValue: e.target.value }))}
               className={cabinetFieldClass}
-              placeholder="Ex: 2"
+              placeholder={t('company.fsm.services.form.fields.durationPlaceholder')}
             />
             <select
               value={form.durationUnit}
@@ -94,7 +108,7 @@ export function CompanyServiceFormModal({
             >
               {DURATION_UNIT_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {durationUnitLabel(option.value)}
                 </option>
               ))}
             </select>
@@ -107,11 +121,11 @@ export function CompanyServiceFormModal({
             onChange={(e) => onFormChange((f) => ({ ...f, isPublished: e.target.checked }))}
             className="rounded border-gray-300"
           />
-          Public pe profilul companiei
+          {t('company.fsm.services.form.fields.published')}
         </label>
         {canUseInternalPricing ? (
           <label className={cabinetLabelClass}>
-            Cost materiale (opțional)
+            {t('company.fsm.services.form.fields.materialsCost')}
             <input
               type="number"
               min={0}
@@ -123,15 +137,15 @@ export function CompanyServiceFormModal({
           </label>
         ) : (
           <p className="text-xs text-gray-500 bg-gray-50 rounded-xl px-3 py-2">
-            Cost materiale pentru devize — disponibil din planul Pro.
+            {t('company.fsm.services.form.proHint')}
           </p>
         )}
         <div className="flex gap-3 pt-2">
           <button type="submit" className={cabinetBtnPrimary}>
-            {editing ? 'Salvează' : 'Adaugă'}
+            {editing ? t('cabinet.common.save') : t('company.fsm.services.form.submitCreate')}
           </button>
           <button type="button" onClick={onClose} className={cabinetBtnSecondary}>
-            Anulează
+            {t('cabinet.common.cancel')}
           </button>
         </div>
       </form>

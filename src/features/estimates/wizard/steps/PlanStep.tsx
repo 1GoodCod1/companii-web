@@ -1,4 +1,5 @@
 import { Save } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cabinetBtnPrimary, cabinetBtnSecondary } from '@/components/cabinet/cabinet-ui';
 import { PlanEditor } from '@/features/estimates/components/PlanEditor';
 import type { EstimateWizardApi } from '../useEstimateWizard';
@@ -8,6 +9,7 @@ type Props = {
 };
 
 export function PlanStep({ wizard }: Props) {
+  const { t } = useTranslation();
   const {
     project,
     config,
@@ -28,10 +30,10 @@ export function PlanStep({ wizard }: Props) {
       />
       <div className="flex gap-3">
         <button type="button" onClick={handleSavePlan} className={cabinetBtnPrimary}>
-          <Save className="w-4 h-4" /> Salvează dimensiuni & dotări
+          <Save className="w-4 h-4" /> {t('company.estimateWizard.planStep.saveDimensions')}
         </button>
         <button type="button" onClick={() => setStepIndex((i) => i + 1)} className={cabinetBtnSecondary}>
-          Continuă fără salvare
+          {t('company.estimateWizard.planStep.continueWithoutSave')}
         </button>
       </div>
     </div>

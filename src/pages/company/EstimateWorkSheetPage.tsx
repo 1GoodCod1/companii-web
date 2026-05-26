@@ -2,14 +2,17 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Circle, ClipboardList, MapPin, Phone, User } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { PageHero, Panel, SoftBadge, EmptyState } from '@/components/cabinet/cabinet-ui';
 import { PlanEditor } from '@/features/estimates/components/PlanEditor';
 import { useWorksheetByInterventionQuery } from '@/features/estimates/api/useEstimates';
 import { useUpdateChecklistMutation } from '@/features/fsm/api/useFsm';
 import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
 import { getErrorMessage } from '@/utils/errors';
+import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
 
 export function EstimateWorkSheetPage() {
+  const { t } = useTranslation();
   const { id: interventionId } = useParams();
   const { isManagement } = useCompanyPermissions();
   const { data: sheet, isLoading, isError } = useWorksheetByInterventionQuery(interventionId ?? '', !!interventionId);
@@ -27,21 +30,21 @@ export function EstimateWorkSheetPage() {
       setPendingProgress(null);
     } catch (err: unknown) {
       setPendingProgress(null);
-      toast.error(getErrorMessage(err, 'Nu s-a putut salva progresul.'));
+      toast.error(getErrorMessage(err, t('company.workSheetPage.saveProgressFailed')));
     }
   };
 
   if (isLoading) {
-    return <p className="p-8 text-sm text-gray-400">Se încarcă fișa de lucru...</p>;
+    return <p className="p-8 text-sm text-gray-400">{t('company.workSheetPage.loading')}</p>;
   }
 
   if (isError || !sheet || !interventionId) {
     return (
       <EmptyState
-        message="Această lucrare nu are smetă asociată sau nu aveți acces."
+        message={t('company.workSheetPage.noAccess')}
         action={
           <Link to="/company/lucrari" className="text-violet-600 font-semibold">
-            Înapoi la lucrări
+            {t('company.workSheetPage.backToJobs')}
           </Link>
         }
       />
@@ -51,31 +54,37 @@ export function EstimateWorkSheetPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <Link to="/company/lucrari" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-violet-600">
-        <ArrowLeft className="w-4 h-4" /> Înapoi la lucrări
+        <ArrowLeft className="w-4 h-4" /> {t('company.workSheetPage.backToJobs')}
       </Link>
 
       <PageHero
-        title="Fișă de execuție"
+        title={t('company.workSheetPage.title')}
         description={
           isManagement
-            ? 'Vizualizare completă pentru coordonare — tehnicianul vede aceeași structură fără prețuri.'
-            : 'Plan, etape și materiale — fără informații comerciale.'
+            ? t('company.workSheetPage.descriptionManagement')
+            : t('company.workSheetPage.descriptionTechnician')
         }
       />
 
       <div className="grid lg:grid-cols-3 gap-4">
         <Panel className="p-5 space-y-3">
-          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Lucrare</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+            {t('company.workSheetPage.jobLabel')}
+          </p>
           {sheet.intervention && (
             <>
               <p className="font-black text-gray-900">{sheet.intervention.number}</p>
               <p className="text-sm text-gray-600">{sheet.intervention.type}</p>
-              <SoftBadge tone="violet">{sheet.intervention.status}</SoftBadge>
+              <SoftBadge tone="violet">
+                {interventionStatusLabel(sheet.intervention.status, t)}
+              </SoftBadge>
             </>
           )}
         </Panel>
         <Panel className="p-5 space-y-3">
-          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Client</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+            {t('company.workSheetPage.clientLabel')}
+          </p>
           <div className="flex items-center gap-2 text-sm text-gray-700">
             <User className="w-4 h-4 text-gray-400" /> {sheet.customer?.fullName}
           </div>
@@ -87,7 +96,9 @@ export function EstimateWorkSheetPage() {
           </div>
         </Panel>
         <Panel className="p-5 space-y-2">
-          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Smetă</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+            {t('company.workSheetPage.estimateLabel')}
+          </p>
           <p className="font-bold text-gray-900">{sheet.project.title}</p>
           <p className="text-xs text-gray-500">{sheet.project.number} · {sheet.project.category.name}</p>
         </Panel>
@@ -114,8 +125,12 @@ export function EstimateWorkSheetPage() {
                 <h3 className="font-bold text-gray-900">{stage.name}</h3>
                 {stage.description && <p className="text-sm text-gray-500 mt-1">{stage.description}</p>}
                 <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-600">
-                  {stage.laborHours != null && <span>~{stage.laborHours} ore</span>}
-                  {stage.durationDays != null && <span>{stage.durationDays} zile</span>}
+                  {stage.laborHours != null && (
+                    <span>{t('company.workSheetPage.hours', { count: stage.laborHours })}</span>
+                  )}
+                  {stage.durationDays != null && (
+                    <span>{t('company.workSheetPage.days', { count: stage.durationDays })}</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -123,7 +138,7 @@ export function EstimateWorkSheetPage() {
             {stage.checklist?.length ? (
               <div className="mb-4">
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 flex items-center gap-1">
-                  <ClipboardList className="w-3.5 h-3.5" /> Checklist
+                  <ClipboardList className="w-3.5 h-3.5" /> {t('company.workSheetPage.checklist')}
                 </p>
                 <ul className="grid sm:grid-cols-2 gap-2">
                   {stage.checklist.map((item) => {
@@ -155,13 +170,15 @@ export function EstimateWorkSheetPage() {
 
             {stage.materials.length > 0 && (
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Materiale</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">
+                  {t('company.workSheetPage.materials')}
+                </p>
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">
                     <thead>
                       <tr className="text-left text-xs text-gray-400">
-                        <th className="pb-2">Descriere</th>
-                        <th className="pb-2">Cantitate</th>
+                        <th className="pb-2">{t('company.workSheetPage.colDescription')}</th>
+                        <th className="pb-2">{t('company.workSheetPage.colQuantity')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">

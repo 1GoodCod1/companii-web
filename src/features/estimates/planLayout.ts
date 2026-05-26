@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type { EstimateBlueprintConfig, Plan2dData, Plan2dPoint, Plan2dRoom } from './types';
 
 export const PX_PER_M = 44;
@@ -34,29 +35,69 @@ export type Plan3dPreview = {
 
 const ROOM_WALL = ['#6366f1', '#2563eb', '#16a34a', '#d97706', '#dc2626', '#ea580c'];
 
-const CATEGORY_ROOM_TEMPLATES: Record<string, Array<{ name: string; width: number; height: number }>> = {
+type RoomTemplate = { nameKey: string; width: number; height: number };
+
+const CATEGORY_ROOM_TEMPLATES: Record<string, RoomTemplate[]> = {
   santehnika: [
-    { name: 'Baie', width: 2.4, height: 2.2 },
-    { name: 'Bucătărie', width: 3.2, height: 2.8 },
+    { nameKey: 'bathroom', width: 2.4, height: 2.2 },
+    { nameKey: 'kitchen', width: 3.2, height: 2.8 },
   ],
   elektrika: [
-    { name: 'Living', width: 5, height: 4.2 },
-    { name: 'Dormitor', width: 3.6, height: 3.4 },
-    { name: 'Hol', width: 2.2, height: 1.8 },
+    { nameKey: 'living', width: 5, height: 4.2 },
+    { nameKey: 'bedroom', width: 3.6, height: 3.4 },
+    { nameKey: 'hallway', width: 2.2, height: 1.8 },
   ],
   plitka: [
-    { name: 'Baie', width: 2.6, height: 2.4 },
-    { name: 'Bucătărie', width: 3.5, height: 3 },
+    { nameKey: 'bathroom', width: 2.6, height: 2.4 },
+    { nameKey: 'kitchen', width: 3.5, height: 3 },
   ],
   'kondicionery-otoplenie': [
-    { name: 'Living', width: 4.5, height: 4 },
-    { name: 'Dormitor', width: 3.5, height: 3.2 },
+    { nameKey: 'living', width: 4.5, height: 4 },
+    { nameKey: 'bedroom', width: 3.5, height: 3.2 },
   ],
   'otdelochnye-raboty': [
-    { name: 'Cameră principală', width: 4.8, height: 4.5 },
-    { name: 'Cameră secundară', width: 3.2, height: 3 },
+    { nameKey: 'mainRoom', width: 4.8, height: 4.5 },
+    { nameKey: 'secondaryRoom', width: 3.2, height: 3 },
   ],
 };
+
+function roomNameFromKey(nameKey: string, t?: TFunction): string {
+  if (t) {
+    return t(`company.estimateWizard.planEditor.roomNames.${nameKey}`);
+  }
+  const fallback: Record<string, string> = {
+    bathroom: 'Baie',
+    kitchen: 'Bucătărie',
+    living: 'Living',
+    bedroom: 'Dormitor',
+    hallway: 'Hol',
+    mainRoom: 'Cameră principală',
+    secondaryRoom: 'Cameră secundară',
+    default: 'Cameră 1',
+  };
+  return fallback[nameKey] ?? nameKey;
+}
+
+export function defaultRoomsForCategory(categorySlug?: string, t?: TFunction): Plan2dRoom[] {
+  const templates =
+    (categorySlug && CATEGORY_ROOM_TEMPLATES[categorySlug]) ||
+    [{ nameKey: 'default', width: 4, height: 3.5 }];
+
+  let cursorX = 0;
+  return templates.map((template) => {
+    const room: Plan2dRoom = {
+      id: crypto.randomUUID(),
+      name: roomNameFromKey(template.nameKey, t),
+      width: template.width,
+      height: template.height,
+      x: cursorX,
+      y: 0,
+      unit: 'm',
+    };
+    cursorX += template.width + ROOM_GAP_M;
+    return room;
+  });
+}
 
 export function getPointTypeMeta(
   type: string,
@@ -67,27 +108,6 @@ export function getPointTypeMeta(
     label: match?.label ?? type,
     color: match?.color ?? '#6366f1',
   };
-}
-
-export function defaultRoomsForCategory(categorySlug?: string): Plan2dRoom[] {
-  const templates =
-    (categorySlug && CATEGORY_ROOM_TEMPLATES[categorySlug]) ||
-    [{ name: 'Cameră 1', width: 4, height: 3.5 }];
-
-  let cursorX = 0;
-  return templates.map((template) => {
-    const room: Plan2dRoom = {
-      id: crypto.randomUUID(),
-      name: template.name,
-      width: template.width,
-      height: template.height,
-      x: cursorX,
-      y: 0,
-      unit: 'm',
-    };
-    cursorX += template.width + ROOM_GAP_M;
-    return room;
-  });
 }
 
 export function normalizeRoomLayout(rooms: Plan2dRoom[]): LayoutRoom[] {

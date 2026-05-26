@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
   Panel,
@@ -14,31 +15,44 @@ import { quoteStatusTone } from '@/utils/portalStatus';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
 import type { QuoteDto } from '@/types/fsm';
 import { getErrorMessage } from '@/utils/errors';
+import { quoteStatusLabel } from '@/utils/i18nStatusLabels';
 
 export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
+  const { t } = useTranslation();
   const updateQuote = useUpdatePortalQuoteMutation();
   const { quotes } = data;
 
   const handleQuoteStatus = async (quoteId: string, status: PortalQuoteActionStatus) => {
-    const word = status === QUOTE_STATUS.ACCEPTED ? 'acceptați' : 'respingeți';
-    if (!confirm(`Sigur doriți să ${word} această ofertă?`)) return;
+    const confirmKey =
+      status === QUOTE_STATUS.ACCEPTED
+        ? 'portal.quotesSection.confirmAccept'
+        : 'portal.quotesSection.confirmReject';
+    if (!confirm(t(confirmKey))) return;
     try {
       await updateQuote.mutateAsync({ id: quoteId, status });
-      toast.success(status === QUOTE_STATUS.ACCEPTED ? 'Oferta a fost acceptată!' : 'Oferta a fost respinsă.');
+      toast.success(
+        status === QUOTE_STATUS.ACCEPTED
+          ? t('portal.quotesSection.toastAccepted')
+          : t('portal.quotesSection.toastRejected'),
+      );
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la actualizarea ofertei.'));
+      toast.error(getErrorMessage(err, t('portal.quotesSection.toastError')));
     }
   };
 
   return (
     <Panel>
       <PanelHeader
-        title="Oferte de aprobat"
-        description="Acceptă sau respinge devizele primite de la companie."
-        meta={<span className="text-xs text-gray-400">{quotes.length} oferte</span>}
+        title={t('portal.quotesSection.title')}
+        description={t('portal.quotesSection.description')}
+        meta={
+          <span className="text-xs text-gray-400">
+            {t('portal.quotesSection.meta', { count: quotes.length })}
+          </span>
+        }
       />
       {quotes.length === 0 ? (
-        <EmptyState message="Nu ai oferte în curs de aprobare." />
+        <EmptyState message={t('portal.quotesSection.empty')} />
       ) : (
         <ul className="space-y-3">
           {quotes.map((item: QuoteDto) => (
@@ -55,7 +69,9 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
                     {Number(item.total).toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}
                   </p>
                 </div>
-                <SoftBadge tone={quoteStatusTone(item.status)}>{item.status}</SoftBadge>
+                <SoftBadge tone={quoteStatusTone(item.status)}>
+                  {quoteStatusLabel(item.status, t)}
+                </SoftBadge>
               </div>
               {item.status === QUOTE_STATUS.SENT ? (
                 <div className="flex gap-2 justify-end">
@@ -64,14 +80,14 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
                     onClick={() => handleQuoteStatus(item.id, QUOTE_STATUS.REJECTED)}
                     className="px-3 py-1.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"
                   >
-                    Declină
+                    {t('portal.quotesSection.decline')}
                   </button>
                   <button
                     type="button"
                     onClick={() => handleQuoteStatus(item.id, QUOTE_STATUS.ACCEPTED)}
                     className="px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold transition-colors shadow-xs"
                   >
-                    Acceptă
+                    {t('portal.quotesSection.accept')}
                   </button>
                 </div>
               ) : null}

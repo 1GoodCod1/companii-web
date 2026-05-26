@@ -1,5 +1,6 @@
 import { useEffect, useMemo, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 const MODAL_BACKGROUNDS = [
@@ -35,6 +36,7 @@ export function AppModal({
   size?: AppModalSize;
   backgroundIndex?: number;
 }) {
+  const { t } = useTranslation();
   const bgIndex = useMemo(() => {
     if (backgroundIndex !== undefined) {
       return backgroundIndex % MODAL_BACKGROUNDS.length;
@@ -70,7 +72,7 @@ export function AppModal({
     >
       <button
         type="button"
-        aria-label="Închide"
+        aria-label={t('cabinet.common.closeAria')}
         className="absolute inset-0 cursor-default border-0 p-0"
         onClick={onClose}
       >

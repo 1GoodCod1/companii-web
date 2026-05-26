@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { PageHero, Panel, SoftBadge } from '@/components/cabinet/cabinet-ui';
 import { useAuthStore } from '@/stores/authStore';
 import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
@@ -9,21 +10,23 @@ import { DashboardRecentInvoicesPanel } from '@/features/fsm/components/dashboar
 import { useDashboardPageData } from '@/features/fsm/hooks/useDashboardPageData';
 
 export function CompanyDashboardPage() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const { isOwner } = useCompanyPermissions();
   const dashboard = useDashboardPageData();
 
-  const displayName = dashboard.activeCompany?.name || user?.email?.split('@')[0] || 'Utilizator';
+  const displayName =
+    dashboard.activeCompany?.name || user?.email?.split('@')[0] || t('cabinet.common.userFallback');
 
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHero
-        eyebrow="Panou principal"
-        title={`Salut, ${displayName}! 👋`}
+        eyebrow={t('company.dashboardPage.eyebrow')}
+        title={t('company.dashboardPage.greeting', { name: displayName })}
         description={
           dashboard.isManagement
-            ? 'Bine ai venit la panoul tău Faber CRM. Iată starea afacerii tale astăzi.'
-            : 'Bine ai venit! Iată lucrările alocate ție și programarea de azi.'
+            ? t('company.dashboardPage.descriptionManagement')
+            : t('company.dashboardPage.descriptionTechnician')
         }
         action={
           dashboard.onboardingRequired ? (
@@ -31,18 +34,18 @@ export function CompanyDashboardPage() {
               to="/company/profile"
               className="inline-flex items-center rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-violet-700 transition-colors"
             >
-              Înregistrează compania
+              {t('company.dashboardPage.registerCompany')}
             </Link>
           ) : dashboard.isManagement && dashboard.activeCompany ? (
             <div className="text-right shrink-0">
               <SoftBadge tone="emerald">{dashboard.activePlanName}</SoftBadge>
-              <p className="text-xs text-gray-400 mt-2">Abonament activ</p>
+              <p className="text-xs text-gray-400 mt-2">{t('company.dashboardPage.activeSubscription')}</p>
               {isOwner ? (
                 <Link
                   to="/company/subscription"
                   className="inline-block mt-2 text-xs font-semibold text-violet-600 hover:text-violet-700"
                 >
-                  Gestionează planul →
+                  {t('company.dashboardPage.managePlan')}
                 </Link>
               ) : null}
             </div>
@@ -51,7 +54,7 @@ export function CompanyDashboardPage() {
               to="/company/profile"
               className="inline-flex items-center rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-violet-700 transition-colors"
             >
-              Creează profil companie
+              {t('company.dashboardPage.createProfile')}
             </Link>
           ) : undefined
         }
@@ -60,11 +63,11 @@ export function CompanyDashboardPage() {
       {dashboard.onboardingRequired ? (
         <Panel className="p-5 border border-amber-100 bg-amber-50/50">
           <p className="text-sm text-gray-800 leading-relaxed">
-            Contul tău nu este legat încă de o companie. Completează{' '}
+            {t('company.dashboardPage.onboardingPrefix')}{' '}
             <Link to="/company/profile" className="font-semibold text-violet-700 hover:text-violet-800">
-              profilul companiei
+              {t('company.dashboardPage.onboardingProfileLink')}
             </Link>{' '}
-            (IDNO, adresă, categorie) pentru a accesa clienți, cereri și restul modulelor.
+            {t('company.dashboardPage.onboardingSuffix')}
           </p>
         </Panel>
       ) : null}
@@ -72,16 +75,17 @@ export function CompanyDashboardPage() {
       {!dashboard.isManagement && !dashboard.onboardingRequired ? (
         <Panel className="p-4 border border-violet-100 bg-violet-50/40">
           <p className="text-sm text-gray-700">
-            Cont de <strong>tehnician</strong> — clienții, cererile și setările companiei le gestionează managerul.
-            Lucrările tale sunt în{' '}
+            {t('company.dashboardPage.technicianPrefix')}{' '}
+            <strong>{t('company.dashboardPage.technicianRole')}</strong>{' '}
+            {t('company.dashboardPage.technicianMiddle')}{' '}
             <Link to="/company/lucrari" className="font-semibold text-violet-700 hover:text-violet-800">
-              Lucrări
+              {t('company.lucrari')}
             </Link>{' '}
-            și{' '}
+            {t('company.dashboardPage.linkAnd')}{' '}
             <Link to="/company/calendar" className="font-semibold text-violet-700 hover:text-violet-800">
-              Calendar
+              {t('company.calendar')}
             </Link>
-            . Pentru a-ți înregistra propria companie, ieși din cont și creează un cont nou de tip «Companie» pe pagina publică de înregistrare.
+            {t('company.dashboardPage.technicianCalendarSuffix')}
           </p>
         </Panel>
       ) : null}

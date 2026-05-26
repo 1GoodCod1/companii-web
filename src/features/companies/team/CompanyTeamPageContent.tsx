@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { AppModal } from '@/components/ui/AppModal';
 import {
   PageHero,
@@ -34,16 +35,19 @@ import {
 } from '@/features/companies/teamInviteErrors';
 import { COMPANY_ROLE } from '@/constants/roles.constants';
 import type { InvitableCompanyRole } from '@/types/roles';
-import { TEAM_ROLE_CONFIG } from '@/constants/teamRoles.constants';
 import type { TeamRoleKey } from '@/types/team';
 import { groupMembersByRole, memberDisplayName } from '@/utils/teamMembers';
 import { TeamRoleSection } from '@/features/companies/team/teamMemberViews';
-import { formatDateTimeRo } from '@/utils/date';
+import { formatDateTimeLocalized } from '@/utils/date';
+import { getCompanyRoleLabel } from '@/utils/companyRoleLabel';
 import { getErrorMessage } from '@/utils/errors';
+import { useLocale } from '@/hooks/useLocale';
 
 type InviteMode = 'link' | 'direct';
 
 export function CompanyTeamPage() {
+  const { t } = useTranslation();
+  const locale = useLocale();
   const user = useAuthStore((s) => s.user);
   const { isOwner, canManageTeam, canInviteManagers, activeCompanyId } = useCompanyPermissions();
   const { data: members, isLoading, isError, error } = useCompanyMembersQuery({
@@ -95,21 +99,21 @@ export function CompanyTeamPage() {
       try {
         await navigator.clipboard.writeText(url);
         if (invite.emailSent) {
-          toast.success('Link generat, copiat și trimis pe email.');
+          toast.success(t('company.teamPage.toastLinkCopiedSent'));
         } else if (restrictEmail.trim()) {
-          toast.success('Link generat și copiat. Emailul nu a putut fi trimis — verificați SMTP.');
+          toast.success(t('company.teamPage.toastLinkCopiedEmailFailed'));
         } else {
-          toast.success('Link invitație generat și copiat.');
+          toast.success(t('company.teamPage.toastLinkCopied'));
         }
       } catch {
         toast.success(
           invite.emailSent
-            ? 'Link generat și trimis pe email. Copiază manual din câmp.'
-            : 'Link invitație generat. Copiază manual din câmp.',
+            ? t('company.teamPage.toastLinkSentCopyManual')
+            : t('company.teamPage.toastLinkGeneratedCopyManual'),
         );
       }
     } catch (err: unknown) {
-      const message = getTeamInviteErrorMessage(err);
+      const message = getTeamInviteErrorMessage(err, t);
       toast.error(message);
       if (isTeamPlanLimitError(err)) {
         setDirectAddHint(message);
@@ -130,15 +134,15 @@ export function CompanyTeamPage() {
     event.preventDefault();
     setDirectAddHint(null);
     if (!contact.trim()) {
-      toast.error('Introduceți emailul sau telefonul colegului.');
+      toast.error(t('company.teamPage.toastContactRequired'));
       return;
     }
     try {
       await addDirect.mutateAsync({ contact: contact.trim(), role });
-      toast.success('Membrul a fost adăugat direct în echipă.');
+      toast.success(t('company.teamPage.toastMemberAdded'));
       closeInviteModal();
     } catch (err: unknown) {
-      const message = getTeamInviteErrorMessage(err);
+      const message = getTeamInviteErrorMessage(err, t);
       toast.error(message);
       if (isTeamMemberNotFoundError(err) || isTeamWrongAccountKindError(err) || isTeamPlanLimitError(err)) {
         setDirectAddHint(message);
@@ -149,53 +153,53 @@ export function CompanyTeamPage() {
   const handleCopyLink = async (url: string) => {
     try {
       await navigator.clipboard.writeText(url);
-      toast.success('Link copiat.');
+      toast.success(t('company.teamPage.toastLinkCopiedShort'));
     } catch {
-      toast.error('Nu s-a putut copia linkul.');
+      toast.error(t('company.teamPage.toastCopyFailed'));
     }
   };
 
   const handleChangeRole = async (memberId: string, nextRole: InvitableCompanyRole) => {
     try {
       await updateRole.mutateAsync({ memberId, role: nextRole });
-      toast.success('Rol actualizat.');
+      toast.success(t('company.teamPage.toastRoleUpdated'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut actualiza rolul.'));
+      toast.error(getErrorMessage(err, t('company.teamPage.toastRoleUpdateFailed')));
     }
   };
 
   const handleDeactivate = async (memberId: string) => {
-    if (!confirm('Eliminați acest membru din echipă?')) return;
+    if (!confirm(t('company.teamPage.confirmRemoveMember'))) return;
     try {
       await deactivateMember.mutateAsync(memberId);
-      toast.success('Membrul a fost eliminat din echipă.');
+      toast.success(t('company.teamPage.toastMemberRemoved'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut elimina membrul.'));
+      toast.error(getErrorMessage(err, t('company.teamPage.toastMemberRemoveFailed')));
     }
   };
 
   const handleRevokeInvitation = async (invitationId: string) => {
     try {
       await revokeInvitation.mutateAsync(invitationId);
-      toast.success('Invitația a fost revocată.');
+      toast.success(t('company.teamPage.toastInvitationRevoked'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut revoca invitația.'));
+      toast.error(getErrorMessage(err, t('company.teamPage.toastInvitationRevokeFailed')));
     }
   };
 
   const handleTransferOwnership = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!activeCompanyId || !transferTargetUserId) return;
-    if (!confirm('Transferați proprietatea companiei către acest membru?')) return;
+    if (!confirm(t('company.teamPage.confirmTransferOwnership'))) return;
     try {
       await transferOwnership.mutateAsync({
         companyId: activeCompanyId,
         newOwnerUserId: transferTargetUserId,
       });
-      toast.success('Proprietatea companiei a fost transferată.');
+      toast.success(t('company.teamPage.toastOwnershipTransferred'));
       setTransferTargetUserId('');
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut transfera proprietatea.'));
+      toast.error(getErrorMessage(err, t('company.teamPage.toastOwnershipTransferFailed')));
     }
   };
 
@@ -206,37 +210,37 @@ export function CompanyTeamPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHero
-        title="Echipă"
-        description="Structura echipei: proprietar, manageri și tehnicieni — fiecare rol cu responsabilități clare."
+        title={t('company.teamPage.title')}
+        description={t('company.teamPage.description')}
         action={
           <button type="button" onClick={() => setShowInvite(true)} className={cabinetBtnPrimary}>
-            + Invită membru
+            {t('company.teamPage.inviteBtn')}
           </button>
         }
       />
 
       <Panel>
         <PanelHeader
-          title="Ierarhia echipei"
+          title={t('company.teamPage.hierarchyTitle')}
           meta={
             <span className="text-xs text-gray-400 font-medium">
-              {members?.length ?? 0} persoane active
+              {t('company.teamPage.activeCount', { count: members?.length ?? 0 })}
             </span>
           }
         />
 
         {isLoading ? (
-          <p className="text-sm text-gray-400">Se încarcă echipa...</p>
+          <p className="text-sm text-gray-400">{t('company.teamPage.loading')}</p>
         ) : isError ? (
           <EmptyState
             message={
               error instanceof Error
                 ? error.message
-                : 'Nu s-a putut încărca lista echipei. Reîncercați.'
+                : t('company.teamPage.loadError')
             }
           />
         ) : !members?.length ? (
-          <EmptyState message="Nu există membri în echipă." />
+          <EmptyState message={t('company.teamPage.emptyMembers')} />
         ) : (
           <div className="space-y-8">
             {roleGroups.map((group) => (
@@ -257,7 +261,7 @@ export function CompanyTeamPage() {
 
       {(invitations?.length ?? 0) > 0 && (
         <Panel>
-          <PanelHeader title="Linkuri invitație active" />
+          <PanelHeader title={t('company.teamPage.invitationsTitle')} />
           <ul className="divide-y divide-gray-100/80">
             {invitations?.map((invite: CompanyInvitationDto) => {
               const url = buildTeamInviteUrl(invite.token);
@@ -268,11 +272,15 @@ export function CompanyTeamPage() {
                 >
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold text-gray-900">
-                      {TEAM_ROLE_CONFIG[invite.role as TeamRoleKey]?.label ?? invite.role}
-                      {invite.invitedEmail ? ` · ${invite.invitedEmail}` : ' · link deschis'}
+                      {getCompanyRoleLabel(t, invite.role as TeamRoleKey)}
+                      {invite.invitedEmail
+                        ? ` · ${invite.invitedEmail}`
+                        : ` · ${t('company.teamPage.openLink')}`}
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      Expiră {formatDateTimeRo(invite.expiresAt)}
+                      {t('company.teamPage.expiresAt', {
+                        date: formatDateTimeLocalized(invite.expiresAt, locale),
+                      })}
                     </p>
                     <p className="text-[11px] text-gray-400 font-mono truncate mt-1">{url}</p>
                   </div>
@@ -281,14 +289,14 @@ export function CompanyTeamPage() {
                     onClick={() => handleCopyLink(url)}
                     className={cabinetBtnSecondary}
                   >
-                    Copiază link
+                    {t('company.teamPage.copyLink')}
                   </button>
                   <button
                     type="button"
                     onClick={() => void handleRevokeInvitation(invite.id)}
                     className={cabinetBtnSecondary}
                   >
-                    Revocă
+                    {t('company.teamPage.revoke')}
                   </button>
                 </li>
               );
@@ -300,7 +308,7 @@ export function CompanyTeamPage() {
       <AppModal
         open={showInvite}
         onClose={closeInviteModal}
-        title="Invită membru în echipă"
+        title={t('company.teamPage.inviteModalTitle')}
         size="lg"
         backgroundIndex={0}
       >
@@ -318,7 +326,7 @@ export function CompanyTeamPage() {
                 : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
             }`}
           >
-            Link invitație
+            {t('company.teamPage.inviteModeLink')}
           </button>
           <button
             type="button"
@@ -332,43 +340,44 @@ export function CompanyTeamPage() {
                 : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
             }`}
           >
-            Adaugă direct
+            {t('company.teamPage.inviteModeDirect')}
           </button>
         </div>
 
         {inviteMode === 'link' ? (
           <form onSubmit={handleGenerateLink} className="space-y-4">
             <p className="text-sm text-gray-500 leading-relaxed">
-              Generează un link valabil 2 ore. Trimite-l colegului pe WhatsApp, Telegram sau SMS.
-              Linkurile vechi devin invalide la regenerare.
+              {t('company.teamPage.linkInviteDescription')}
             </p>
             <div>
-              <label className={cabinetLabelClass}>Rol</label>
+              <label className={cabinetLabelClass}>{t('company.teamPage.roleLabel')}</label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value as InvitableCompanyRole)}
                 className={cabinetSelectClass}
               >
-                <option value={COMPANY_ROLE.MEMBER}>Tehnician (lucrător)</option>
-                {canInviteManagers ? <option value={COMPANY_ROLE.MANAGER}>Manager</option> : null}
+                <option value={COMPANY_ROLE.MEMBER}>{t('company.teamPage.roleMember')}</option>
+                {canInviteManagers ? (
+                  <option value={COMPANY_ROLE.MANAGER}>{t('company.teamPage.roleManager')}</option>
+                ) : null}
               </select>
             </div>
             <div>
-              <label className={cabinetLabelClass}>Email coleg (opțional)</label>
+              <label className={cabinetLabelClass}>{t('company.teamPage.colleagueEmailLabel')}</label>
               <input
                 type="email"
                 value={restrictEmail}
                 onChange={(e) => setRestrictEmail(e.target.value)}
-                placeholder="ex: tehnician@companie.md — trimite invitația pe email"
+                placeholder={t('company.teamPage.colleagueEmailPlaceholder')}
                 className={cabinetFieldClass}
               />
               <p className="text-[11px] text-gray-400 mt-1">
-                Dacă completați emailul, invitația se trimite automat (Mailtrap în dev).
+                {t('company.teamPage.colleagueEmailHint')}
               </p>
             </div>
             {generatedLink ? (
               <div className="space-y-2">
-                <label className={cabinetLabelClass}>Link invitație</label>
+                <label className={cabinetLabelClass}>{t('company.teamPage.inviteLinkLabel')}</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -382,37 +391,35 @@ export function CompanyTeamPage() {
                     onClick={() => handleCopyLink(generatedLink.url)}
                     className={`${cabinetBtnSecondary} shrink-0 px-3`}
                   >
-                    Copiază
+                    {t('company.teamPage.copy')}
                   </button>
                 </div>
                 <p className="text-[11px] text-gray-400">
-                  Expiră la:{' '}
-                  {formatDateTimeRo(generatedLink.expiresAt, 'datetimeShort')}
+                  {t('company.teamPage.expiresAtLabel')}{' '}
+                  {formatDateTimeLocalized(generatedLink.expiresAt, locale, 'datetimeShort')}
                 </p>
               </div>
             ) : null}
             <div className="flex justify-end gap-3 pt-2">
               <button type="button" onClick={closeInviteModal} className={cabinetBtnSecondary}>
-                Închide
+                {t('company.teamPage.close')}
               </button>
               <button type="submit" disabled={createInviteLink.isPending} className={cabinetBtnPrimary}>
                 {createInviteLink.isPending
-                  ? 'Se generează...'
+                  ? t('company.teamPage.generating')
                   : generatedLink
-                    ? 'Regenerează link'
-                    : 'Generează link'}
+                    ? t('company.teamPage.regenerateLink')
+                    : t('company.teamPage.generateLink')}
               </button>
             </div>
           </form>
         ) : (
           <form onSubmit={handleAddDirect} className="space-y-4">
             <div className="rounded-xl border border-amber-100 bg-amber-50/80 px-4 py-3 text-sm text-amber-900 leading-relaxed">
-              <strong>Adaugă direct</strong> funcționează doar dacă colegul s-a înregistrat deja cu tipul{' '}
-              <strong>Companie</strong> (nu Client). Pentru persoane noi — folosiți{' '}
-              <strong>Link invitație</strong>.
+              {t('company.teamPage.directAddNotice')}
             </div>
             <div>
-              <label className={cabinetLabelClass}>Email sau telefon *</label>
+              <label className={cabinetLabelClass}>{t('company.teamPage.contactLabel')}</label>
               <input
                 type="text"
                 required
@@ -421,7 +428,7 @@ export function CompanyTeamPage() {
                   setContact(e.target.value);
                   setDirectAddHint(null);
                 }}
-                placeholder="ex: ion@companie.md sau +37369123456"
+                placeholder={t('company.teamPage.contactPlaceholder')}
                 className={cabinetFieldClass}
               />
             </div>
@@ -434,7 +441,7 @@ export function CompanyTeamPage() {
                     onClick={() => switchToLinkInvite(contact)}
                     className={cabinetBtnPrimary}
                   >
-                    Generează link invitație pentru acest email
+                    {t('company.teamPage.generateLinkForEmail')}
                   </button>
                 ) : (
                   <button
@@ -442,28 +449,30 @@ export function CompanyTeamPage() {
                     onClick={() => switchToLinkInvite()}
                     className={cabinetBtnPrimary}
                   >
-                    Mergi la Link invitație
+                    {t('company.teamPage.goToLinkInvite')}
                   </button>
                 )}
               </div>
             ) : null}
             <div>
-              <label className={cabinetLabelClass}>Rol</label>
+              <label className={cabinetLabelClass}>{t('company.teamPage.roleLabel')}</label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value as InvitableCompanyRole)}
                 className={cabinetSelectClass}
               >
-                <option value={COMPANY_ROLE.MEMBER}>Tehnician (lucrător)</option>
-                {canInviteManagers ? <option value={COMPANY_ROLE.MANAGER}>Manager</option> : null}
+                <option value={COMPANY_ROLE.MEMBER}>{t('company.teamPage.roleMember')}</option>
+                {canInviteManagers ? (
+                  <option value={COMPANY_ROLE.MANAGER}>{t('company.teamPage.roleManager')}</option>
+                ) : null}
               </select>
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button type="button" onClick={closeInviteModal} className={cabinetBtnSecondary}>
-                Anulează
+                {t('company.teamPage.cancel')}
               </button>
               <button type="submit" disabled={addDirect.isPending} className={cabinetBtnPrimary}>
-                {addDirect.isPending ? 'Se adaugă...' : 'Adaugă în echipă'}
+                {addDirect.isPending ? t('company.teamPage.adding') : t('company.teamPage.addToTeam')}
               </button>
             </div>
           </form>
@@ -472,20 +481,18 @@ export function CompanyTeamPage() {
 
       {isOwner && transferableMembers.length > 0 ? (
         <Panel>
-          <PanelHeader title="Transfer proprietate" />
+          <PanelHeader title={t('company.teamPage.transferTitle')} />
           <form onSubmit={handleTransferOwnership} className="space-y-4">
-            <p className="text-sm text-gray-500">
-              Transferați rolul de proprietar legal către un alt membru activ. Veți deveni manager.
-            </p>
+            <p className="text-sm text-gray-500">{t('company.teamPage.transferDescription')}</p>
             <div>
-              <label className={cabinetLabelClass}>Noul proprietar</label>
+              <label className={cabinetLabelClass}>{t('company.teamPage.newOwnerLabel')}</label>
               <select
                 value={transferTargetUserId}
                 onChange={(e) => setTransferTargetUserId(e.target.value)}
                 className={cabinetSelectClass}
                 required
               >
-                <option value="">Selectați membru...</option>
+                <option value="">{t('company.teamPage.selectMember')}</option>
                 {transferableMembers.map((member) => (
                   <option key={member.id} value={member.userId}>
                     {memberDisplayName(member)}
@@ -499,7 +506,9 @@ export function CompanyTeamPage() {
                 disabled={transferOwnership.isPending}
                 className={cabinetBtnPrimary}
               >
-                {transferOwnership.isPending ? 'Se transferă...' : 'Transferă proprietatea'}
+                {transferOwnership.isPending
+                  ? t('company.teamPage.transferring')
+                  : t('company.teamPage.transferBtn')}
               </button>
             </div>
           </form>

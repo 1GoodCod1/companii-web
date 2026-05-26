@@ -1,7 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import type { InvoiceDto } from '@/types/fsm';
 import { getInvoicePaymentStatusStyle } from '@/utils/invoicePaymentStatusStyles';
 import { EntityListPanel, entityListRowClass } from '@/components/cabinet/EntityListPanel';
-import { formatDateRo } from '@/utils/date';
+import { formatDateLocalized } from '@/utils/date';
+import { useLocale } from '@/hooks/useLocale';
+import { paymentStatusLabel } from '@/utils/i18nStatusLabels';
 
 type Props = {
   invoices: InvoiceDto[] | undefined;
@@ -11,21 +14,32 @@ type Props = {
 };
 
 export function InvoicesListTable({ invoices, isLoading, selectedId, onSelect }: Props) {
+  const { t } = useTranslation();
+  const locale = useLocale();
+
   return (
     <EntityListPanel
       isLoading={isLoading}
       isEmpty={!invoices?.length}
-      loadingMessage="Se încarcă facturile..."
-      emptyMessage="Nicio factură emisă în sistem."
+      loadingMessage={t('company.fsm.invoices.list.loading')}
+      emptyMessage={t('company.fsm.invoices.list.empty')}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse text-sm">
           <thead>
             <tr className="bg-gray-50/50 border-b border-gray-100 text-gray-500 font-bold">
-              <th className="p-4 text-xs uppercase tracking-wider">Factură Nr / Emisă</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Beneficiar / Lucrare</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Suma totală</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Status</th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.invoices.list.columns.numberIssued')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.invoices.list.columns.beneficiaryWork')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.invoices.list.columns.total')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.invoices.list.columns.status')}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -38,12 +52,16 @@ export function InvoicesListTable({ invoices, isLoading, selectedId, onSelect }:
                 <td className="p-4">
                   <span className="font-bold text-gray-800">{item.number}</span>
                   <div className="text-[10px] uppercase font-bold text-gray-400 mt-0.5">
-                    {formatDateRo(item.issuedAt)}
+                    {formatDateLocalized(item.issuedAt, locale)}
                   </div>
                 </td>
                 <td className="p-4 text-xs font-semibold text-gray-900">
-                  <div>{item.intervention?.customer?.fullName || 'Client pachet'}</div>
-                  <div className="text-gray-400 font-normal mt-0.5">Lucrare: {item.intervention?.number}</div>
+                  <div>
+                    {item.intervention?.customer?.fullName || t('company.fsm.invoices.list.packageCustomer')}
+                  </div>
+                  <div className="text-gray-400 font-normal mt-0.5">
+                    {t('company.fsm.invoices.list.workPrefix')} {item.intervention?.number}
+                  </div>
                 </td>
                 <td className="p-4 font-black text-gray-950">
                   {Number(item.amount).toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}
@@ -54,7 +72,7 @@ export function InvoicesListTable({ invoices, isLoading, selectedId, onSelect }:
                       item.paymentStatus,
                     )}`}
                   >
-                    {item.paymentStatus}
+                    {paymentStatusLabel(item.paymentStatus, t)}
                   </span>
                 </td>
               </tr>

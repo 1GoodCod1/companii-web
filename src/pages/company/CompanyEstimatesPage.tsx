@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Calculator, ChevronRight, Plus, Sparkles } from 'lucide-react';
 import {
   PageHero,
@@ -10,23 +11,24 @@ import {
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
 import { useEstimateProjectsQuery } from '@/features/estimates/api/useEstimates';
 import {
-  ESTIMATE_STATUS_LABELS,
   ESTIMATE_STATUS_TONES,
 } from '@/constants/estimates.constants';
+import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
 
 export function CompanyEstimatesPage() {
+  const { t } = useTranslation();
   const { data: projects, isLoading } = useEstimateProjectsQuery();
 
   return (
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
         <PageHero
-          title="Smete inteligente"
-          description="Proiecte de deviz pe categorii — dimensiuni & volume, etape, calcul automat și deviz pentru client."
+          title={t('company.estimatesPage.title')}
+          description={t('company.estimatesPage.description')}
           action={
             <Link to="/company/smete/new" className={cabinetBtnPrimary}>
               <Plus className="w-4 h-4" />
-              Smetă nouă
+              {t('company.estimatesPage.newBtn')}
             </Link>
           }
         />
@@ -34,31 +36,31 @@ export function CompanyEstimatesPage() {
         <div className="grid md:grid-cols-3 gap-4">
           <Panel className="p-5 bg-gradient-to-br from-violet-50 to-white border-violet-100">
             <Sparkles className="w-5 h-5 text-violet-600 mb-2" />
-            <p className="font-bold text-gray-900">Pe categorii</p>
-            <p className="text-sm text-gray-500 mt-1">Fiecare tip de lucrare are propriul șablon, etape și formule.</p>
+            <p className="font-bold text-gray-900">{t('company.estimatesPage.featureCategories')}</p>
+            <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureCategoriesHint')}</p>
           </Panel>
           <Panel className="p-5 bg-gradient-to-br from-sky-50 to-white border-sky-100">
             <Calculator className="w-5 h-5 text-sky-600 mb-2" />
-            <p className="font-bold text-gray-900">Calcul automat</p>
-            <p className="text-sm text-gray-500 mt-1">Din plan, diagnostic și norme — manoperă + materiale + marjă.</p>
+            <p className="font-bold text-gray-900">{t('company.estimatesPage.featureAutoCalc')}</p>
+            <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureAutoCalcHint')}</p>
           </Panel>
           <Panel className="p-5 bg-gradient-to-br from-emerald-50 to-white border-emerald-100">
             <ChevronRight className="w-5 h-5 text-emerald-600 mb-2" />
-            <p className="font-bold text-gray-900">Până la execuție</p>
-            <p className="text-sm text-gray-500 mt-1">Generați deviz, convertiți în lucrări, trimiteți fișa tehnicianului.</p>
+            <p className="font-bold text-gray-900">{t('company.estimatesPage.featureExecution')}</p>
+            <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureExecutionHint')}</p>
           </Panel>
         </div>
 
         <Panel>
           {isLoading ? (
-            <p className="p-6 text-sm text-gray-400">Se încarcă smetele...</p>
+            <p className="p-6 text-sm text-gray-400">{t('company.estimatesPage.loading')}</p>
           ) : !projects?.length ? (
             <EmptyState
-              message="Nicio smetă încă. Creați prima smetă inteligentă — alegeți categoria și urmați wizard-ul."
+              message={t('company.estimatesPage.empty')}
               action={
                 <Link to="/company/smete/new" className={cabinetBtnPrimary}>
                   <Plus className="w-4 h-4" />
-                  Smetă nouă
+                  {t('company.estimatesPage.newBtn')}
                 </Link>
               }
             />
@@ -67,11 +69,11 @@ export function CompanyEstimatesPage() {
               <table className="min-w-full text-sm">
                 <thead className="bg-gray-50/80 text-[10px] font-black uppercase tracking-widest text-gray-400">
                   <tr>
-                    <th className="px-6 py-3 text-left">Nr / titlu</th>
-                    <th className="px-6 py-3 text-left">Client</th>
-                    <th className="px-6 py-3 text-left">Categorie</th>
-                    <th className="px-6 py-3 text-left">Status</th>
-                    <th className="px-6 py-3 text-right">Total</th>
+                    <th className="px-6 py-3 text-left">{t('company.estimatesPage.colNumber')}</th>
+                    <th className="px-6 py-3 text-left">{t('company.estimatesPage.colClient')}</th>
+                    <th className="px-6 py-3 text-left">{t('company.estimatesPage.colCategory')}</th>
+                    <th className="px-6 py-3 text-left">{t('company.estimatesPage.colStatus')}</th>
+                    <th className="px-6 py-3 text-right">{t('company.estimatesPage.colTotal')}</th>
                     <th className="px-6 py-3" />
                   </tr>
                 </thead>
@@ -90,7 +92,7 @@ export function CompanyEstimatesPage() {
                       </td>
                       <td className="px-6 py-4">
                         <SoftBadge tone={ESTIMATE_STATUS_TONES[project.status] ?? 'gray'}>
-                          {ESTIMATE_STATUS_LABELS[project.status] ?? project.status}
+                          {estimateStatusLabel(project.status, t) ?? project.status}
                         </SoftBadge>
                       </td>
                       <td className="px-6 py-4 text-right font-bold text-gray-900">
@@ -101,7 +103,7 @@ export function CompanyEstimatesPage() {
                           to={`/company/smete/${project.id}`}
                           className="inline-flex items-center gap-1 text-violet-600 font-semibold hover:text-violet-700"
                         >
-                          Deschide <ChevronRight className="w-4 h-4" />
+                          {t('company.estimatesPage.open')} <ChevronRight className="w-4 h-4" />
                         </Link>
                       </td>
                     </tr>

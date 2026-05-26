@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/components/ui/AppModal';
 import type { CompanyMemberDto, CustomerDto } from '@/types/fsm';
@@ -14,11 +15,13 @@ type Props = {
 };
 
 export function CreateInterventionModal({ open, onClose, customers, assignableTechnicians }: Props) {
+  const { t } = useTranslation();
+
   return (
     <AppModal
       open={open}
       onClose={onClose}
-      title="Creează Lucrare / Intervenție"
+      title={t('company.fsm.interventions.createModal.title')}
       size="xl"
       backgroundIndex={3}
     >
@@ -38,16 +41,21 @@ function CreateInterventionForm({
   assignableTechnicians,
   onClose,
 }: Omit<Props, 'open'>) {
+  const { t } = useTranslation();
   const createIntervention = useCreateInterventionMutation();
 
   const [customerId, setCustomerId] = useState('');
-  const [type, setType] = useState('Reparație');
+  const [type, setType] = useState('');
   const [description, setDescription] = useState('');
   const [address, setAddress] = useState('');
   const [technicianId, setTechnicianId] = useState('');
   const [scheduledAt, setScheduledAt] = useState('');
   const [estimatedPrice, setEstimatedPrice] = useState('');
   const [internalNotes, setInternalNotes] = useState('');
+
+  useEffect(() => {
+    setType(t('company.fsm.interventions.createModal.defaultType'));
+  }, [t]);
 
   const handleCustomerChange = (cid: string) => {
     setCustomerId(cid);
@@ -58,7 +66,7 @@ function CreateInterventionForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerId || !type || !description || !address) {
-      toast.error('Completați câmpurile obligatorii.');
+      toast.error(t('company.fsm.interventions.createModal.toast.requiredFields'));
       return;
     }
 
@@ -73,10 +81,10 @@ function CreateInterventionForm({
         estimatedPrice: estimatedPrice ? Number(estimatedPrice) : undefined,
         internalNotes: internalNotes || undefined,
       });
-      toast.success('Lucrare creată cu succes!');
+      toast.success(t('company.fsm.interventions.createModal.toast.created'));
       onClose();
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la crearea lucrării.'));
+      toast.error(getErrorMessage(err, t('company.fsm.interventions.createModal.toast.createError')));
     }
   };
 
@@ -85,7 +93,7 @@ function CreateInterventionForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-            Client *
+            {t('company.fsm.interventions.createModal.fields.customer')}
           </label>
           <select
             required
@@ -93,7 +101,7 @@ function CreateInterventionForm({
             onChange={(e) => handleCustomerChange(e.target.value)}
             className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white cursor-pointer font-medium"
           >
-            <option value="">Alege clientul...</option>
+            <option value="">{t('company.fsm.interventions.createModal.fields.customerPlaceholder')}</option>
             {customers?.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.fullName}
@@ -103,14 +111,14 @@ function CreateInterventionForm({
         </div>
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-            Tip lucrare *
+            {t('company.fsm.interventions.createModal.fields.type')}
           </label>
           <input
             type="text"
             required
             value={type}
             onChange={(e) => setType(e.target.value)}
-            placeholder="ex: Instalare Aer Condiționat"
+            placeholder={t('company.fsm.interventions.createModal.fields.typePlaceholder')}
             className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white font-medium"
           />
         </div>
@@ -118,28 +126,28 @@ function CreateInterventionForm({
 
       <div>
         <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-          Descriere solicitare *
+          {t('company.fsm.interventions.createModal.fields.description')}
         </label>
         <textarea
           required
           rows={3}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Detaliați lucrarea care trebuie efectuată..."
+          placeholder={t('company.fsm.interventions.createModal.fields.descriptionPlaceholder')}
           className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white resize-none font-medium"
         />
       </div>
 
       <div>
         <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-          Adresă de desfășurare *
+          {t('company.fsm.interventions.createModal.fields.address')}
         </label>
         <input
           type="text"
           required
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          placeholder="Adresa unde va merge tehnicianul"
+          placeholder={t('company.fsm.interventions.createModal.fields.addressPlaceholder')}
           className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white font-medium"
         />
       </div>
@@ -147,14 +155,14 @@ function CreateInterventionForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-            Alocă Tehnician
+            {t('company.fsm.interventions.createModal.fields.technician')}
           </label>
           <select
             value={technicianId}
             onChange={(e) => setTechnicianId(e.target.value)}
             className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white cursor-pointer font-medium"
           >
-            <option value="">Alege tehnicianul...</option>
+            <option value="">{t('company.fsm.interventions.createModal.fields.technicianPlaceholder')}</option>
             {assignableTechnicians.map((m) => (
               <option key={m.id} value={m.id}>
                 {memberDisplayName(m)}
@@ -164,7 +172,7 @@ function CreateInterventionForm({
         </div>
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-            Programare Dată & Oră
+            {t('company.fsm.interventions.createModal.fields.scheduledAt')}
           </label>
           <input
             type="datetime-local"
@@ -178,25 +186,25 @@ function CreateInterventionForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-            Preț Estimativ (MDL)
+            {t('company.fsm.interventions.createModal.fields.estimatedPrice')}
           </label>
           <input
             type="number"
             value={estimatedPrice}
             onChange={(e) => setEstimatedPrice(e.target.value)}
-            placeholder="ex: 1500"
+            placeholder={t('company.fsm.interventions.createModal.fields.estimatedPricePlaceholder')}
             className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white font-bold"
           />
         </div>
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-            Note interne importante
+            {t('company.fsm.interventions.createModal.fields.internalNotes')}
           </label>
           <input
             type="text"
             value={internalNotes}
             onChange={(e) => setInternalNotes(e.target.value)}
-            placeholder="ex: Cod interfon 45#"
+            placeholder={t('company.fsm.interventions.createModal.fields.internalNotesPlaceholder')}
             className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white font-medium"
           />
         </div>
@@ -208,14 +216,14 @@ function CreateInterventionForm({
           onClick={onClose}
           className="px-4 py-2.5 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs font-bold uppercase tracking-wider text-gray-500 cursor-pointer"
         >
-          Anulează
+          {t('cabinet.common.cancel')}
         </button>
         <button
           type="submit"
           disabled={createIntervention.isPending}
           className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer"
         >
-          Creează Lucrare
+          {t('company.fsm.interventions.createModal.submit')}
         </button>
       </div>
     </form>

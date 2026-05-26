@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { PageHero, cabinetBtnPrimary } from '@/components/cabinet/cabinet-ui';
 import { EntityListDetailLayout } from '@/components/cabinet/EntityListDetailLayout';
 import { useQuotesQuery } from '@/features/fsm/api/useQuotes';
@@ -9,6 +10,7 @@ import { useEntityModal } from '@/hooks/useEntityModal';
 import { useEntitySelection } from '@/hooks/useEntitySelection';
 
 export function CompanyQuotesPage() {
+  const { t } = useTranslation();
   const { data: quotes, isLoading } = useQuotesQuery();
   const createModal = useEntityModal();
   const { selectedId, select, clear } = useEntitySelection();
@@ -17,11 +19,11 @@ export function CompanyQuotesPage() {
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
         <PageHero
-          title="Oferte comerciale"
-          description="Generează devize de cheltuieli, bugete de lucru și oferte de preț pentru clienții tăi."
+          title={t('company.quotesPage.title')}
+          description={t('company.quotesPage.description')}
           action={
             <button type="button" onClick={createModal.openCreate} className={cabinetBtnPrimary}>
-              + Creează ofertă
+              {t('company.quotesPage.createBtn')}
             </button>
           }
         />

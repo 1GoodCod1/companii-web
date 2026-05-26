@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { uploadFiles, fileDownloadPath } from '@/api/files';
 import { EmptyState, Panel, PanelHeader } from '@/components/cabinet/cabinet-ui';
@@ -15,15 +16,16 @@ import {
   useAddInterventionPhotosMutation,
 } from '@/features/fsm/api/useInterventions';
 import { useCreateInvoiceMutation } from '@/features/fsm/api/useInvoices';
+import { useLocale } from '@/hooks/useLocale';
 import { memberDisplayName, technicianDisplayName } from '@/utils/teamMembers';
-import { INTERVENTION_STATUS, INTERVENTION_STATUS_LABELS } from '@/constants/interventionStatus.constants';
+import { INTERVENTION_STATUS } from '@/constants/interventionStatus.constants';
+import { interventionStatusHint, interventionStatusLabel } from '@/utils/i18nStatusLabels';
 import {
   getAllowedInterventionTransitions,
-  getInterventionStatusHint,
   getInterventionStatusStyle,
   isTerminalInterventionStatus,
 } from '@/utils/interventionStatus';
-import { formatDateRo, formatDateTimeRo } from '@/utils/date';
+import { formatDateLocalized, formatDateTimeLocalized } from '@/utils/date';
 import { getErrorMessage } from '@/utils/errors';
 
 type Props = {
@@ -49,6 +51,8 @@ export function InterventionDetailPanel({
   canDeleteOwnNotes,
   assignableTechnicians,
 }: Props) {
+  const { t } = useTranslation();
+  const locale = useLocale();
   const { data: detail, isLoading: isLoadingDetail } = useInterventionQuery(selectedId || '');
 
   const updateIntervention = useUpdateInterventionMutation();
@@ -109,10 +113,10 @@ export function InterventionDetailPanel({
           finalPrice: editFinalPrice ? Number(editFinalPrice) : null,
         });
       }
-      toast.success('Detalii salvate cu succes!');
+      toast.success(t('company.fsm.interventions.detail.toast.saved'));
       setIsEditingDetail(false);
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la salvare.'));
+      toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.saveError')));
     }
   };
 
@@ -128,20 +132,20 @@ export function InterventionDetailPanel({
         note: statusNote.trim() || undefined,
       });
       setStatusNote('');
-      toast.success(`Status schimbat în ${INTERVENTION_STATUS_LABELS[newStatus]}`);
+      toast.success(t('cabinet.toasts.statusChanged', { status: interventionStatusLabel(newStatus, t) }));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la schimbarea statusului.'));
+      toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.statusError')));
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Sigur doriți să ștergeți această lucrare?')) return;
+    if (!confirm(t('company.fsm.interventions.detail.confirm.delete'))) return;
     try {
       await deleteIntervention.mutateAsync(id);
-      toast.success('Lucrare ștearsă cu succes!');
+      toast.success(t('company.fsm.interventions.detail.toast.deleted'));
       onClearSelection();
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la ștergerea lucrării.'));
+      toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.deleteError')));
     }
   };
 
@@ -151,19 +155,19 @@ export function InterventionDetailPanel({
     try {
       await createNote.mutateAsync({ body: noteBody });
       setNoteBody('');
-      toast.success('Notă adăugată!');
+      toast.success(t('company.fsm.interventions.detail.toast.noteAdded'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la adăugarea notei.'));
+      toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.noteAddError')));
     }
   };
 
   const handleDeleteNote = async (noteId: string) => {
-    if (!confirm('Ștergeți această notă?')) return;
+    if (!confirm(t('company.fsm.interventions.detail.confirm.deleteNote'))) return;
     try {
       await deleteNote.mutateAsync(noteId);
-      toast.success('Notă ștearsă!');
+      toast.success(t('company.fsm.interventions.detail.toast.noteDeleted'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare.'));
+      toast.error(getErrorMessage(err, t('company.fsm.common.error')));
     }
   };
 
@@ -171,16 +175,16 @@ export function InterventionDetailPanel({
     if (!selectedId || !detail) return;
     try {
       await createInvoice.mutateAsync({ interventionId: selectedId });
-      toast.success('Factură generată cu succes! Lucrarea este acum facturată.');
+      toast.success(t('company.fsm.interventions.detail.toast.invoiceGenerated'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la generarea facturii.'));
+      toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.invoiceError')));
     }
   };
 
   return (
     <Panel>
       <PanelHeader
-        title="Fișa lucrării"
+        title={t('company.fsm.interventions.detail.title')}
         action={
           isManagement && selectedId && !isLoadingDetail && detail ? (
             <button
@@ -188,7 +192,7 @@ export function InterventionDetailPanel({
               onClick={() => handleDelete(selectedId)}
               className="text-xs font-semibold text-red-500 hover:text-red-700 transition-colors cursor-pointer"
             >
-              Șterge
+              {t('cabinet.common.delete')}
             </button>
           ) : undefined
         }
@@ -196,7 +200,7 @@ export function InterventionDetailPanel({
 
       {selectedId ? (
         isLoadingDetail || !detail ? (
-          <div className="text-center py-20 text-gray-400">Se încarcă detaliile...</div>
+          <div className="text-center py-20 text-gray-400">{t('company.fsm.interventions.detail.loading')}</div>
         ) : (
           <div className="space-y-4">
             <div className="flex justify-between items-start">
@@ -209,7 +213,7 @@ export function InterventionDetailPanel({
                   detail.status,
                 )}`}
               >
-                {INTERVENTION_STATUS_LABELS[detail.status]}
+                {interventionStatusLabel(detail.status, t)}
               </span>
             </div>
 
@@ -218,22 +222,24 @@ export function InterventionDetailPanel({
                 to={`/company/lucrari/${detail.id}/fisa`}
                 className="inline-flex items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-800 hover:bg-emerald-100 transition-colors"
               >
-                Fișă execuție (plan & etape)
+                {t('company.fsm.interventions.detail.executionSheetLink')}
               </Link>
             )}
 
             <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100 space-y-2.5">
-              <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Următorul pas</h4>
+              <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                {t('company.fsm.interventions.detail.nextStep.title')}
+              </h4>
               {(() => {
                 const allowed = getAllowedInterventionTransitions(detail.status, role);
-                const hint = getInterventionStatusHint(detail.status);
+                const hint = interventionStatusHint(detail.status, t);
                 if (allowed.length === 0) {
                   return (
                     <p className="text-xs text-gray-500 font-medium leading-relaxed">
                       {hint ||
                         (isTerminalInterventionStatus(detail.status)
-                          ? 'Status final — nu mai poate fi modificat.'
-                          : 'Nu există acțiuni disponibile pentru acest status.')}
+                          ? t('company.fsm.interventions.detail.nextStep.terminalStatus')
+                          : t('company.fsm.interventions.detail.nextStep.noActions'))}
                     </p>
                   );
                 }
@@ -243,7 +249,7 @@ export function InterventionDetailPanel({
                       type="text"
                       value={statusNote}
                       onChange={(e) => setStatusNote(e.target.value)}
-                      placeholder="Notă opțională pentru schimbarea de status..."
+                      placeholder={t('company.fsm.interventions.detail.nextStep.statusNotePlaceholder')}
                       className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-violet-200"
                     />
                     <div className="flex flex-wrap gap-1.5">
@@ -259,7 +265,7 @@ export function InterventionDetailPanel({
                               : 'bg-violet-600 text-white border-violet-600 hover:bg-violet-700 shadow-xs'
                           } disabled:opacity-50`}
                         >
-                          {INTERVENTION_STATUS_LABELS[st]}
+                          {interventionStatusLabel(st, t)}
                         </button>
                       ))}
                     </div>
@@ -271,7 +277,7 @@ export function InterventionDetailPanel({
                   onClick={handleGenerateInvoice}
                   className="w-full mt-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
                 >
-                  🧾 Generează Factură (Invoiced)
+                  {t('company.fsm.interventions.detail.generateInvoice')}
                 </button>
               )}
             </div>
@@ -280,45 +286,63 @@ export function InterventionDetailPanel({
               <div className="space-y-4">
                 <div className="space-y-2.5 text-sm text-gray-700">
                   <div>
-                    <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">CLIENT</span>
+                    <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                      {t('company.fsm.interventions.detail.fields.client')}
+                    </span>
                     <span className="font-bold text-gray-900">{detail.customer?.fullName}</span>
                     <span className="text-xs text-gray-500 block font-semibold mt-0.5">{detail.customer?.phone}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">ADRESĂ DE DESFĂȘURARE</span>
+                    <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                      {t('company.fsm.interventions.detail.fields.address')}
+                    </span>
                     <span className="font-bold text-gray-800">{detail.address}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">DESCRIERE DEFECT</span>
+                    <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                      {t('company.fsm.interventions.detail.fields.description')}
+                    </span>
                     <p className="text-xs text-gray-600 mt-1 whitespace-pre-wrap bg-gray-50/50 p-3 rounded-xl border border-gray-100 leading-relaxed font-medium">
                       {detail.description}
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">PROGRES / DATA</span>
+                      <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                        {t('company.fsm.interventions.detail.fields.schedule')}
+                      </span>
                       <span className="text-xs font-bold text-gray-800">
                         {detail.scheduledAt
-                          ? formatDateTimeRo(detail.scheduledAt)
-                          : 'Neasociată'}
+                          ? formatDateTimeLocalized(detail.scheduledAt, locale, 'datetimeShort')
+                          : t('company.fsm.interventions.detail.fields.unscheduled')}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">TEHNICIAN ALOCAT</span>
+                      <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                        {t('company.fsm.interventions.detail.fields.technician')}
+                      </span>
                       <span className="text-xs font-bold text-gray-800">{technicianDisplayName(detail.technician)}</span>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-3.5">
                     <div>
-                      <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">PREȚ ESTIMAT</span>
+                      <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                        {t('company.fsm.interventions.detail.fields.estimatedPrice')}
+                      </span>
                       <span className="font-black text-sm text-gray-900">
-                        {detail.estimatedPrice ? `${detail.estimatedPrice} MDL` : 'Nespecificat'}
+                        {detail.estimatedPrice
+                          ? `${detail.estimatedPrice} MDL`
+                          : t('company.fsm.common.unspecified')}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">PREȚ FINAL</span>
+                      <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                        {t('company.fsm.interventions.detail.fields.finalPrice')}
+                      </span>
                       <span className="font-black text-sm text-emerald-600">
-                        {detail.finalPrice ? `${detail.finalPrice} MDL` : 'Nespecificat'}
+                        {detail.finalPrice
+                          ? `${detail.finalPrice} MDL`
+                          : t('company.fsm.common.unspecified')}
                       </span>
                     </div>
                   </div>
@@ -327,14 +351,16 @@ export function InterventionDetailPanel({
                 {detail.internalNotes && (
                   <div className="bg-amber-50/50 p-3.5 rounded-xl border border-amber-100">
                     <span className="text-[10px] font-bold text-amber-800 block uppercase tracking-wider mb-1">
-                      Observații interne importante
+                      {t('company.fsm.interventions.detail.fields.internalNotes')}
                     </span>
                     <p className="text-xs text-amber-950 font-medium whitespace-pre-wrap leading-relaxed">{detail.internalNotes}</p>
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">FOTO ȘANTIER</span>
+                  <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                    {t('company.fsm.interventions.detail.photos.title')}
+                  </span>
                   {detail.photos?.length ? (
                     <div className="grid grid-cols-3 gap-2">
                       {detail.photos.map((photo) => (
@@ -350,7 +376,7 @@ export function InterventionDetailPanel({
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-gray-400">Nicio fotografie încă.</p>
+                    <p className="text-xs text-gray-400">{t('company.fsm.interventions.detail.photos.empty')}</p>
                   )}
                   <label className="inline-flex items-center gap-2 text-xs font-semibold text-violet-600 cursor-pointer">
                     <input
@@ -364,14 +390,14 @@ export function InterventionDetailPanel({
                         try {
                           const uploaded = await uploadFiles(files);
                           await addPhotos.mutateAsync(uploaded.map((f) => f.id));
-                          toast.success('Fotografii adăugate.');
+                          toast.success(t('company.fsm.interventions.detail.toast.photosAdded'));
                         } catch (err: unknown) {
-                          toast.error(getErrorMessage(err, 'Eroare la upload.'));
+                          toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.uploadError')));
                         }
                         e.target.value = '';
                       }}
                     />
-                    + Adaugă fotografii
+                    {t('company.fsm.interventions.detail.photos.add')}
                   </label>
                 </div>
 
@@ -380,18 +406,24 @@ export function InterventionDetailPanel({
                     onClick={handleStartEdit}
                     className="w-full border border-gray-200 hover:bg-gray-50 text-gray-600 font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer"
                   >
-                    ✏️ {isManagement ? 'Editează detalii fișă' : 'Actualizează adresă / descriere / preț'}
+                    {isManagement
+                      ? t('company.fsm.interventions.detail.edit.management')
+                      : t('company.fsm.interventions.detail.edit.technician')}
                   </button>
                 ) : null}
               </div>
             ) : (
               <div className="space-y-3.5 p-4 bg-gray-50/50 border border-gray-100 rounded-xl">
                 <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                  {isManagement ? 'Editează fișă' : 'Actualizează detalii lucrare'}
+                  {isManagement
+                    ? t('company.fsm.interventions.detail.editForm.titleManagement')
+                    : t('company.fsm.interventions.detail.editForm.titleTechnician')}
                 </h4>
                 {isManagement ? (
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Tip lucrare</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                      {t('company.fsm.interventions.detail.editForm.type')}
+                    </label>
                     <input
                       type="text"
                       value={editType}
@@ -401,7 +433,9 @@ export function InterventionDetailPanel({
                   </div>
                 ) : null}
                 <div>
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Adresă</label>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                    {t('company.fsm.interventions.detail.editForm.address')}
+                  </label>
                   <input
                     type="text"
                     value={editAddress}
@@ -410,7 +444,9 @@ export function InterventionDetailPanel({
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Descriere</label>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                    {t('company.fsm.interventions.detail.editForm.description')}
+                  </label>
                   <textarea
                     value={editDescription}
                     onChange={(e) => setEditDescription(e.target.value)}
@@ -422,13 +458,15 @@ export function InterventionDetailPanel({
                   {isManagement ? (
                     <>
                       <div>
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Tehnician</label>
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                          {t('company.fsm.interventions.detail.editForm.technician')}
+                        </label>
                         <select
                           value={editTechnicianId}
                           onChange={(e) => setEditTechnicianId(e.target.value)}
                           className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white cursor-pointer font-medium"
                         >
-                          <option value="">Neatribuit</option>
+                          <option value="">{t('company.fsm.interventions.detail.editForm.unassigned')}</option>
                           {assignableTechnicians.map((m) => (
                             <option key={m.id} value={m.id}>
                               {memberDisplayName(m)}
@@ -437,7 +475,9 @@ export function InterventionDetailPanel({
                         </select>
                       </div>
                       <div>
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Programare</label>
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                          {t('company.fsm.interventions.detail.editForm.schedule')}
+                        </label>
                         <input
                           type="datetime-local"
                           value={editScheduledAt}
@@ -451,7 +491,9 @@ export function InterventionDetailPanel({
                 <div className={`grid gap-2 ${isManagement ? 'grid-cols-2' : 'grid-cols-1'}`}>
                   {isManagement ? (
                     <div>
-                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Preț Estimat</label>
+                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                        {t('company.fsm.interventions.detail.editForm.estimatedPrice')}
+                      </label>
                       <input
                         type="number"
                         value={editEstimatedPrice}
@@ -461,7 +503,9 @@ export function InterventionDetailPanel({
                     </div>
                   ) : null}
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Preț Final</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                      {t('company.fsm.interventions.detail.editForm.finalPrice')}
+                    </label>
                     <input
                       type="number"
                       value={editFinalPrice}
@@ -472,7 +516,9 @@ export function InterventionDetailPanel({
                 </div>
                 {isManagement ? (
                   <div>
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Note Interne</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+                      {t('company.fsm.interventions.detail.editForm.internalNotes')}
+                    </label>
                     <input
                       type="text"
                       value={editInternalNotes}
@@ -486,13 +532,13 @@ export function InterventionDetailPanel({
                     onClick={() => setIsEditingDetail(false)}
                     className="px-3.5 py-2 border border-gray-200 hover:bg-gray-100 rounded-xl text-[10px] font-bold uppercase tracking-wider text-gray-500 cursor-pointer bg-white"
                   >
-                    Anulează
+                    {t('cabinet.common.cancel')}
                   </button>
                   <button
                     onClick={handleSaveEdit}
                     className="px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider cursor-pointer"
                   >
-                    Salvează
+                    {t('cabinet.common.save')}
                   </button>
                 </div>
               </div>
@@ -500,13 +546,13 @@ export function InterventionDetailPanel({
 
             <div className="border-t border-gray-100 pt-4 space-y-3.5">
               <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                Discuții & Note interne ({detail.notes?.length || 0})
+                {t('company.fsm.interventions.detail.notes.title', { count: detail.notes?.length || 0 })}
               </h4>
               <form onSubmit={handleAddNote} className="flex gap-2">
                 <input
                   type="text"
                   required
-                  placeholder="Adaugă un comentariu intern..."
+                  placeholder={t('company.fsm.interventions.detail.notes.placeholder')}
                   value={noteBody}
                   onChange={(e) => setNoteBody(e.target.value)}
                   className="flex-1 border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-3 py-2 text-xs outline-none transition-all bg-white"
@@ -515,7 +561,7 @@ export function InterventionDetailPanel({
                   type="submit"
                   className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider cursor-pointer"
                 >
-                  Trimite
+                  {t('cabinet.common.send')}
                 </button>
               </form>
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
@@ -530,13 +576,13 @@ export function InterventionDetailPanel({
                           onClick={() => handleDeleteNote(n.id)}
                           className="text-[10px] text-red-500 opacity-0 group-hover:opacity-100 hover:underline transition-opacity cursor-pointer font-bold uppercase"
                         >
-                          Șterge
+                          {t('cabinet.common.delete')}
                         </button>
                       ) : null}
                     </div>
                     <p className="text-xs text-gray-700 mt-1.5 whitespace-pre-wrap leading-relaxed font-medium">{n.body}</p>
                     <span className="text-[9px] text-gray-400 block text-right mt-1.5 font-bold uppercase tracking-wider">
-                      {formatDateRo(n.createdAt)}
+                      {formatDateLocalized(n.createdAt, locale)}
                     </span>
                   </div>
                 ))}
@@ -545,7 +591,7 @@ export function InterventionDetailPanel({
           </div>
         )
       ) : (
-        <EmptyState message="Selectează o lucrare din listă pentru a-i deschide fișa de monitorizare." />
+        <EmptyState message={t('company.fsm.interventions.detail.empty')} />
       )}
     </Panel>
   );

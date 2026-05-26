@@ -1,13 +1,10 @@
-import {
-  ESTIMATE_STATUS_LABELS,
-  ESTIMATE_STATUS_TONES,
-} from '@/constants/estimateStatus.constants';
-import { INTERVENTION_STATUS_LABELS } from '@/constants/interventionStatus.constants';
+import { ESTIMATE_STATUS_TONES } from '@/constants/estimateStatus.constants';
 import { INTERVENTION_TIMELINE_STATUS_TONES } from '@/constants/interventionStatus.constants';
 import type { EstimateProjectStatus } from '@/types/estimates';
 import type { InterventionStatus } from '@/types/fsm';
 import type { CustomerTimelineItemDto } from '@/types/fsm';
 import { isEstimateStatus } from '@/utils/estimateStatus';
+import { estimateStatusLabel, interventionStatusLabel } from '@/utils/i18nStatusLabels';
 
 export function timelineHref(item: CustomerTimelineItemDto): string | null {
   const meta = item.meta ?? {};
@@ -28,11 +25,11 @@ export function timelineHref(item: CustomerTimelineItemDto): string | null {
 
 export function timelineStatusLabel(item: CustomerTimelineItemDto): string | undefined {
   if (!item.status) return undefined;
-  if (item.type === 'intervention' && item.status in INTERVENTION_STATUS_LABELS) {
-    return INTERVENTION_STATUS_LABELS[item.status as InterventionStatus];
+  if (item.type === 'intervention') {
+    return interventionStatusLabel(item.status as InterventionStatus);
   }
   if (item.type === 'estimate' && isEstimateStatus(item.status)) {
-    return ESTIMATE_STATUS_LABELS[item.status];
+    return estimateStatusLabel(item.status);
   }
   return item.status;
 }

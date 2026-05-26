@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import type { ClaimableSubscriptionPlanCode, CompanyPlanDto, CompanySubscriptionPlanCode } from '@/types/subscriptions';
 import type { PublicAuthCta } from '@/features/auth/usePublicAuthCta';
 import { canActivatePlan, plansForDisplay } from '@/config/planEntitlements';
-import { planFeatures, planPriceLabel } from '@/utils/subscriptions';
+import { planFeatures } from '@/utils/subscriptions';
 import {
   isBusinessPlan,
   isClaimablePlanCode,
@@ -14,6 +15,18 @@ import {
   PLAN_ACCENTS,
   SUBSCRIPTION_PLAN,
 } from '@/constants/subscriptions.constants';
+
+function planPriceLabelI18n(
+  t: (key: string, options?: Record<string, unknown>) => string,
+  plan: CompanyPlanDto,
+): string {
+  const amount = Number(plan.price);
+  if (amount === 0) return t('subscriptions.planCards.priceFree');
+  return t('subscriptions.planCards.pricePerMonth', {
+    amount,
+    currency: plan.currency || 'MDL',
+  });
+}
 
 export function PlanCards({
   plans,
@@ -30,6 +43,7 @@ export function PlanCards({
   claimingPlanCode?: CompanySubscriptionPlanCode | null;
   authCta?: PublicAuthCta | null;
 }) {
+  const { t } = useTranslation();
   const visiblePlans = plansForDisplay(plans, currentPlanCode);
   const singlePlan = visiblePlans.length === 1;
 
@@ -64,13 +78,13 @@ export function PlanCards({
           >
             {isCurrent && (
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-widest bg-emerald-600 text-white px-3 py-1 rounded-full shadow-xs">
-                Plan activ
+                {t('subscriptions.planCards.activePlan')}
               </span>
             )}
 
             {isPopular && (
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-widest bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-3 py-1 rounded-full shadow-xs">
-                Recomandat
+                {t('subscriptions.planCards.recommended')}
               </span>
             )}
 
@@ -81,15 +95,17 @@ export function PlanCards({
                 {plan.name}
               </span>
               <p className="mt-4 text-3xl font-black text-gray-900 tracking-tight">
-                {planPriceLabel(plan)}
+                {planPriceLabelI18n(t, plan)}
               </p>
               {plan.maxTechnicians != null && (
                 <p className="text-xs text-gray-400 font-semibold mt-1">
-                  Până la {plan.maxTechnicians} tehnicieni
+                  {t('subscriptions.planCards.upToTechnicians', { count: plan.maxTechnicians })}
                 </p>
               )}
               {plan.maxTechnicians == null && isBusinessPlan(plan.code) && (
-                <p className="text-xs text-gray-400 font-semibold mt-1">Tehnicieni nelimitați</p>
+                <p className="text-xs text-gray-400 font-semibold mt-1">
+                  {t('subscriptions.planCards.unlimitedTechnicians')}
+                </p>
               )}
             </div>
 
@@ -105,7 +121,7 @@ export function PlanCards({
             {isCurrent ? (
               <div className="space-y-3">
                 <div className="text-center text-xs font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-xl py-3">
-                  Planul tău curent
+                  {t('subscriptions.planCards.currentPlan')}
                 </div>
                 {isProPlan(currentPlanCode) && onClaimFree ? (
                   <button
@@ -115,8 +131,8 @@ export function PlanCards({
                     className={`w-full text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm disabled:opacity-50 ${PLAN_ACCENTS[SUBSCRIPTION_PLAN.BUSINESS].btn}`}
                   >
                     {claimingPlanCode === SUBSCRIPTION_PLAN.BUSINESS
-                      ? 'Se activează Business...'
-                      : 'Treci la Business — Pro se înlocuiește'}
+                      ? t('subscriptions.planCards.upgradingBusiness')
+                      : t('subscriptions.planCards.switchToBusiness')}
                   </button>
                 ) : null}
               </div>
@@ -127,7 +143,9 @@ export function PlanCards({
                 onClick={() => onClaimFree!(claimableTarget)}
                 className={`w-full text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm disabled:opacity-50 ${accent.btn}`}
               >
-                {isClaiming ? 'Se activează...' : 'Activează 30 zile gratuit'}
+                {isClaiming
+                  ? t('subscriptions.planCards.activating')
+                  : t('subscriptions.planCards.activateFreeTrial')}
               </button>
             ) : ctaMode === 'public' && authCta ? (
               <Link
@@ -141,18 +159,18 @@ export function PlanCards({
                 to="/register"
                 className={`block text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm ${accent.btn}`}
               >
-                Începe acum
+                {t('subscriptions.planCards.startNow')}
               </Link>
             ) : isFreePlan(plan.code) ? (
               <div className="text-center text-xs font-semibold text-gray-400 bg-gray-50 border border-gray-100 rounded-xl py-3">
-                Plan de bază inclus
+                {t('subscriptions.planCards.basePlanIncluded')}
               </div>
             ) : (
               <Link
                 to="/contacts"
                 className={`block text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm ${accent.btn}`}
               >
-                Contactează-ne
+                {t('subscriptions.planCards.contactUs')}
               </Link>
             )}
           </article>

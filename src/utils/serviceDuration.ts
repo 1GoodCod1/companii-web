@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type { DurationUnit } from '@/constants/services.constants';
 
 export function minutesToDurationForm(minutes: number | null | undefined): {
@@ -36,4 +37,20 @@ export function formatServiceDuration(minutes: number | null | undefined): strin
     return `${hours} ${hours === 1 ? 'oră' : 'ore'}`;
   }
   return `${minutes} min`;
+}
+
+export function formatServiceDurationI18n(
+  t: TFunction,
+  minutes: number | null | undefined,
+): string | null {
+  if (minutes == null || minutes <= 0) return null;
+  if (minutes % 1440 === 0) {
+    const days = minutes / 1440;
+    return t(days === 1 ? 'serviceDuration.day' : 'serviceDuration.days', { count: days });
+  }
+  if (minutes % 60 === 0) {
+    const hours = minutes / 60;
+    return t(hours === 1 ? 'serviceDuration.hour' : 'serviceDuration.hours', { count: hours });
+  }
+  return t('serviceDuration.minutes', { count: minutes });
 }

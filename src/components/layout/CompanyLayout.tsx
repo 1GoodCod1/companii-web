@@ -41,7 +41,7 @@ const NAV_DEFS: Array<
     key: 'dashboard',
     sectionKey: 'main',
     to: '',
-    labelKey: 'company.dashboard',
+    labelKey: 'company.dashboard.nav',
     icon: <LayoutDashboard />,
     minPlanKey: '',
   },

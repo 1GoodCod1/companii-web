@@ -1,9 +1,12 @@
 import type { InterventionStatus, InterventionDto } from '@/types/fsm';
-import { INTERVENTION_STATUS_LABELS, INTERVENTION_STATUS_TABS } from '@/constants/interventionStatus.constants';
+import { INTERVENTION_STATUS_TABS } from '@/constants/interventionStatus.constants';
 import { getInterventionStatusStyle } from '@/utils/interventionStatus';
+import { interventionStatusLabel, interventionTabLabel } from '@/utils/i18nStatusLabels';
 import { technicianDisplayName } from '@/utils/teamMembers';
 import { EntityListPanel, entityListRowClass } from '@/components/cabinet/EntityListPanel';
-import { formatDateTimeRo } from '@/utils/date';
+import { formatDateTimeLocalized } from '@/utils/date';
+import { useTranslation } from 'react-i18next';
+import { useLocale } from '@/hooks/useLocale';
 
 type Props = {
   interventions: InterventionDto[] | undefined;
@@ -13,21 +16,32 @@ type Props = {
 };
 
 export function InterventionsListTable({ interventions, isLoading, selectedId, onSelect }: Props) {
+  const { t } = useTranslation();
+  const locale = useLocale();
+
   return (
     <EntityListPanel
       isLoading={isLoading}
       isEmpty={!interventions?.length}
-      loadingMessage="Se încarcă lucrările..."
-      emptyMessage="Nicio lucrare găsită."
+      loadingMessage={t('company.fsm.interventions.list.loading')}
+      emptyMessage={t('company.fsm.interventions.list.empty')}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse text-sm">
           <thead>
             <tr className="bg-gray-50/50 border-b border-gray-100 text-gray-500 font-bold">
-              <th className="p-4 text-xs uppercase tracking-wider">Cod / Tip</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Client & Adresă</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Programare & Tehnician</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Status</th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.interventions.list.colCodeType')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.interventions.list.colClientAddress')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.interventions.list.colScheduleTechnician')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.interventions.list.colStatus')}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -48,8 +62,8 @@ export function InterventionsListTable({ interventions, isLoading, selectedId, o
                   <td className="p-4 text-xs text-gray-700">
                     <div className="font-bold text-gray-800">
                       {item.scheduledAt
-                        ? formatDateTimeRo(item.scheduledAt, 'datetimeShort')
-                        : 'Neprogramată'}
+                        ? formatDateTimeLocalized(item.scheduledAt, locale, 'datetimeShort')
+                        : t('company.fsm.interventions.list.unscheduled')}
                     </div>
                     <div className="text-gray-400 mt-0.5">{technicianDisplayName(item.technician)}</div>
                   </td>
@@ -59,7 +73,7 @@ export function InterventionsListTable({ interventions, isLoading, selectedId, o
                         item.status,
                       )}`}
                     >
-                      {INTERVENTION_STATUS_LABELS[item.status]}
+                      {interventionStatusLabel(item.status, t)}
                     </span>
                   </td>
                 </tr>
@@ -77,6 +91,8 @@ type StatusFilterProps = {
 };
 
 export function InterventionsStatusFilter({ value, onChange }: StatusFilterProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-wrap gap-1.5 pb-2">
       {INTERVENTION_STATUS_TABS.map((tab) => (
@@ -89,7 +105,7 @@ export function InterventionsStatusFilter({ value, onChange }: StatusFilterProps
               : 'bg-white/80 text-gray-500 hover:bg-slate-100'
           }`}
         >
-          {tab.label}
+          {interventionTabLabel(tab.value, t)}
         </button>
       ))}
     </div>

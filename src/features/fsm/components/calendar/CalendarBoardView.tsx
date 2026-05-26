@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   EmptyState,
   SoftBadge,
@@ -8,6 +9,7 @@ import {
   cabinetBtnSecondary,
 } from '@/components/cabinet/cabinet-ui';
 import type { CalendarBoardDto, CompanyLeadDto, CompanyMemberDto, InterventionDto } from '@/types/fsm';
+import { leadStatusLabel } from '@/utils/i18nStatusLabels';
 import { InterventionCard } from './InterventionCard';
 import { ScheduledColumn } from './ScheduledColumn';
 
@@ -38,11 +40,13 @@ export function CalendarBoardView({
   onCancelSchedule: () => void;
   onConvertLead: (leadId: string, mode: 'intervention' | 'estimate') => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
       <Panel className="xl:col-span-5 p-5">
         <PanelHeader
-          title="Programate"
+          title={t('company.fsm.calendar.board.scheduled.title')}
           meta={<span className="text-xs text-gray-400">{board?.scheduled.length ?? 0}</span>}
         />
         <ScheduledColumn scheduled={board?.scheduled ?? []} />
@@ -50,11 +54,11 @@ export function CalendarBoardView({
 
       <Panel className="xl:col-span-4 p-5">
         <PanelHeader
-          title="Backlog (neprogramate)"
+          title={t('company.fsm.calendar.board.backlog.title')}
           meta={<span className="text-xs text-gray-400">{board?.unscheduled.length ?? 0}</span>}
         />
         {!board?.unscheduled.length ? (
-          <EmptyState message="Toate lucrările active au dată setată." />
+          <EmptyState message={t('company.fsm.calendar.board.backlog.empty')} />
         ) : (
           <div className="space-y-3">
             {board.unscheduled.map((item: InterventionDto) => (
@@ -79,15 +83,15 @@ export function CalendarBoardView({
 
       <Panel className="xl:col-span-3 p-5">
         <PanelHeader
-          title="Cereri deschise"
+          title={t('company.fsm.calendar.board.leads.title')}
           meta={
             <Link to="/company/cereri" className="text-xs font-semibold text-violet-600 hover:text-violet-700">
-              Inbox →
+              {t('company.fsm.calendar.board.leads.inboxLink')}
             </Link>
           }
         />
         {!board?.openLeads.length ? (
-          <EmptyState message="Nicio cerere deschisă." />
+          <EmptyState message={t('company.fsm.calendar.board.leads.empty')} />
         ) : (
           <ul className="space-y-3">
             {board.openLeads.map((lead: CompanyLeadDto) => (
@@ -97,7 +101,7 @@ export function CalendarBoardView({
                 {lead.serviceTitle ? (
                   <p className="text-xs font-semibold text-violet-600">{lead.serviceTitle}</p>
                 ) : null}
-                <SoftBadge tone="amber">{lead.status}</SoftBadge>
+                <SoftBadge tone="amber">{leadStatusLabel(lead.status, t)}</SoftBadge>
                 {isManagement ? (
                   <div className="flex flex-wrap gap-2 pt-1">
                     <button
@@ -105,10 +109,10 @@ export function CalendarBoardView({
                       onClick={() => onConvertLead(lead.id, 'intervention')}
                       className={cabinetBtnPrimary}
                     >
-                      → Lucrare
+                      {t('company.fsm.calendar.board.leads.convertIntervention')}
                     </button>
                     <Link to="/company/cereri" className={cabinetBtnSecondary}>
-                      → Smetă
+                      {t('company.fsm.calendar.board.leads.convertEstimate')}
                     </Link>
                   </div>
                 ) : null}

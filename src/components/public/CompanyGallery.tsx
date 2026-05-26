@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, Play, Film } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { CompanyGalleryImageDto } from '@/types/companies';
 import { MediaImage } from '@/components/ui/MediaImage';
 import { isVideoUrl } from '@/utils/validateFile';
@@ -66,11 +67,13 @@ function ActiveMediaView({
   videoRef,
   onPlayToggle,
   isPlaying,
+  photoAlt,
 }: {
   item: CompanyGalleryImageDto;
   videoRef: React.RefObject<HTMLVideoElement | null>;
   onPlayToggle: () => void;
   isPlaying: boolean;
+  photoAlt: string;
 }) {
   const isVideo = isVideoUrl(item.url);
 
@@ -106,7 +109,7 @@ function ActiveMediaView({
   return (
     <MediaImage
       src={item.url}
-      alt={item.caption ?? 'Foto companie'}
+      alt={item.caption ?? photoAlt}
       className="h-full w-full object-cover rounded-2xl"
     />
   );
@@ -117,6 +120,8 @@ type MediaFilter = 'all' | 'photo' | 'video';
 
 /* ─────────────────── Main Component ─────────────────── */
 export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] }) {
+  const { t } = useTranslation();
+  const g = 'companyDetail.gallery';
   const [filter] = useState<MediaFilter>('all');
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -214,7 +219,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
   if (!images.length) {
     return (
       <div className="rounded-3xl bg-slate-50/80 px-6 py-16 text-center text-sm text-gray-400">
-        Galeria foto va fi disponibilă în curând.
+        {t(`${g}.empty`)}
       </div>
     );
   }
@@ -241,7 +246,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
           ) : (
             <MediaImage
               src={solo.url}
-              alt={solo.caption ?? 'Foto companie'}
+              alt={solo.caption ?? t(`${g}.photoAlt`)}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               fallbackClassName="h-full w-full bg-slate-200"
             />
@@ -270,11 +275,11 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                 className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8"
                 role="dialog"
                 aria-modal="true"
-                aria-label="Galerie media"
+                aria-label={t(`${g}.lightboxAria`)}
               >
                 <button
                   type="button"
-                  aria-label="Închide galeria"
+                  aria-label={t(`${g}.closeGallery`)}
                   className="absolute inset-0 cursor-pointer border-0 bg-black/80 backdrop-blur-md p-0"
                   onClick={closeLightbox}
                 />
@@ -287,10 +292,10 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                     type="button"
                     onClick={closeLightbox}
                     className="pointer-events-auto cursor-pointer inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-2 text-sm font-medium text-white hover:bg-black/55 transition-colors backdrop-blur-md"
-                    aria-label="Închide galeria"
+                    aria-label={t(`${g}.closeGallery`)}
                   >
                     <X className="h-4 w-4" />
-                    Închide
+                    {t(`${g}.close`)}
                   </button>
                 </div>
 
@@ -300,7 +305,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                       type="button"
                       onClick={lightboxPrev}
                       className="absolute left-3 sm:left-6 top-1/2 z-20 flex h-11 w-11 sm:h-12 sm:w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/45 text-white hover:bg-black/60 transition-colors backdrop-blur-md"
-                      aria-label="Anterioară"
+                      aria-label={t(`${g}.prev`)}
                     >
                       <ChevronLeft className="h-6 w-6" />
                     </button>
@@ -308,7 +313,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                       type="button"
                       onClick={lightboxNext}
                       className="absolute right-3 sm:right-6 top-1/2 z-20 flex h-11 w-11 sm:h-12 sm:w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/45 text-white hover:bg-black/60 transition-colors backdrop-blur-md"
-                      aria-label="Următoare"
+                      aria-label={t(`${g}.next`)}
                     >
                       <ChevronRight className="h-6 w-6" />
                     </button>
@@ -353,7 +358,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                   ) : (
                     <MediaImage
                       src={lightboxActive.url}
-                      alt={lightboxActive.caption ?? 'Foto companie'}
+                      alt={lightboxActive.caption ?? t(`${g}.photoAlt`)}
                       className="mx-auto block max-h-[min(78vh,820px)] max-w-full object-contain rounded-2xl shadow-2xl"
                     />
                   )}
@@ -365,9 +370,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                 </motion.div>
 
                 <p className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 text-[11px] text-white/55 pointer-events-none">
-                  {hasMultiple
-                    ? 'Săgeți ← → pentru navigare · click pe fundal pentru închidere'
-                    : 'Click pe fundal pentru închidere'}
+                  {hasMultiple ? t(`${g}.hintMultiple`) : t(`${g}.hintSingle`)}
                 </p>
               </motion.div>
             ) : null}
@@ -400,7 +403,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                     className="absolute inset-0 rounded-2xl bg-black/55 backdrop-blur-[2px] flex items-center justify-center cursor-pointer transition-colors hover:bg-black/65"
                   >
                     <span className="text-sm font-bold text-white">
-                      Încă {extraCount} foto
+                      {t(`${g}.morePhotos`, { count: extraCount })}
                     </span>
                   </button>
                 )}
@@ -432,6 +435,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                 videoRef={videoRef}
                 onPlayToggle={handlePlayToggle}
                 isPlaying={isPlaying}
+                photoAlt={t(`${g}.photoAlt`)}
               />
             </motion.div>
           </AnimatePresence>
@@ -457,7 +461,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                 type="button"
                 onClick={(e) => { e.stopPropagation(); goPrev(); }}
                 className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-white"
-                aria-label="Anterioară"
+                aria-label={t(`${g}.prev`)}
               >
                 <ChevronLeft className="h-5 w-5 text-slate-700" />
               </button>
@@ -465,7 +469,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                 type="button"
                 onClick={(e) => { e.stopPropagation(); goNext(); }}
                 className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-white"
-                aria-label="Următoare"
+                aria-label={t(`${g}.next`)}
               >
                 <ChevronRight className="h-5 w-5 text-slate-700" />
               </button>

@@ -1,27 +1,33 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Panel, PanelHeader, EmptyState } from '@/components/cabinet/cabinet-ui';
 import type { InvoiceDto } from '@/types/fsm';
 import { paymentStatusClass } from '@/utils/dashboard';
-import { formatDateRo } from '@/utils/date';
+import { formatDateLocalized } from '@/utils/date';
+import { useLocale } from '@/hooks/useLocale';
+import { paymentStatusLabel } from '@/utils/i18nStatusLabels';
 
 export function DashboardRecentInvoicesPanel({ invoices }: { invoices: InvoiceDto[] | undefined }) {
+  const { t } = useTranslation();
+  const locale = useLocale();
+
   return (
     <Panel>
       <PanelHeader
-        title="Facturi recente"
+        title={t('company.dashboard.panels.recentInvoices.title')}
         action={
           <Link to="/company/facturi" className="text-xs font-semibold text-violet-600 hover:text-violet-700">
-            Vezi toate
+            {t('company.dashboard.panels.recentInvoices.viewAll')}
           </Link>
         }
       />
 
       {!invoices?.length ? (
         <EmptyState
-          message="Nicio factură emisă în acest moment."
+          message={t('company.dashboard.panels.recentInvoices.empty')}
           action={
             <Link to="/company/facturi" className="text-xs font-semibold text-violet-600 hover:text-violet-700">
-              + Generează factură
+              {t('company.dashboard.panels.recentInvoices.generateInvoice')}
             </Link>
           }
         />
@@ -38,17 +44,22 @@ export function DashboardRecentInvoicesPanel({ invoices }: { invoices: InvoiceDt
                   {Number(inv.amount).toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}
                 </h3>
                 <p className="text-xs text-gray-500 mt-0.5 truncate">
-                  {inv.intervention?.customer?.fullName || 'Client pachet'}
+                  {inv.intervention?.customer?.fullName ||
+                    t('company.dashboard.panels.recentInvoices.packageClient')}
                 </p>
               </div>
               <div className="text-right shrink-0">
                 <span
                   className={`inline-block rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${paymentStatusClass(inv.paymentStatus)}`}
                 >
-                  {inv.paymentStatus}
+                  {paymentStatusLabel(inv.paymentStatus, t)}
                 </span>
                 <p className="text-[10px] text-gray-400 mt-1.5">
-                  Scadent: {inv.dueDate ? formatDateRo(inv.dueDate) : 'Imediat'}
+                  {inv.dueDate
+                    ? t('company.dashboard.panels.recentInvoices.dueLabel', {
+                        date: formatDateLocalized(inv.dueDate, locale),
+                      })
+                    : t('company.dashboard.panels.recentInvoices.dueImmediate')}
                 </p>
               </div>
             </div>

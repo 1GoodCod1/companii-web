@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { motion } from 'framer-motion';
 import { Building2, Search } from 'lucide-react';
@@ -10,10 +11,18 @@ import {
   useCompaniesListQuery,
 } from '@/features/companies/api/useCompanies';
 import type { CatalogOptionDto } from '@/types/companies';
+import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
 import { cabinetFieldClass } from '@/components/cabinet/cabinet-ui';
+import {
+  getCatalogSearchText,
+  getTranslatedCategoryName,
+  getTranslatedCityName,
+} from '@/utils/translateCityCategory';
 
 export function CompaniesListPage() {
+  const { t } = useTranslation();
+  const lp = useLocalizedPath();
   const [cityId, setCityId] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [search, setSearch] = useState('');
@@ -39,17 +48,18 @@ export function CompaniesListPage() {
     return (
       company.name.toLowerCase().includes(q) ||
       company.description?.toLowerCase().includes(q) ||
-      company.category?.name.toLowerCase().includes(q) ||
-      company.city?.name.toLowerCase().includes(q)
+      getCatalogSearchText(t, company.category, 'category').includes(q) ||
+      getCatalogSearchText(t, company.city, 'city').includes(q)
     );
   });
 
   return (
     <>
       <SEOHead
-        title="Companii de servicii"
-        description="Descoperă companii verificate de instalatori, electricieni, curățenie și alte servicii din Moldova."
-        keywords="companii Moldova, servicii, instalatori, electricieni, curățenie"
+        title={t('companies.seo.title')}
+        description={t('companies.seo.description')}
+        keywords={t('companies.seo.keywords')}
+        hreflang
       />
 
       <div className="space-y-8 animate-fade-in pb-8">
@@ -57,13 +67,10 @@ export function CompaniesListPage() {
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-violet-400/10 blur-3xl" />
           <div className="relative max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-600 mb-2">
-              Catalog public
+              {t('companies.hero.eyebrow')}
             </p>
-            <h1 className="font-black text-gray-900 tracking-tight">Companii de servicii</h1>
-            <p className="mt-3 text-gray-500 leading-relaxed">
-              Găsește echipe verificate din Moldova — cu profil, logo, galerie foto și pachete de
-              servicii publicate.
-            </p>
+            <h1 className="font-black text-gray-900 tracking-tight">{t('companies.hero.title')}</h1>
+            <p className="mt-3 text-gray-500 leading-relaxed">{t('companies.hero.description')}</p>
           </div>
         </section>
 
@@ -75,7 +82,7 @@ export function CompaniesListPage() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Caută companie, oraș, domeniu..."
+                placeholder={t('companies.searchPlaceholder')}
                 className={`${cabinetFieldClass} pl-10`}
               />
             </div>
@@ -84,10 +91,10 @@ export function CompaniesListPage() {
               onChange={(e) => setCityId(e.target.value)}
               className={cabinetFieldClass}
             >
-              <option value="">Toate orașele</option>
+              <option value="">{t('companies.allCities')}</option>
               {cities?.map((city: CatalogOptionDto) => (
                 <option key={city.id} value={city.id}>
-                  {city.name}
+                  {getTranslatedCityName(t, city)}
                 </option>
               ))}
             </select>
@@ -96,10 +103,10 @@ export function CompaniesListPage() {
               onChange={(e) => setCategoryId(e.target.value)}
               className={cabinetFieldClass}
             >
-              <option value="">Toate domeniile</option>
+              <option value="">{t('companies.allCategories')}</option>
               {categories?.map((cat: CatalogOptionDto) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.name}
+                  {getTranslatedCategoryName(t, cat)}
                 </option>
               ))}
             </select>
@@ -114,21 +121,20 @@ export function CompaniesListPage() {
           </div>
         ) : isError ? (
           <div className="rounded-3xl bg-red-50 px-6 py-12 text-center text-sm text-red-600">
-            Nu am putut încărca companiile. Verificați conexiunea la API.
+            {t('companies.loadError')}
           </div>
         ) : filtered.length === 0 ? (
           <div className="rounded-3xl bg-slate-50/80 px-6 py-16 text-center">
             <Building2 className="h-10 w-10 text-gray-300 mx-auto mb-3" />
             <p className="text-sm font-medium text-gray-500">
-              {items.length === 0
-                ? 'Nicio companie publicată încă. Companiile verificate apar aici automat.'
-                : 'Niciun rezultat pentru filtrele selectate.'}
+              {items.length === 0 ? t('companies.emptyNone') : t('companies.emptyFiltered')}
             </p>
           </div>
         ) : (
           <>
             <p className="text-sm text-gray-500">
-              {filtered.length} {filtered.length === 1 ? 'companie' : 'companii'} găsite
+              {filtered.length}{' '}
+              {filtered.length === 1 ? t('companies.countOne') : t('companies.countMany')}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 items-stretch">
               {filtered.map((company, index) => (
@@ -150,7 +156,7 @@ export function CompaniesListPage() {
           <p className="text-center text-sm text-gray-400">
             {isAuthed ? (
               <>
-                Publică profilul companiei din{' '}
+                {t('companies.emptyHintAuthedPrefix')}{' '}
                 <Link
                   to={cabinetRoute}
                   className="font-semibold text-violet-600 hover:text-violet-700"
@@ -161,11 +167,14 @@ export function CompaniesListPage() {
               </>
             ) : (
               <>
-                Ai o companie?{' '}
-                <Link to="/register" className="font-semibold text-violet-600 hover:text-violet-700">
-                  Înregistrează-te
+                {t('companies.emptyHintGuestPrefix')}{' '}
+                <Link
+                  to={lp('/register')}
+                  className="font-semibold text-violet-600 hover:text-violet-700"
+                >
+                  {t('companies.emptyHintGuestLink')}
                 </Link>{' '}
-                și publică profilul din cabinet.
+                {t('companies.emptyHintGuestSuffix')}
               </>
             )}
           </p>

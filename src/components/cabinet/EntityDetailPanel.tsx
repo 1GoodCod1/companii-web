@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { EmptyState, Panel, PanelHeader } from '@/components/cabinet/cabinet-ui';
 
 type Props = {
@@ -17,18 +18,21 @@ export function EntityDetailPanel({
   selectedId,
   isLoading,
   hasDetail,
-  loadingMessage = 'Se încarcă detaliile...',
+  loadingMessage,
   emptyMessage,
   headerAction,
   children,
 }: Props) {
+  const { t } = useTranslation();
+  const resolvedLoadingMessage = loadingMessage ?? t('cabinet.common.loadingDetails');
+
   return (
     <Panel>
       <PanelHeader title={title} action={headerAction} />
 
       {selectedId ? (
         isLoading || !hasDetail ? (
-          <div className="text-center py-20 text-gray-400">{loadingMessage}</div>
+          <div className="text-center py-20 text-gray-400">{resolvedLoadingMessage}</div>
         ) : (
           children
         )

@@ -3,11 +3,12 @@ import { LogOut, Lock } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
-import { COMPANY_ROLE_LABELS } from '@/components/layout/cabinet-nav';
+import { getCompanyRoleLabel } from '@/utils/companyRoleLabel';
 import { AppModal } from '@/components/ui/AppModal';
 import { useChangePasswordMutation } from '@/features/auth/api/useAuth';
 import { getAuthErrorMessage } from '@/features/auth/authErrors';
 
+import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher';
 import { personInitials } from '@/utils/person';
 
 export function CabinetProfileCard({
@@ -28,7 +29,7 @@ export function CabinetProfileCard({
   isLoggingOut?: boolean;
 }) {
   const { t } = useTranslation();
-  const roleLabel = role ? (COMPANY_ROLE_LABELS[role] ?? role) : null;
+  const roleLabel = role ? getCompanyRoleLabel(t, role) : null;
   const initials = personInitials(displayName, email);
 
   // Password change modal state
@@ -44,12 +45,12 @@ export function CabinetProfileCard({
     setModalError(null);
 
     if (newPassword.length < 8) {
-      setModalError('Noua parolă trebuie să aibă cel puțin 8 caractere.');
+      setModalError(t('cabinet.shell.passwordMinLength'));
       return;
     }
 
     if (newPassword !== confirmNewPassword) {
-      setModalError('Noua parolă și confirmarea nu coincid.');
+      setModalError(t('cabinet.shell.passwordMismatch'));
       return;
     }
 
@@ -58,7 +59,7 @@ export function CabinetProfileCard({
         currentPassword,
         newPassword,
       });
-      toast.success('Parola a fost modificată cu succes!');
+      toast.success(t('cabinet.shell.passwordChanged'));
       setIsChangePasswordOpen(false);
       setCurrentPassword('');
       setNewPassword('');
@@ -101,10 +102,17 @@ export function CabinetProfileCard({
           </p>
           {planCode ? (
             <p className="mt-1 text-[10px] font-black uppercase tracking-widest text-gray-400">
-              Plan {planCode}
+              {t('cabinet.common.planPrefix', { code: planCode })}
             </p>
           ) : null}
         </div>
+      </div>
+
+      <div className="mt-3 flex items-center justify-between rounded-xl border border-gray-200 bg-white px-3 py-2">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
+          {t('nav.language', 'Limbă')}
+        </span>
+        <LanguageSwitcher compact />
       </div>
 
       {/* Change Password Trigger Button */}
@@ -118,7 +126,7 @@ export function CabinetProfileCard({
         )}
       >
         <Lock className="size-4 shrink-0" />
-        Schimbă Parola
+        {t('cabinet.shell.changePassword')}
       </button>
 
       {/* Logout Button */}
@@ -146,7 +154,7 @@ export function CabinetProfileCard({
           setConfirmNewPassword('');
           setModalError(null);
         }}
-        title="Schimbare Parolă"
+        title={t('cabinet.shell.changePasswordTitle')}
         size="md"
       >
         <form onSubmit={handlePasswordChange} className="space-y-4">
@@ -157,7 +165,7 @@ export function CabinetProfileCard({
           )}
           <div className="space-y-1">
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-              Parola Curentă
+              {t('cabinet.shell.currentPassword')}
             </label>
             <input
               type="password"
@@ -170,7 +178,7 @@ export function CabinetProfileCard({
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-              Noua Parolă
+              {t('cabinet.shell.newPassword')}
             </label>
             <input
               type="password"
@@ -183,7 +191,7 @@ export function CabinetProfileCard({
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-              Confirmă Noua Parolă
+              {t('cabinet.shell.confirmNewPassword')}
             </label>
             <input
               type="password"
@@ -206,14 +214,14 @@ export function CabinetProfileCard({
               }}
               className="flex-1 border border-slate-200 hover:bg-slate-50 text-slate-700 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
             >
-              Anulează
+              {t('cabinet.common.cancel')}
             </button>
             <button
               type="submit"
               disabled={changePasswordMutation.isPending}
               className="flex-1 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white py-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md cursor-pointer text-xs uppercase tracking-wider active:scale-98"
             >
-              {changePasswordMutation.isPending ? 'Se salvează...' : 'Salvează'}
+              {changePasswordMutation.isPending ? t('cabinet.common.saving') : t('cabinet.common.save')}
             </button>
           </div>
         </form>

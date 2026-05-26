@@ -1,4 +1,5 @@
 import { Calculator, Save } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
   Panel,
   cabinetBtnPrimary,
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export function ObjectStep({ wizard }: Props) {
+  const { t } = useTranslation();
   const {
     project,
     config,
@@ -40,7 +42,7 @@ export function ObjectStep({ wizard }: Props) {
           </div>
           <div className="min-w-0">
             <p className="text-[10px] font-bold text-violet-800 uppercase tracking-wider">
-              Buget estimativ solicitat de client
+              {t('company.estimateWizard.objectStep.budgetLabel')}
             </p>
             <p className="text-xl font-black text-slate-900 mt-1">
               {Number(project.sourceLead.estimatedBudget).toLocaleString('ro-MD')} MDL
@@ -54,28 +56,28 @@ export function ObjectStep({ wizard }: Props) {
         </div>
       )}
       <label className={cabinetLabelClass}>
-        Titlu proiect
+        {t('company.estimateWizard.objectStep.projectTitle')}
         <input value={title} onChange={(e) => setTitle(e.target.value)} className={cabinetFieldClass} />
       </label>
       <label className={cabinetLabelClass}>
-        Tip obiect
+        {t('company.estimateWizard.objectStep.siteType')}
         <select value={siteType} onChange={(e) => setSiteType(e.target.value)} className={cabinetSelectClass}>
-          {(config?.siteTypes ?? []).map((t) => (
-            <option key={t.value} value={t.value}>{t.label}</option>
+          {(config?.siteTypes ?? []).map((siteTypeOption) => (
+            <option key={siteTypeOption.value} value={siteTypeOption.value}>{siteTypeOption.label}</option>
           ))}
         </select>
       </label>
       <label className={cabinetLabelClass}>
-        Adresă obiect
+        {t('company.estimateWizard.objectStep.address')}
         <input value={address} onChange={(e) => setAddress(e.target.value)} className={cabinetFieldClass} />
       </label>
       <label className={cabinetLabelClass}>
-        Marjă (%)
+        {t('company.estimateWizard.objectStep.margin')}
         <input type="number" min={0} max={100} value={marginPct} onChange={(e) => setMarginPct(Number(e.target.value))} className={cabinetFieldClass} />
       </label>
       <CustomPricingFields values={customPricing} onChange={setCustomPricing} unitLabel={pricingUnitLabel} />
       <button type="button" onClick={handleSaveObject} className={cabinetBtnPrimary}>
-        <Save className="w-4 h-4" /> Salvează și continuă
+        <Save className="w-4 h-4" /> {t('company.estimateWizard.objectStep.saveAndContinue')}
       </button>
     </Panel>
   );

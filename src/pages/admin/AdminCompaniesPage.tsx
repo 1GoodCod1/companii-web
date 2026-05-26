@@ -1,4 +1,5 @@
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { useAdminCompaniesQuery, type AdminCompanyDto } from '@/features/admin/api/useAdmin';
 import { AdminCompanyModerationModal } from '@/features/admin/components/AdminCompanyModerationModal';
@@ -7,6 +8,7 @@ import { DEFAULT_SUBSCRIPTION_PLAN, SUBSCRIPTION_PLAN_CODES } from '@/constants/
 import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
 
 export function AdminCompaniesPage() {
+  const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
   const { data: companies, isLoading } = useAdminCompaniesQuery();
   const setPlan = useAdminSetCompanyPlanMutation();
@@ -37,36 +39,34 @@ export function AdminCompaniesPage() {
   const handleSetPlan = async (companyId: string, planCode: CompanySubscriptionPlanCode) => {
     try {
       await setPlan.mutateAsync({ companyId, planCode });
-      toast.success(`Planul ${planCode} a fost setat.`);
+      toast.success(t('admin.companiesPage.toastPlanSet', { code: planCode }));
     } catch (err: unknown) {
       const error = err as Error;
-      toast.error(error.message || 'Nu s-a putut seta planul.');
+      toast.error(error.message || t('admin.companiesPage.toastPlanFailed'));
     }
   };
 
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-black text-gray-900 tracking-tight">Companii</h1>
-        <p className="text-gray-500 text-sm mt-1">
-          Lista companiilor înregistrate, moderare, verificare și planuri active.
-        </p>
+        <h1 className="text-2xl font-black text-gray-900 tracking-tight">{t('admin.companiesPage.title')}</h1>
+        <p className="text-gray-500 text-sm mt-1">{t('admin.companiesPage.description')}</p>
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-gray-400">Se încarcă companiile...</p>
+        <p className="text-sm text-gray-400">{t('admin.companiesPage.loading')}</p>
       ) : (
         <div className="bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl shadow-premium overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-gray-50/80 text-[10px] font-black uppercase tracking-widest text-gray-400">
                 <tr>
-                  <th className="px-6 py-3 text-left">Companie</th>
-                  <th className="px-6 py-3 text-left">Proprietar</th>
-                  <th className="px-6 py-3 text-left">Oraș</th>
-                  <th className="px-6 py-3 text-left">Plan</th>
-                  <th className="px-6 py-3 text-left">Status</th>
-                  <th className="px-6 py-3 text-right">Acțiuni</th>
+                  <th className="px-6 py-3 text-left">{t('admin.companiesPage.colCompany')}</th>
+                  <th className="px-6 py-3 text-left">{t('admin.companiesPage.colOwner')}</th>
+                  <th className="px-6 py-3 text-left">{t('admin.companiesPage.colCity')}</th>
+                  <th className="px-6 py-3 text-left">{t('admin.companiesPage.colPlan')}</th>
+                  <th className="px-6 py-3 text-left">{t('admin.companiesPage.colStatus')}</th>
+                  <th className="px-6 py-3 text-right">{t('admin.companiesPage.colActions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -103,11 +103,13 @@ export function AdminCompaniesPage() {
                               : 'bg-amber-50 text-amber-700 border-amber-100'
                           }`}
                         >
-                          {company.isVerified ? 'Verificată' : 'Neverifycată'}
+                          {company.isVerified
+                            ? t('admin.companiesPage.verified')
+                            : t('admin.companiesPage.unverified')}
                         </span>
                         {company.isPublished ? (
                           <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600">
-                            Publicată
+                            {t('admin.companiesPage.published')}
                           </span>
                         ) : null}
                       </div>
@@ -118,7 +120,7 @@ export function AdminCompaniesPage() {
                         onClick={() => openModeration(company.id)}
                         className="text-[10px] font-black uppercase tracking-wider bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl transition-colors"
                       >
-                        Moderare
+                        {t('admin.companiesPage.moderate')}
                       </button>
                     </td>
                   </tr>

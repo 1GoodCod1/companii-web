@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Panel, PanelHeader, EmptyState, SoftBadge } from '@/components/cabinet/cabinet-ui';
 import type { InterventionDto } from '@/types/fsm';
-import { formatDateRo } from '@/utils/date';
+import { formatDateLocalized } from '@/utils/date';
+import { useLocale } from '@/hooks/useLocale';
+import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
 
 export function DashboardActiveInterventionsPanel({
   interventions,
@@ -10,23 +13,28 @@ export function DashboardActiveInterventionsPanel({
   interventions: InterventionDto[];
   isManagement: boolean;
 }) {
+  const { t } = useTranslation();
+  const locale = useLocale();
+
   return (
     <Panel>
       <PanelHeader
-        title="Lucrări recente active"
+        title={t('company.dashboard.panels.activeInterventions.title')}
         action={
           <Link to="/company/lucrari" className="text-xs font-semibold text-violet-600 hover:text-violet-700">
-            Vezi toate
+            {t('company.dashboard.panels.activeInterventions.viewAll')}
           </Link>
         }
       />
 
       {interventions.length === 0 ? (
         <EmptyState
-          message="Nicio lucrare activă în acest moment."
+          message={t('company.dashboard.panels.activeInterventions.empty')}
           action={
             <Link to="/company/lucrari" className="text-xs font-semibold text-violet-600 hover:text-violet-700">
-              {isManagement ? '+ Creează lucrare' : 'Vezi lucrările mele'}
+              {isManagement
+                ? t('company.dashboard.panels.activeInterventions.createIntervention')
+                : t('company.dashboard.panels.activeInterventions.viewMyJobs')}
             </Link>
           }
         />
@@ -43,11 +51,11 @@ export function DashboardActiveInterventionsPanel({
                 <p className="text-xs text-gray-500 mt-0.5 truncate">{inter.customer?.fullName}</p>
               </div>
               <div className="text-right shrink-0">
-                <SoftBadge tone="blue">{inter.status}</SoftBadge>
+                <SoftBadge tone="blue">{interventionStatusLabel(inter.status, t)}</SoftBadge>
                 <p className="text-[10px] text-gray-400 mt-1.5">
                   {inter.scheduledAt
-                    ? formatDateRo(inter.scheduledAt)
-                    : 'Nespecificat'}
+                    ? formatDateLocalized(inter.scheduledAt, locale)
+                    : t('company.dashboard.panels.activeInterventions.unspecified')}
                 </p>
               </div>
             </div>

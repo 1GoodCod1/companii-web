@@ -11,8 +11,11 @@ type LegalDocumentLayoutProps = {
   badge: string;
   title: string;
   updatedAt: string;
+  updatedAtPrefix?: string;
   intro?: string;
   toc?: LegalTocItem[];
+  tocTitle?: string;
+  tocAriaLabel?: string;
   relatedLink?: { href: string; label: string };
   children: ReactNode;
 };
@@ -21,8 +24,11 @@ export function LegalDocumentLayout({
   badge,
   title,
   updatedAt,
+  updatedAtPrefix = 'Ultima actualizare:',
   intro,
   toc,
+  tocTitle = 'Cuprins',
+  tocAriaLabel = 'Cuprins document',
   relatedLink,
   children,
 }: LegalDocumentLayoutProps) {
@@ -37,7 +43,7 @@ export function LegalDocumentLayout({
             {title}
           </h1>
           <p className="legal-meta text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
-            Ultima actualizare: {updatedAt}
+            {updatedAtPrefix} {updatedAt}
           </p>
         </div>
         {intro ? (
@@ -49,11 +55,11 @@ export function LegalDocumentLayout({
 
       {toc && toc.length > 0 ? (
         <nav
-          aria-label="Cuprins document"
+          aria-label={tocAriaLabel}
           className="legal-toc rounded-2xl border border-gray-100 bg-white/70 backdrop-blur-md p-5 md:p-6 shadow-premium"
         >
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-3">
-            Cuprins
+            {tocTitle}
           </p>
           <ol className="grid gap-2 sm:grid-cols-2">
             {toc.map((item, index) => (

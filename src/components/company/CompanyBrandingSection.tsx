@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ImagePlus, Trash2, Upload, Film } from 'lucide-react';
 import { CompanyLogo } from '@/components/public/CompanyLogo';
 import {
@@ -48,6 +49,7 @@ export function CompanyBrandingSection({
   disabled = false,
   variant = 'default',
 }: Props) {
+  const { t } = useTranslation();
   const isSidebar = variant === 'sidebar';
   const logoInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -60,7 +62,11 @@ export function CompanyBrandingSection({
     if (!file) return;
     const err = validateImageFile(file);
     if (err) {
-      setLogoError(err === 'files.tooLarge' ? 'Logo prea mare (max 10 MB)' : 'Format invalid (JPG, PNG, WEBP)');
+      setLogoError(
+        err === 'files.tooLarge'
+          ? t('company.branding.logoTooLarge')
+          : t('company.branding.logoInvalidFormat'),
+      );
       return;
     }
     setLogoError(null);
@@ -83,7 +89,7 @@ export function CompanyBrandingSection({
         }
       >
         <CompanyLogo
-          name={companyName || 'Companie'}
+          name={companyName || t('company.branding.companyFallback')}
           logoUrl={displayLogo}
           size={isSidebar ? 'lg' : 'xl'}
           className="shrink-0"
@@ -104,7 +110,7 @@ export function CompanyBrandingSection({
             className={`${cabinetBtnSecondary} gap-2 ${isSidebar ? 'w-full justify-center' : ''}`}
           >
             <Upload className="h-4 w-4" />
-            {displayLogo ? 'Schimbă logo' : 'Încarcă logo'}
+            {displayLogo ? t('company.branding.changeLogo') : t('company.branding.uploadLogo')}
           </button>
           {displayLogo ? (
             <button
@@ -113,17 +119,17 @@ export function CompanyBrandingSection({
               onClick={() => onLogoPick(null)}
               className="block text-xs font-medium text-gray-500 hover:text-red-600"
             >
-              Elimină logo
+              {t('company.branding.removeLogo')}
             </button>
           ) : null}
           {logoError ? <p className="text-xs text-red-600">{logoError}</p> : null}
-          <p className="text-xs text-gray-400">Recomandat: pătrat, min. 256×256 px, max 10 MB.</p>
+          <p className="text-xs text-gray-400">{t('company.branding.logoHint')}</p>
         </div>
       </div>
 
       <div className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <label className={cabinetLabelClass}>Galerie lucrări</label>
+          <label className={cabinetLabelClass}>{t('company.branding.galleryTitle')}</label>
           <input
             ref={galleryInputRef}
             type="file"
@@ -140,14 +146,16 @@ export function CompanyBrandingSection({
             className={`${cabinetBtnSecondary} gap-2 ${isSidebar ? 'w-full justify-center' : ''}`}
           >
             <ImagePlus className="h-4 w-4" />
-            Adaugă poze / video
+            {t('company.branding.addGallery')}
           </button>
         </div>
 
         {galleryImages.length === 0 && pendingGallery.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-8 text-center text-sm text-gray-400">
-            Încărcați fotografii sau videoclipuri cu lucrările companiei — vor apărea pe pagina publică.
-            <span className="block text-[11px] text-slate-400 mt-1">Max 2 videoclipuri · max 2 minute fiecare · max 150 MB</span>
+            {t('company.branding.galleryEmpty')}
+            <span className="block text-[11px] text-slate-400 mt-1">
+              {t('company.branding.galleryLimits')}
+            </span>
           </div>
         ) : (
           <div className={`grid gap-3 ${isSidebar ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-3'}`}>
@@ -171,7 +179,7 @@ export function CompanyBrandingSection({
                 ) : (
                   <MediaImage
                     src={image.url}
-                    alt={image.caption ?? 'Foto galerie'}
+                    alt={image.caption ?? t('company.branding.galleryPhotoAlt')}
                     className="h-full w-full object-cover"
                     fallbackClassName="h-full w-full bg-slate-200"
                   />
@@ -181,7 +189,7 @@ export function CompanyBrandingSection({
                   disabled={disabled}
                   onClick={() => onGalleryRemove(image.id)}
                   className="absolute top-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                  aria-label="Șterge poza"
+                  aria-label={t('company.branding.deletePhoto')}
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -212,14 +220,18 @@ export function CompanyBrandingSection({
                       </div>
                     </div>
                   ) : (
-                    <img src={item.preview} alt="Previzualizare" className="h-full w-full object-cover" />
+                    <img
+                      src={item.preview}
+                      alt={t('company.branding.previewAlt')}
+                      className="h-full w-full object-cover"
+                    />
                   )}
                   <button
                     type="button"
                     disabled={disabled}
                     onClick={() => onPendingGalleryRemove(item.id)}
                     className="absolute top-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-white"
-                    aria-label="Elimină din listă"
+                    aria-label={t('company.branding.removeFromList')}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -229,7 +241,7 @@ export function CompanyBrandingSection({
                   value={item.caption}
                   disabled={disabled}
                   onChange={(e) => onPendingGalleryCaptionChange(item.id, e.target.value)}
-                  placeholder="Descriere scurtă (opțional)"
+                  placeholder={t('company.branding.captionPlaceholder')}
                   className={`${cabinetFieldClass} text-xs py-2`}
                 />
               </div>
@@ -244,10 +256,8 @@ export function CompanyBrandingSection({
     return (
       <div className="space-y-5">
         <div>
-          <h2 className="text-base font-bold text-gray-900">Logo & galerie media</h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Logo-ul, fotografiile și videoclipurile apar pe profilul public din catalog.
-          </p>
+          <h2 className="text-base font-bold text-gray-900">{t('company.branding.sectionTitle')}</h2>
+          <p className="mt-1 text-sm text-gray-500">{t('company.branding.sectionDescription')}</p>
         </div>
         {content}
       </div>
@@ -256,8 +266,8 @@ export function CompanyBrandingSection({
 
   return (
     <FormSection
-      title="Logo & galerie media"
-      description="Logo-ul, fotografiile și videoclipurile apar pe profilul public din catalog."
+      title={t('company.branding.sectionTitle')}
+      description={t('company.branding.sectionDescription')}
     >
       {content}
     </FormSection>

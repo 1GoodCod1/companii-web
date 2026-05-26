@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
 import { PageHero, Panel, PanelHeader, EmptyState } from '@/components/cabinet/cabinet-ui';
 import { LeadInboxItem } from '@/features/fsm/components/leads/LeadInboxItem';
@@ -7,27 +8,32 @@ import { LEAD_STATUS } from '@/constants/leadStatus.constants';
 import { useLeadInbox } from '@/features/fsm/hooks/useLeadInbox';
 
 export function CompanyLeadsPage() {
+  const { t } = useTranslation();
   const inbox = useLeadInbox(LEAD_STATUS.NEW);
 
   return (
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
         <PageHero
-          title="Cereri & lead-uri"
-          description="Cereri din servicii publice, proiecte sau introduse manual — calificați, convertiți în smete sau lucrări și finalizați când fluxul e complet."
+          title={t('company.leadsPage.title')}
+          description={t('company.leadsPage.description')}
         />
 
         <LeadsStatusFilter value={inbox.statusFilter} onChange={inbox.setStatusFilter} />
 
         <Panel>
           <PanelHeader
-            title="Inbox cereri"
-            meta={<span className="text-xs text-gray-400">{inbox.sortedLeads.length} înregistrări</span>}
+            title={t('company.leadsPage.inboxTitle')}
+            meta={
+              <span className="text-xs text-gray-400">
+                {t('cabinet.common.records', { count: inbox.sortedLeads.length })}
+              </span>
+            }
           />
           {inbox.isLoading ? (
-            <p className="text-sm text-gray-400 p-4">Se încarcă...</p>
+            <p className="text-sm text-gray-400 p-4">{t('cabinet.common.loading')}</p>
           ) : !inbox.sortedLeads.length ? (
-            <EmptyState message="Nicio cerere pentru filtrul selectat." />
+            <EmptyState message={t('company.leadsPage.empty')} />
           ) : (
             <div className="divide-y divide-gray-100">
               {inbox.sortedLeads.map((lead) => (

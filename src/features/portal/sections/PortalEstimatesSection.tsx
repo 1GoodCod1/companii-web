@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Eye } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { downloadFile } from '@/api/files';
 import {
@@ -14,14 +15,16 @@ import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
 import type { EstimateProjectListDto, EstimateStageDto } from '@/types/estimates';
 import {
   ESTIMATE_STATUS,
-  ESTIMATE_STATUS_LABELS,
   ESTIMATE_STATUS_TONES,
   PORTAL_ESTIMATE_ACTION,
   type PortalEstimateActionStatus,
 } from '@/constants/estimateStatus.constants';
 import { getErrorMessage } from '@/utils/errors';
+import { getTranslatedCategoryName } from '@/utils/translateCityCategory';
+import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
 
 export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
+  const { t } = useTranslation();
   const updateEstimate = useUpdatePortalEstimateMutation();
   const { estimates } = data;
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -32,13 +35,20 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
   );
 
   const handleEstimateStatus = async (estimateId: string, status: PortalEstimateActionStatus) => {
-    const word = status === PORTAL_ESTIMATE_ACTION.ACCEPT ? 'acceptați' : 'respingeți';
-    if (!confirm(`Sigur doriți să ${word} această smetă?`)) return;
+    const confirmKey =
+      status === PORTAL_ESTIMATE_ACTION.ACCEPT
+        ? 'portal.estimatesSection.confirmAccept'
+        : 'portal.estimatesSection.confirmReject';
+    if (!confirm(t(confirmKey))) return;
     try {
       await updateEstimate.mutateAsync({ id: estimateId, status });
-      toast.success(status === PORTAL_ESTIMATE_ACTION.ACCEPT ? 'Smeta a fost acceptată!' : 'Smeta a fost respinsă.');
+      toast.success(
+        status === PORTAL_ESTIMATE_ACTION.ACCEPT
+          ? t('portal.estimatesSection.toastAccepted')
+          : t('portal.estimatesSection.toastRejected'),
+      );
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la actualizarea smetei.'));
+      toast.error(getErrorMessage(err, t('portal.estimatesSection.toastError')));
     }
   };
 
@@ -46,9 +56,9 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
     setDownloadingId(estimateId);
     try {
       await downloadPortalEstimatePdf(estimateId, `${number}.pdf`);
-      toast.success('PDF descărcat.');
+      toast.success(t('portal.estimatesSection.toastPdfDownloaded'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la descărcarea PDF.'));
+      toast.error(getErrorMessage(err, t('portal.estimatesSection.toastPdfError')));
     } finally {
       setDownloadingId(null);
     }
@@ -57,12 +67,16 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
   return (
     <Panel>
       <PanelHeader
-        title="Smete de aprobat"
-        description="Acceptă sau respinge smetele primite de la companie."
-        meta={<span className="text-xs text-gray-400">{estimates.length} smete</span>}
+        title={t('portal.estimatesSection.title')}
+        description={t('portal.estimatesSection.description')}
+        meta={
+          <span className="text-xs text-gray-400">
+            {t('portal.estimatesSection.meta', { count: estimates.length })}
+          </span>
+        }
       />
       {estimates.length === 0 ? (
-        <EmptyState message="Nu ai smete în curs de aprobare." />
+        <EmptyState message={t('portal.estimatesSection.empty')} />
       ) : (
         <ul className="space-y-3">
           {estimates.map((item: EstimateProjectListDto) => (
@@ -76,13 +90,15 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                     {item.number}
                   </span>
                   <p className="font-bold text-gray-800 text-sm mt-0.5">{item.title}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{item.category.name}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {getTranslatedCategoryName(t, item.category)}
+                  </p>
                   <p className="font-black text-violet-700 text-lg mt-1 tracking-tight">
                     {Number(item.grandTotal).toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}
                   </p>
                 </div>
                 <SoftBadge tone={ESTIMATE_STATUS_TONES[item.status] ?? 'gray'}>
-                  {ESTIMATE_STATUS_LABELS[item.status] ?? item.status}
+                  {estimateStatusLabel(item.status, t)}
                 </SoftBadge>
               </div>
               {item.status === ESTIMATE_STATUS.SENT ? (
@@ -92,14 +108,14 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                     onClick={() => handleEstimateStatus(item.id, PORTAL_ESTIMATE_ACTION.REJECT)}
                     className="px-3 py-1.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"
                   >
-                    Declină
+                    {t('portal.estimatesSection.decline')}
                   </button>
                   <button
                     type="button"
                     onClick={() => handleEstimateStatus(item.id, PORTAL_ESTIMATE_ACTION.ACCEPT)}
                     className="px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold transition-colors shadow-xs"
                   >
-                    Acceptă
+                    {t('portal.estimatesSection.accept')}
                   </button>
                 </div>
               ) : null}
@@ -109,7 +125,9 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                   onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
                   className="px-3 py-1.5 rounded-xl text-xs font-bold text-violet-700 hover:bg-violet-50 transition-colors"
                 >
-                  {expandedId === item.id ? 'Ascunde detalii' : 'Vezi detalii'}
+                  {expandedId === item.id
+                    ? t('portal.estimatesSection.hideDetails')
+                    : t('portal.estimatesSection.showDetails')}
                 </button>
                 <button
                   type="button"
@@ -117,13 +135,15 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                   onClick={() => handleDownloadPdf(item.id, item.number)}
                   className="px-3 py-1.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  {downloadingId === item.id ? 'Se descarcă...' : 'PDF'}
+                  {downloadingId === item.id
+                    ? t('portal.estimatesSection.downloading')
+                    : t('portal.estimatesSection.pdf')}
                 </button>
               </div>
               {expandedId === item.id ? (
                 <div className="rounded-xl bg-slate-50/80 p-4 space-y-3">
                   {detailLoading ? (
-                    <p className="text-xs text-gray-400">Se încarcă detaliile...</p>
+                    <p className="text-xs text-gray-400">{t('portal.estimatesSection.loadingDetails')}</p>
                   ) : estimateDetail ? (
                     <>
                       {(estimateDetail.stages as EstimateStageDto[]).map((stage) => (
@@ -151,7 +171,9 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                                   <div className="flex items-center gap-2">
                                     {!isLabor && line.materialStore && (
                                       <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold text-slate-600 border border-slate-200">
-                                        Magazin: {line.materialStore}
+                                        {t('portal.estimatesSection.storeLabel', {
+                                          store: line.materialStore,
+                                        })}
                                       </span>
                                     )}
                                     {!isLabor && line.receiptFileKey && (
@@ -165,7 +187,7 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                                         }
                                         className="inline-flex items-center gap-1 rounded-xl bg-violet-600 hover:bg-violet-700 px-2.5 py-1 text-[9px] font-extrabold text-white transition-all shadow-xs cursor-pointer"
                                       >
-                                        <Eye className="w-3 h-3" /> Bon Fiscal
+                                        <Eye className="w-3 h-3" /> {t('portal.estimatesSection.receipt')}
                                       </button>
                                     )}
                                   </div>
@@ -177,7 +199,7 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                       ))}
                     </>
                   ) : (
-                    <p className="text-xs text-gray-400">Detaliile nu sunt disponibile.</p>
+                    <p className="text-xs text-gray-400">{t('portal.estimatesSection.detailsUnavailable')}</p>
                   )}
                 </div>
               ) : null}

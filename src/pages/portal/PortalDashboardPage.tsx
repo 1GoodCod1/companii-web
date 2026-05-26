@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { PageHero } from '@/components/cabinet/cabinet-ui';
 import {
   PortalDashboardOverview,
@@ -8,6 +9,7 @@ import {
 import { usePortalData } from '@/features/portal/usePortalData';
 
 export function PortalDashboardPage() {
+  const { t } = useTranslation();
   const { data, isLoading, isError } = usePortalData();
 
   if (isLoading) return <PortalLoading />;
@@ -18,8 +20,8 @@ export function PortalDashboardPage() {
       <PortalHero data={data} />
       <PortalDashboardOverview data={data} />
       <PageHero
-        title="Ce poți face aici"
-        description="Fiecare secțiune din meniu îți arată doar informațiile relevante: lucrări, oferte sau facturi."
+        title={t('portal.dashboardPage.guideTitle')}
+        description={t('portal.dashboardPage.guideDescription')}
       />
     </div>
   );

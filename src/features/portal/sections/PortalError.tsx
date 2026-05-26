@@ -1,14 +1,15 @@
+import { useTranslation } from 'react-i18next';
 import { Panel, EmptyState } from '@/components/cabinet/cabinet-ui';
 
 export function PortalError() {
+  const { t } = useTranslation();
   return (
     <Panel>
       <EmptyState
-        message="Nu s-au putut prelua datele tale de client."
+        message={t('portal.dashboardPage.errorMessage')}
         action={
           <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
-            Contul trebuie legat de profilul client creat de companie. Verifică invitația primită
-            sau contactează compania care ți-a deschis accesul.
+            {t('portal.dashboardPage.errorHint')}
           </p>
         }
       />

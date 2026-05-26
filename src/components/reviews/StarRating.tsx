@@ -1,4 +1,5 @@
 import { Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 type StarRatingProps = {
@@ -15,8 +16,13 @@ const sizeClass = {
 } as const;
 
 export function StarRating({ value, max = 5, size = 'md', className }: StarRatingProps) {
+  const { t } = useTranslation();
+
   return (
-    <div className={cn('inline-flex items-center gap-0.5', className)} aria-label={`${value} din ${max} stele`}>
+    <div
+      className={cn('inline-flex items-center gap-0.5', className)}
+      aria-label={t('company.reviewsUi.starsAria', { value, max })}
+    >
       {Array.from({ length: max }, (_, index) => {
         const starValue = index + 1;
         const filled = starValue <= Math.round(value);
@@ -37,9 +43,9 @@ type InteractiveStarRatingProps = {
   disabled?: boolean;
 };
 
-const ratingLabels = ['', 'Foarte slab', 'Slab', 'Acceptabil', 'Bun', 'Excelent'];
-
 export function InteractiveStarRating({ value, onChange, disabled }: InteractiveStarRatingProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-1">
@@ -50,7 +56,7 @@ export function InteractiveStarRating({ value, onChange, disabled }: Interactive
             disabled={disabled}
             onClick={() => onChange(star)}
             className="rounded-lg p-1 transition hover:scale-110 disabled:opacity-50"
-            aria-label={`${star} stele`}
+            aria-label={t('company.reviewsUi.starButtonAria', { count: star })}
           >
             <Star
               className={cn(
@@ -62,7 +68,9 @@ export function InteractiveStarRating({ value, onChange, disabled }: Interactive
         ))}
       </div>
       <p className="text-xs font-semibold text-gray-500 min-h-[1rem]">
-        {value > 0 ? ratingLabels[value] : 'Selectează numărul de stele'}
+        {value > 0
+          ? t(`company.reviewsUi.ratingLabels.${value}`)
+          : t('company.reviewsUi.selectStars')}
       </p>
     </div>
   );

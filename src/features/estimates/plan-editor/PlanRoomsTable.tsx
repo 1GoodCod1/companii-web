@@ -1,4 +1,5 @@
 import { LayoutTemplate, Plus, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { Plan2dData, Plan2dRoom } from '@/types/estimates';
 
 type Props = {
@@ -20,14 +21,17 @@ export function PlanRoomsTable({
   onRemoveRoom,
   onApplyCategoryTemplate,
 }: Props) {
+  const { t } = useTranslation();
+  const ns = 'company.estimateWizard.planEditor.roomsTable';
+
   return (
     <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-premium space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
         <div>
-          <h3 className="font-extrabold text-slate-900 text-sm uppercase tracking-wider">Tabel Încăperi & Corpuri de lucru</h3>
-          <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
-            Specificați dimensiunile încăperilor. Suprafața calculată se actualizează automat.
-          </p>
+          <h3 className="font-extrabold text-slate-900 text-sm uppercase tracking-wider">
+            {t(`${ns}.title`)}
+          </h3>
+          <p className="text-[10px] text-slate-400 font-semibold mt-0.5">{t(`${ns}.description`)}</p>
         </div>
         {!readOnly && (
           <div className="flex gap-2">
@@ -36,14 +40,14 @@ export function PlanRoomsTable({
               onClick={onApplyCategoryTemplate}
               className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/50 px-3.5 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition-all cursor-pointer shadow-xs active:scale-95"
             >
-              <LayoutTemplate className="w-4 h-4" /> Șablon Implicit
+              <LayoutTemplate className="w-4 h-4" /> {t(`${ns}.defaultTemplate`)}
             </button>
             <button
               type="button"
               onClick={onAddRoom}
               className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition-all cursor-pointer shadow-md active:scale-95"
             >
-              <Plus className="w-4 h-4" /> + Adaugă Încăpere
+              <Plus className="w-4 h-4" /> {t(`${ns}.addRoom`)}
             </button>
           </div>
         )}
@@ -51,20 +55,22 @@ export function PlanRoomsTable({
 
       {value.rooms.length === 0 ? (
         <div className="p-8 text-center text-xs text-slate-400 font-semibold select-none">
-          Nu s-au adăugat încăperi. Folosiți «Șablon Implicit» sau butonul de adăugare de mai sus.
+          {t(`${ns}.empty`)}
         </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left text-xs text-slate-700">
             <thead>
               <tr className="border-b border-slate-200 text-[10px] font-black uppercase tracking-wider text-slate-400 bg-slate-50/50">
-                <th className="py-2.5 px-3 rounded-l-xl">Denumire încăpere</th>
-                <th className="py-2.5 px-3 w-32">Lățime (m)</th>
-                <th className="py-2.5 px-3 w-32">Lungime (m)</th>
-                <th className="py-2.5 px-3 w-40">Formă clădire</th>
-                <th className="py-2.5 px-3 w-40">Tip acoperiș</th>
-                <th className="py-2.5 px-3 w-32 text-right">Arie</th>
-                {!readOnly && <th className="py-2.5 px-3 w-16 text-center rounded-r-xl">Acțiune</th>}
+                <th className="py-2.5 px-3 rounded-l-xl">{t(`${ns}.colName`)}</th>
+                <th className="py-2.5 px-3 w-32">{t(`${ns}.colWidth`)}</th>
+                <th className="py-2.5 px-3 w-32">{t(`${ns}.colLength`)}</th>
+                <th className="py-2.5 px-3 w-40">{t(`${ns}.colShape`)}</th>
+                <th className="py-2.5 px-3 w-40">{t(`${ns}.colRoof`)}</th>
+                <th className="py-2.5 px-3 w-32 text-right">{t(`${ns}.colArea`)}</th>
+                {!readOnly && (
+                  <th className="py-2.5 px-3 w-16 text-center rounded-r-xl">{t(`${ns}.colAction`)}</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-semibold">
@@ -116,10 +122,10 @@ export function PlanRoomsTable({
                         }
                         className="w-full rounded-lg border border-slate-200 bg-transparent px-2 py-1.5 text-xs font-bold focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
                       >
-                        <option value="rectangle">Dreptunghi / Pătrat</option>
-                        <option value="l-shape">Formă în L</option>
-                        <option value="t-shape">Formă în T</option>
-                        <option value="u-shape">Formă în U</option>
+                        <option value="rectangle">{t(`${ns}.shapeRectangle`)}</option>
+                        <option value="l-shape">{t(`${ns}.shapeL`)}</option>
+                        <option value="t-shape">{t(`${ns}.shapeT`)}</option>
+                        <option value="u-shape">{t(`${ns}.shapeU`)}</option>
                       </select>
                     </td>
                     <td className="py-2 px-3">
@@ -131,9 +137,9 @@ export function PlanRoomsTable({
                         }
                         className="w-full rounded-lg border border-slate-200 bg-transparent px-2 py-1.5 text-xs font-bold focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
                       >
-                        <option value="flat">Acoperiș Plat</option>
-                        <option value="gable">În două ape (Gable)</option>
-                        <option value="hip">În patru ape (Hip)</option>
+                        <option value="flat">{t(`${ns}.roofFlat`)}</option>
+                        <option value="gable">{t(`${ns}.roofGable`)}</option>
+                        <option value="hip">{t(`${ns}.roofHip`)}</option>
                       </select>
                     </td>
                     <td className="py-2 px-3 text-right font-black text-slate-800">
@@ -156,12 +162,12 @@ export function PlanRoomsTable({
             </tbody>
             <tfoot>
               <tr className="border-t border-slate-200 bg-slate-50/50 font-black text-slate-850">
-                <td className="py-3 px-3 rounded-l-xl">Total cumulat zone</td>
+                <td className="py-3 px-3 rounded-l-xl">{t(`${ns}.totalZones`)}</td>
                 <td className="py-3 px-3"></td>
                 <td className="py-3 px-3"></td>
                 <td className="py-3 px-3"></td>
                 <td className="py-3 px-3 text-right text-[10px] font-black uppercase text-slate-400">
-                  Arie Totală:
+                  {t(`${ns}.totalArea`)}
                 </td>
                 <td className="py-3 px-3 text-right text-sm font-black text-indigo-750">
                   {summaryArea.toFixed(1)} m²

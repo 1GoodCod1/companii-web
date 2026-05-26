@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
   useCalculateEstimateMutation,
@@ -23,6 +24,7 @@ import { syncGlobalParamsToDiagnostic } from './syncGlobalParamsToDiagnostic';
 import { getErrorMessage } from '@/utils/errors';
 
 export function useEstimateWizard(project: EstimateProjectDto) {
+  const { t } = useTranslation();
   const updateProject = useUpdateEstimateProjectMutation();
   const savePlan = useSaveSitePlanMutation();
   const calculate = useCalculateEstimateMutation();
@@ -75,16 +77,16 @@ export function useEstimateWizard(project: EstimateProjectDto) {
         lineId,
         receiptFileKey: uploaded.id,
       });
-      toast.success('Chitanță încărcată.');
+      toast.success(t('company.estimateWizard.wizard.toasts.receiptUploaded'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut încărca chitanța.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.receiptUploadFailed')));
     } finally {
       setUploadingLineId(null);
     }
   };
 
   const handleDeleteReceipt = async (lineId: string, stageId: string) => {
-    if (!confirm('Sigur doriți să ștergeți această chitanță?')) return;
+    if (!confirm(t('company.estimateWizard.wizard.toasts.confirmDeleteReceipt'))) return;
     try {
       await updateLine.mutateAsync({
         projectId: project.id,
@@ -92,9 +94,9 @@ export function useEstimateWizard(project: EstimateProjectDto) {
         lineId,
         receiptFileKey: null,
       });
-      toast.success('Chitanță ștearsă.');
+      toast.success(t('company.estimateWizard.wizard.toasts.receiptDeleted'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut șterge.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.deleteFailed')));
     }
   };
 
@@ -108,9 +110,9 @@ export function useEstimateWizard(project: EstimateProjectDto) {
         materialStore: editingStore.value || null,
       });
       setEditingStore(null);
-      toast.success('Magazin salvat.');
+      toast.success(t('company.estimateWizard.wizard.toasts.storeSaved'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut salva magazinul.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.storeSaveFailed')));
     }
   };
 
@@ -129,7 +131,7 @@ export function useEstimateWizard(project: EstimateProjectDto) {
         [field]: val,
       });
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut actualiza.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.updateFailed')));
     }
   };
 
@@ -138,28 +140,28 @@ export function useEstimateWizard(project: EstimateProjectDto) {
       await addLineMutation.mutateAsync({
         projectId: project.id,
         stageId,
-        description: 'Lucrare nouă',
+        description: t('company.estimateWizard.wizard.toasts.newLineDescription'),
         qty: 1,
         unit: 'buc',
         unitPrice: 0,
       });
-      toast.success('Linie adăugată.');
+      toast.success(t('company.estimateWizard.wizard.toasts.lineAdded'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut adăuga linia.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.lineAddFailed')));
     }
   };
 
   const handleDeleteLine = async (lineId: string, stageId: string) => {
-    if (!confirm('Sigur doriți să ștergeți această linie?')) return;
+    if (!confirm(t('company.estimateWizard.wizard.toasts.confirmDeleteLine'))) return;
     try {
       await deleteLineMutation.mutateAsync({
         projectId: project.id,
         stageId,
         lineId,
       });
-      toast.success('Linie ștearsă.');
+      toast.success(t('company.estimateWizard.wizard.toasts.lineDeleted'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut șterge linia.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.lineDeleteFailed')));
     }
   };
 
@@ -179,10 +181,10 @@ export function useEstimateWizard(project: EstimateProjectDto) {
         diagnosticAnswers: persistCustomPricing(diagnostic),
       });
       setDiagnostic(persistCustomPricing(diagnostic));
-      toast.success('Date salvate.');
+      toast.success(t('company.estimateWizard.wizard.toasts.dataSaved'));
       setStepIndex((i) => Math.min(i + 1, steps.length - 1));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la salvare.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.saveFailed')));
     }
   };
 
@@ -192,10 +194,10 @@ export function useEstimateWizard(project: EstimateProjectDto) {
       await savePlan.mutateAsync({ id: project.id, plan2d });
       await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: persistCustomPricing(nextDiag) });
       setDiagnostic(persistCustomPricing(nextDiag));
-      toast.success('Date salvate.');
+      toast.success(t('company.estimateWizard.wizard.toasts.dataSaved'));
       setStepIndex((i) => Math.min(i + 1, steps.length - 1));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la salvare.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.saveFailed')));
     }
   };
 
@@ -204,10 +206,10 @@ export function useEstimateWizard(project: EstimateProjectDto) {
       const nextDiagnostic = persistCustomPricing(diagnostic);
       await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: nextDiagnostic });
       setDiagnostic(nextDiagnostic);
-      toast.success('Diagnostic salvat.');
+      toast.success(t('company.estimateWizard.wizard.toasts.diagnosticSaved'));
       setStepIndex((i) => Math.min(i + 1, steps.length - 1));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la salvare.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.saveFailed')));
     }
   };
 
@@ -244,37 +246,45 @@ export function useEstimateWizard(project: EstimateProjectDto) {
       await savePlan.mutateAsync({ id: project.id, plan2d });
 
       await calculate.mutateAsync(project.id);
-      toast.success('Smetă calculată.');
+      toast.success(t('company.estimateWizard.wizard.toasts.calculateSuccess'));
       setStepIndex(steps.indexOf('review'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la calcul.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.calculateFailed')));
     }
   };
 
   const handleGenerateQuote = async () => {
     try {
       await generateQuote.mutateAsync(project.id);
-      toast.success('Deviz generat.');
+      toast.success(t('company.estimateWizard.wizard.toasts.quoteGenerated'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la generare deviz.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.quoteGenerateFailed')));
     }
   };
 
   const handleConvert = async (mode: 'single' | 'by-stage') => {
     try {
       await convert.mutateAsync({ id: project.id, mode });
-      toast.success(mode === 'by-stage' ? 'Lucrări create pe etape.' : 'Lucrare creată.');
+      toast.success(
+        mode === 'by-stage'
+          ? t('company.estimateWizard.wizard.toasts.convertByStage')
+          : t('company.estimateWizard.wizard.toasts.convertSingle'),
+      );
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la convertire.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.convertFailed')));
     }
   };
 
   const handleSendEstimate = async () => {
     try {
       const result = await sendEstimate.mutateAsync(project.id);
-      toast.success(result.emailSent ? 'Smetă trimisă clientului pe email.' : 'Smetă marcată ca trimisă.');
+      toast.success(
+        result.emailSent
+          ? t('company.estimateWizard.wizard.toasts.sentWithEmail')
+          : t('company.estimateWizard.wizard.toasts.sentMarked'),
+      );
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la trimiterea smetei.'));
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.sendFailed')));
     }
   };
 
@@ -282,7 +292,9 @@ export function useEstimateWizard(project: EstimateProjectDto) {
   const canConvertEstimate = project.status === ESTIMATE_STATUS.ACCEPTED;
   const activeCustomPricing = readCustomPricing(persistCustomPricing(diagnostic));
   const isServiceCategory = ['it-networks'].includes(project.category.slug);
-  const pricingUnitLabel = isServiceCategory ? 'Preț / oră (MDL)' : undefined;
+  const pricingUnitLabel = isServiceCategory
+    ? t('company.estimateWizard.customPricing.unitPriceHour')
+    : undefined;
 
   return {
     project,

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/cabinet/cabinet-ui';
 import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
 
@@ -7,24 +8,22 @@ type GateProps = {
   message?: string;
 };
 
-export function CompanyManagementGate({
-  children,
-  message = 'Această secțiune este disponibilă doar pentru owner și manager.',
-}: GateProps) {
+export function CompanyManagementGate({ children, message }: GateProps) {
+  const { t } = useTranslation();
+  const displayMessage = message ?? t('company.gates.managementOnly');
   const { isManagement } = useCompanyPermissions();
   if (!isManagement) {
-    return <EmptyState message={message} />;
+    return <EmptyState message={displayMessage} />;
   }
   return <>{children}</>;
 }
 
-export function CompanyOwnerGate({
-  children,
-  message = 'Această secțiune este disponibilă doar pentru proprietarul companiei.',
-}: GateProps) {
+export function CompanyOwnerGate({ children, message }: GateProps) {
+  const { t } = useTranslation();
+  const displayMessage = message ?? t('company.gates.ownerOnly');
   const { isOwner } = useCompanyPermissions();
   if (!isOwner) {
-    return <EmptyState message={message} />;
+    return <EmptyState message={displayMessage} />;
   }
   return <>{children}</>;
 }

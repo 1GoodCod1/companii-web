@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Building2,
   CreditCard,
@@ -49,9 +50,11 @@ const sections: CabinetNavSection[] = [
 ];
 
 export function AdminLayout() {
+  const { t } = useTranslation();
+
   useEffect(() => {
-    document.title = 'Admin · Faber Companii';
-  }, []);
+    document.title = t('admin.documentTitle');
+  }, [t]);
 
   return (
     <CabinetShell

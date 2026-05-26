@@ -6,10 +6,12 @@ import {
   TERMINAL_INTERVENTION_STATUSES,
 } from '@/constants/interventionStatus.constants';
 import {
-  INTERVENTION_STATUS_HINTS,
   MANAGEMENT_INTERVENTION_TRANSITIONS,
   TECHNICIAN_INTERVENTION_TRANSITIONS,
 } from '@/constants/fsmStatusTransitions.constants';
+import {
+  interventionStatusHint as i18nInterventionStatusHint,
+} from '@/utils/i18nStatusLabels';
 import type { InterventionStatus } from '@/types/fsm';
 import type { CompanyRole } from '@/types/roles';
 import { isMemberRole } from '@/utils/roles';
@@ -50,5 +52,5 @@ export function getAllowedInterventionTransitions(
 }
 
 export function getInterventionStatusHint(status: InterventionStatus): string | null {
-  return INTERVENTION_STATUS_HINTS[status] ?? null;
+  return i18nInterventionStatusHint(status);
 }

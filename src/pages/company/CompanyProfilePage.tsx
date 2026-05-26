@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   useCompanyMeQuery,
   useCitiesQuery,
@@ -10,6 +11,7 @@ import { useCompanyPermissions } from '@/features/companies/useCompanyPermission
 import { CompanyProfileEditor } from '@/features/companies/profile/CompanyProfileEditor';
 
 export function CompanyProfilePage() {
+  const { t } = useTranslation();
   const { data: authMe } = useMeQuery();
   const { data: companyMe, isLoading: isLoadingMe } = useCompanyMeQuery();
   const { data: cities, isLoading: isLoadingCities } = useCitiesQuery();
@@ -26,7 +28,7 @@ export function CompanyProfilePage() {
   if (isLoadingMe || isLoadingCities || isLoadingCategories) {
     return (
       <div className="flex items-center justify-center py-20 text-sm text-gray-400">
-        Se încarcă profilul companiei...
+        {t('company.profilePage.loading')}
       </div>
     );
   }
@@ -50,7 +52,7 @@ export function CompanyProfilePage() {
   if (!activeCompany) {
     return (
       <div className="max-w-2xl">
-        <EmptyState message="Profilul companiei nu este disponibil. Contactați proprietarul pentru acces." />
+        <EmptyState message={t('company.profilePage.unavailable')} />
       </div>
     );
   }

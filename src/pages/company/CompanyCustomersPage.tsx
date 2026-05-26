@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
   PageHero,
@@ -18,6 +19,7 @@ import { CustomerFormModal } from '@/features/fsm/components/customers/CustomerF
 import { useEntityModal } from '@/hooks/useEntityModal';
 
 export function CompanyCustomersPage() {
+  const { t } = useTranslation();
   const { data: customers, isLoading } = useCustomersQuery();
   const deleteCustomer = useDeleteCustomerMutation();
 
@@ -38,14 +40,14 @@ export function CompanyCustomersPage() {
   );
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Sigur doriți să ștergeți acest client?')) return;
+    if (!confirm(t('company.customersPage.confirmDelete'))) return;
     try {
       await deleteCustomer.mutateAsync(id);
-      toast.success('Client șters cu succes!');
+      toast.success(t('company.customersPage.toastDeleted'));
       if (viewCustomer?.id === id) setViewCustomer(null);
     } catch (err: unknown) {
       const error = err as Error;
-      toast.error(error.message || 'Nu s-a putut șterge clientul. Verificați dacă are lucrări sau oferte active.');
+      toast.error(error.message || t('company.customersPage.toastDeleteFailed'));
     }
   };
 
@@ -53,15 +55,15 @@ export function CompanyCustomersPage() {
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
         <PageHero
-          title="Clienți"
-          description="Gestionează baza de date a clienților tăi, istoricul lucrărilor și detaliile de contact."
+          title={t('company.customersPage.title')}
+          description={t('company.customersPage.description')}
           action={
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={importModal.openCreate} className={cabinetBtnSecondary}>
-                Import Excel / CSV
+                {t('company.customersPage.importBtn')}
               </button>
               <button type="button" onClick={formModal.openCreate} className={cabinetBtnPrimary}>
-                + Adaugă client
+                {t('company.customersPage.addBtn')}
               </button>
             </div>
           }
@@ -70,7 +72,7 @@ export function CompanyCustomersPage() {
         <Panel className="p-4">
           <input
             type="text"
-            placeholder="Caută după nume, telefon sau email..."
+            placeholder={t('company.customersPage.searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cabinetFieldClass}

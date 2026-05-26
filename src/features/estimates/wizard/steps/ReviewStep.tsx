@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Check, Eye, FileText, Hammer, Paperclip, Plus, Send, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
   Panel,
   cabinetBtnPrimary,
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export function ReviewStep({ wizard }: Props) {
+  const { t } = useTranslation();
   const {
     project,
     activeCustomPricing,
@@ -36,38 +38,40 @@ export function ReviewStep({ wizard }: Props) {
   return (
     <div className="space-y-4">
       <Panel className="p-6">
-        <h3 className="font-bold text-gray-900 mb-4">Rezumat smetă</h3>
+        <h3 className="font-bold text-gray-900 mb-4">{t('company.estimateWizard.reviewStep.summaryTitle')}</h3>
         {(activeCustomPricing.customUnitPriceSqm ||
           activeCustomPricing.customDurationDays ||
           activeCustomPricing.customLaborHours ||
           activeCustomPricing.customLaborTotal) && (
           <div className="mb-6 rounded-2xl border border-amber-100 bg-amber-50/50 p-4 text-sm text-gray-700 space-y-1">
-            <p className="font-bold text-gray-900">Tarife personalizate aplicate</p>
+            <p className="font-bold text-gray-900">{t('company.estimateWizard.reviewStep.customPricingApplied')}</p>
             {activeCustomPricing.customUnitPriceSqm ? (
-              <p>Preț / m²: {activeCustomPricing.customUnitPriceSqm.toLocaleString('ro-MD')} MDL</p>
+              <p>{t('company.estimateWizard.reviewStep.pricePerSqm', { value: activeCustomPricing.customUnitPriceSqm.toLocaleString('ro-MD') })}</p>
             ) : null}
             {activeCustomPricing.customLaborTotal ? (
-              <p>Preț total fix manoperă: {activeCustomPricing.customLaborTotal.toLocaleString('ro-MD')} MDL</p>
+              <p>{t('company.estimateWizard.reviewStep.fixedLaborTotal', { value: activeCustomPricing.customLaborTotal.toLocaleString('ro-MD') })}</p>
             ) : null}
             {activeCustomPricing.customDurationDays ? (
-              <p>Durată: {activeCustomPricing.customDurationDays} zile</p>
+              <p>{t('company.estimateWizard.reviewStep.durationDays', { count: activeCustomPricing.customDurationDays })}</p>
             ) : null}
             {activeCustomPricing.customLaborHours ? (
-              <p>Ore manoperă: {activeCustomPricing.customLaborHours}</p>
+              <p>{t('company.estimateWizard.reviewStep.laborHours', { count: activeCustomPricing.customLaborHours })}</p>
             ) : null}
           </div>
         )}
         <div className="grid sm:grid-cols-3 gap-4 mb-6">
           <div className="rounded-2xl bg-gray-50 p-4">
-            <p className="text-xs text-gray-500">Manoperă</p>
+            <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.labor')}</p>
             <p className="text-xl font-black text-gray-900">{Number(project.laborTotal).toLocaleString('ro-MD')} MDL</p>
           </div>
           <div className="rounded-2xl bg-gray-50 p-4">
-            <p className="text-xs text-gray-500">Materiale</p>
+            <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.materials')}</p>
             <p className="text-xl font-black text-gray-900">{Number(project.materialTotal).toLocaleString('ro-MD')} MDL</p>
           </div>
           <div className="rounded-2xl bg-violet-50 p-4 border border-violet-100">
-            <p className="text-xs text-violet-600">Total cu marjă {Number(project.marginPct)}%</p>
+            <p className="text-xs text-violet-600">
+              {t('company.estimateWizard.reviewStep.totalWithMargin', { margin: Number(project.marginPct) })}
+            </p>
             <p className="text-2xl font-black text-violet-700">{Number(project.grandTotal).toLocaleString('ro-MD')} MDL</p>
           </div>
         </div>
@@ -79,29 +83,32 @@ export function ReviewStep({ wizard }: Props) {
               disabled={sendEstimate.isPending}
               className={cabinetBtnPrimary}
             >
-              <Send className="w-4 h-4" /> {sendEstimate.isPending ? 'Se trimite...' : 'Trimite smeta clientului'}
+              <Send className="w-4 h-4" />{' '}
+              {sendEstimate.isPending
+                ? t('company.estimateWizard.reviewStep.sending')
+                : t('company.estimateWizard.reviewStep.sendToClient')}
             </button>
           ) : null}
           <button type="button" onClick={handleGenerateQuote} disabled={!!project.quote || generateQuote.isPending} className={cabinetBtnPrimary}>
-            <FileText className="w-4 h-4" /> Generează deviz
+            <FileText className="w-4 h-4" /> {t('company.estimateWizard.reviewStep.generateQuote')}
           </button>
           {canConvertEstimate ? (
             <>
               <button type="button" onClick={() => handleConvert('single')} className={cabinetBtnSecondary}>
-                <Hammer className="w-4 h-4" /> O lucrare
+                <Hammer className="w-4 h-4" /> {t('company.estimateWizard.reviewStep.convertSingle')}
               </button>
               <button type="button" onClick={() => handleConvert('by-stage')} className={cabinetBtnSecondary}>
-                <Send className="w-4 h-4" /> Câte o lucrare / etapă
+                <Send className="w-4 h-4" /> {t('company.estimateWizard.reviewStep.convertByStage')}
               </button>
             </>
           ) : (
             <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
-              Convertirea în lucrări este disponibilă după ce clientul acceptă smeta în portal.
+              {t('company.estimateWizard.reviewStep.convertUnavailable')}
             </p>
           )}
           {project.quote && (
             <Link to="/company/oferte" className={cabinetBtnSecondary}>
-              Vezi deviz {project.quote.number}
+              {t('company.estimateWizard.reviewStep.viewQuote', { number: project.quote.number })}
             </Link>
           )}
         </div>
@@ -109,10 +116,10 @@ export function ReviewStep({ wizard }: Props) {
 
       <Panel className="p-6">
         <h3 className="font-extrabold text-gray-900 text-base flex items-center gap-2 mb-1">
-          <Paperclip className="w-5 h-5 text-violet-600 animate-pulse" /> Detalii materiale, prețuri și bonuri de plată
+          <Paperclip className="w-5 h-5 text-violet-600 animate-pulse" /> {t('company.estimateWizard.reviewStep.materialsTitle')}
         </h3>
         <p className="text-xs text-gray-500 mb-6 leading-relaxed">
-          Mărește precizia smetei ajustând prețurile reale din magazine, adăugând denumirea magazinului de achiziție și atașând chitanțele / bonurile fiscale pentru transparență totală față de client.
+          {t('company.estimateWizard.reviewStep.materialsDescription')}
         </p>
 
         <div className="space-y-6">
@@ -123,21 +130,27 @@ export function ReviewStep({ wizard }: Props) {
             return (
               <div key={stage.id} className="rounded-2xl border border-gray-100 bg-gray-50/50 p-4 space-y-3 shadow-xs">
                 <div className="font-extrabold text-sm text-gray-800 border-b border-gray-100/80 pb-2 flex items-center justify-between">
-                  <span className="text-gray-900 font-bold text-sm">Etapa: {stage.name}</span>
-                  <span className="text-xs font-semibold text-violet-600">Total etapă: {Number(stage.stageTotal).toLocaleString('ro-MD')} MDL</span>
+                  <span className="text-gray-900 font-bold text-sm">
+                    {t('company.estimateWizard.reviewStep.stageLabel', { name: stage.name })}
+                  </span>
+                  <span className="text-xs font-semibold text-violet-600">
+                    {t('company.estimateWizard.reviewStep.stageTotal', {
+                      total: Number(stage.stageTotal).toLocaleString('ro-MD'),
+                    })}
+                  </span>
                 </div>
 
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider">
-                        <th className="py-2">Descriere</th>
-                        <th className="py-2 w-20">Cantitate</th>
-                        <th className="py-2 w-20">Unitate</th>
-                        <th className="py-2 w-28">Preț Unitar</th>
-                        <th className="py-2 w-28">Total</th>
-                        <th className="py-2">Magazin / Sursă</th>
-                        <th className="py-2 text-right">Bon de Casă / Chec</th>
+                        <th className="py-2">{t('company.estimateWizard.reviewStep.colDescription')}</th>
+                        <th className="py-2 w-20">{t('company.estimateWizard.reviewStep.colQty')}</th>
+                        <th className="py-2 w-20">{t('company.estimateWizard.reviewStep.colUnit')}</th>
+                        <th className="py-2 w-28">{t('company.estimateWizard.reviewStep.colUnitPrice')}</th>
+                        <th className="py-2 w-28">{t('company.estimateWizard.reviewStep.colTotal')}</th>
+                        <th className="py-2">{t('company.estimateWizard.reviewStep.colStore')}</th>
+                        <th className="py-2 text-right">{t('company.estimateWizard.reviewStep.colReceipt')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100/50">
@@ -189,12 +202,14 @@ export function ReviewStep({ wizard }: Props) {
                             </td>
                             <td className="py-3">
                               {isLabor ? (
-                                <span className="text-[10px] text-gray-400 italic">Serviciu / Manoperă</span>
+                                <span className="text-[10px] text-gray-400 italic">
+                                  {t('company.estimateWizard.reviewStep.laborService')}
+                                </span>
                               ) : (
                                 <div className="flex items-center gap-1.5">
                                   <input
                                     type="text"
-                                    placeholder="Ex: Supraten, Leroy"
+                                    placeholder={t('company.estimateWizard.reviewStep.storePlaceholder')}
                                     value={
                                       editingStore?.lineId === line.id
                                         ? editingStore.value
@@ -233,7 +248,7 @@ export function ReviewStep({ wizard }: Props) {
                                         }
                                         className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100 px-2 py-1 text-[10px] font-bold text-violet-700 hover:bg-violet-100 transition-colors"
                                       >
-                                        <Eye className="w-3.5 h-3.5" /> Vizualizează
+                                        <Eye className="w-3.5 h-3.5" /> {t('company.estimateWizard.reviewStep.viewReceipt')}
                                       </button>
                                       <button
                                         type="button"
@@ -246,10 +261,10 @@ export function ReviewStep({ wizard }: Props) {
                                   ) : (
                                     <label className="relative cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-dashed border-gray-200 bg-white px-2.5 py-1 text-[10px] font-bold text-gray-500 hover:bg-gray-50 transition-colors">
                                       {uploadingLineId === line.id ? (
-                                        <span className="animate-pulse">Se încarcă...</span>
+                                        <span className="animate-pulse">{t('cabinet.common.loading')}</span>
                                       ) : (
                                         <>
-                                          <Plus className="w-3 h-3" /> Atașează Bon
+                                          <Plus className="w-3 h-3" /> {t('company.estimateWizard.reviewStep.attachReceipt')}
                                         </>
                                       )}
                                       <input

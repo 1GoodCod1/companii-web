@@ -244,6 +244,7 @@ export interface AdminCityDto {
   id: string;
   name: string;
   slug: string;
+  translations?: Record<string, { name?: string }> | null;
   _count?: { companies: number };
 }
 
@@ -251,6 +252,7 @@ export interface AdminCategoryDto {
   id: string;
   name: string;
   slug: string;
+  translations?: Record<string, { name?: string }> | null;
   _count?: { companies: number; companyServices: number };
 }
 
@@ -280,7 +282,11 @@ export function useAdminCitiesQuery(): UseQueryResult<AdminCityDto[], Error> {
 export function useCreateAdminCityMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: { name: string; slug?: string }) =>
+    mutationFn: (body: {
+      name: string;
+      slug?: string;
+      translations?: Record<string, { name?: string }>;
+    }) =>
       apiFetch<AdminCityDto>('/admin/cities', { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.admin.cities });
@@ -292,7 +298,12 @@ export function useCreateAdminCityMutation() {
 export function useUpdateAdminCityMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, ...body }: { id: string; name?: string; slug?: string }) =>
+    mutationFn: ({ id, ...body }: {
+      id: string;
+      name?: string;
+      slug?: string;
+      translations?: Record<string, { name?: string }>;
+    }) =>
       apiFetch<AdminCityDto>(`/admin/cities/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(body),
@@ -326,7 +337,11 @@ export function useAdminCategoriesQuery(): UseQueryResult<AdminCategoryDto[], Er
 export function useCreateAdminCategoryMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: { name: string; slug?: string }) =>
+    mutationFn: (body: {
+      name: string;
+      slug?: string;
+      translations?: Record<string, { name?: string }>;
+    }) =>
       apiFetch<AdminCategoryDto>('/admin/categories', {
         method: 'POST',
         body: JSON.stringify(body),
@@ -341,7 +356,12 @@ export function useCreateAdminCategoryMutation() {
 export function useUpdateAdminCategoryMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, ...body }: { id: string; name?: string; slug?: string }) =>
+    mutationFn: ({ id, ...body }: {
+      id: string;
+      name?: string;
+      slug?: string;
+      translations?: Record<string, { name?: string }>;
+    }) =>
       apiFetch<AdminCategoryDto>(`/admin/categories/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(body),

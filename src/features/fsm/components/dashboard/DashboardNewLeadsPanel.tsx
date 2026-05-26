@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Panel,
   PanelHeader,
@@ -17,19 +18,21 @@ export function DashboardNewLeadsPanel({
   convertPending: boolean;
   onConvert: (leadId: string, mode: 'intervention' | 'estimate') => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <Panel>
       <PanelHeader
-        title="Cereri noi"
+        title={t('company.dashboard.panels.newLeads.title')}
         action={
           <Link to="/company/cereri" className="text-xs font-semibold text-violet-600 hover:text-violet-700">
-            Vezi toate →
+            {t('company.dashboard.panels.newLeads.viewAll')}
           </Link>
         }
       />
 
       {!leads?.length ? (
-        <EmptyState message="Nicio cerere nouă din servicii sau site." />
+        <EmptyState message={t('company.dashboard.panels.newLeads.empty')} />
       ) : (
         <div className="space-y-3">
           {leads.slice(0, 5).map((lead) => (
@@ -57,7 +60,7 @@ export function DashboardNewLeadsPanel({
                   disabled={convertPending}
                   className={cabinetBtnPrimary}
                 >
-                  Preia → Lucrare
+                  {t('company.dashboard.panels.newLeads.convertToIntervention')}
                 </button>
                 <button
                   type="button"
@@ -65,7 +68,7 @@ export function DashboardNewLeadsPanel({
                   disabled={convertPending}
                   className={cabinetBtnSecondary}
                 >
-                  → Smetă
+                  {t('company.dashboard.panels.newLeads.convertToEstimate')}
                 </button>
               </div>
             </div>

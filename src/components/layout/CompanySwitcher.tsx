@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { COMPANY_ROLE } from '@/constants/roles.constants';
 import toast from 'react-hot-toast';
 import { useCompanyMeQuery, useSwitchCompanyMutation } from '@/features/companies/api/useCompanies';
@@ -7,6 +8,7 @@ import { cabinetSelectClass, cabinetLabelClass } from '@/components/cabinet/cabi
 import { getErrorMessage } from '@/utils/errors';
 
 export function CompanySwitcher() {
+  const { t } = useTranslation();
   const { data: companyMe } = useCompanyMeQuery();
   const { activeCompanyId } = useCompanyPermissions();
   const switchCompany = useSwitchCompanyMutation();
@@ -34,15 +36,15 @@ export function CompanySwitcher() {
     if (companyId === activeCompanyId) return;
     try {
       await switchCompany.mutateAsync(companyId);
-      toast.success('Compania activă a fost schimbată.');
+      toast.success(t('cabinet.shell.companySwitched'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut schimba compania.'));
+      toast.error(getErrorMessage(err, t('cabinet.shell.companySwitchFailed')));
     }
   };
 
   return (
     <div className="mb-4 px-1">
-      <label className={cabinetLabelClass}>Companie activă</label>
+      <label className={cabinetLabelClass}>{t('cabinet.shell.activeCompany')}</label>
       <select
         value={activeCompanyId ?? ''}
         onChange={(e) => void handleChange(e.target.value)}

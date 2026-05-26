@@ -1,7 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import type { QuoteDto } from '@/types/fsm';
 import { getQuoteStatusStyle } from '@/utils/quoteStatusStyles';
 import { EntityListPanel, entityListRowClass } from '@/components/cabinet/EntityListPanel';
-import { formatDateRo } from '@/utils/date';
+import { formatDateLocalized } from '@/utils/date';
+import { useLocale } from '@/hooks/useLocale';
+import { quoteStatusLabel } from '@/utils/i18nStatusLabels';
 
 type Props = {
   quotes: QuoteDto[] | undefined;
@@ -11,21 +14,32 @@ type Props = {
 };
 
 export function QuotesListTable({ quotes, isLoading, selectedId, onSelect }: Props) {
+  const { t } = useTranslation();
+  const locale = useLocale();
+
   return (
     <EntityListPanel
       isLoading={isLoading}
       isEmpty={!quotes?.length}
-      loadingMessage="Se încarcă ofertele..."
-      emptyMessage="Nicio ofertă creată în sistem."
+      loadingMessage={t('company.fsm.quotes.list.loading')}
+      emptyMessage={t('company.fsm.quotes.list.empty')}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse text-sm">
           <thead>
             <tr className="bg-gray-50/50 border-b border-gray-100 text-gray-500 font-bold">
-              <th className="p-4 text-xs uppercase tracking-wider">Număr / Dată</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Client</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Total</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Status</th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.quotes.list.columns.numberDate')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.quotes.list.columns.customer')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.quotes.list.columns.total')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.quotes.list.columns.status')}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -38,7 +52,7 @@ export function QuotesListTable({ quotes, isLoading, selectedId, onSelect }: Pro
                 <td className="p-4">
                   <span className="font-bold text-gray-800">{item.number}</span>
                   <div className="text-[10px] uppercase font-bold text-gray-400 mt-0.5">
-                    {formatDateRo(item.createdAt)}
+                    {formatDateLocalized(item.createdAt, locale)}
                   </div>
                 </td>
                 <td className="p-4 text-xs font-bold text-gray-900">{item.customer?.fullName}</td>
@@ -51,7 +65,7 @@ export function QuotesListTable({ quotes, isLoading, selectedId, onSelect }: Pro
                       item.status,
                     )}`}
                   >
-                    {item.status}
+                    {quoteStatusLabel(item.status, t)}
                   </span>
                 </td>
               </tr>

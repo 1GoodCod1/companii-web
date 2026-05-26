@@ -5,10 +5,8 @@ import {
   INVOICE_PAYMENT_STATUS_CODES,
   PAYMENT_STATUS_BADGE_CLASSES,
 } from '@/constants/invoicePaymentStatus.constants';
-import {
-  INVOICE_PAYMENT_TRANSITIONS,
-  PAYMENT_STATUS_HINTS,
-} from '@/constants/fsmStatusTransitions.constants';
+import { INVOICE_PAYMENT_TRANSITIONS } from '@/constants/fsmStatusTransitions.constants';
+import { paymentStatusHint as i18nPaymentStatusHint } from '@/utils/i18nStatusLabels';
 import type { InvoicePaymentStatus } from '@/types/fsm';
 
 const INVOICE_PAYMENT_STATUS_SET = new Set<string>(INVOICE_PAYMENT_STATUS_CODES);
@@ -44,5 +42,5 @@ export function getAllowedPaymentTransitions(
 }
 
 export function getPaymentStatusHint(status: InvoicePaymentStatus): string | null {
-  return PAYMENT_STATUS_HINTS[status] ?? null;
+  return i18nPaymentStatusHint(status);
 }

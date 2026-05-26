@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { PageHero } from '@/components/cabinet/cabinet-ui';
 import {
   PortalError,
@@ -7,6 +8,7 @@ import {
 import { usePortalData } from '@/features/portal/usePortalData';
 
 export function PortalOfertePage() {
+  const { t } = useTranslation();
   const { data, isLoading, isError } = usePortalData();
 
   if (isLoading) return <PortalLoading />;
@@ -15,9 +17,9 @@ export function PortalOfertePage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHero
-        eyebrow="Portal client"
-        title="Ofertele mele"
-        description="Devize primite de la companie — acceptă sau respinge în câteva click-uri."
+        eyebrow={t('portal.common.eyebrow')}
+        title={t('portal.ofertePage.title')}
+        description={t('portal.ofertePage.description')}
       />
       <PortalQuotesSection data={data} />
     </div>

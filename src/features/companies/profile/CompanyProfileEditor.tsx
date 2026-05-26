@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   useCreateCompanyMutation,
   useUpdateCompanyMutation,
@@ -24,6 +25,10 @@ import {
   type PendingGalleryItem,
 } from '@/components/company/CompanyBrandingSection';
 import type { CatalogOptionDto, OwnedCompanyDto } from '@/types/companies';
+import {
+  getTranslatedCategoryName,
+  getTranslatedCityName,
+} from '@/utils/translateCityCategory';
 import { uploadFile, uploadFiles } from '@/api/files';
 import { MAX_VIDEO_COUNT, MAX_VIDEO_DURATION } from '@/constants/fileMedia.constants';
 import { validateMediaFile, isVideoFile, getVideoDuration } from '@/utils/validateFile';
@@ -54,6 +59,7 @@ export function CompanyProfileEditor({
   categories: CatalogOptionDto[] | undefined;
   userDefaults?: { email?: string; phone?: string | null };
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isOwner: isTeamOwner } = useCompanyPermissions();
   const leaveCompany = useLeaveCompanyMutation();
@@ -108,7 +114,7 @@ export function CompanyProfileEditor({
       const existingCount = (ownedCompany?.galleryImages?.length ?? 0) + pendingGallery.length;
       const room = MAX_GALLERY - existingCount;
       if (room <= 0) {
-        toast.error(`Maximum ${MAX_GALLERY} fișiere în galerie.`);
+        toast.error(t('company.profileEditor.form.galleryMax', { count: MAX_GALLERY }));
         return;
       }
 
@@ -127,25 +133,31 @@ export function CompanyProfileEditor({
         if (err) {
           toast.error(
             err === 'files.tooLarge'
-              ? `Fișier prea mare (max ${isVideoFile(file) ? '150' : '10'} MB)`
-              : 'Format invalid (JPG, PNG, WEBP, MP4, MOV, WEBM)',
+              ? t('company.profileEditor.form.fileTooLarge', {
+                  max: isVideoFile(file) ? '150' : '10',
+                })
+              : t('company.profileEditor.form.invalidFormat'),
           );
           continue;
         }
 
         if (isVideoFile(file)) {
           if (videoCount >= MAX_VIDEO_COUNT) {
-            toast.error(`Maximum ${MAX_VIDEO_COUNT} videoclipuri în galerie.`);
+            toast.error(t('company.profileEditor.form.videoMax', { count: MAX_VIDEO_COUNT }));
             continue;
           }
           try {
             const duration = await getVideoDuration(file);
             if (duration > MAX_VIDEO_DURATION) {
-              toast.error(`Durata video maximă este de ${MAX_VIDEO_DURATION / 60} minute.`);
+              toast.error(
+                t('company.profileEditor.form.videoDurationMax', {
+                  minutes: MAX_VIDEO_DURATION / 60,
+                }),
+              );
               continue;
             }
           } catch {
-            toast.error('Nu s-a putut verifica durata video.');
+            toast.error(t('company.profileEditor.form.videoDurationCheckFailed'));
             continue;
           }
           videoCount += 1;
@@ -160,7 +172,7 @@ export function CompanyProfileEditor({
       }
       if (next.length > 0) setPendingGallery((prev) => [...prev, ...next]);
     },
-    [ownedCompany?.galleryImages, pendingGallery],
+    [ownedCompany?.galleryImages, pendingGallery, t],
   );
 
   const handlePendingGalleryRemove = useCallback((id: string) => {
@@ -175,10 +187,10 @@ export function CompanyProfileEditor({
     if (!ownedCompany) return;
     try {
       await removeGalleryImage.mutateAsync({ companyId: ownedCompany.id, imageId });
-      toast.success('Poza a fost ștearsă.');
+      toast.success(t('company.profileEditor.form.photoDeleted'));
     } catch (err: unknown) {
       const error = err as Error;
-      toast.error(error.message || 'Nu s-a putut șterge poza.');
+      toast.error(error.message || t('company.profileEditor.form.photoDeleteFailed'));
     }
   };
 
@@ -212,24 +224,24 @@ export function CompanyProfileEditor({
     e.preventDefault();
 
     if (!ownedCompany && !canRegisterCompany) {
-      toast.error('Doar proprietarul poate crea o companie nouă.');
+      toast.error(t('company.profileEditor.form.onlyOwnerCreate'));
       return;
     }
 
     if (!ownedCompany || isLegalOwner) {
       if (!name.trim() || !legalName.trim() || !legalAddress.trim()) {
-        toast.error('Vă rugăm să completați toate câmpurile obligatorii.');
+        toast.error(t('company.profileEditor.form.requiredFields'));
         return;
       }
 
       if (!/^\d{13}$/.test(idno.trim())) {
-        toast.error('Codul IDNO trebuie să conțină exact 13 cifre.');
+        toast.error(t('company.profileEditor.form.idnoInvalid'));
         return;
       }
     }
 
     if (!cityId) {
-      toast.error('Vă rugăm să alegeți un oraș din listă.');
+      toast.error(t('company.profileEditor.form.cityRequired'));
       return;
     }
 
@@ -287,19 +299,19 @@ export function CompanyProfileEditor({
         setLogoFile(null);
         setLogoPreview(null);
         setLogoRemoved(false);
-        toast.success('Profilul companiei a fost actualizat cu succes!');
+        toast.success(t('company.profileEditor.toastUpdated'));
       } else {
         const created = (await createCompany.mutateAsync({
           ...payload,
           ...(logoChanged && nextLogoUrl ? { logoUrl: nextLogoUrl } : {}),
         })) as { id: string };
         await savePendingGallery(created.id);
-        toast.success('Compania dvs. a fost creată cu succes!');
+        toast.success(t('company.profileEditor.toastCreated'));
         navigate('/company', { replace: true });
       }
     } catch (err: unknown) {
       const error = err as Error;
-      toast.error(error.message || 'A apărut o eroare la salvarea datelor.');
+      toast.error(error.message || t('company.profileEditor.form.saveFailed'));
     } finally {
       setIsSavingMedia(false);
     }
@@ -309,10 +321,10 @@ export function CompanyProfileEditor({
     if (!ownedCompany) return;
     try {
       await publishCompany.mutateAsync(ownedCompany.id);
-      toast.success('Compania a fost publicată în catalog!');
+      toast.success(t('company.profileEditor.toastPublished'));
     } catch (err: unknown) {
       const error = err as Error;
-      toast.error(error.message || 'Nu s-a putut publica compania.');
+      toast.error(error.message || t('company.profileEditor.form.publishFailed'));
     }
   };
 
@@ -326,21 +338,26 @@ export function CompanyProfileEditor({
   return (
     <div className="max-w-6xl space-y-6 animate-fade-in">
       <PageHero
-        eyebrow={ownedCompany ? (isLegalOwner ? 'Profil companie' : 'Profil companie · Manager') : 'Onboarding'}
-        title={ownedCompany ? 'Profilul companiei' : 'Înregistrare companie nouă'}
+        eyebrow={
+          ownedCompany
+            ? isLegalOwner
+              ? t('company.profileEditor.eyebrowProfile')
+              : t('company.profileEditor.eyebrowManager')
+            : t('company.profileEditor.eyebrowOnboarding')
+        }
+        title={ownedCompany ? t('company.profileEditor.titleExisting') : t('company.profileEditor.titleNew')}
         description={
           ownedCompany
             ? isLegalOwner
-              ? 'Actualizați detaliile juridice, branding-ul și datele de contact.'
-              : 'Actualizați contactul public, descrierea și galeria. Datele juridice sunt gestionate de proprietar.'
-            : 'Completați profilul juridic, logo-ul și galeria pentru catalogul public.'
+              ? t('company.profileEditor.descOwner')
+              : t('company.profileEditor.descManager')
+            : t('company.profileEditor.descNew')
         }
       />
 
       {ownedCompany && !isLegalOwner ? (
         <p className="text-sm text-violet-900 rounded-2xl bg-violet-50/80 px-4 py-3 border border-violet-100">
-          Ca manager puteți edita informațiile vizibile clienților (contact, descriere, logo, galerie).
-          IDNO, denumirea juridică și publicarea în catalog rămân la proprietar.
+          {t('company.profileEditor.form.managerHint')}
         </p>
       ) : null}
 
@@ -348,24 +365,30 @@ export function CompanyProfileEditor({
         <section className="glass-panel rounded-3xl p-5 sm:p-6 shadow-premium space-y-4">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <h2 className="text-base font-bold text-gray-900">Profil public în catalog</h2>
+              <h2 className="text-base font-bold text-gray-900">
+                {t('company.profileEditor.form.publicCatalogTitle')}
+              </h2>
               <p className="mt-1 text-sm text-gray-500">
-                Companiile apar pe pagina /companies doar după verificare de admin și publicare.
+                {t('company.profileEditor.form.publicCatalogDescription')}
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
               <SoftBadge tone={ownedCompany.isVerified ? 'emerald' : 'amber'}>
-                {ownedCompany.isVerified ? 'Verificată' : 'În așteptare verificare'}
+                {ownedCompany.isVerified
+                  ? t('company.profileEditor.verified')
+                  : t('company.profileEditor.pendingVerification')}
               </SoftBadge>
               <SoftBadge tone={ownedCompany.isPublished ? 'emerald' : 'gray'}>
-                {ownedCompany.isPublished ? 'Publicată' : 'Nepublicată'}
+                {ownedCompany.isPublished
+                  ? t('company.profileEditor.published')
+                  : t('company.profileEditor.unpublished')}
               </SoftBadge>
             </div>
           </div>
 
           {ownedCompany.isPublished ? (
             <p className="text-sm text-emerald-700">
-              Compania este vizibilă în catalogul public
+              {t('company.profileEditor.form.visibleInCatalog')}
               {ownedCompany.slug ? (
                 <>
                   {' '}
@@ -376,7 +399,7 @@ export function CompanyProfileEditor({
                     rel="noreferrer"
                     className="font-semibold underline underline-offset-2"
                   >
-                    vezi profilul
+                    {t('company.profileEditor.form.viewProfile')}
                   </a>
                 </>
               ) : null}
@@ -385,7 +408,7 @@ export function CompanyProfileEditor({
           ) : ownedCompany.isVerified ? (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-violet-50/80 px-4 py-3">
               <p className="text-sm text-violet-900">
-                Compania este verificată. Publicați profilul ca să apară în catalog.
+                {t('company.profileEditor.form.verifiedReadyPublish')}
               </p>
               <button
                 type="button"
@@ -393,12 +416,14 @@ export function CompanyProfileEditor({
                 disabled={publishCompany.isPending}
                 className={cabinetBtnPrimary}
               >
-                {publishCompany.isPending ? 'Se publică...' : 'Publică în catalog'}
+                {publishCompany.isPending
+                  ? t('company.profileEditor.publishing')
+                  : t('company.profileEditor.publishCatalog')}
               </button>
             </div>
           ) : (
             <p className="text-sm text-amber-800 rounded-2xl bg-amber-50/80 px-4 py-3">
-              După ce administratorul verifică compania, veți putea publica profilul în catalog.
+              {t('company.profileEditor.form.pendingAdminVerification')}
             </p>
           )}
         </section>
@@ -408,10 +433,14 @@ export function CompanyProfileEditor({
         <section className="glass-panel rounded-3xl p-5 sm:p-6 shadow-premium space-y-3">
           <div className="flex flex-wrap gap-2">
             <SoftBadge tone={ownedCompany.isVerified ? 'emerald' : 'amber'}>
-              {ownedCompany.isVerified ? 'Verificată' : 'În așteptare verificare'}
+              {ownedCompany.isVerified
+                ? t('company.profileEditor.verified')
+                : t('company.profileEditor.pendingVerification')}
             </SoftBadge>
             <SoftBadge tone={ownedCompany.isPublished ? 'emerald' : 'gray'}>
-              {ownedCompany.isPublished ? 'Publicată' : 'Nepublicată'}
+              {ownedCompany.isPublished
+                ? t('company.profileEditor.published')
+                : t('company.profileEditor.unpublished')}
             </SoftBadge>
           </div>
           {ownedCompany.isPublished && ownedCompany.slug ? (
@@ -422,7 +451,7 @@ export function CompanyProfileEditor({
                 rel="noreferrer"
                 className="font-semibold text-violet-700 underline underline-offset-2"
               >
-                Vezi profilul public
+                {t('company.profileEditor.form.viewPublicProfile')}
               </a>
             </p>
           ) : null}
@@ -435,33 +464,33 @@ export function CompanyProfileEditor({
       >
         <div className="glass-panel rounded-3xl p-5 sm:p-6 shadow-premium space-y-4">
         <FormSection
-          title="Informații juridice"
+          title={t('company.profileEditor.form.legalTitle')}
           description={
             legalReadOnly
-              ? 'Doar proprietarul poate modifica datele juridice.'
-              : 'Datele oficiale înregistrate la autorități.'
+              ? t('company.profileEditor.form.legalDescReadOnly')
+              : t('company.profileEditor.form.legalDesc')
           }
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className={cabinetLabelClass}>Nume comercial *</label>
+              <label className={cabinetLabelClass}>{t('company.profileEditor.form.tradeName')}</label>
               <input
                 type="text"
                 required={!legalReadOnly}
                 readOnly={legalReadOnly}
-                placeholder="ex: Faber Servicii"
+                placeholder={t('company.profileEditor.form.tradeNamePlaceholder')}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className={fieldClass(legalReadOnly)}
               />
             </div>
             <div>
-              <label className={cabinetLabelClass}>Denumire juridică completă *</label>
+              <label className={cabinetLabelClass}>{t('company.profileEditor.form.legalName')}</label>
               <input
                 type="text"
                 required={!legalReadOnly}
                 readOnly={legalReadOnly}
-                placeholder="ex: Faber Solutions SRL"
+                placeholder={t('company.profileEditor.form.legalNamePlaceholder')}
                 value={legalName}
                 onChange={(e) => setLegalName(e.target.value)}
                 className={fieldClass(legalReadOnly)}
@@ -471,25 +500,25 @@ export function CompanyProfileEditor({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className={cabinetLabelClass}>Cod IDNO (13 cifre) *</label>
+              <label className={cabinetLabelClass}>{t('company.profileEditor.form.idno')}</label>
               <input
                 type="text"
                 required={!legalReadOnly}
                 readOnly={legalReadOnly}
                 maxLength={13}
-                placeholder="ex: 1012345678901"
+                placeholder={t('company.profileEditor.form.idnoPlaceholder')}
                 value={idno}
                 onChange={(e) => setIdno(e.target.value.replace(/\D/g, ''))}
                 className={`${fieldClass(legalReadOnly)} font-semibold tracking-wide`}
               />
             </div>
             <div>
-              <label className={cabinetLabelClass}>Adresă juridică *</label>
+              <label className={cabinetLabelClass}>{t('company.profileEditor.form.legalAddress')}</label>
               <input
                 type="text"
                 required={!legalReadOnly}
                 readOnly={legalReadOnly}
-                placeholder="ex: str. Albișoara 42, ap. 15"
+                placeholder={t('company.profileEditor.form.legalAddressPlaceholder')}
                 value={legalAddress}
                 onChange={(e) => setLegalAddress(e.target.value)}
                 className={fieldClass(legalReadOnly)}
@@ -498,10 +527,13 @@ export function CompanyProfileEditor({
           </div>
         </FormSection>
 
-        <FormSection title="Localizare & domeniu" description="Orașul și categoria principală de servicii.">
+        <FormSection
+          title={t('company.profileEditor.form.locationTitle')}
+          description={t('company.profileEditor.form.locationDesc')}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className={cabinetLabelClass}>Oraș de reședință *</label>
+              <label className={cabinetLabelClass}>{t('company.profileEditor.form.city')}</label>
               <select
                 required
                 value={cityId}
@@ -510,17 +542,19 @@ export function CompanyProfileEditor({
                 className={cabinetSelectClass}
               >
                 <option value="">
-                  {cities?.length ? 'Alegeți orașul...' : 'Nu există orașe — rulați seed API'}
+                  {cities?.length
+                    ? t('company.profileEditor.form.cityPlaceholder')
+                    : t('company.profileEditor.form.cityEmpty')}
                 </option>
                 {cities?.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.name}
+                    {getTranslatedCityName(t, c)}
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className={cabinetLabelClass}>Categorie servicii</label>
+              <label className={cabinetLabelClass}>{t('company.profileEditor.form.category')}</label>
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
@@ -529,12 +563,12 @@ export function CompanyProfileEditor({
               >
                 <option value="">
                   {categories?.length
-                    ? 'Alegeți domeniul (opțional)...'
-                    : 'Nu există categorii — rulați seed API'}
+                    ? t('company.profileEditor.form.categoryPlaceholder')
+                    : t('company.profileEditor.form.categoryEmpty')}
                 </option>
                 {categories?.map((cat) => (
                   <option key={cat.id} value={cat.id}>
-                    {cat.name}
+                    {getTranslatedCategoryName(t, cat)}
                   </option>
                 ))}
               </select>
@@ -543,8 +577,12 @@ export function CompanyProfileEditor({
         </FormSection>
 
         <FormSection
-          title="Regim fiscal"
-          description={legalReadOnly ? 'Setări TVA — doar proprietarul.' : 'Setări TVA pentru facturare.'}
+          title={t('company.profileEditor.form.fiscalTitle')}
+          description={
+            legalReadOnly
+              ? t('company.profileEditor.form.fiscalDescReadOnly')
+              : t('company.profileEditor.form.fiscalDesc')
+          }
         >
           <label
             className={`flex items-start gap-3 rounded-xl bg-slate-50/80 px-3.5 py-3 ${
@@ -559,18 +597,18 @@ export function CompanyProfileEditor({
               onChange={(e) => setIsTvaPayer(e.target.checked)}
             />
             <span className="text-sm text-gray-700 leading-snug">
-              Compania este plătitoare de TVA <span className="text-gray-400">(20% / 8% / 0%)</span>
+              {t('company.profileEditor.form.tvaPayer')}
             </span>
           </label>
 
           {isTvaPayer ? (
             <div className="max-w-sm animate-fade-in">
-              <label className={cabinetLabelClass}>Cod plătitor TVA</label>
+              <label className={cabinetLabelClass}>{t('company.profileEditor.form.tvaCode')}</label>
               <input
                 type="text"
                 required={!legalReadOnly}
                 readOnly={legalReadOnly}
-                placeholder="ex: 0601234"
+                placeholder={t('company.profileEditor.form.tvaCodePlaceholder')}
                 value={tvaCode}
                 onChange={(e) => setTvaCode(e.target.value)}
                 className={`${fieldClass(legalReadOnly)} font-semibold`}
@@ -579,23 +617,26 @@ export function CompanyProfileEditor({
           ) : null}
         </FormSection>
 
-        <FormSection title="Contact public & descriere" description="Informații vizibile clienților pe profilul public. Telefonul și emailul se completează automat din contul dvs., dacă nu sunt setate deja.">
+        <FormSection
+          title={t('company.profileEditor.form.contactTitle')}
+          description={t('company.profileEditor.form.contactDesc')}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className={cabinetLabelClass}>Telefon de contact</label>
+              <label className={cabinetLabelClass}>{t('company.profileEditor.form.contactPhone')}</label>
               <input
                 type="text"
-                placeholder="ex: +373 68 000 000"
+                placeholder={t('company.profileEditor.form.contactPhonePlaceholder')}
                 value={contactPhone}
                 onChange={(e) => setContactPhone(e.target.value)}
                 className={cabinetFieldClass}
               />
             </div>
             <div>
-              <label className={cabinetLabelClass}>Email de contact</label>
+              <label className={cabinetLabelClass}>{t('company.profileEditor.form.contactEmail')}</label>
               <input
                 type="email"
-                placeholder="ex: office@companie.md"
+                placeholder={t('company.profileEditor.form.contactEmailPlaceholder')}
                 value={contactEmail}
                 onChange={(e) => setContactEmail(e.target.value)}
                 className={cabinetFieldClass}
@@ -612,7 +653,7 @@ export function CompanyProfileEditor({
                     onChange={(e) => setShowPublicPhone(e.target.checked)}
                   />
                   <span className="text-xs font-semibold text-slate-700 leading-none select-none">
-                    Arată telefonul public pe pagina companiei
+                    {t('company.profileEditor.form.showPublicPhone')}
                   </span>
                 </label>
                 <label className="flex items-center gap-2.5 px-3.5 py-2.5 bg-slate-50/60 hover:bg-slate-100/80 transition-colors border border-slate-100 rounded-2xl cursor-pointer">
@@ -623,7 +664,7 @@ export function CompanyProfileEditor({
                     onChange={(e) => setShowPublicEmail(e.target.checked)}
                   />
                   <span className="text-xs font-semibold text-slate-700 leading-none select-none">
-                    Arată emailul public pe pagina companiei
+                    {t('company.profileEditor.form.showPublicEmail')}
                   </span>
                 </label>
               </div>
@@ -631,9 +672,9 @@ export function CompanyProfileEditor({
           </div>
 
           <div>
-            <label className={cabinetLabelClass}>Descriere scurtă</label>
+            <label className={cabinetLabelClass}>{t('company.profileEditor.form.description')}</label>
             <textarea
-              placeholder="Spuneți clienților de ce servicii vă ocupați..."
+              placeholder={t('company.profileEditor.form.descriptionPlaceholder')}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
@@ -672,13 +713,13 @@ export function CompanyProfileEditor({
               className={`${cabinetBtnPrimary} w-full justify-center py-3 text-sm`}
             >
               {isSaving
-                ? 'Se salvează...'
+                ? t('cabinet.common.saving')
                 : ownedCompany
-                  ? 'Salvează modificările'
-                  : 'Creează companie'}
+                  ? t('company.profileEditor.saveChanges')
+                  : t('company.profileEditor.createCompany')}
             </button>
             <p className="mt-3 text-center text-xs text-gray-400">
-              Logo-ul și galeria se salvează împreună cu datele companiei.
+              {t('company.profileEditor.form.mediaHint')}
             </p>
           </div>
         </aside>
@@ -687,27 +728,29 @@ export function CompanyProfileEditor({
       {canLeaveCompany ? (
         <section className="glass-panel rounded-3xl p-5 sm:p-6 shadow-premium space-y-4 border border-red-100">
           <div>
-            <h2 className="text-base font-bold text-gray-900">Părăsiți echipa</h2>
+            <h2 className="text-base font-bold text-gray-900">
+              {t('company.profileEditor.form.leaveTeamTitle')}
+            </h2>
             <p className="mt-1 text-sm text-gray-500">
-              Lucrările active vi se vor dezasigna. Veți pierde accesul la cabinetul acestei companii.
+              {t('company.profileEditor.form.leaveTeamDesc')}
             </p>
           </div>
           <button
             type="button"
             disabled={leaveCompany.isPending}
             onClick={async () => {
-              if (!window.confirm('Sigur doriți să părăsiți această companie?')) return;
+              if (!window.confirm(t('company.profileEditor.form.confirmLeave'))) return;
               try {
                 await leaveCompany.mutateAsync();
-                toast.success('Ați părăsit compania.');
+                toast.success(t('company.profileEditor.toastLeft'));
                 navigate('/company/lucrari', { replace: true });
               } catch (err: unknown) {
-                toast.error(getErrorMessage(err, 'Nu s-a putut părăsi compania.'));
+                toast.error(getErrorMessage(err, t('company.profileEditor.form.leaveFailed')));
               }
             }}
             className={`${cabinetBtnSecondary} border-red-200 text-red-700 hover:bg-red-50`}
           >
-            {leaveCompany.isPending ? 'Se procesează...' : 'Părăsește compania'}
+            {leaveCompany.isPending ? t('company.profileEditor.leaving') : t('company.profileEditor.leaveCompany')}
           </button>
         </section>
       ) : null}

@@ -1,7 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/components/ui/AppModal';
 import { getErrorMessage } from '@/utils/errors';
+import {
+  buildCatalogTranslations,
+  readCatalogRuName,
+} from '@/utils/catalogTranslations';
 import {
   PageHero,
   Panel,
@@ -21,6 +26,7 @@ import {
 } from '@/features/admin/api/useAdmin';
 
 export function AdminCategoriesPage() {
+  const { t } = useTranslation();
   const { data: categories, isLoading } = useAdminCategoriesQuery();
   const createCategory = useCreateAdminCategoryMutation();
   const updateCategory = useUpdateAdminCategoryMutation();
@@ -29,11 +35,13 @@ export function AdminCategoriesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<AdminCategoryDto | null>(null);
   const [name, setName] = useState('');
+  const [nameRu, setNameRu] = useState('');
   const [slug, setSlug] = useState('');
 
   const openCreate = () => {
     setEditing(null);
     setName('');
+    setNameRu('');
     setSlug('');
     setModalOpen(true);
   };
@@ -41,6 +49,7 @@ export function AdminCategoriesPage() {
   const openEdit = (category: AdminCategoryDto) => {
     setEditing(category);
     setName(category.name);
+    setNameRu(readCatalogRuName(category.translations));
     setSlug(category.slug);
     setModalOpen(true);
   };
@@ -48,38 +57,41 @@ export function AdminCategoriesPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!name.trim()) {
-      toast.error('Introduceți numele categoriei.');
+      toast.error(t('admin.categoriesPage.nameRequired'));
       return;
     }
+
+    const translations = buildCatalogTranslations(name, nameRu);
+    const payload = {
+      name: name.trim(),
+      slug: slug.trim() || undefined,
+      translations,
+    };
 
     try {
       if (editing) {
         await updateCategory.mutateAsync({
           id: editing.id,
-          name: name.trim(),
-          slug: slug.trim() || undefined,
+          ...payload,
         });
-        toast.success('Categoria a fost actualizată.');
+        toast.success(t('admin.categoriesPage.toastUpdated'));
       } else {
-        await createCategory.mutateAsync({
-          name: name.trim(),
-          slug: slug.trim() || undefined,
-        });
-        toast.success('Categoria a fost creată.');
+        await createCategory.mutateAsync(payload);
+        toast.success(t('admin.categoriesPage.toastCreated'));
       }
       setModalOpen(false);
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Operația a eșuat.'));
+      toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
     }
   };
 
   const handleDelete = async (category: AdminCategoryDto) => {
-    if (!confirm(`Ștergeți categoria „${category.name}”?`)) return;
+    if (!confirm(t('admin.categoriesPage.confirmDelete', { name: category.name }))) return;
     try {
       await deleteCategory.mutateAsync(category.id);
-      toast.success('Categoria a fost ștearsă.');
+      toast.success(t('admin.categoriesPage.toastDeleted'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut șterge categoria.'));
+      toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
     }
   };
 
@@ -89,30 +101,30 @@ export function AdminCategoriesPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHero
-        eyebrow="Catalog"
-        title="Categorii servicii"
-        description="Gestionați domeniile de activitate disponibile pe platformă."
+        eyebrow={t('admin.categoriesPage.eyebrow')}
+        title={t('admin.categoriesPage.title')}
+        description={t('admin.categoriesPage.description')}
         action={
           <button type="button" onClick={openCreate} className={cabinetBtnPrimary}>
-            + Categorie nouă
+            {t('admin.categoriesPage.createBtn')}
           </button>
         }
       />
 
       <Panel>
         <PanelHeader
-          title="Lista categoriilor"
-          description="Folosite la profilul companiilor și pachetele de servicii."
+          title={t('admin.categoriesPage.listTitle')}
+          description={t('admin.categoriesPage.listDescription')}
         />
 
         {isLoading ? (
-          <p className="text-sm text-gray-400 py-8 text-center">Se încarcă...</p>
+          <p className="text-sm text-gray-400 py-8 text-center">{t('cabinet.common.loading')}</p>
         ) : !categories?.length ? (
           <EmptyState
-            message="Nu există categorii în catalog."
+            message={t('admin.categoriesPage.empty')}
             action={
               <button type="button" onClick={openCreate} className={cabinetBtnSecondary}>
-                Adaugă prima categorie
+                {t('admin.categoriesPage.emptyAction')}
               </button>
             }
           />
@@ -121,21 +133,25 @@ export function AdminCategoriesPage() {
             <table className="min-w-full text-sm">
               <thead className="bg-gray-50/80 text-[10px] font-black uppercase tracking-widest text-gray-400">
                 <tr>
-                  <th className="px-4 py-3 text-left">Nume</th>
-                  <th className="px-4 py-3 text-left">Slug</th>
-                  <th className="px-4 py-3 text-left">Utilizări</th>
-                  <th className="px-4 py-3 text-right">Acțiuni</th>
+                  <th className="px-4 py-3 text-left">{t('admin.categoriesPage.colName')}</th>
+                  <th className="px-4 py-3 text-left">{t('admin.categoriesPage.colNameRu')}</th>
+                  <th className="px-4 py-3 text-left">{t('admin.categoriesPage.colSlug')}</th>
+                  <th className="px-4 py-3 text-left">{t('admin.categoriesPage.colUsage')}</th>
+                  <th className="px-4 py-3 text-right">{t('admin.categoriesPage.colActions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {categories.map((category) => (
                   <tr key={category.id}>
                     <td className="px-4 py-3 font-semibold text-gray-900">{category.name}</td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {readCatalogRuName(category.translations) || '—'}
+                    </td>
                     <td className="px-4 py-3 text-gray-500">{category.slug}</td>
                     <td className="px-4 py-3 text-gray-500">{inUseCount(category)}</td>
                     <td className="px-4 py-3 text-right space-x-2">
                       <button type="button" onClick={() => openEdit(category)} className={cabinetBtnSecondary}>
-                        Editează
+                        {t('cabinet.common.edit')}
                       </button>
                       <button
                         type="button"
@@ -143,7 +159,7 @@ export function AdminCategoriesPage() {
                         disabled={inUseCount(category) > 0 || deleteCategory.isPending}
                         className="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-red-600 hover:bg-red-50 disabled:opacity-40"
                       >
-                        Șterge
+                        {t('cabinet.common.delete')}
                       </button>
                     </td>
                   </tr>
@@ -157,11 +173,11 @@ export function AdminCategoriesPage() {
       <AppModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editing ? 'Editează categorie' : 'Categorie nouă'}
+        title={editing ? t('admin.categoriesPage.modalEdit') : t('admin.categoriesPage.modalCreate')}
       >
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
           <div>
-            <label className={cabinetLabelClass}>Nume *</label>
+            <label className={cabinetLabelClass}>{t('admin.categoriesPage.nameLabel')}</label>
             <input
               type="text"
               required
@@ -171,7 +187,17 @@ export function AdminCategoriesPage() {
             />
           </div>
           <div>
-            <label className={cabinetLabelClass}>Slug (opțional)</label>
+            <label className={cabinetLabelClass}>{t('admin.categoriesPage.nameRuLabel')}</label>
+            <input
+              type="text"
+              placeholder="ex: Сантехника"
+              value={nameRu}
+              onChange={(e) => setNameRu(e.target.value)}
+              className={cabinetFieldClass}
+            />
+          </div>
+          <div>
+            <label className={cabinetLabelClass}>{t('admin.categoriesPage.slugLabel')}</label>
             <input
               type="text"
               placeholder="ex: santehnika"
@@ -182,14 +208,14 @@ export function AdminCategoriesPage() {
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" onClick={() => setModalOpen(false)} className={cabinetBtnSecondary}>
-              Anulează
+              {t('cabinet.common.cancel')}
             </button>
             <button
               type="submit"
               disabled={createCategory.isPending || updateCategory.isPending}
               className={cabinetBtnPrimary}
             >
-              {editing ? 'Salvează' : 'Creează'}
+              {editing ? t('cabinet.common.save') : t('cabinet.common.create')}
             </button>
           </div>
         </form>

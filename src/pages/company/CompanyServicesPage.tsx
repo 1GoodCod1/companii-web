@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { PageHero, Panel, PanelHeader, cabinetBtnPrimary } from '@/components/cabinet/cabinet-ui';
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
@@ -26,6 +27,7 @@ import {
 } from '@/utils/serviceForm';
 
 export function CompanyServicesPage() {
+  const { t } = useTranslation();
   const { data: services, isLoading } = useCompanyServicesQuery();
   const { data: categories } = useCategoriesQuery();
   const { data: subscription } = useMySubscriptionQuery();
@@ -33,7 +35,8 @@ export function CompanyServicesPage() {
   const { company: activeCompany } = resolveActiveCompany(companyMe, activeCompanyId);
   const defaultCategoryId = activeCompany?.categoryId ?? '';
   const defaultCategoryName =
-    categories?.find((category) => category.id === defaultCategoryId)?.name ?? '— nesetată —';
+    categories?.find((category) => category.id === defaultCategoryId)?.name ??
+    t('company.servicesPage.categoryUnset');
   const createService = useCreateCompanyServiceMutation();
   const updateService = useUpdateCompanyServiceMutation();
   const deleteService = useDeleteCompanyServiceMutation();
@@ -60,11 +63,11 @@ export function CompanyServicesPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!form.name.trim() || !form.defaultPrice) {
-      toast.error('Completați numele și prețul.');
+      toast.error(t('company.servicesPage.toastNamePriceRequired'));
       return;
     }
     if (!defaultCategoryId) {
-      toast.error('Setați categoria companiei în profil înainte de a adăuga servicii.');
+      toast.error(t('company.servicesPage.toastCategoryRequired'));
       return;
     }
 
@@ -77,7 +80,7 @@ export function CompanyServicesPage() {
           ...payload,
           durationMinutes: payload.durationMinutes ?? null,
         });
-        toast.success('Serviciu actualizat.');
+        toast.success(t('company.servicesPage.toastUpdated'));
       } else {
         const { materialsCost, durationMinutes, ...rest } = payload;
         await createService.mutateAsync({
@@ -85,21 +88,21 @@ export function CompanyServicesPage() {
           ...(durationMinutes != null ? { durationMinutes } : {}),
           ...(typeof materialsCost === 'number' ? { materialsCost } : {}),
         });
-        toast.success('Serviciu adăugat.');
+        toast.success(t('company.servicesPage.toastCreated'));
       }
       setShowModal(false);
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare.'));
+      toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Ștergeți acest serviciu din catalog?')) return;
+    if (!confirm(t('company.servicesPage.confirmDelete'))) return;
     try {
       await deleteService.mutateAsync(id);
-      toast.success('Serviciu șters.');
+      toast.success(t('company.servicesPage.toastDeleted'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare.'));
+      toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
     }
   };
 
@@ -107,17 +110,17 @@ export function CompanyServicesPage() {
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
         <PageHero
-          title="Servicii & prețuri"
-          description="Catalog public pe profilul companiei + tarife interne pentru devize (Pro+)."
+          title={t('company.servicesPage.title')}
+          description={t('company.servicesPage.description')}
           action={
             <button type="button" onClick={openCreate} className={cabinetBtnPrimary}>
-              + Serviciu nou
+              {t('company.servicesPage.createBtn')}
             </button>
           }
         />
 
         <Panel>
-          <PanelHeader title="Catalog servicii" />
+          <PanelHeader title={t('company.servicesPage.catalogTitle')} />
           <ServicesCatalogPanel
             services={services}
             isLoading={isLoading}

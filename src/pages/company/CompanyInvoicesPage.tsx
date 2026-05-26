@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { PageHero, cabinetBtnPrimary, cabinetBtnSecondary } from '@/components/cabinet/cabinet-ui';
 import { EntityListDetailLayout } from '@/components/cabinet/EntityListDetailLayout';
@@ -10,6 +11,7 @@ import { useEntityModal } from '@/hooks/useEntityModal';
 import { useEntitySelection } from '@/hooks/useEntitySelection';
 
 export function CompanyInvoicesPage() {
+  const { t } = useTranslation();
   const { data: invoices, isLoading } = useInvoicesQuery();
   const createModal = useEntityModal();
   const { selectedId, select, clear } = useEntitySelection();
@@ -18,8 +20,8 @@ export function CompanyInvoicesPage() {
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
         <PageHero
-          title="Facturi FSM"
-          description="Gestionează fluxul financiar, plățile, TVA-ul și facturarea comenzilor finalizate."
+          title={t('company.invoicesPage.title')}
+          description={t('company.invoicesPage.description')}
           action={
             <div className="flex flex-wrap gap-2">
               <button
@@ -27,10 +29,10 @@ export function CompanyInvoicesPage() {
                 onClick={() => downloadInvoicesCsv().catch((e: Error) => toast.error(e.message))}
                 className={cabinetBtnSecondary}
               >
-                Export CSV
+                {t('company.invoicesPage.exportCsv')}
               </button>
               <button type="button" onClick={createModal.openCreate} className={cabinetBtnPrimary}>
-                + Generează factură
+                {t('company.invoicesPage.generateBtn')}
               </button>
             </div>
           }

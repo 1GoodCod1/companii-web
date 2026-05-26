@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ClipboardList } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
   PageHero,
   Panel,
@@ -8,49 +9,53 @@ import {
   SoftBadge,
 } from '@/components/cabinet/cabinet-ui';
 import { usePortalLeadsQuery } from '@/features/portal/api/usePortal';
-import { formatDateRo } from '@/utils/date';
-import {
-  LEAD_STATUS_LABELS,
-  LEAD_STATUS_TONES,
-  PORTAL_LEAD_SOURCE_LABELS,
-} from '@/constants/leads.constants';
+import { formatDateLocalized } from '@/utils/date';
+import { useLocale } from '@/hooks/useLocale';
+import { LEAD_STATUS_TONES } from '@/constants/leads.constants';
+import { leadStatusLabel } from '@/utils/i18nStatusLabels';
+import type { CompanyLeadDto } from '@/types/fsm';
+
+function leadSourceLabel(source: CompanyLeadDto['source'], t: (key: string) => string) {
+  return t(`portal.cereriPage.source.${source}`);
+}
 
 export function PortalCereriPage() {
+  const { t } = useTranslation();
+  const locale = useLocale();
   const { data: leads, isLoading, isError } = usePortalLeadsQuery();
 
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHero
-        eyebrow="Portal client"
-        title="Cererile mele"
-        description="Cererile trimise către companii — servicii simple sau proiecte complexe."
+        eyebrow={t('portal.common.eyebrow')}
+        title={t('portal.cereriPage.title')}
+        description={t('portal.cereriPage.description')}
         action={
           <Link
             to="/companies"
             className="inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white hover:opacity-95 transition-opacity"
           >
-            Caută companii
+            {t('portal.cereriPage.searchCompanies')}
           </Link>
         }
       />
 
       <Panel>
         <PanelHeader
-          title="Istoric cereri"
-          description="Urmărește statusul cererilor trimise din catalogul public."
+          title={t('portal.cereriPage.historyTitle')}
+          description={t('portal.cereriPage.historyDescription')}
         />
 
         {isLoading ? (
-          <p className="text-sm text-gray-400 animate-pulse px-4 pb-6">Se încarcă cererile...</p>
+          <p className="text-sm text-gray-400 animate-pulse px-4 pb-6">{t('portal.cereriPage.loading')}</p>
         ) : isError ? (
-          <EmptyState message="Nu s-au putut încărca cererile." />
+          <EmptyState message={t('portal.cereriPage.loadError')} />
         ) : !leads?.length ? (
           <EmptyState
-            message="Nu ai trimis încă nicio cerere."
+            message={t('portal.cereriPage.empty')}
             action={
               <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
-                Deschide profilul unei companii din catalog, alege un serviciu sau trimite o cerere
-                de proiect complex.
+                {t('portal.cereriPage.emptyHint')}
               </p>
             }
           />
@@ -61,7 +66,7 @@ export function PortalCereriPage() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="space-y-1 min-w-0">
                     <p className="text-sm font-bold text-gray-900 truncate">
-                      {lead.serviceTitle || PORTAL_LEAD_SOURCE_LABELS[lead.source]}
+                      {lead.serviceTitle || leadSourceLabel(lead.source, t)}
                     </p>
                     <Link
                       to={`/companies/${lead.company.slug}`}
@@ -72,9 +77,9 @@ export function PortalCereriPage() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <SoftBadge tone={LEAD_STATUS_TONES[lead.status]}>
-                      {LEAD_STATUS_LABELS[lead.status]}
+                      {leadStatusLabel(lead.status, t)}
                     </SoftBadge>
-                    <SoftBadge tone="gray">{PORTAL_LEAD_SOURCE_LABELS[lead.source]}</SoftBadge>
+                    <SoftBadge tone="gray">{leadSourceLabel(lead.source, t)}</SoftBadge>
                   </div>
                 </div>
 
@@ -88,12 +93,14 @@ export function PortalCereriPage() {
                   {lead.category ? <span>{lead.category.name}</span> : null}
                   {lead.estimatedBudget != null && lead.estimatedBudget > 0 ? (
                     <span className="font-semibold text-violet-700">
-                      Buget: {Number(lead.estimatedBudget).toLocaleString('ro-MD')} MDL
+                      {t('portal.cereriPage.budget', {
+                        amount: Number(lead.estimatedBudget).toLocaleString('ro-MD'),
+                      })}
                     </span>
                   ) : null}
                   {lead.address ? <span>{lead.address}</span> : null}
                   <span>
-                    {formatDateRo(lead.createdAt, 'medium')}
+                    {formatDateLocalized(lead.createdAt, locale, 'medium')}
                   </span>
                 </div>
               </article>
@@ -106,12 +113,8 @@ export function PortalCereriPage() {
         <div className="flex items-start gap-3 px-4 py-5 sm:px-6">
           <ClipboardList className="h-5 w-5 text-violet-600 shrink-0 mt-0.5" />
           <div className="space-y-1 text-xs text-gray-500 leading-relaxed">
-            <p className="font-semibold text-gray-700">Proiecte complexe</p>
-            <p>
-              Cererile de proiect se trimit din pagina companiei — secțiunea „Cerere proiect /
-              lucrare complexă”. Nu e nevoie de o pagină separată: alege compania, descrie lucrarea
-              și o vei găsi aici după trimitere.
-            </p>
+            <p className="font-semibold text-gray-700">{t('portal.cereriPage.complexProjectsTitle')}</p>
+            <p>{t('portal.cereriPage.complexProjectsBody')}</p>
           </div>
         </div>
       </Panel>

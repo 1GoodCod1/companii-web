@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
   EmptyState,
@@ -16,12 +17,13 @@ import {
   buildPortalInviteUrl,
   useCreatePortalInviteMutation,
 } from '@/features/companies/api/usePortalInvite';
+import { useLocale } from '@/hooks/useLocale';
 import {
   timelineHref,
   timelineStatusLabel,
   timelineStatusTone,
 } from '@/utils/customerTimeline';
-import { formatDateRo, formatDateTimeRo } from '@/utils/date';
+import { formatDateLocalized, formatDateTimeLocalized } from '@/utils/date';
 import { getErrorMessage } from '@/utils/errors';
 
 type Props = {
@@ -29,6 +31,8 @@ type Props = {
 };
 
 export function CustomerDetailPanel({ customer }: Props) {
+  const { t } = useTranslation();
+  const locale = useLocale();
   const createPortalInvite = useCreatePortalInviteMutation();
   const [portalInviteLink, setPortalInviteLink] = useState<{
     customerId: string;
@@ -55,12 +59,12 @@ export function CustomerDetailPanel({ customer }: Props) {
       });
       try {
         await navigator.clipboard.writeText(inviteUrl);
-        toast.success('Link portal generat și copiat în clipboard.');
+        toast.success(t('company.fsm.customers.detail.toast.portalLinkCopied'));
       } catch {
-        toast.success('Link portal generat. Copiază manual din câmp.');
+        toast.success(t('company.fsm.customers.detail.toast.portalLinkGeneratedManual'));
       }
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut genera invitația.'));
+      toast.error(getErrorMessage(err, t('company.fsm.customers.detail.toast.portalInviteError')));
     }
   };
 
@@ -68,15 +72,18 @@ export function CustomerDetailPanel({ customer }: Props) {
     if (!activePortalInviteLink) return;
     try {
       await navigator.clipboard.writeText(activePortalInviteLink.url);
-      toast.success('Link copiat în clipboard.');
+      toast.success(t('company.fsm.customers.detail.toast.linkCopied'));
     } catch {
-      toast.error('Nu s-a putut copia linkul.');
+      toast.error(t('company.fsm.customers.detail.toast.linkCopyError'));
     }
   };
 
   return (
     <Panel>
-      <PanelHeader title="Detalii client" description="Selectează un client din listă." />
+      <PanelHeader
+        title={t('company.fsm.customers.detail.title')}
+        description={t('company.fsm.customers.detail.subtitle')}
+      />
       {customer ? (
         <div className="space-y-4">
           <div>
@@ -103,19 +110,25 @@ export function CustomerDetailPanel({ customer }: Props) {
 
           {customer.notes && (
             <div className="bg-violet-50/40 p-3.5 rounded-xl">
-              <p className="text-xs font-semibold text-violet-700 mb-1.5">Note interne</p>
+              <p className="text-xs font-semibold text-violet-700 mb-1.5">
+                {t('company.fsm.customers.detail.internalNotes')}
+              </p>
               <p className="text-xs text-gray-600 whitespace-pre-wrap leading-relaxed">{customer.notes}</p>
             </div>
           )}
 
           <div className="rounded-xl border border-gray-100 bg-white p-4 space-y-3">
-            <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Acces portal client</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+              {t('company.fsm.customers.detail.portal.title')}
+            </p>
             {customer.portalUserId ? (
-              <p className="text-sm font-semibold text-emerald-700">Clientul are deja cont legat în portal.</p>
+              <p className="text-sm font-semibold text-emerald-700">
+                {t('company.fsm.customers.detail.portal.alreadyLinked')}
+              </p>
             ) : (
               <>
                 <p className="text-xs text-gray-500 leading-relaxed">
-                  Trimite linkul clientului sau lasă-l să se înregistreze cu același telefon/email.
+                  {t('company.fsm.customers.detail.portal.hint')}
                 </p>
                 <button
                   type="button"
@@ -124,14 +137,16 @@ export function CustomerDetailPanel({ customer }: Props) {
                   className={cabinetBtnSecondary}
                 >
                   {createPortalInvite.isPending
-                    ? 'Se generează...'
+                    ? t('company.fsm.customers.detail.portal.generating')
                     : activePortalInviteLink
-                      ? 'Regenerează link portal'
-                      : 'Generează link portal'}
+                      ? t('company.fsm.customers.detail.portal.regenerate')
+                      : t('company.fsm.customers.detail.portal.generate')}
                 </button>
                 {activePortalInviteLink && (
                   <div className="space-y-2">
-                    <label className={cabinetLabelClass}>Link portal (valabil 2 ore)</label>
+                    <label className={cabinetLabelClass}>
+                      {t('company.fsm.customers.detail.portal.linkLabel')}
+                    </label>
                     <div className="flex gap-2">
                       <input
                         type="text"
@@ -145,13 +160,13 @@ export function CustomerDetailPanel({ customer }: Props) {
                         onClick={handleCopyPortalLink}
                         className={`${cabinetBtnSecondary} shrink-0 px-3`}
                       >
-                        Copiază
+                        {t('cabinet.common.copy')}
                       </button>
                     </div>
                     <p className="text-[11px] text-gray-400">
-                      Expiră la:{' '}
-                      {formatDateTimeRo(activePortalInviteLink.expiresAt, 'datetimeShort')}
-                      . Linkurile vechi devin invalide la regenerare.
+                      {t('company.fsm.customers.detail.portal.expiryNote', {
+                        date: formatDateTimeLocalized(activePortalInviteLink.expiresAt, locale, 'datetimeShort'),
+                      })}
                     </p>
                   </div>
                 )}
@@ -160,18 +175,20 @@ export function CustomerDetailPanel({ customer }: Props) {
           </div>
 
           <div className="pt-2 text-xs text-gray-400">
-            Înregistrat la:{' '}
+            {t('company.fsm.customers.detail.registeredAt')}{' '}
             {customer.createdAt
-              ? formatDateRo(customer.createdAt)
-              : 'Nespecificat'}
+              ? formatDateLocalized(customer.createdAt, locale)
+              : t('company.fsm.common.unspecified')}
           </div>
 
           <div className="border-t border-gray-100 pt-4">
-            <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Istoric client</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
+              {t('company.fsm.customers.detail.timeline.title')}
+            </p>
             {timelineLoading ? (
-              <p className="text-xs text-gray-400">Se încarcă istoricul...</p>
+              <p className="text-xs text-gray-400">{t('company.fsm.customers.detail.timeline.loading')}</p>
             ) : !timeline?.items.length ? (
-              <EmptyState message="Nicio activitate înregistrată." />
+              <EmptyState message={t('company.fsm.customers.detail.timeline.empty')} />
             ) : (
               <ol className="relative border-l border-violet-100 ml-2 space-y-4">
                 {timeline.items.map((item: CustomerTimelineItemDto) => {
@@ -189,7 +206,7 @@ export function CustomerDetailPanel({ customer }: Props) {
                             ) : null}
                           </div>
                           <span className="text-[10px] text-gray-400 shrink-0">
-                            {formatDateRo(item.at, 'medium')}
+                            {formatDateLocalized(item.at, locale, 'medium')}
                           </span>
                         </div>
                         {href ? (
@@ -209,7 +226,7 @@ export function CustomerDetailPanel({ customer }: Props) {
           </div>
         </div>
       ) : (
-        <EmptyState message="Selectează un client din listă pentru a-i vedea profilul detaliat." />
+        <EmptyState message={t('company.fsm.customers.detail.empty')} />
       )}
     </Panel>
   );

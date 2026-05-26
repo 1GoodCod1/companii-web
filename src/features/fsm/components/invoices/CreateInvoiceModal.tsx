@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/components/ui/AppModal';
 import { INTERVENTION_STATUS } from '@/constants/interventionStatus.constants';
@@ -12,11 +13,13 @@ type Props = {
 };
 
 export function CreateInvoiceModal({ open, onClose }: Props) {
+  const { t } = useTranslation();
+
   return (
     <AppModal
       open={open}
       onClose={onClose}
-      title="Generează Factură"
+      title={t('company.fsm.invoices.createModal.title')}
       size="lg"
       backgroundIndex={2}
     >
@@ -26,6 +29,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
 }
 
 function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
+  const { t } = useTranslation();
   const { data: interventions } = useInterventionsQuery(INTERVENTION_STATUS.COMPLETED);
   const createInvoice = useCreateInvoiceMutation();
 
@@ -36,7 +40,7 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!interventionId) {
-      toast.error('Vă rugăm să alegeți o intervenție finalizată.');
+      toast.error(t('company.fsm.invoices.createModal.toast.selectIntervention'));
       return;
     }
 
@@ -46,10 +50,10 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
         tvaRate: Number(tvaRate),
         dueDate: dueDate || undefined,
       });
-      toast.success('Factură generată cu succes!');
+      toast.success(t('company.fsm.invoices.createModal.toast.created'));
       onClose();
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la generarea facturii.'));
+      toast.error(getErrorMessage(err, t('company.fsm.invoices.createModal.toast.createError')));
     }
   };
 
@@ -57,7 +61,7 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
     <form onSubmit={handleCreateSubmit} className="space-y-4">
       <div>
         <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-          Alege Lucrarea Finalizată (FSM) *
+          {t('company.fsm.invoices.createModal.fields.intervention')}
         </label>
         <select
           required
@@ -65,7 +69,7 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
           onChange={(e) => setInterventionId(e.target.value)}
           className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white cursor-pointer font-medium"
         >
-          <option value="">Alege lucrarea finalizată...</option>
+          <option value="">{t('company.fsm.invoices.createModal.fields.interventionPlaceholder')}</option>
           {interventions?.map((item) => (
             <option key={item.id} value={item.id}>
               {item.number} — {item.customer?.fullName} ({item.type})
@@ -73,28 +77,28 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
           ))}
         </select>
         <p className="text-[10px] text-gray-400 font-medium mt-1.5 leading-relaxed">
-          Doar lucrările în stadiul COMPLETED care nu au fost facturate sunt afișate.
+          {t('company.fsm.invoices.createModal.fields.interventionHint')}
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-            Cotă TVA (%) *
+            {t('company.fsm.invoices.createModal.fields.tvaRate')}
           </label>
           <select
             value={tvaRate}
             onChange={(e) => setTvaRate(Number(e.target.value))}
             className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white cursor-pointer font-medium"
           >
-            <option value="20">20% (Standard MD)</option>
-            <option value="8">8% (Redusă MD)</option>
-            <option value="0">0% (Scutită / Fără)</option>
+            <option value="20">{t('company.fsm.invoices.createModal.tvaOptions.standard20')}</option>
+            <option value="8">{t('company.fsm.invoices.createModal.tvaOptions.reduced8')}</option>
+            <option value="0">{t('company.fsm.invoices.createModal.tvaOptions.exempt0')}</option>
           </select>
         </div>
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-            Dată Scadență (Due Date)
+            {t('company.fsm.invoices.createModal.fields.dueDate')}
           </label>
           <input
             type="date"
@@ -111,14 +115,14 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
           onClick={onClose}
           className="px-4 py-2.5 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs font-bold uppercase tracking-wider text-gray-500 cursor-pointer"
         >
-          Anulează
+          {t('cabinet.common.cancel')}
         </button>
         <button
           type="submit"
           disabled={createInvoice.isPending}
           className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer"
         >
-          Emite Factură
+          {t('company.fsm.invoices.createModal.submit')}
         </button>
       </div>
     </form>

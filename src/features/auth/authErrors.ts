@@ -1,20 +1,21 @@
 import { ApiError } from '@/api/client';
+import i18n from '@/i18n';
 
 export function getAuthErrorMessage(err: unknown): string {
   if (err instanceof ApiError) {
     if (err.status === 409) {
-      return 'Acest email este deja înregistrat. Autentificați-vă sau folosiți alt email.';
+      return i18n.t('auth.errors.emailTaken');
     }
     if (err.status === 401) {
-      return 'Email/telefon sau parolă incorectă.';
+      return i18n.t('auth.errors.invalidCredentials');
     }
     if (err.status === 429) {
-      return 'Prea multe încercări. Încercați din nou peste câteva minute.';
+      return i18n.t('auth.errors.tooManyAttempts');
     }
-    return err.message || 'A apărut o eroare la autentificare.';
+    return err.message || i18n.t('auth.errors.authFailed');
   }
   if (err instanceof Error && err.message) {
     return err.message;
   }
-  return 'A apărut o eroare neașteptată.';
+  return i18n.t('auth.errors.unexpected');
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { CustomerDto } from '@/types/fsm';
 import { EntityListPanel, entityListRowClass } from '@/components/cabinet/EntityListPanel';
 
@@ -18,21 +19,31 @@ export function CustomersListTable({
   onEdit,
   onDelete,
 }: Props) {
+  const { t } = useTranslation();
+
   return (
     <EntityListPanel
       isLoading={isLoading}
       isEmpty={customers.length === 0}
-      loadingMessage="Se încarcă clienții..."
-      emptyMessage="Niciun client găsit."
+      loadingMessage={t('company.fsm.customers.list.loading')}
+      emptyMessage={t('company.fsm.customers.list.empty')}
     >
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse text-sm">
           <thead>
             <tr className="bg-gray-50/50 border-b border-gray-100 text-gray-500 font-bold">
-              <th className="p-4 text-xs uppercase tracking-wider">Nume complet</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Telefon & Email</th>
-              <th className="p-4 text-xs uppercase tracking-wider">Adresă</th>
-              <th className="p-4 text-xs uppercase tracking-wider text-right">Acțiuni</th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.customers.list.columns.fullName')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.customers.list.columns.contact')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider">
+                {t('company.fsm.customers.list.columns.address')}
+              </th>
+              <th className="p-4 text-xs uppercase tracking-wider text-right">
+                {t('company.fsm.customers.list.columns.actions')}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -55,14 +66,14 @@ export function CustomersListTable({
                     <button
                       onClick={() => onEdit(c)}
                       className="p-2 hover:bg-violet-50 rounded-xl text-gray-500 hover:text-violet-600 transition-colors cursor-pointer text-xs"
-                      title="Editează"
+                      title={t('cabinet.common.edit')}
                     >
                       ✏️
                     </button>
                     <button
                       onClick={() => onDelete(c.id)}
                       className="p-2 hover:bg-red-50 rounded-xl text-gray-500 hover:text-red-600 transition-colors cursor-pointer text-xs"
-                      title="Șterge"
+                      title={t('cabinet.common.delete')}
                     >
                       🗑️
                     </button>

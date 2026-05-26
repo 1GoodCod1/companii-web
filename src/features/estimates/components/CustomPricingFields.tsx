@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Coins, 
   Hammer, 
@@ -23,6 +24,7 @@ function parseOptionalNumber(raw: string): number | undefined {
 }
 
 export function CustomPricingFields({ values, onChange, compact, unitLabel }: Props) {
+  const { t } = useTranslation();
   const [showUnitPrice, setShowUnitPrice] = useState(!!values.customUnitPriceSqm);
   const [showLaborTotal, setShowLaborTotal] = useState(!!values.customLaborTotal);
   const [showDuration, setShowDuration] = useState(!!values.customDurationDays);
@@ -69,16 +71,16 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
         <div>
           <h4 className="font-black text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span>Tarife personalizate (Opțional)</span>
+            <span>{t('company.estimateWizard.customPricing.title')}</span>
           </h4>
           {!compact && (
             <p className="text-[10px] text-slate-500 mt-0.5 font-semibold leading-relaxed">
-              Activați comutatorul pentru fiecare parametru pe care doriți să-l suprascrieți manual la calculul smetei.
+              {t('company.estimateWizard.customPricing.description')}
             </p>
           )}
         </div>
         <span className="text-[9px] font-black uppercase text-amber-600 bg-amber-50 border border-amber-100/80 px-2 py-0.5 rounded-md select-none shrink-0 self-start sm:self-auto">
-          Moldova 2026
+          {t('company.estimateWizard.customPricing.badge')}
         </span>
       </div>
 
@@ -93,7 +95,7 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
             <div className="flex items-center gap-1.5">
               <Coins className={`w-4 h-4 shrink-0 ${showUnitPrice ? 'text-amber-500' : 'text-slate-400'}`} />
               <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">
-                {unitLabel || 'Preț / m² (MDL)'}
+                {unitLabel || t('company.estimateWizard.customPricing.unitPriceDefault')}
               </span>
             </div>
             <button
@@ -116,7 +118,7 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
                 type="number"
                 min={0}
                 step={1}
-                placeholder="Ex: 180"
+                placeholder={t('company.estimateWizard.customPricing.unitPricePlaceholder')}
                 value={values.customUnitPriceSqm ?? ''}
                 onChange={(e) =>
                   onChange({
@@ -128,7 +130,9 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
               />
             </div>
           ) : (
-            <div className="pt-3 text-[10px] text-slate-400 font-bold italic leading-none">Inactiv</div>
+            <div className="pt-3 text-[10px] text-slate-400 font-bold italic leading-none">
+              {t('company.estimateWizard.customPricing.inactive')}
+            </div>
           )}
         </div>
 
@@ -142,7 +146,7 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
             <div className="flex items-center gap-1.5">
               <Hammer className={`w-4 h-4 shrink-0 ${showLaborTotal ? 'text-amber-500' : 'text-slate-400'}`} />
               <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">
-                Manoperă (MDL)
+                {t('company.estimateWizard.customPricing.labor')}
               </span>
             </div>
             <button
@@ -165,7 +169,7 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
                 type="number"
                 min={0}
                 step={1}
-                placeholder="Ex: 5000"
+                placeholder={t('company.estimateWizard.customPricing.laborPlaceholder')}
                 value={values.customLaborTotal ?? ''}
                 onChange={(e) =>
                   onChange({
@@ -177,7 +181,9 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
               />
             </div>
           ) : (
-            <div className="pt-3 text-[10px] text-slate-400 font-bold italic leading-none">Inactiv</div>
+            <div className="pt-3 text-[10px] text-slate-400 font-bold italic leading-none">
+              {t('company.estimateWizard.customPricing.inactive')}
+            </div>
           )}
         </div>
 
@@ -191,7 +197,7 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
             <div className="flex items-center gap-1.5">
               <Calendar className={`w-4 h-4 shrink-0 ${showDuration ? 'text-amber-500' : 'text-slate-400'}`} />
               <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">
-                Durată (Zile)
+                {t('company.estimateWizard.customPricing.duration')}
               </span>
             </div>
             <button
@@ -214,7 +220,7 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
                 type="number"
                 min={0}
                 step={1}
-                placeholder="Ex: 5"
+                placeholder={t('company.estimateWizard.customPricing.durationPlaceholder')}
                 value={values.customDurationDays ?? ''}
                 onChange={(e) =>
                   onChange({
@@ -226,7 +232,9 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
               />
             </div>
           ) : (
-            <div className="pt-3 text-[10px] text-slate-400 font-bold italic leading-none">Inactiv</div>
+            <div className="pt-3 text-[10px] text-slate-400 font-bold italic leading-none">
+              {t('company.estimateWizard.customPricing.inactive')}
+            </div>
           )}
         </div>
 
@@ -240,7 +248,7 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
             <div className="flex items-center gap-1.5">
               <Clock className={`w-4 h-4 shrink-0 ${showLaborHours ? 'text-amber-500' : 'text-slate-400'}`} />
               <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">
-                Ore Manoperă
+                {t('company.estimateWizard.customPricing.laborHours')}
               </span>
             </div>
             <button
@@ -263,7 +271,7 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
                 type="number"
                 min={0}
                 step={0.5}
-                placeholder="Ex: 24"
+                placeholder={t('company.estimateWizard.customPricing.laborHoursPlaceholder')}
                 value={values.customLaborHours ?? ''}
                 onChange={(e) =>
                   onChange({
@@ -275,7 +283,9 @@ export function CustomPricingFields({ values, onChange, compact, unitLabel }: Pr
               />
             </div>
           ) : (
-            <div className="pt-3 text-[10px] text-slate-400 font-bold italic leading-none">Inactiv</div>
+            <div className="pt-3 text-[10px] text-slate-400 font-bold italic leading-none">
+              {t('company.estimateWizard.customPricing.inactive')}
+            </div>
           )}
         </div>
       </div>

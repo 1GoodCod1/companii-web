@@ -1,24 +1,29 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { EmptyState, SoftBadge } from '@/components/cabinet/cabinet-ui';
 import type { CalendarBoardDto, InterventionDto } from '@/types/fsm';
+import { useLocale } from '@/hooks/useLocale';
 import { InterventionCard } from './InterventionCard';
-import { formatDateRo } from '@/utils/date';
+import { formatDateLocalized } from '@/utils/date';
 
 type ScheduledIntervention = InterventionDto & { scheduledAt: string };
 
 export function ScheduledColumn({ scheduled }: { scheduled: CalendarBoardDto['scheduled'] }) {
+  const { t } = useTranslation();
+  const locale = useLocale();
+
   const grouped = useMemo(() => {
     const items = scheduled.filter((item): item is ScheduledIntervention => !!item.scheduledAt);
     return items.reduce<Record<string, ScheduledIntervention[]>>((acc, item) => {
-      const dateStr = formatDateRo(item.scheduledAt, 'weekdayLong');
+      const dateStr = formatDateLocalized(item.scheduledAt, locale, 'weekdayLong');
       if (!acc[dateStr]) acc[dateStr] = [];
       acc[dateStr].push(item);
       return acc;
     }, {});
-  }, [scheduled]);
+  }, [scheduled, locale]);
 
   if (scheduled.length === 0) {
-    return <EmptyState message="Nicio lucrare programată în această săptămână." />;
+    return <EmptyState message={t('company.fsm.calendar.scheduled.empty')} />;
   }
 
   return (

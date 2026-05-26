@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { MessageSquareQuote } from 'lucide-react';
 import { useCompanyReviewsMeQuery } from '@/features/reviews/api/useReviews';
 import { ReviewCard } from '@/components/reviews/ReviewCard';
@@ -13,10 +14,8 @@ import {
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
 import { useAuthStore } from '@/stores/authStore';
 
-const EMPTY_MESSAGE =
-  'Nu ai încă recenzii. Clienții pot lăsa feedback din portal după ce marchezi lucrările ca finalizate.';
-
 export function CompanyReviewsPage() {
+  const { t } = useTranslation();
   const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
   const { data, isLoading, isError, refetch } = useCompanyReviewsMeQuery();
   const reviews = data?.items ?? [];
@@ -32,9 +31,9 @@ export function CompanyReviewsPage() {
     <CompanyManagementGate>
     <div className="space-y-6 animate-fade-in">
       <PageHero
-        eyebrow="Reputație"
-        title="Recenzii primite"
-        description="Feedback de la clienți după finalizarea lucrărilor"
+        eyebrow={t('company.reviewsPage.eyebrow')}
+        title={t('company.reviewsPage.title')}
+        description={t('company.reviewsPage.description')}
         action={
           total > 0 ? (
             <div className="flex items-center gap-2 rounded-xl bg-amber-50 px-4 py-2 border border-amber-100">
@@ -42,7 +41,7 @@ export function CompanyReviewsPage() {
               <span className="text-sm font-black text-gray-900 tabular-nums">
                 {average.toFixed(1)}
               </span>
-              <span className="text-xs text-gray-500">({total} recenzii)</span>
+              <span className="text-xs text-gray-500">{t('company.reviewsPage.reviewsCount', { count: total })}</span>
             </div>
           ) : null
         }
@@ -50,23 +49,23 @@ export function CompanyReviewsPage() {
 
       <Panel>
         <PanelHeader
-          title="Lista recenziilor"
-          description="Recenziile apar automat când clienții evaluează lucrările finalizate."
+          title={t('company.reviewsPage.panelTitle')}
+          description={t('company.reviewsPage.panelDescription')}
         />
 
         {isLoading && !data ? (
-          <p className="text-sm text-gray-400 py-8 text-center">Se încarcă recenziile...</p>
+          <p className="text-sm text-gray-400 py-8 text-center">{t('company.reviewsPage.loading')}</p>
         ) : showEmpty ? (
           <EmptyState
             message={
               !activeCompanyId
-                ? 'Completează profilul companiei ca să poți primi recenzii de la clienți.'
-                : EMPTY_MESSAGE
+                ? t('company.reviewsPage.emptyNoCompany')
+                : t('company.reviewsPage.emptyNoReviews')
             }
             action={
               !activeCompanyId ? (
                 <Link to="/company/profile" className={cabinetBtnSecondary}>
-                  Mergi la profil companie
+                  {t('company.reviewsPage.goToProfile')}
                 </Link>
               ) : isError ? (
                 <button
@@ -74,7 +73,7 @@ export function CompanyReviewsPage() {
                   onClick={() => void refetch()}
                   className={cabinetBtnSecondary}
                 >
-                  Reîncearcă
+                  {t('company.reviewsPage.retry')}
                 </button>
               ) : (
                 <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-violet-50 text-violet-500">

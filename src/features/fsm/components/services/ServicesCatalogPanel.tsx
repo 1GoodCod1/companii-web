@@ -4,7 +4,9 @@ import {
   cabinetBtnSecondary,
 } from '@/components/cabinet/cabinet-ui';
 import type { CompanyServiceDto } from '@/types/fsm';
-import { formatServiceDuration } from '@/utils/serviceDuration';
+import { formatServiceDurationI18n } from '@/utils/serviceDuration';
+import { useTranslation } from 'react-i18next';
+import { getTranslatedCategoryName } from '@/utils/translateCityCategory';
 
 export function ServicesCatalogPanel({
   services,
@@ -19,17 +21,19 @@ export function ServicesCatalogPanel({
   onDelete: (id: string) => void;
   onCreate: () => void;
 }) {
+  const { t } = useTranslation();
+
   if (isLoading) {
-    return <p className="text-sm text-gray-400 p-4">Se încarcă...</p>;
+    return <p className="text-sm text-gray-400 p-4">{t('cabinet.common.loading')}</p>;
   }
 
   if (!services?.length) {
     return (
       <EmptyState
-        message="Niciun serviciu în catalog."
+        message={t('company.fsm.services.catalog.empty')}
         action={
           <button type="button" onClick={onCreate} className="text-violet-600 font-semibold text-xs">
-            Adaugă primul serviciu
+            {t('company.fsm.services.catalog.addFirst')}
           </button>
         }
       />
@@ -39,16 +43,16 @@ export function ServicesCatalogPanel({
   return (
     <div className="divide-y divide-gray-100">
       {services.map((service) => {
-        const durationLabel = formatServiceDuration(service.durationMinutes);
+        const durationLabel = formatServiceDurationI18n(t, service.durationMinutes);
         return (
           <div key={service.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-4">
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="font-semibold text-gray-900">{service.name}</p>
                 {service.isPublished ? (
-                  <SoftBadge tone="emerald">Public</SoftBadge>
+                  <SoftBadge tone="emerald">{t('company.fsm.services.catalog.badges.published')}</SoftBadge>
                 ) : (
-                  <SoftBadge tone="gray">Draft</SoftBadge>
+                  <SoftBadge tone="gray">{t('company.fsm.services.catalog.badges.draft')}</SoftBadge>
                 )}
               </div>
               {service.description ? (
@@ -57,15 +61,17 @@ export function ServicesCatalogPanel({
               <p className="text-sm text-violet-700 font-bold mt-1">
                 {Number(service.defaultPrice).toLocaleString('ro-MD')} {service.currency ?? 'MDL'}
                 {durationLabel ? ` · ${durationLabel}` : ''}
-                {service.category?.name ? ` · ${service.category.name}` : ''}
+                {service.category
+                  ? ` · ${getTranslatedCategoryName(t, service.category)}`
+                  : ''}
               </p>
             </div>
             <div className="flex gap-2">
               <button type="button" onClick={() => onEdit(service)} className={cabinetBtnSecondary}>
-                Editează
+                {t('cabinet.common.edit')}
               </button>
               <button type="button" onClick={() => onDelete(service.id)} className={cabinetBtnSecondary}>
-                Șterge
+                {t('cabinet.common.delete')}
               </button>
             </div>
           </div>

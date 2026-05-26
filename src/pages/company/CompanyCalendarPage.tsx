@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/api/queryKeys';
@@ -13,11 +14,15 @@ import { useCompanyMembersQuery } from '@/features/companies/api/useCompanies';
 import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
 import { filterAssignableTechnicians } from '@/utils/teamMembers';
 import { CalendarBoardView } from '@/features/fsm/components/calendar/CalendarBoardView';
-import { formatWeekLabel, getWeekRange } from '@/utils/calendar';
+import { getWeekRange } from '@/utils/calendar';
+import { formatWeekRangeLabel } from '@/utils/date';
+import { useLocale } from '@/hooks/useLocale';
 import { INTERVENTION_STATUS } from '@/constants/interventionStatus.constants';
 import { getErrorMessage } from '@/utils/errors';
 
 export function CompanyCalendarPage() {
+  const { t } = useTranslation();
+  const locale = useLocale();
   const { from, to } = useMemo(() => getWeekRange(), []);
   const { data: board, isLoading } = useCalendarBoardQuery(from, to);
   const { isManagement } = useCompanyPermissions();
@@ -32,7 +37,7 @@ export function CompanyCalendarPage() {
   const [scheduleTechnicianId, setScheduleTechnicianId] = useState('');
 
   const technicians = useMemo(() => filterAssignableTechnicians(members), [members]);
-  const weekLabel = useMemo(() => formatWeekLabel(from, to), [from, to]);
+  const weekLabel = useMemo(() => formatWeekRangeLabel(from, to, locale), [from, to, locale]);
 
   const refreshBoard = () => {
     void qc.invalidateQueries({ queryKey: queryKeys.fsm.calendarBoard(from, to) });
@@ -40,7 +45,7 @@ export function CompanyCalendarPage() {
 
   const handleSchedule = async () => {
     if (!schedulingId || !scheduleAt) {
-      toast.error('Selectați data și ora.');
+      toast.error(t('company.calendarPage.selectDateTime'));
       return;
     }
     try {
@@ -50,35 +55,39 @@ export function CompanyCalendarPage() {
         technicianId: scheduleTechnicianId || null,
       });
       await updateStatus.mutateAsync({ id: schedulingId, status: INTERVENTION_STATUS.SCHEDULED });
-      toast.success('Lucrare programată.');
+      toast.success(t('company.calendarPage.toastScheduled'));
       setSchedulingId(null);
       setScheduleAt('');
       setScheduleTechnicianId('');
       refreshBoard();
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut programa lucrarea.'));
+      toast.error(getErrorMessage(err, t('company.calendarPage.toastScheduleFailed')));
     }
   };
 
   const handleConvertLead = async (leadId: string, mode: 'intervention' | 'estimate') => {
     try {
       await convertLead.mutateAsync({ id: leadId, mode });
-      toast.success(mode === 'intervention' ? 'Cerere preluată ca lucrare.' : 'Deschideți pagina Cereri pentru smetă.');
+      toast.success(
+        mode === 'intervention'
+          ? t('company.dashboard.toasts.leadConvertedIntervention')
+          : t('company.calendarPage.toastLeadEstimateHint'),
+      );
       refreshBoard();
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut converti cererea.'));
+      toast.error(getErrorMessage(err, t('company.calendarPage.toastConvertFailed')));
     }
   };
 
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHero
-        title="Calendar programări"
-        description={`Săptămâna ${weekLabel} — programate, backlog și cereri deschise.`}
+        title={t('company.calendarPage.title')}
+        description={t('company.calendarPage.description', { week: weekLabel })}
       />
 
       {isLoading ? (
-        <p className="text-sm text-gray-400 text-center py-8">Se încarcă calendarul...</p>
+        <p className="text-sm text-gray-400 text-center py-8">{t('company.calendarPage.loading')}</p>
       ) : (
         <CalendarBoardView
           board={board}

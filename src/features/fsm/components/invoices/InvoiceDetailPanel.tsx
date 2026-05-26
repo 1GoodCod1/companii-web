@@ -1,4 +1,5 @@
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { EntityDetailPanel } from '@/components/cabinet/EntityDetailPanel';
 import type { InvoicePaymentStatus } from '@/types/fsm';
 import {
@@ -7,13 +8,12 @@ import {
   useDeleteInvoiceMutation,
   downloadCompanyInvoicePdf,
 } from '@/features/fsm/api/useInvoices';
-import {
-  getAllowedPaymentTransitions,
-  getPaymentStatusHint,
-} from '@/utils/fsmStatusTransitions';
-import { PAYMENT_STATUS_LABELS } from '@/constants/invoices.constants';
+import { useLocale } from '@/hooks/useLocale';
+import { getAllowedPaymentTransitions } from '@/utils/fsmStatusTransitions';
+import { paymentStatusHint, paymentStatusLabel } from '@/utils/i18nStatusLabels';
 import { getInvoicePaymentStatusStyle } from '@/utils/invoicePaymentStatusStyles';
-import { formatDateRo } from '@/utils/date';
+import { formatDateLocalized } from '@/utils/date';
+import { getErrorMessage } from '@/utils/errors';
 
 type Props = {
   selectedId: string | null;
@@ -21,6 +21,8 @@ type Props = {
 };
 
 export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
+  const { t } = useTranslation();
+  const locale = useLocale();
   const { data: detail, isLoading: isLoadingDetail } = useInvoiceQuery(selectedId || '');
   const updateInvoice = useUpdateInvoiceMutation();
   const deleteInvoice = useDeleteInvoiceMutation();
@@ -30,10 +32,9 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
     if (newStatus === detail.paymentStatus) return;
     try {
       await updateInvoice.mutateAsync({ id: selectedId, paymentStatus: newStatus });
-      toast.success(`Factura a fost marcată ca ${PAYMENT_STATUS_LABELS[newStatus]}!`);
+      toast.success(t('cabinet.toasts.invoiceMarked', { status: paymentStatusLabel(newStatus, t) }));
     } catch (err: unknown) {
-      const error = err as Error;
-      toast.error(error.message || 'Eroare la actualizarea facturii.');
+      toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.toast.updateError')));
     }
   };
 
@@ -41,34 +42,32 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
     if (!selectedId || !detail) return;
     try {
       await downloadCompanyInvoicePdf(selectedId, `${detail.number}.pdf`);
-      toast.success('PDF descărcat cu succes!');
+      toast.success(t('company.fsm.invoices.detail.toast.pdfDownloaded'));
     } catch (err: unknown) {
-      const error = err as Error;
-      toast.error(error.message || 'Eroare la generarea PDF.');
+      toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.toast.pdfError')));
     }
   };
 
   const handleDelete = async () => {
     if (!selectedId) return;
-    if (!confirm('Sigur doriți să ștergeți această factură? (Facturile plătite nu pot fi șterse)')) return;
+    if (!confirm(t('company.fsm.invoices.detail.confirm.delete'))) return;
     try {
       await deleteInvoice.mutateAsync(selectedId);
-      toast.success('Factură ștearsă cu succes!');
+      toast.success(t('company.fsm.invoices.detail.toast.deleted'));
       onClearSelection();
     } catch (err: unknown) {
-      const error = err as Error;
-      toast.error(error.message || 'Nu s-a putut șterge factura.');
+      toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.toast.deleteError')));
     }
   };
 
   return (
     <EntityDetailPanel
-      title="Vizualizare factură"
+      title={t('company.fsm.invoices.detail.title')}
       selectedId={selectedId}
       isLoading={isLoadingDetail}
       hasDetail={!!detail}
-      loadingMessage="Se încarcă detaliile facturii..."
-      emptyMessage="Selectează o factură din listă pentru a-i vedea descrierea fiscală detaliată."
+      loadingMessage={t('company.fsm.invoices.detail.loading')}
+      emptyMessage={t('company.fsm.invoices.detail.empty')}
       headerAction={
         selectedId && !isLoadingDetail && detail ? (
           <button
@@ -76,7 +75,7 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
             onClick={handleDelete}
             className="text-xs font-semibold text-red-500 hover:text-red-700 transition-colors cursor-pointer"
           >
-            Șterge
+            {t('cabinet.common.delete')}
           </button>
         ) : undefined
       }
@@ -87,7 +86,8 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
               <div>
                 <h3 className="text-xl font-black text-gray-900 tracking-tight">{detail.number}</h3>
                 <p className="text-[10px] font-bold text-gray-400 uppercase mt-1">
-                  Emisă la: {formatDateRo(detail.issuedAt)}
+                  {t('company.fsm.invoices.detail.issuedAt')}{' '}
+                  {formatDateLocalized(detail.issuedAt, locale)}
                 </p>
               </div>
               <span
@@ -95,7 +95,7 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
                   detail.paymentStatus,
                 )}`}
               >
-                {PAYMENT_STATUS_LABELS[detail.paymentStatus]}
+                {paymentStatusLabel(detail.paymentStatus, t)}
               </span>
             </div>
 
@@ -104,20 +104,20 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
               onClick={handleDownloadPdf}
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold transition-colors shadow-xs cursor-pointer"
             >
-              Descarcă chitanța PDF
+              {t('company.fsm.invoices.detail.downloadPdf')}
             </button>
 
             <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100 space-y-2.5">
               <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                Modifică status plată
+                {t('company.fsm.invoices.detail.paymentSection.title')}
               </h4>
               {(() => {
                 const allowed = getAllowedPaymentTransitions(detail.paymentStatus);
-                const hint = getPaymentStatusHint(detail.paymentStatus);
+                const hint = paymentStatusHint(detail.paymentStatus, t);
                 if (allowed.length === 0) {
                   return (
                     <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                      {hint || 'Nu există acțiuni disponibile pentru acest status.'}
+                      {hint || t('company.fsm.invoices.detail.paymentSection.noActions')}
                     </p>
                   );
                 }
@@ -142,7 +142,7 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
                                   : 'bg-gray-100 text-gray-400 border-gray-100 cursor-not-allowed opacity-60'
                             }`}
                           >
-                            {PAYMENT_STATUS_LABELS[st]}
+                            {paymentStatusLabel(st, t)}
                           </button>
                         );
                       })}
@@ -154,10 +154,10 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
             <div className="text-sm border-t border-gray-100 pt-3 space-y-3">
               <div>
                 <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
-                  CLIENT BENEFICIAR
+                  {t('company.fsm.invoices.detail.fields.customer')}
                 </span>
                 <span className="font-bold text-gray-900">
-                  {detail.intervention?.customer?.fullName || 'Client pachet'}
+                  {detail.intervention?.customer?.fullName || t('company.fsm.invoices.detail.fields.packageCustomer')}
                 </span>
                 <span className="text-xs text-gray-500 block font-medium">
                   {detail.intervention?.customer?.phone}
@@ -169,7 +169,7 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
 
               <div>
                 <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
-                  LUCRARE ASOCIATĂ
+                  {t('company.fsm.invoices.detail.fields.intervention')}
                 </span>
                 <span className="font-semibold text-xs text-gray-800">
                   {detail.intervention?.number} — {detail.intervention?.type}
@@ -179,10 +179,11 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
               {detail.dueDate && (
                 <div>
                   <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
-                    TERMEN DE PLATĂ
+                    {t('company.fsm.invoices.detail.fields.dueDate')}
                   </span>
                   <span className="font-bold text-red-500 text-xs">
-                    Până la {formatDateRo(detail.dueDate)}
+                    {t('company.fsm.common.until')}{' '}
+                    {formatDateLocalized(detail.dueDate, locale)}
                   </span>
                 </div>
               )}
@@ -190,23 +191,23 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
 
             <div className="border-t border-gray-100 pt-3 space-y-2 bg-violet-50/10 p-3.5 rounded-xl border border-violet-100">
               <h4 className="text-[10px] font-bold text-violet-700 uppercase tracking-widest">
-                Calcul fiscal detaliat
+                {t('company.fsm.invoices.detail.tax.title')}
               </h4>
               <div className="space-y-1.5 text-xs text-gray-600 font-medium">
                 <div className="flex justify-between">
-                  <span>Bază impozabilă:</span>
+                  <span>{t('company.fsm.invoices.detail.tax.taxableBase')}</span>
                   <span className="font-bold text-gray-800">
                     {Number(detail.amount).toLocaleString('ro-MD')} MDL
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>TVA ({detail.tvaRate}%):</span>
+                  <span>{t('company.fsm.invoices.detail.tax.vat', { rate: detail.tvaRate })}</span>
                   <span className="font-bold text-gray-800">
                     {Number(detail.tvaAmount).toLocaleString('ro-MD')} MDL
                   </span>
                 </div>
                 <div className="flex justify-between text-sm font-black text-gray-900 border-t border-gray-100 pt-1.5">
-                  <span>TOTAL DE PLATĂ:</span>
+                  <span>{t('company.fsm.invoices.detail.tax.totalDue')}</span>
                   <span className="text-violet-700">
                     {(Number(detail.amount) + Number(detail.tvaAmount)).toLocaleString('ro-MD', {
                       style: 'currency',

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Plan2dData, Plan2dRoom } from '@/types/estimates';
 import {
   defaultRoomsForCategory,
@@ -19,6 +20,7 @@ export function PlanEditor({
   onChange,
   readOnly,
 }: PlanEditorProps) {
+  const { t } = useTranslation();
   const summary = useMemo(() => summarizePlan(value, config), [value, config]);
 
   const workContext = defaultContextFromSlug(categorySlug);
@@ -40,7 +42,7 @@ export function PlanEditor({
   const addRoom = () => {
     const room: Plan2dRoom = {
       id: uid(),
-      name: `Cameră/Zonă ${value.rooms.length + 1}`,
+      name: t('company.estimateWizard.planEditor.defaultRoomName', { index: value.rooms.length + 1 }),
       width: 4,
       height: 3.5,
       unit: 'm',
@@ -104,12 +106,12 @@ export function PlanEditor({
     const counts = new Map<string, number>();
     for (const pt of value.points) {
       if (pt.type === 'custom') {
-        const label = pt.label ?? 'Item Personalizat';
+        const label = pt.label ?? t('company.estimateWizard.planEditor.defaultCustomItem');
         counts.set(label, (counts.get(label) ?? 0) + 1);
       }
     }
     return Array.from(counts.entries()).map(([label, count]) => ({ label, count }));
-  }, [value.points]);
+  }, [value.points, t]);
 
   const adjustCustomCount = (label: string, delta: number) => {
     if (delta > 0) {
@@ -138,7 +140,7 @@ export function PlanEditor({
     const defaultCtx = defaultContextFromSlug(categorySlug);
     onChange({
       ...value,
-      rooms: defaultRoomsForCategory(categorySlug).map((r) => ({
+      rooms: defaultRoomsForCategory(categorySlug, t).map((r) => ({
         ...r,
         shapeType: 'rectangle',
         roofType: defaultCtx === 'roof' ? 'gable' : 'flat',

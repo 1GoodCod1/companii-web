@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { LS_COOKIE_CONSENT_KEY } from '@/constants/storage';
+import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { safeStorage } from '@/lib/safeStorage';
 
 type CookieConsentValue = 'accepted' | 'declined';
@@ -11,6 +13,8 @@ function readCookieConsentVisible(): boolean {
 }
 
 export function CookieConsentBanner() {
+  const { t } = useTranslation();
+  const lp = useLocalizedPath();
   const [visible, setVisible] = useState(readCookieConsentVisible);
 
   const saveChoice = (value: CookieConsentValue) => {
@@ -25,15 +29,15 @@ export function CookieConsentBanner() {
       <div className="pointer-events-auto mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white/95 backdrop-blur-md shadow-2xl p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1 space-y-1">
-            <p className="text-sm font-bold text-gray-900">Cookie-uri și confidențialitate</p>
+            <p className="text-sm font-bold text-gray-900">{t('cookieConsent.title')}</p>
             <p className="text-xs leading-relaxed text-gray-500">
-              Folosim cookie-uri esențiale pentru autentificare și preferințe locale. Poți consulta{' '}
-              <Link to="/privacy" className="font-semibold text-violet-600 hover:text-violet-700">
-                Politica de confidențialitate
+              {t('cookieConsent.bodyPrefix')}{' '}
+              <Link to={lp('/privacy')} className="font-semibold text-violet-600 hover:text-violet-700">
+                {t('cookieConsent.privacyLink')}
               </Link>{' '}
-              și{' '}
-              <Link to="/terms" className="font-semibold text-violet-600 hover:text-violet-700">
-                Termenii de utilizare
+              {t('cookieConsent.and')}{' '}
+              <Link to={lp('/terms')} className="font-semibold text-violet-600 hover:text-violet-700">
+                {t('cookieConsent.termsLink')}
               </Link>
               .
             </p>
@@ -44,14 +48,14 @@ export function CookieConsentBanner() {
               onClick={() => saveChoice('declined')}
               className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-600 hover:bg-gray-50"
             >
-              Refuz
+              {t('cookieConsent.decline')}
             </button>
             <button
               type="button"
               onClick={() => saveChoice('accepted')}
               className="rounded-xl bg-violet-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-violet-700"
             >
-              Accept
+              {t('cookieConsent.accept')}
             </button>
           </div>
         </div>

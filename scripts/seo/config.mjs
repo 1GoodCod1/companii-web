@@ -10,7 +10,9 @@ export const API_URL = (
 
 export const API_PREFIX = process.env.SEO_API_PREFIX || '/api/v1';
 
-export const STATIC_ROUTES = [
+export const SEO_LOCALES = ['ro', 'ru'];
+
+const BASE_STATIC_PATHS = [
   '/',
   '/companii',
   '/companies',
@@ -21,6 +23,10 @@ export const STATIC_ROUTES = [
   '/terms',
   '/subscriptions',
 ];
+
+export const STATIC_ROUTES = SEO_LOCALES.flatMap((locale) =>
+  BASE_STATIC_PATHS.map((path) => (path === '/' ? `/${locale}` : `/${locale}${path}`)),
+);
 
 export const SEO_URL_KINDS = ['companies', 'categories', 'landings'];
 export const SITEMAP_CHUNK_SIZE = 45_000;

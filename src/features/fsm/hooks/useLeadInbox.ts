@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { useCategoriesQuery } from '@/features/companies/api/useCompanies';
 import {
   useLeadsQuery,
@@ -13,6 +14,7 @@ import type { CompanyLeadDto, CompanyLeadStatus } from '@/types/fsm';
 import { getErrorMessage } from '@/utils/errors';
 
 export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD_STATUS.NEW) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState<CompanyLeadStatus | undefined>(initialStatus);
   const { data: leads, isLoading } = useLeadsQuery(statusFilter);
@@ -33,9 +35,9 @@ export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD
   const handleStatusChange = async (lead: CompanyLeadDto, status: CompanyLeadStatus) => {
     try {
       await updateLead.mutateAsync({ id: lead.id, status });
-      toast.success('Status actualizat.');
+      toast.success(t('company.fsm.leads.inbox.toasts.statusUpdated'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Eroare la actualizare.'));
+      toast.error(getErrorMessage(err, t('company.fsm.leads.inbox.toasts.updateFailed')));
     }
   };
 
@@ -44,41 +46,46 @@ export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD
       const result = await convertLead.mutateAsync({ id: leadId, mode: 'intervention' });
       const keptOpen = (result as { keptOpen?: boolean })?.keptOpen;
       toast.success(
-        keptOpen ? 'Lucrare creată — cererea rămâne deschisă.' : 'Cerere preluată ca lucrare.',
+        keptOpen
+          ? t('company.fsm.leads.inbox.toasts.interventionCreatedKeptOpen')
+          : t('company.fsm.leads.inbox.toasts.interventionConverted'),
       );
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut converti cererea.'));
+      toast.error(getErrorMessage(err, t('company.fsm.leads.inbox.toasts.convertFailed')));
     }
   };
 
   const handleCompleteLead = async (leadId: string) => {
     try {
       await completeLead.mutateAsync(leadId);
-      toast.success('Cerere finalizată.');
+      toast.success(t('company.fsm.leads.inbox.toasts.leadCompleted'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut finaliza cererea.'));
+      toast.error(getErrorMessage(err, t('company.fsm.leads.inbox.toasts.completeFailed')));
     }
   };
 
   const handleConvertCustomer = async (leadId: string) => {
     try {
       await convertLead.mutateAsync({ id: leadId, mode: 'customer' });
-      toast.success('Client salvat în CRM.');
+      toast.success(t('company.fsm.leads.inbox.toasts.customerSaved'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut salva clientul.'));
+      toast.error(getErrorMessage(err, t('company.fsm.leads.inbox.toasts.saveCustomerFailed')));
     }
   };
 
   const openEstimateConvert = (lead: CompanyLeadDto) => {
     setEstimateLead(lead);
     setCategoryId(lead.categoryId ?? lead.category?.id ?? categories?.[0]?.id ?? '');
-    setEstimateTitle(lead.serviceTitle ?? `Smetă ${lead.contactName}`);
+    setEstimateTitle(
+      lead.serviceTitle ??
+        t('company.fsm.leads.inbox.toasts.defaultEstimateTitle', { name: lead.contactName }),
+    );
   };
 
   const handleConvertEstimate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!estimateLead || !categoryId) {
-      toast.error('Selectați categoria pentru smetă.');
+      toast.error(t('company.fsm.leads.inbox.toasts.selectEstimateCategory'));
       return;
     }
     try {
@@ -88,12 +95,12 @@ export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD
         categoryId,
         title: estimateTitle.trim() || undefined,
       });
-      toast.success('Cerere convertită în smetă.');
+      toast.success(t('company.fsm.leads.inbox.toasts.estimateConverted'));
       setEstimateLead(null);
       const projectId = (result as { project?: { id?: string } })?.project?.id;
       if (projectId) navigate(`/company/smete/${projectId}`);
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut crea smeta.'));
+      toast.error(getErrorMessage(err, t('company.fsm.leads.inbox.toasts.estimateCreateFailed')));
     }
   };
 

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useInterventionsQuery } from '@/features/fsm/api/useInterventions';
 import { useCustomersQuery } from '@/features/fsm/api/useCustomers';
 import { useCompanyMembersQuery } from '@/features/companies/api/useCompanies';
@@ -17,6 +18,7 @@ import { useEntityModal } from '@/hooks/useEntityModal';
 import { useEntitySelection } from '@/hooks/useEntitySelection';
 
 export function CompanyInterventionsPage() {
+  const { t } = useTranslation();
   const {
     isManagement,
     role,
@@ -44,16 +46,16 @@ export function CompanyInterventionsPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <PageHero
-        title="Lucrări"
+        title={t('company.interventionsPage.title')}
         description={
           isManagement
-            ? 'Gestionează comenzile de lucru, programările, tehnicienii alocați și stadiul execuției.'
-            : 'Lucrările alocate ție — actualizează statusul și adaugă note după execuție.'
+            ? t('company.interventionsPage.descriptionManagement')
+            : t('company.interventionsPage.descriptionTechnician')
         }
         action={
           isManagement ? (
             <button type="button" onClick={createModal.openCreate} className={cabinetBtnPrimary}>
-              + Creează lucrare
+              {t('company.interventionsPage.createBtn')}
             </button>
           ) : undefined
         }

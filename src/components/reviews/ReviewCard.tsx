@@ -1,14 +1,18 @@
+import { useTranslation } from 'react-i18next';
 import { StarRating } from '@/components/reviews/StarRating';
+import { useLocale } from '@/hooks/useLocale';
 import type { CompanyReviewDto } from '@/types/reviews';
-import { formatDateRo } from '@/utils/date';
+import { formatDateLocalized } from '@/utils/date';
 
 type ReviewCardProps = {
   review: CompanyReviewDto;
 };
 
 export function ReviewCard({ review }: ReviewCardProps) {
-  const author = review.clientName?.trim() || 'Client verificat';
-  const date = formatDateRo(review.createdAt, 'long');
+  const { t } = useTranslation();
+  const locale = useLocale();
+  const author = review.clientName?.trim() || t('companyDetail.reviews.verifiedClient');
+  const date = formatDateLocalized(review.createdAt, locale, 'long');
 
   return (
     <article className="rounded-2xl bg-white/60 p-4 shadow-xs hover:bg-violet-50/20 transition-colors">

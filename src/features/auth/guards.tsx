@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore, type AccountKind } from '@/stores/authStore';
 import { canAccessCompanyRoute, defaultRouteForRole } from '@/utils/roleAccess';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
@@ -37,6 +38,7 @@ export function RequireCompanyRole({
   children: ReactNode;
   routePath: string;
 }) {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const location = useLocation();
   const contextCompanyId = useCompanyContextStore((s) => s.activeCompanyId);
@@ -62,7 +64,7 @@ export function RequireCompanyRole({
     if (subscriptionLoading && !currentPlan) {
       return (
         <div className="flex min-h-[40vh] items-center justify-center text-sm font-semibold text-gray-500">
-          Se verifică abonamentul...
+          {t('cabinet.shell.checkingSubscription')}
         </div>
       );
     }

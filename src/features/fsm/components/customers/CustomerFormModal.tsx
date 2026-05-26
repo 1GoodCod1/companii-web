@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/components/ui/AppModal';
 import {
@@ -12,6 +13,7 @@ import {
   useCreateCustomerMutation,
   useUpdateCustomerMutation,
 } from '@/features/fsm/api/useCustomers';
+import { getErrorMessage } from '@/utils/errors';
 
 type Props = {
   open: boolean;
@@ -20,6 +22,7 @@ type Props = {
 };
 
 export function CustomerFormModal({ open, onClose, editingCustomer }: Props) {
+  const { t } = useTranslation();
   const createCustomer = useCreateCustomerMutation();
   const updateCustomer = useUpdateCustomerMutation();
 
@@ -49,7 +52,7 @@ export function CustomerFormModal({ open, onClose, editingCustomer }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !phone || !address) {
-      toast.error('Vă rugăm să completați toate câmpurile obligatorii.');
+      toast.error(t('company.fsm.customers.form.toast.requiredFields'));
       return;
     }
 
@@ -63,7 +66,7 @@ export function CustomerFormModal({ open, onClose, editingCustomer }: Props) {
           address,
           notes: notes || undefined,
         });
-        toast.success('Client actualizat cu succes!');
+        toast.success(t('company.fsm.customers.form.toast.updated'));
       } else {
         await createCustomer.mutateAsync({
           fullName,
@@ -72,12 +75,11 @@ export function CustomerFormModal({ open, onClose, editingCustomer }: Props) {
           address,
           notes: notes || undefined,
         });
-        toast.success('Client creat cu succes!');
+        toast.success(t('company.fsm.customers.form.toast.created'));
       }
       onClose();
     } catch (err: unknown) {
-      const error = err as Error;
-      toast.error(error.message || 'A apărut o eroare.');
+      toast.error(getErrorMessage(err, t('company.fsm.common.errorGeneric')));
     }
   };
 
@@ -85,64 +87,68 @@ export function CustomerFormModal({ open, onClose, editingCustomer }: Props) {
     <AppModal
       open={open}
       onClose={onClose}
-      title={editingCustomer ? 'Editează Client' : 'Adaugă Client Nou'}
+      title={
+        editingCustomer
+          ? t('company.fsm.customers.form.titleEdit')
+          : t('company.fsm.customers.form.titleCreate')
+      }
       size="lg"
       backgroundIndex={1}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className={cabinetLabelClass}>Nume complet *</label>
+          <label className={cabinetLabelClass}>{t('company.fsm.customers.form.fields.fullName')}</label>
           <input
             type="text"
             required
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            placeholder="ex: Ion Popescu"
+            placeholder={t('company.fsm.customers.form.fields.fullNamePlaceholder')}
             className={cabinetFieldClass}
           />
         </div>
 
         <div>
-          <label className={cabinetLabelClass}>Telefon *</label>
+          <label className={cabinetLabelClass}>{t('company.fsm.customers.form.fields.phone')}</label>
           <input
             type="text"
             required
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="ex: +373 68 000 000"
+            placeholder={t('company.fsm.customers.form.fields.phonePlaceholder')}
             className={cabinetFieldClass}
           />
         </div>
 
         <div>
-          <label className={cabinetLabelClass}>Email</label>
+          <label className={cabinetLabelClass}>{t('company.fsm.customers.form.fields.email')}</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="ex: ion@popescu.md"
+            placeholder={t('company.fsm.customers.form.fields.emailPlaceholder')}
             className={cabinetFieldClass}
           />
         </div>
 
         <div>
-          <label className={cabinetLabelClass}>Adresă de livrare/lucru *</label>
+          <label className={cabinetLabelClass}>{t('company.fsm.customers.form.fields.address')}</label>
           <input
             type="text"
             required
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            placeholder="ex: str. Ștefan cel Mare 1, ap. 12, Chișinău"
+            placeholder={t('company.fsm.customers.form.fields.addressPlaceholder')}
             className={cabinetFieldClass}
           />
         </div>
 
         <div>
-          <label className={cabinetLabelClass}>Note</label>
+          <label className={cabinetLabelClass}>{t('company.fsm.customers.form.fields.notes')}</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Observații despre client (ex. cod interfon, ore preferate)..."
+            placeholder={t('company.fsm.customers.form.fields.notesPlaceholder')}
             rows={3}
             className={`${cabinetFieldClass} resize-none`}
           />
@@ -150,14 +156,14 @@ export function CustomerFormModal({ open, onClose, editingCustomer }: Props) {
 
         <div className="pt-4 flex justify-end gap-2">
           <button type="button" onClick={onClose} className={cabinetBtnSecondary}>
-            Anulează
+            {t('cabinet.common.cancel')}
           </button>
           <button
             type="submit"
             disabled={createCustomer.isPending || updateCustomer.isPending}
             className={cabinetBtnPrimary}
           >
-            Salvează
+            {t('cabinet.common.save')}
           </button>
         </div>
       </form>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Panel,
   cabinetBtnPrimary,
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export function DiagnosticStep({ wizard }: Props) {
+  const { t } = useTranslation();
   const {
     project,
     diagnosticQuestions,
@@ -26,7 +28,9 @@ export function DiagnosticStep({ wizard }: Props) {
 
   return (
     <Panel className="p-6 max-w-2xl space-y-4">
-      <h3 className="font-bold text-gray-900">Diagnostic — {project.category.name}</h3>
+      <h3 className="font-bold text-gray-900">
+        {t('company.estimateWizard.diagnosticStep.title', { category: project.category.name })}
+      </h3>
       {diagnosticQuestions.map((q) => (
         <label key={q.key} className={cabinetLabelClass}>
           {q.label}
@@ -37,8 +41,8 @@ export function DiagnosticStep({ wizard }: Props) {
               className={cabinetSelectClass}
             >
               <option value="">—</option>
-              <option value="true">Da</option>
-              <option value="false">Nu</option>
+              <option value="true">{t('company.estimateWizard.diagnosticStep.yes')}</option>
+              <option value="false">{t('company.estimateWizard.diagnosticStep.no')}</option>
             </select>
           ) : q.type === 'select' ? (
             <select
@@ -63,7 +67,7 @@ export function DiagnosticStep({ wizard }: Props) {
       ))}
       <CustomPricingFields values={customPricing} onChange={setCustomPricing} compact unitLabel={pricingUnitLabel} />
       <button type="button" onClick={handleSaveDiagnostic} className={cabinetBtnPrimary}>
-        Salvează diagnostic
+        {t('company.estimateWizard.diagnosticStep.save')}
       </button>
     </Panel>
   );

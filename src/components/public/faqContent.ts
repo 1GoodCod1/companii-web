@@ -31,7 +31,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
       },
       {
         q: 'În ce limbi este disponibilă platforma?',
-        a: 'Interfața publică și cabinetele sunt optimizate pentru limba română. Termenii, politica de confidențialitate și mesajele cheie sunt disponibile pe site-ul fabercompanii.',
+        a: 'Interfața publică și cabinetele sunt disponibile în română și rusă. Termenii, politica de confidențialitate și mesajele cheie sunt disponibile pe site-ul fabercompanii.',
       },
     ],
   },

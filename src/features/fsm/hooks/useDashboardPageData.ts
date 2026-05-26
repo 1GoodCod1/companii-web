@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import toast from 'react-hot-toast';
+import i18n from '@/i18n';
 import {
   useCustomersQuery,
   useInterventionsQuery,
@@ -68,30 +69,30 @@ export function useDashboardPageData() {
     if (isManagement) {
       return [
         {
-          label: 'Clienți totali',
+          label: i18n.t('company.dashboard.kpi.totalCustomers.label'),
           value: String(customers?.length ?? 0),
-          hint: 'Înregistrați în sistem',
+          hint: i18n.t('company.dashboard.kpi.totalCustomers.hint'),
           hintClass: 'text-emerald-600',
           accent: KPI_ACCENTS[0],
         },
         {
-          label: 'Lucrări active',
+          label: i18n.t('company.dashboard.kpi.activeInterventions.label'),
           value: String(activeInterventions.length),
-          hint: 'În curs de execuție',
+          hint: i18n.t('company.dashboard.kpi.activeInterventions.hint'),
           hintClass: 'text-amber-600',
           accent: KPI_ACCENTS[1],
         },
         {
-          label: 'Total facturat',
+          label: i18n.t('company.dashboard.kpi.totalInvoiced.label'),
           value: totalInvoiced.toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' }),
-          hint: 'Valoare totală facturi',
+          hint: i18n.t('company.dashboard.kpi.totalInvoiced.hint'),
           hintClass: 'text-gray-400',
           accent: KPI_ACCENTS[2],
         },
         {
-          label: 'Încasări confirmate',
+          label: i18n.t('company.dashboard.kpi.confirmedPayments.label'),
           value: totalPaid.toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' }),
-          hint: 'Facturi plătite integral',
+          hint: i18n.t('company.dashboard.kpi.confirmedPayments.hint'),
           hintClass: 'text-emerald-600',
           accent: KPI_ACCENTS[3],
           valueClass: 'text-emerald-600',
@@ -101,21 +102,21 @@ export function useDashboardPageData() {
 
     return [
       {
-        label: 'Lucrările mele',
+        label: i18n.t('company.dashboard.kpi.myJobs.label'),
         value: String(interventions?.length ?? 0),
-        hint: 'Total alocate',
+        hint: i18n.t('company.dashboard.kpi.myJobs.hint'),
         hintClass: 'text-violet-600',
         accent: KPI_ACCENTS[1],
       },
       {
-        label: 'Lucrări active',
+        label: i18n.t('company.dashboard.kpi.activeJobs.label'),
         value: String(activeInterventions.length),
-        hint: 'De executat acum',
+        hint: i18n.t('company.dashboard.kpi.activeJobs.hint'),
         hintClass: 'text-amber-600',
         accent: KPI_ACCENTS[0],
       },
       {
-        label: 'Programate azi',
+        label: i18n.t('company.dashboard.kpi.scheduledToday.label'),
         value: String(
           interventions?.filter((i: InterventionDto) => {
             if (!i.scheduledAt) return false;
@@ -128,12 +129,12 @@ export function useDashboardPageData() {
             );
           }).length ?? 0,
         ),
-        hint: 'Pe calendarul de azi',
+        hint: i18n.t('company.dashboard.kpi.scheduledToday.hint'),
         hintClass: 'text-blue-600',
         accent: KPI_ACCENTS[2],
       },
       {
-        label: 'Finalizate',
+        label: i18n.t('company.dashboard.kpi.completed.label'),
         value: String(
           interventions?.filter(
             (i) =>
@@ -141,7 +142,7 @@ export function useDashboardPageData() {
               i.status === INTERVENTION_STATUS.PAID,
           ).length ?? 0,
         ),
-        hint: 'Lucrări închise',
+        hint: i18n.t('company.dashboard.kpi.completed.hint'),
         hintClass: 'text-emerald-600',
         accent: KPI_ACCENTS[3],
         valueClass: 'text-emerald-600',
@@ -154,14 +155,19 @@ export function useDashboardPageData() {
     totalInvoiced,
     totalPaid,
     interventions,
+    i18n.language,
   ]);
 
   const handleConvertLead = async (leadId: string, mode: 'intervention' | 'estimate') => {
     try {
       await convertLead.mutateAsync({ id: leadId, mode });
-      toast.success(mode === 'intervention' ? 'Cerere preluată ca lucrare.' : 'Cerere convertită în smetă.');
+      toast.success(
+        mode === 'intervention'
+          ? i18n.t('company.dashboard.toasts.leadConvertedIntervention')
+          : i18n.t('company.dashboard.toasts.leadConvertedEstimate'),
+      );
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut converti cererea.'));
+      toast.error(getErrorMessage(err, i18n.t('company.dashboard.toasts.convertLeadFailed')));
     }
   };
 

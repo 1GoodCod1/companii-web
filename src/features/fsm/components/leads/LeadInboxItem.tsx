@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   SoftBadge,
   cabinetBtnPrimary,
@@ -8,13 +9,13 @@ import {
 import type { CompanyLeadDto, CompanyLeadStatus } from '@/types/fsm';
 import { LEAD_STATUS } from '@/constants/leadStatus.constants';
 import {
-  LEAD_SOURCE_LABELS,
-  LEAD_STATUS_LABELS,
   LEAD_STATUS_OPTIONS,
   LEAD_STATUS_TONES,
 } from '@/constants/leads.constants';
 import { isOpenLeadStatus } from '@/utils/leadStatus';
-import { formatDateRo, formatDateTimeRo } from '@/utils/date';
+import { leadStatusLabel } from '@/utils/i18nStatusLabels';
+import { useLocale } from '@/hooks/useLocale';
+import { formatDateLocalized, formatDateTimeLocalized } from '@/utils/date';
 
 export function LeadInboxItem({
   lead,
@@ -35,19 +36,29 @@ export function LeadInboxItem({
   onConvertEstimate: (lead: CompanyLeadDto) => void;
   onComplete: (leadId: string) => void;
 }) {
+  const { t } = useTranslation();
+  const locale = useLocale();
+
+  const leadSourceLabel = (source: CompanyLeadDto['source']) =>
+    t(`company.fsm.leads.sources.${source}`, { defaultValue: source });
+
   return (
     <article className="px-4 py-5 space-y-3">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-extrabold text-slate-900 text-sm sm:text-base leading-snug">{lead.contactName}</h3>
-            <SoftBadge tone={LEAD_STATUS_TONES[lead.status]}>{LEAD_STATUS_LABELS[lead.status]}</SoftBadge>
+            <SoftBadge tone={LEAD_STATUS_TONES[lead.status]}>{leadStatusLabel(lead.status, t)}</SoftBadge>
             {lead.source === 'SERVICE_REQUEST' ? (
-              <SoftBadge tone="violet">🔧 Serviciu: {lead.serviceTitle || 'Nespecificat'}</SoftBadge>
+              <SoftBadge tone="violet">
+                {t('company.fsm.leads.inbox.badges.service', {
+                  title: lead.serviceTitle || t('company.fsm.common.unspecified'),
+                })}
+              </SoftBadge>
             ) : lead.source === 'PROJECT_REQUEST' ? (
-              <SoftBadge tone="blue">🏗️ Proiect Complex</SoftBadge>
+              <SoftBadge tone="blue">{t('company.fsm.leads.inbox.badges.project')}</SoftBadge>
             ) : (
-              <SoftBadge tone="gray">{LEAD_SOURCE_LABELS[lead.source] ?? lead.source}</SoftBadge>
+              <SoftBadge tone="gray">{leadSourceLabel(lead.source)}</SoftBadge>
             )}
           </div>
 
@@ -65,7 +76,8 @@ export function LeadInboxItem({
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
             {lead.estimatedBudget != null && Number(lead.estimatedBudget) > 0 ? (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-700">
-                💰 Buget: {Number(lead.estimatedBudget).toLocaleString('ro-MD')} MDL
+                {t('company.fsm.leads.inbox.budget')}{' '}
+                {Number(lead.estimatedBudget).toLocaleString('ro-MD')} MDL
               </span>
             ) : null}
             {lead.address ? (
@@ -79,13 +91,17 @@ export function LeadInboxItem({
                 to={`/company/smete/${lead.estimateProject.id}`}
                 className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100/50 px-3 py-1 text-xs font-bold text-violet-700 hover:bg-violet-100 transition-colors"
               >
-                📝 Smetă {lead.estimateProject.number} — {lead.estimateProject.title}
+                {t('company.fsm.leads.inbox.estimateLink', {
+                  number: lead.estimateProject.number,
+                  title: lead.estimateProject.title,
+                })}
               </Link>
             </p>
           ) : null}
 
           <p className="text-[10px] text-slate-400 font-medium">
-            Adăugat la: {formatDateTimeRo(lead.createdAt)}
+            {t('company.fsm.leads.inbox.addedAt')}{' '}
+            {formatDateTimeLocalized(lead.createdAt, locale)}
           </p>
         </div>
 
@@ -97,7 +113,7 @@ export function LeadInboxItem({
           >
             {LEAD_STATUS_OPTIONS.map((status) => (
               <option key={status} value={status}>
-                {LEAD_STATUS_LABELS[status]}
+                {leadStatusLabel(status, t)}
               </option>
             ))}
           </select>
@@ -113,7 +129,7 @@ export function LeadInboxItem({
               disabled={convertPending}
               className={cabinetBtnSecondary}
             >
-              Salvează în CRM
+              {t('company.fsm.leads.inbox.actions.saveToCrm')}
             </button>
           ) : null}
           <button
@@ -122,7 +138,7 @@ export function LeadInboxItem({
             disabled={convertPending}
             className={cabinetBtnPrimary}
           >
-            Preia → Lucrare
+            {t('company.fsm.leads.inbox.actions.convertIntervention')}
           </button>
           {!lead.estimateProjectId ? (
             <button
@@ -131,7 +147,7 @@ export function LeadInboxItem({
               disabled={convertPending}
               className={cabinetBtnSecondary}
             >
-              → Smetă
+              {t('company.fsm.leads.inbox.actions.convertEstimate')}
             </button>
           ) : null}
           {lead.status === LEAD_STATUS.IN_PROGRESS ? (
@@ -141,21 +157,21 @@ export function LeadInboxItem({
               disabled={completePending}
               className={cabinetBtnSecondary}
             >
-              Finalizează cererea
+              {t('company.fsm.leads.inbox.actions.complete')}
             </button>
           ) : null}
           <button type="button" onClick={() => onStatusChange(lead, LEAD_STATUS.LOST)} className={cabinetBtnSecondary}>
-            Marchează pierdut
+            {t('company.fsm.leads.inbox.actions.markLost')}
           </button>
         </div>
       ) : lead.status === LEAD_STATUS.CONVERTED ? (
         <p className="text-xs text-emerald-600 font-semibold">
-          Finalizată
-          {lead.convertedAt ? ` · ${formatDateRo(lead.convertedAt)}` : ''}
+          {t('company.fsm.leads.inbox.converted.label')}
+          {lead.convertedAt ? ` · ${formatDateLocalized(lead.convertedAt, locale)}` : ''}
           {lead.customerId ? (
             <>
               {' '}
-              · <Link to="/company/clienti" className="underline">Vezi client</Link>
+              · <Link to="/company/clienti" className="underline">{t('company.fsm.leads.inbox.converted.viewCustomer')}</Link>
             </>
           ) : null}
         </p>

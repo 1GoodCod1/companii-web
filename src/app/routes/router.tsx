@@ -2,6 +2,10 @@ import { Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { RootLayout } from '@/components/layout/RootLayout';
 import { PublicLayout } from '@/components/layout/PublicLayout';
+import { LocaleOutlet } from '@/components/i18n/LocaleOutlet';
+import { RedirectToLocalized } from '@/components/i18n/RedirectToLocalized';
+import { getInitialLanguage } from '@/i18n';
+import { localizePath } from '@/lib/i18n/localeRoutes';
 import { CompanyLayout } from '@/components/layout/CompanyLayout';
 import { PortalLayout } from '@/components/layout/PortalLayout';
 import { AdminLayout } from '@/components/layout/AdminLayout';
@@ -60,40 +64,80 @@ import {
   INVITE_ROUTE,
   PORTAL_ROUTE,
   PUBLIC_ROUTE,
-  ROUTE_ABS,
   ROUTE_ACCESS,
   ROUTE_ROOT,
 } from '@/constants/routes.constants';
+
+const localizedPublicRoutes = [
+  { index: true, element: <LandingPage /> },
+  { path: PUBLIC_ROUTE.COMPANII, element: <LandingPage /> },
+  { path: PUBLIC_ROUTE.HOW_IT_WORKS, element: <HowItWorksPage /> },
+  { path: PUBLIC_ROUTE.FAQ, element: <FaqPage /> },
+  { path: PUBLIC_ROUTE.CONTACTS, element: <ContactsPage /> },
+  { path: PUBLIC_ROUTE.PRIVACY, element: <PrivacyPage /> },
+  { path: PUBLIC_ROUTE.TERMS, element: <TermsPage /> },
+  { path: PUBLIC_ROUTE.SUBSCRIPTIONS, element: <SubscriptionsPage /> },
+  { path: PUBLIC_ROUTE.COMPANIES, element: <CompaniesListPage /> },
+  { path: PUBLIC_ROUTE.COMPANY_DETAIL, element: <CompanyDetailPage /> },
+];
+
+const legacyLocalizedRedirects = [
+  PUBLIC_ROUTE.COMPANII,
+  PUBLIC_ROUTE.HOW_IT_WORKS,
+  PUBLIC_ROUTE.FAQ,
+  PUBLIC_ROUTE.CONTACTS,
+  PUBLIC_ROUTE.PRIVACY,
+  PUBLIC_ROUTE.TERMS,
+  PUBLIC_ROUTE.SUBSCRIPTIONS,
+  PUBLIC_ROUTE.COMPANIES,
+  `${PUBLIC_ROUTE.COMPANIES}/*`,
+].map((path) => ({
+  path,
+  element: <RedirectToLocalized />,
+}));
+
+const authPublicRoutes = [
+  { path: PUBLIC_ROUTE.LOGIN, element: <LoginPage /> },
+  { path: PUBLIC_ROUTE.REGISTER, element: <RegisterPage /> },
+  { path: PUBLIC_ROUTE.FORGOT_PASSWORD, element: <ForgotPasswordPage /> },
+  { path: PUBLIC_ROUTE.RESET_PASSWORD, element: <ResetPasswordPage /> },
+  { path: INVITE_ROUTE.PORTAL, element: <PortalInvitePage /> },
+  { path: INVITE_ROUTE.TEAM, element: <TeamInvitePage /> },
+];
 
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
       {
+        index: true,
+        element: (
+          <Navigate to={localizePath('/', getInitialLanguage())} replace />
+        ),
+      },
+      {
         element: (
           <Suspense fallback={null}>
             <PublicLayout />
           </Suspense>
         ),
+        children: authPublicRoutes,
+      },
+      {
+        path: ':locale',
+        element: <LocaleOutlet />,
         children: [
-          { index: true, element: <LandingPage /> },
-          { path: PUBLIC_ROUTE.COMPANII, element: <LandingPage /> },
-          { path: PUBLIC_ROUTE.HOW_IT_WORKS, element: <HowItWorksPage /> },
-          { path: PUBLIC_ROUTE.FAQ, element: <FaqPage /> },
-          { path: PUBLIC_ROUTE.CONTACTS, element: <ContactsPage /> },
-          { path: PUBLIC_ROUTE.PRIVACY, element: <PrivacyPage /> },
-          { path: PUBLIC_ROUTE.TERMS, element: <TermsPage /> },
-          { path: PUBLIC_ROUTE.SUBSCRIPTIONS, element: <SubscriptionsPage /> },
-          { path: PUBLIC_ROUTE.LOGIN, element: <LoginPage /> },
-          { path: PUBLIC_ROUTE.REGISTER, element: <RegisterPage /> },
-          { path: PUBLIC_ROUTE.FORGOT_PASSWORD, element: <ForgotPasswordPage /> },
-          { path: PUBLIC_ROUTE.RESET_PASSWORD, element: <ResetPasswordPage /> },
-          { path: INVITE_ROUTE.PORTAL, element: <PortalInvitePage /> },
-          { path: INVITE_ROUTE.TEAM, element: <TeamInvitePage /> },
-          { path: PUBLIC_ROUTE.COMPANIES, element: <CompaniesListPage /> },
-          { path: PUBLIC_ROUTE.COMPANY_DETAIL, element: <CompanyDetailPage /> },
+          {
+            element: (
+              <Suspense fallback={null}>
+                <PublicLayout />
+              </Suspense>
+            ),
+            children: localizedPublicRoutes,
+          },
         ],
       },
+      ...legacyLocalizedRedirects,
       {
         path: ROUTE_ROOT.COMPANY,
         element: (
@@ -267,7 +311,10 @@ export const router = createBrowserRouter([
           { path: ADMIN_ROUTE.CLIENTS, element: <AdminClientsPage /> },
         ],
       },
-      { path: '*', element: <Navigate to={ROUTE_ABS.HOME} replace /> },
+      {
+        path: '*',
+        element: <Navigate to={localizePath('/', getInitialLanguage())} replace />,
+      },
     ],
   },
 ]);

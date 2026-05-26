@@ -1,16 +1,15 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
 
-const perks = [
-  'Plan Free — fără card bancar',
-  'Pro & Business — 30 zile gratuit',
-  'Setup în sub 10 minute',
-];
-
 export function LandingCta() {
+  const { t } = useTranslation();
+  const lp = useLocalizedPath();
   const { isAuthed, signupCta } = usePublicAuthCta();
+  const perks = t('landing.cta.perks', { returnObjects: true }) as string[];
 
   return (
     <section className="py-24 sm:py-32">
@@ -27,17 +26,13 @@ export function LandingCta() {
 
           <div className="relative z-10 max-w-2xl mx-auto">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-violet-200 mb-4">
-              {isAuthed ? 'Continuă de unde ai rămas' : 'Gata să renunți la haos?'}
+              {isAuthed ? t('landing.cta.eyebrowAuthed') : t('landing.cta.eyebrowGuest')}
             </p>
             <h2 className="font-black text-white tracking-tight text-balance">
-              {isAuthed
-                ? 'Cabinetul tău te așteaptă'
-                : 'Începe gratuit. Scalează când echipa ta crește.'}
+              {isAuthed ? t('landing.cta.titleAuthed') : t('landing.cta.titleGuest')}
             </h2>
             <p className="mt-4 text-violet-100/90 text-base leading-relaxed">
-              {isAuthed
-                ? 'Gestionează clienții, lucrările și facturile direct din panoul tău Faber Companii.'
-                : 'Creează contul, înregistrează compania și lansează primul flux: client → lucrare → factură. Fără demo call, fără așteptare.'}
+              {isAuthed ? t('landing.cta.descriptionAuthed') : t('landing.cta.descriptionGuest')}
             </p>
 
             <ul className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2">
@@ -58,10 +53,10 @@ export function LandingCta() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                to="/subscriptions"
+                to={lp('/subscriptions')}
                 className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
               >
-                Vezi planurile
+                {t('landing.cta.viewPlansLink')}
               </Link>
             </div>
           </div>

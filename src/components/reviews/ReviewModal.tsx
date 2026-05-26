@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MessageSquarePlus, X } from 'lucide-react';
 import { InteractiveStarRating } from '@/components/reviews/StarRating';
 
@@ -19,6 +20,7 @@ export function ReviewModal({
   onClose,
   onSubmit,
 }: ReviewModalProps) {
+  const { t } = useTranslation();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
 
@@ -34,7 +36,7 @@ export function ReviewModal({
       <button
         type="button"
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        aria-label="Închide"
+        aria-label={t('company.reviewsUi.close')}
         onClick={onClose}
       />
       <div className="relative w-full max-w-md rounded-3xl border border-gray-100 bg-white p-6 shadow-2xl animate-modal-in">
@@ -42,7 +44,7 @@ export function ReviewModal({
           type="button"
           onClick={onClose}
           className="absolute right-4 top-4 rounded-lg p-1 text-gray-400 hover:text-gray-700"
-          aria-label="Închide modal"
+          aria-label={t('company.reviewsUi.closeModal')}
         >
           <X className="h-5 w-5" />
         </button>
@@ -52,7 +54,7 @@ export function ReviewModal({
             <MessageSquarePlus className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Lasă un recenzie</h2>
+            <h2 className="text-lg font-bold text-gray-900">{t('company.reviewsUi.modalTitle')}</h2>
             <p className="text-sm text-gray-500">{companyName}</p>
             <p className="text-xs text-gray-400 mt-0.5">{interventionLabel}</p>
           </div>
@@ -63,7 +65,7 @@ export function ReviewModal({
 
           <div>
             <label htmlFor="review-comment" className="mb-2 block text-sm font-semibold text-gray-700">
-              Comentariu (opțional)
+              {t('company.reviewsUi.commentLabel')}
             </label>
             <textarea
               id="review-comment"
@@ -71,7 +73,7 @@ export function ReviewModal({
               onChange={(e) => setComment(e.target.value)}
               maxLength={500}
               rows={4}
-              placeholder="Descrie experiența ta cu echipa..."
+              placeholder={t('company.reviewsUi.commentPlaceholder')}
               className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-800 outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
             />
             <p className="mt-1 text-right text-[11px] text-gray-400">{comment.length}/500</p>
@@ -84,7 +86,7 @@ export function ReviewModal({
               disabled={isSubmitting}
               className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50"
             >
-              Anulează
+              {t('company.reviewsUi.cancel')}
             </button>
             <button
               type="button"
@@ -92,7 +94,7 @@ export function ReviewModal({
               disabled={isSubmitting || rating < 1}
               className="rounded-xl bg-violet-600 px-4 py-2 text-sm font-bold text-white hover:bg-violet-700 disabled:opacity-50"
             >
-              {isSubmitting ? 'Se trimite...' : 'Trimite recenzia'}
+              {isSubmitting ? t('company.reviewsUi.submitting') : t('company.reviewsUi.submit')}
             </button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { SEOHead } from '@/components/seo/SEOHead';
 import {
@@ -30,24 +31,31 @@ import {
 import { CompanyLogo } from '@/components/public/CompanyLogo';
 import { CompanyGallery } from '@/components/public/CompanyGallery';
 import { CompanyReviewsSection } from '@/components/reviews/CompanyReviewsSection';
-import { formatServiceDuration } from '@/utils/serviceDuration';
+import { formatServiceDurationI18n } from '@/utils/serviceDuration';
 import { useAuthStore } from '@/stores/authStore';
 import { formatPersonName } from '@/utils/person';
 import { useMeQuery } from '@/features/auth/api/useAuth';
 import { getErrorMessage } from '@/utils/errors';
+import { useLocalizedPath } from '@/hooks/useLocalizedPath';
+import {
+  getTranslatedCategoryName,
+  getTranslatedCityName,
+} from '@/utils/translateCityCategory';
 
 function ClientProfileSummary({
   name,
   phone,
   email,
+  title,
 }: {
   name: string;
   phone: string;
   email: string;
+  title: string;
 }) {
   return (
     <div className="rounded-2xl border border-violet-100 bg-violet-50/60 px-4 py-3 text-xs space-y-1">
-      <p className="font-bold text-violet-800 uppercase tracking-wide text-[10px]">Datele tale</p>
+      <p className="font-bold text-violet-800 uppercase tracking-wide text-[10px]">{title}</p>
       <p className="font-semibold text-slate-800">{name}</p>
       <p className="text-slate-600">{phone}</p>
       <p className="text-slate-600">{email}</p>
@@ -56,6 +64,8 @@ function ClientProfileSummary({
 }
 
 export function CompanyDetailPage() {
+  const { t } = useTranslation();
+  const lp = useLocalizedPath();
   const { slug = '' } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -91,16 +101,16 @@ export function CompanyDetailPage() {
       return false;
     }
     if (!isEndClient) {
-      toast.error('Doar conturile de client pot trimite cereri.');
+      toast.error(t('companyDetail.toast.clientOnly'));
       return false;
     }
     if (!profilePhone) {
-      toast.error('Completați telefonul în contul de client înainte de a trimite cereri.');
+      toast.error(t('companyDetail.toast.phoneRequired'));
       navigate('/register?kind=END_CLIENT');
       return false;
     }
     return true;
-  }, [isAuthenticated, isEndClient, location.pathname, navigate, profilePhone]);
+  }, [isAuthenticated, isEndClient, location.pathname, navigate, profilePhone, t]);
 
   const openServiceRequest = (serviceId: string, serviceName: string) => {
     if (!requireClientAuth()) return;
@@ -126,11 +136,11 @@ export function CompanyDetailPage() {
         serviceId: requestModal.serviceId,
         message: message.trim() || undefined,
       });
-      toast.success('Cererea a fost trimisă! Compania vă va contacta.');
+      toast.success(t('companyDetail.toast.serviceSent'));
       setRequestModal(null);
       setMessage('');
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut trimite cererea.'));
+      toast.error(getErrorMessage(err, t('companyDetail.toast.sendFailed')));
     }
   };
 
@@ -145,14 +155,14 @@ export function CompanyDetailPage() {
   const handleProjectSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!projectMessage.trim()) {
-      toast.error('Completați descrierea lucrării.');
+      toast.error(t('companyDetail.toast.descriptionRequired'));
       return;
     }
     const budgetValue = projectEstimatedBudget.trim()
       ? Number(projectEstimatedBudget.replace(/\s/g, '').replace(',', '.'))
       : undefined;
     if (budgetValue != null && (Number.isNaN(budgetValue) || budgetValue < 0)) {
-      toast.error('Bugetul estimativ trebuie să fie un număr valid.');
+      toast.error(t('companyDetail.toast.budgetInvalid'));
       return;
     }
     try {
@@ -163,11 +173,11 @@ export function CompanyDetailPage() {
         projectTitle: projectTitle.trim() || undefined,
         estimatedBudget: budgetValue,
       });
-      toast.success('Cererea de proiect a fost trimisă! Compania vă va contacta.');
+      toast.success(t('companyDetail.toast.projectSent'));
       setProjectModalOpen(false);
       resetProjectForm();
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Nu s-a putut trimite cererea.'));
+      toast.error(getErrorMessage(err, t('companyDetail.toast.sendFailed')));
     }
   };
 
@@ -191,13 +201,13 @@ export function CompanyDetailPage() {
       <div className="max-w-2xl mx-auto my-12 text-center">
         <div className="glass-panel rounded-3xl p-12 border-red-100 shadow-premium">
           <p className="text-base font-semibold text-red-600 mb-6">
-            Compania nu a fost găsită sau profilul nu este public.
+            {t('companyDetail.notFound')}
           </p>
           <Link
-            to="/companies"
+            to={lp('/companies')}
             className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-bold text-white shadow-premium hover:opacity-95 transition-all"
           >
-            ← Înapoi la catalog
+            {t('companyDetail.backToCatalog')}
           </Link>
         </div>
       </div>
@@ -213,19 +223,20 @@ export function CompanyDetailPage() {
     <>
       <SEOHead
         title={company.name}
-        description={company.description ?? `Profil public ${company.name} pe Faber Companii.`}
+        description={company.description ?? t('companyDetail.seoDescriptionFallback', { name: company.name })}
         ogType="profile"
         ogImage={company.logoUrl ?? undefined}
+        hreflang
       />
 
       <div className="space-y-8 animate-fade-in pb-12 max-w-6xl mx-auto">
         {/* Back Link */}
         <Link
-          to="/companies"
+          to={lp('/companies')}
           className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-violet-600 transition-colors"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-          Toate companiile
+          {t('companyDetail.backLink')}
         </Link>
 
         {/* Premium Unified Hero Card */}
@@ -274,13 +285,13 @@ export function CompanyDetailPage() {
                   </h1>
                   <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-[10px] font-bold text-emerald-700 shadow-xs">
                     <BadgeCheck className="h-3.5 w-3.5 fill-emerald-100" />
-                    Verificată
+                    {t('companyDetail.verified')}
                   </span>
                 </div>
 
                 {company.category ? (
                   <span className="inline-block rounded-xl bg-violet-50 border border-violet-100 px-3.5 py-1 text-xs font-bold text-violet-700 tracking-wide uppercase mb-4">
-                    {company.category.name}
+                    {getTranslatedCategoryName(t, company.category)}
                   </span>
                 ) : null}
 
@@ -291,21 +302,23 @@ export function CompanyDetailPage() {
                       <div className="p-1 rounded-lg bg-slate-100 text-slate-500">
                         <MapPin className="h-4 w-4" />
                       </div>
-                      {company.city.name}
+                      {getTranslatedCityName(t, company.city)}
                     </span>
                   ) : null}
                   <span className="inline-flex items-center gap-2 font-medium">
                     <div className="p-1 rounded-lg bg-slate-100 text-slate-500">
                       <Users className="h-4 w-4" />
                     </div>
-                    {company.teamSize} membri în echipă
+                    {t('companyDetail.teamMembers', { count: company.teamSize })}
                   </span>
                   <span className="inline-flex items-center gap-2 font-medium">
                     <div className="p-1 rounded-lg bg-amber-50 text-amber-500 border border-amber-100/50">
                       <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                     </div>
                     <span className="font-extrabold text-slate-800">{rating.toFixed(1)}</span>
-                    <span className="text-slate-400">· {company.totalReviews} recenzii</span>
+                    <span className="text-slate-400">
+                      · {t('companyDetail.reviewsCount', { count: company.totalReviews })}
+                    </span>
                   </span>
                 </div>
               </div>
@@ -323,7 +336,7 @@ export function CompanyDetailPage() {
                 <div className="flex items-center gap-2 mb-4">
                   <Sparkles className="h-5 w-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
-                    Despre companie
+                    {t('companyDetail.about')}
                   </h2>
                 </div>
                 <p className="text-slate-600 leading-relaxed text-sm sm:text-base text-wrap:pretty whitespace-pre-line">
@@ -336,10 +349,10 @@ export function CompanyDetailPage() {
             <section className="glass-panel rounded-[28px] p-6 sm:p-8 shadow-premium border border-white/40">
               <div className="mb-6">
                 <h2 className="text-lg font-black text-slate-900 tracking-tight">
-                  Galerie media
+                  {t('companyDetail.galleryTitle')}
                 </h2>
                 <p className="text-xs text-slate-400 mt-1">
-                  Lucrări realizate, imagini și videoclipuri de pe teren.
+                  {t('companyDetail.gallerySubtitle')}
                 </p>
               </div>
               <CompanyGallery images={gallery} />
@@ -350,25 +363,25 @@ export function CompanyDetailPage() {
                 <div className="flex items-center gap-2 mb-2">
                   <Clock className="h-5 w-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
-                    Servicii & prețuri
+                    {t('companyDetail.servicesTitle')}
                   </h2>
                 </div>
                 {!isAuthenticated ? (
                   <p className="text-xs text-slate-500 mb-6 leading-relaxed">
-                    Pentru a solicita un serviciu,{' '}
+                    {t('companyDetail.servicesAuthPrefix')}{' '}
                     <Link to={`/login?returnUrl=${encodeURIComponent(location.pathname)}`} className="font-semibold text-violet-600 hover:underline">
-                      autentificați-vă
+                      {t('companyDetail.servicesAuthLogin')}
                     </Link>{' '}
-                    cu un cont de client sau{' '}
+                    {t('companyDetail.servicesAuthMiddle')}{' '}
                     <Link to="/register?kind=END_CLIENT" className="font-semibold text-violet-600 hover:underline">
-                      creați unul
+                      {t('companyDetail.servicesAuthRegister')}
                     </Link>
                     .
                   </p>
                 ) : null}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {company.services?.map((service) => {
-                    const durationLabel = formatServiceDuration(service.durationMinutes);
+                    const durationLabel = formatServiceDurationI18n(t, service.durationMinutes);
                     return (
                     <article
                       key={service.id}
@@ -396,7 +409,7 @@ export function CompanyDetailPage() {
                           </p>
                         ) : (
                           <p className="text-xs text-slate-300 italic leading-relaxed font-medium">
-                            Nicio descriere adăugată pentru acest serviciu.
+                            {t('companyDetail.noServiceDescription')}
                           </p>
                         )}
                       </div>
@@ -404,7 +417,7 @@ export function CompanyDetailPage() {
                       <div className="mt-6 pt-4 border-t border-slate-100/60 flex flex-col gap-3">
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
-                            Disponibilitate serviciu
+                            {t('companyDetail.serviceAvailability')}
                           </span>
                           {durationLabel ? (
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-[10px] font-bold text-slate-600 rounded-xl">
@@ -414,7 +427,7 @@ export function CompanyDetailPage() {
                           ) : (
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-[10px] font-bold text-slate-400 rounded-xl">
                               <Clock className="h-3 w-3 text-slate-300" />
-                              Durată variabilă
+                              {t('companyDetail.variableDuration')}
                             </span>
                           )}
                         </div>
@@ -425,7 +438,7 @@ export function CompanyDetailPage() {
                             onClick={() => openServiceRequest(service.id, service.name)}
                             className="w-full py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-extrabold uppercase tracking-wider shadow-sm hover:shadow-md hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 cursor-pointer"
                           >
-                            Solicită serviciul
+                            {t('companyDetail.requestService')}
                           </button>
                         ) : null}
                       </div>
@@ -449,12 +462,12 @@ export function CompanyDetailPage() {
                         <HardHat className="h-5 w-5" />
                       </div>
                       <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
-                        Cerere proiect / lucrare complexă
+                        {t('companyDetail.projectTitle')}
                       </h2>
                     </div>
                     <p className="text-sm text-slate-600 leading-relaxed max-w-2xl font-medium">
-                      Descrieți lucrarea dorită — renovări, instalații, proiecte pe termen lung. Compania
-                      vă va contacta pentru evaluare și smetă.{!isAuthenticated && ' Necesită cont de client autentificat.'}
+                      {t('companyDetail.projectDescription')}
+                      {!isAuthenticated && t('companyDetail.projectAuthNote')}
                     </p>
                   </div>
                   
@@ -463,7 +476,7 @@ export function CompanyDetailPage() {
                     onClick={openProjectRequest}
                     className="shrink-0 inline-flex items-center justify-center gap-2 py-4 px-8 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-violet-500/10 hover:shadow-xl hover:shadow-violet-500/15 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer"
                   >
-                    <Sparkles className="w-4 h-4" /> Trimite cerere proiect
+                    <Sparkles className="w-4 h-4" /> {t('companyDetail.projectCta')}
                   </button>
                 </div>
               </section>
@@ -484,33 +497,33 @@ export function CompanyDetailPage() {
               <div className="flex items-center gap-2 pb-4 border-b border-slate-100">
                 <ShieldCheck className="h-5 w-5 text-emerald-600" />
                 <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">
-                  Specificații Companie
+                  {t('companyDetail.specsTitle')}
                 </h3>
               </div>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between gap-3 text-xs">
-                  <span className="font-bold text-slate-400 uppercase tracking-wider">Oraș</span>
+                  <span className="font-bold text-slate-400 uppercase tracking-wider">{t('companyDetail.specCity')}</span>
                   <span className="font-extrabold text-slate-800 text-right">
-                    {company.city?.name ?? '—'}
+                    {company.city ? getTranslatedCityName(t, company.city) : '—'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between gap-3 text-xs">
-                  <span className="font-bold text-slate-400 uppercase tracking-wider">Categorie</span>
+                  <span className="font-bold text-slate-400 uppercase tracking-wider">{t('companyDetail.specCategory')}</span>
                   <span className="font-extrabold text-violet-600 text-right">
-                    {company.category?.name ?? '—'}
+                    {company.category ? getTranslatedCategoryName(t, company.category) : '—'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between gap-3 text-xs">
-                  <span className="font-bold text-slate-400 uppercase tracking-wider">Tehnicieni</span>
+                  <span className="font-bold text-slate-400 uppercase tracking-wider">{t('companyDetail.specTeam')}</span>
                   <span className="font-extrabold text-slate-800 text-right">
-                    {company.teamSize} membri activi
+                    {t('companyDetail.activeMembers', { count: company.teamSize })}
                   </span>
                 </div>
                 <div className="flex items-center justify-between gap-3 text-xs">
-                  <span className="font-bold text-slate-400 uppercase tracking-wider">TVA</span>
+                  <span className="font-bold text-slate-400 uppercase tracking-wider">{t('companyDetail.specVat')}</span>
                   <span className="font-extrabold text-slate-800 text-right">
-                    {company.isTvaPayer ? 'Plătitor de TVA' : 'Neplătitor de TVA'}
+                    {company.isTvaPayer ? t('companyDetail.vatPayer') : t('companyDetail.vatNonPayer')}
                   </span>
                 </div>
               </div>
@@ -521,7 +534,7 @@ export function CompanyDetailPage() {
               <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
                 <MessageSquare className="h-5 w-5 text-violet-600" />
                 <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">
-                  Contact public
+                  {t('companyDetail.contactTitle')}
                 </h3>
               </div>
 
@@ -533,7 +546,7 @@ export function CompanyDetailPage() {
                       className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:opacity-95 text-white font-extrabold text-sm shadow-premium transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
                     >
                       <Phone className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110" />
-                      Apelează compania
+                      {t('companyDetail.callCompany')}
                     </a>
                   ) : null}
 
@@ -543,23 +556,23 @@ export function CompanyDetailPage() {
                       className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-sm transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
                     >
                       <Mail className="h-4 w-4 shrink-0 text-slate-400 group-hover:text-violet-600 transition-colors" />
-                      Trimite email
+                      {t('companyDetail.sendEmail')}
                     </a>
                   ) : null}
 
                   {/* Settings status indicator (subtle hint) */}
                   <div className="flex items-center justify-center gap-1.5 mt-2 text-[10px] text-slate-400 font-medium text-center">
                     <ShieldCheck className="h-3 w-3 text-emerald-500 shrink-0" />
-                    Canale oficiale asigurate de platformă
+                    {t('companyDetail.officialChannels')}
                   </div>
                 </div>
               ) : (
                 <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 text-center space-y-2">
                   <p className="text-xs font-semibold text-slate-500 leading-relaxed text-wrap:pretty">
-                    Informațiile de contact direct au fost ascunse de către proprietarul companiei.
+                    {t('companyDetail.contactHidden')}
                   </p>
                   <p className="text-[11px] text-slate-400 leading-normal text-wrap:pretty">
-                    Puteți plasa o cerere directă din catalogul de servicii publicat.
+                    {t('companyDetail.contactHiddenHint')}
                   </p>
                 </div>
               )}
@@ -571,13 +584,22 @@ export function CompanyDetailPage() {
       <AppModal
         open={requestModal !== null}
         onClose={() => setRequestModal(null)}
-        title={requestModal ? `Solicită: ${requestModal.serviceName}` : 'Solicită serviciul'}
+        title={
+          requestModal
+            ? t('companyDetail.requestModalTitleNamed', { name: requestModal.serviceName })
+            : t('companyDetail.requestModalTitle')
+        }
       >
         <form onSubmit={handleRequestSubmit} className="space-y-4">
-          <ClientProfileSummary name={profileName} phone={profilePhone} email={profileEmail} />
+          <ClientProfileSummary
+            name={profileName}
+            phone={profilePhone}
+            email={profileEmail}
+            title={t('companyDetail.yourData')}
+          />
           <div>
             <label className={cabinetLabelClass} htmlFor="req-msg">
-              Mesaj
+              {t('companyDetail.messageLabel')}
             </label>
             <textarea
               id="req-msg"
@@ -588,7 +610,7 @@ export function CompanyDetailPage() {
             />
           </div>
           <button type="submit" className={cabinetBtnPrimary} disabled={requestService.isPending}>
-            {requestService.isPending ? 'Se trimite…' : 'Trimite cererea'}
+            {requestService.isPending ? t('companyDetail.submitting') : t('companyDetail.submitRequest')}
           </button>
         </form>
       </AppModal>
@@ -599,42 +621,47 @@ export function CompanyDetailPage() {
           setProjectModalOpen(false);
           resetProjectForm();
         }}
-        title="Cerere proiect / lucrare complexă"
+        title={t('companyDetail.projectTitle')}
       >
         <form onSubmit={handleProjectSubmit} className="space-y-4">
-          <ClientProfileSummary name={profileName} phone={profilePhone} email={profileEmail} />
+          <ClientProfileSummary
+            name={profileName}
+            phone={profilePhone}
+            email={profileEmail}
+            title={t('companyDetail.yourData')}
+          />
           <div>
             <label className={cabinetLabelClass} htmlFor="proj-title">
-              Titlu proiect
+              {t('companyDetail.projectTitleLabel')}
             </label>
             <input
               id="proj-title"
               className={cabinetFieldClass}
               value={projectTitle}
               onChange={(e) => setProjectTitle(e.target.value)}
-              placeholder="Ex: Renovare apartament 2 camere"
+              placeholder={t('companyDetail.projectTitlePlaceholder')}
             />
           </div>
           <div>
             <label className={cabinetLabelClass} htmlFor="proj-category">
-              Tip lucrare
+              {t('companyDetail.workTypeLabel')}
             </label>
             {data?.category ? (
               <input
                 id="proj-category"
                 className={`${cabinetFieldClass} bg-slate-50 text-slate-700`}
-                value={data.category.name}
+                value={getTranslatedCategoryName(t, data.category)}
                 readOnly
               />
             ) : (
               <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
-                Compania nu are categorie setată în profil. Cererea va fi trimisă fără tip lucrare.
+                {t('companyDetail.noCategoryWarning')}
               </p>
             )}
           </div>
           <div>
             <label className={cabinetLabelClass} htmlFor="proj-budget">
-              Buget estimativ (MDL)
+              {t('companyDetail.budgetLabel')}
             </label>
             <input
               id="proj-budget"
@@ -644,15 +671,15 @@ export function CompanyDetailPage() {
               className={cabinetFieldClass}
               value={projectEstimatedBudget}
               onChange={(e) => setProjectEstimatedBudget(e.target.value)}
-              placeholder="Ex: 25000"
+              placeholder={t('companyDetail.budgetPlaceholder')}
             />
             <p className="text-[11px] text-slate-400 mt-1">
-              Opțional — suma aproximativă pe care o aveți în vedere pentru proiect.
+              {t('companyDetail.budgetHint')}
             </p>
           </div>
           <div>
             <label className={cabinetLabelClass} htmlFor="proj-address">
-              Adresă / locație
+              {t('companyDetail.addressLabel')}
             </label>
             <input
               id="proj-address"
@@ -663,7 +690,7 @@ export function CompanyDetailPage() {
           </div>
           <div>
             <label className={cabinetLabelClass} htmlFor="proj-msg">
-              Descriere lucrare *
+              {t('companyDetail.descriptionLabel')}
             </label>
             <textarea
               id="proj-msg"
@@ -671,12 +698,12 @@ export function CompanyDetailPage() {
               rows={4}
               value={projectMessage}
               onChange={(e) => setProjectMessage(e.target.value)}
-              placeholder="Detaliați ce doriți realizat, termenul dorit, suprafața etc."
+              placeholder={t('companyDetail.descriptionPlaceholder')}
               required
             />
           </div>
           <button type="submit" className={cabinetBtnPrimary} disabled={requestProject.isPending}>
-            {requestProject.isPending ? 'Se trimite…' : 'Trimite cererea'}
+            {requestProject.isPending ? t('companyDetail.submitting') : t('companyDetail.submitRequest')}
           </button>
         </form>
       </AppModal>

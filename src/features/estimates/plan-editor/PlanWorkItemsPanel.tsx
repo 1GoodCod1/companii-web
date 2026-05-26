@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Minus, Plus, PlusCircle, Sparkles } from 'lucide-react';
 import type { EstimateBlueprintConfig } from '@/types/estimates';
 
@@ -21,6 +22,7 @@ export function PlanWorkItemsPanel({
   customCounters,
   onAdjustCustomCount,
 }: Props) {
+  const { t } = useTranslation();
   const [newCustomLabel, setNewCustomLabel] = useState('');
 
   const handleAddCustomCounter = () => {
@@ -34,10 +36,10 @@ export function PlanWorkItemsPanel({
     <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-premium space-y-5">
       <div>
         <h3 className="font-extrabold text-slate-900 text-sm uppercase tracking-wider">
-          Inventar Puncte de Lucru & Dotări
+          {t('company.estimateWizard.workItems.title')}
         </h3>
         <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
-          Introduceți numărul de elemente și accesorii. Manopera și materialele se calculează instantaneu.
+          {t('company.estimateWizard.workItems.description')}
         </p>
       </div>
 
@@ -67,7 +69,7 @@ export function PlanWorkItemsPanel({
 
                 <div className="flex items-center justify-between mt-4">
                   <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider">
-                    Cantitate:
+                    {t('company.estimateWizard.workItems.quantity')}:
                   </span>
                   <div className="flex items-center gap-2 bg-white rounded-xl border border-slate-200 p-1 shadow-3xs">
                     <button
@@ -100,14 +102,14 @@ export function PlanWorkItemsPanel({
       <div className="border-t border-slate-100 pt-5 space-y-4">
         <div className="flex items-center gap-2 text-slate-800 font-black text-xs uppercase tracking-widest">
           <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
-          <span>Elemente & Materiale Personalizate la bucată</span>
+          <span>{t('company.estimateWizard.workItems.customSection')}</span>
         </div>
 
         {!readOnly && (
           <div className="flex flex-wrap gap-2 max-w-md">
             <input
               type="text"
-              placeholder="Ex: Parazăpadă metalică 2m, Tablou metalic..."
+              placeholder={t('company.estimateWizard.workItems.customPlaceholder')}
               value={newCustomLabel}
               onChange={(e) => setNewCustomLabel(e.target.value)}
               className="flex-1 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition-all shadow-xs"
@@ -117,14 +119,14 @@ export function PlanWorkItemsPanel({
               onClick={handleAddCustomCounter}
               className="rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-xs font-bold text-white transition-all shadow-md cursor-pointer flex items-center gap-1 active:scale-95"
             >
-              <PlusCircle className="w-4 h-4" /> Adaugă
+              <PlusCircle className="w-4 h-4" /> {t('cabinet.common.add')}
             </button>
           </div>
         )}
 
         {customCounters.length === 0 ? (
           <p className="text-xs text-slate-400 italic font-semibold">
-            Nu s-au adăugat elemente personalizate. Introduceți un nume mai sus pentru a genera contoare adiționale.
+            {t('company.estimateWizard.workItems.noCustomItems')}
           </p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-in">
@@ -148,7 +150,7 @@ export function PlanWorkItemsPanel({
 
                   <div className="flex items-center justify-between mt-4">
                     <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider">
-                      Cantitate:
+                      {t('company.estimateWizard.workItems.quantity')}:
                     </span>
                     <div className="flex items-center gap-2 bg-white rounded-xl border border-violet-200 p-1 shadow-3xs">
                       <button

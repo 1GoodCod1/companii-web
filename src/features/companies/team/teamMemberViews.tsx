@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { COMPANY_ROLE } from '@/constants/roles.constants';
 import type { InvitableCompanyRole } from '@/types/roles';
 import {
@@ -14,7 +15,42 @@ import {
   memberDisplayName,
   memberInitials,
 } from '@/utils/teamMembers';
-import { formatDateRoOrNull } from '@/utils/date';
+import { formatDateLocalized } from '@/utils/date';
+import { getCompanyRoleLabel } from '@/utils/companyRoleLabel';
+import { useLocale } from '@/hooks/useLocale';
+
+const ROLE_SECTION_KEYS: Record<
+  TeamRoleKey,
+  { sectionTitle: string; description: string; responsibilities: string[] }
+> = {
+  [COMPANY_ROLE.OWNER]: {
+    sectionTitle: 'company.teamPage.roles.owner.sectionTitle',
+    description: 'company.teamPage.roles.owner.description',
+    responsibilities: [
+      'company.teamPage.roles.owner.responsibilities.manageSubscription',
+      'company.teamPage.roles.owner.responsibilities.publishProfile',
+      'company.teamPage.roles.owner.responsibilities.inviteTeam',
+    ],
+  },
+  [COMPANY_ROLE.MANAGER]: {
+    sectionTitle: 'company.teamPage.roles.manager.sectionTitle',
+    description: 'company.teamPage.roles.manager.description',
+    responsibilities: [
+      'company.teamPage.roles.manager.responsibilities.crmClients',
+      'company.teamPage.roles.manager.responsibilities.coordinateTechnicians',
+      'company.teamPage.roles.manager.responsibilities.quotesInvoicesTeam',
+    ],
+  },
+  [COMPANY_ROLE.MEMBER]: {
+    sectionTitle: 'company.teamPage.roles.member.sectionTitle',
+    description: 'company.teamPage.roles.member.description',
+    responsibilities: [
+      'company.teamPage.roles.member.responsibilities.assignedJobs',
+      'company.teamPage.roles.member.responsibilities.updateStatus',
+      'company.teamPage.roles.member.responsibilities.notesCompletion',
+    ],
+  },
+};
 
 function TeamMemberCard({
   member,
@@ -31,11 +67,19 @@ function TeamMemberCard({
   onChangeRole: (memberId: string, role: InvitableCompanyRole) => void;
   onDeactivate: (memberId: string) => void;
 }) {
+  const { t } = useTranslation();
+  const locale = useLocale();
   const config = TEAM_ROLE_CONFIG[member.role as TeamRoleKey];
+  const roleKeys = ROLE_SECTION_KEYS[member.role as TeamRoleKey];
   const name = memberDisplayName(member);
   const email = memberContactEmail(member);
   const phone = memberContactPhone(member);
-  const joined = formatDateRoOrNull(member.joinedAt ?? member.createdAt, 'medium');
+  const joinedFormatted = formatDateLocalized(
+    member.joinedAt ?? member.createdAt,
+    locale,
+    'medium',
+  );
+  const joined = joinedFormatted || null;
   const jobCount = member._count?.interventions ?? 0;
   const isSelf = member.userId === currentUserId;
   const canModify =
@@ -56,14 +100,16 @@ function TeamMemberCard({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <p className="font-bold text-gray-900 truncate">{name}</p>
-            <SoftBadge tone={config.badgeTone}>{config.label}</SoftBadge>
+            <SoftBadge tone={config.badgeTone}>
+              {getCompanyRoleLabel(t, member.role)}
+            </SoftBadge>
           </div>
 
           <div className="mt-2 space-y-1 text-xs text-gray-600">
             {email ? (
               <p className="truncate">
                 <span className="font-semibold text-gray-400 uppercase tracking-wide text-[10px] mr-1.5">
-                  Email
+                  {t('company.teamPage.memberFields.email')}
                 </span>
                 {email}
               </p>
@@ -71,7 +117,7 @@ function TeamMemberCard({
             {phone ? (
               <p className="truncate">
                 <span className="font-semibold text-gray-400 uppercase tracking-wide text-[10px] mr-1.5">
-                  Telefon
+                  {t('company.teamPage.memberFields.phone')}
                 </span>
                 {phone}
               </p>
@@ -79,7 +125,7 @@ function TeamMemberCard({
             {member.specialization ? (
               <p className="truncate">
                 <span className="font-semibold text-gray-400 uppercase tracking-wide text-[10px] mr-1.5">
-                  Specializare
+                  {t('company.teamPage.memberFields.specialization')}
                 </span>
                 {member.specialization}
               </p>
@@ -87,7 +133,7 @@ function TeamMemberCard({
             {joined ? (
               <p>
                 <span className="font-semibold text-gray-400 uppercase tracking-wide text-[10px] mr-1.5">
-                  În echipă din
+                  {t('company.teamPage.memberFields.joinedSince')}
                 </span>
                 {joined}
               </p>
@@ -95,7 +141,7 @@ function TeamMemberCard({
             {member.role === COMPANY_ROLE.MEMBER ? (
               <p>
                 <span className="font-semibold text-gray-400 uppercase tracking-wide text-[10px] mr-1.5">
-                  Lucrări alocate
+                  {t('company.teamPage.memberFields.assignedJobs')}
                 </span>
                 {jobCount}
               </p>
@@ -103,12 +149,12 @@ function TeamMemberCard({
           </div>
 
           <ul className="mt-3 flex flex-wrap gap-1.5">
-            {config.responsibilities.map((item) => (
+            {roleKeys.responsibilities.map((key) => (
               <li
-                key={item}
+                key={key}
                 className="rounded-lg bg-gray-50 px-2 py-1 text-[10px] font-medium text-gray-500"
               >
-                {item}
+                {t(key)}
               </li>
             ))}
           </ul>
@@ -124,8 +170,12 @@ function TeamMemberCard({
                 }
                 className={cabinetSelectClass}
               >
-                <option value={COMPANY_ROLE.MEMBER}>Tehnician</option>
-                <option value={COMPANY_ROLE.MANAGER}>Manager</option>
+                <option value={COMPANY_ROLE.MEMBER}>
+                  {getCompanyRoleLabel(t, COMPANY_ROLE.MEMBER)}
+                </option>
+                <option value={COMPANY_ROLE.MANAGER}>
+                  {getCompanyRoleLabel(t, COMPANY_ROLE.MANAGER)}
+                </option>
               </select>
             ) : null}
             <button
@@ -133,7 +183,7 @@ function TeamMemberCard({
               onClick={() => onDeactivate(member.id)}
               className={cabinetBtnSecondary}
             >
-              Elimină din echipă
+              {t('company.teamPage.removeFromTeam')}
             </button>
           </div>
         ) : null}
@@ -159,19 +209,23 @@ export function TeamRoleSection({
   onChangeRole: (memberId: string, role: InvitableCompanyRole) => void;
   onDeactivate: (memberId: string) => void;
 }) {
-  const config = TEAM_ROLE_CONFIG[role];
+  const { t } = useTranslation();
+  const roleKeys = ROLE_SECTION_KEYS[role];
 
   return (
     <section className="space-y-3">
       <div className="flex flex-wrap items-end justify-between gap-2 border-b border-gray-100 pb-3">
         <div>
           <h3 className="text-sm font-black uppercase tracking-wider text-gray-800">
-            {config.sectionTitle}
+            {t(roleKeys.sectionTitle)}
           </h3>
-          <p className="mt-1 text-xs text-gray-500 max-w-xl">{config.description}</p>
+          <p className="mt-1 text-xs text-gray-500 max-w-xl">{t(roleKeys.description)}</p>
         </div>
         <span className="text-xs font-semibold text-gray-400">
-          {items.length} {items.length === 1 ? 'persoană' : 'persoane'}
+          {items.length}{' '}
+          {items.length === 1
+            ? t('company.teamPage.personSingular')
+            : t('company.teamPage.personPlural')}
         </span>
       </div>
       <ul className="space-y-3">

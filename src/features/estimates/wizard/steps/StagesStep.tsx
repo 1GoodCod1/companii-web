@@ -1,4 +1,5 @@
 import { Calculator, Check, Eye, Plus, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
   Panel,
   cabinetBtnPrimary,
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export function StagesStep({ wizard }: Props) {
+  const { t } = useTranslation();
   const {
     project,
     calculate,
@@ -34,14 +36,13 @@ export function StagesStep({ wizard }: Props) {
       <Panel className="p-6">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
-            <h3 className="font-bold text-gray-900">Etape & calcul preț</h3>
+            <h3 className="font-bold text-gray-900">{t('company.estimateWizard.stagesStep.title')}</h3>
             <p className="text-sm text-gray-500">
-              Recalculează liniile din plan, diagnostic, tarife personalizate și regulile categoriei.
-              Puteți edita direct descrierea, cantitatea, prețul și materialele fiecărei lucrări.
+              {t('company.estimateWizard.stagesStep.description')}
             </p>
           </div>
           <button type="button" onClick={handleCalculate} disabled={calculate.isPending} className={cabinetBtnPrimary}>
-            <Calculator className="w-4 h-4" /> Calculează smeta
+            <Calculator className="w-4 h-4" /> {t('company.estimateWizard.stagesStep.calculate')}
           </button>
         </div>
 
@@ -59,8 +60,12 @@ export function StagesStep({ wizard }: Props) {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 text-xs text-gray-500">
-                  {stage.laborHours != null && <span>~{Number(stage.laborHours)} ore</span>}
-                  {stage.durationDays != null && <span>{stage.durationDays} zile</span>}
+                  {stage.laborHours != null && (
+                    <span>{t('company.estimateWizard.stagesStep.hours', { count: Number(stage.laborHours) })}</span>
+                  )}
+                  {stage.durationDays != null && (
+                    <span>{t('company.estimateWizard.stagesStep.days', { count: stage.durationDays })}</span>
+                  )}
                   <span className="text-sm font-bold text-violet-700">
                     {Number(stage.stageTotal ?? 0).toLocaleString('ro-MD')} MDL
                   </span>
@@ -72,13 +77,13 @@ export function StagesStep({ wizard }: Props) {
                   <table className="min-w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider">
-                        <th className="py-2">Descriere lucrare</th>
-                        <th className="py-2 w-20">Cant.</th>
-                        <th className="py-2 w-20">Unitate</th>
-                        <th className="py-2 w-28">Preț Unitar</th>
-                        <th className="py-2 w-28">Total</th>
-                        <th className="py-2">Magazin / Sursă</th>
-                        <th className="py-2 text-right">Bon</th>
+                        <th className="py-2">{t('company.estimateWizard.stagesStep.colDescription')}</th>
+                        <th className="py-2 w-20">{t('company.estimateWizard.stagesStep.colQty')}</th>
+                        <th className="py-2 w-20">{t('company.estimateWizard.stagesStep.colUnit')}</th>
+                        <th className="py-2 w-28">{t('company.estimateWizard.stagesStep.colUnitPrice')}</th>
+                        <th className="py-2 w-28">{t('company.estimateWizard.stagesStep.colTotal')}</th>
+                        <th className="py-2">{t('company.estimateWizard.stagesStep.colStore')}</th>
+                        <th className="py-2 text-right">{t('company.estimateWizard.stagesStep.colReceipt')}</th>
                         <th className="py-2 w-10"></th>
                       </tr>
                     </thead>
@@ -148,12 +153,14 @@ export function StagesStep({ wizard }: Props) {
                             </td>
                             <td className="py-3">
                               {isLabor ? (
-                                <span className="text-[10px] text-gray-400 italic">Serviciu / Manoperă</span>
+                                <span className="text-[10px] text-gray-400 italic">
+                                  {t('company.estimateWizard.stagesStep.laborService')}
+                                </span>
                               ) : (
                                 <div className="flex items-center gap-1.5">
                                   <input
                                     type="text"
-                                    placeholder="Ex: Supraten, Leroy"
+                                    placeholder={t('company.estimateWizard.stagesStep.storePlaceholder')}
                                     value={
                                       editingStore?.lineId === line.id
                                         ? editingStore.value
@@ -192,7 +199,7 @@ export function StagesStep({ wizard }: Props) {
                                         }
                                         className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100 px-2 py-1 text-[10px] font-bold text-violet-700 hover:bg-violet-100 transition-colors"
                                       >
-                                        <Eye className="w-3.5 h-3.5" /> Vezi
+                                        <Eye className="w-3.5 h-3.5" /> {t('company.estimateWizard.stagesStep.viewReceipt')}
                                       </button>
                                       <button
                                         type="button"
@@ -205,10 +212,10 @@ export function StagesStep({ wizard }: Props) {
                                   ) : (
                                     <label className="relative cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-dashed border-gray-200 bg-white px-2.5 py-1 text-[10px] font-bold text-gray-500 hover:bg-gray-50 transition-colors">
                                       {uploadingLineId === line.id ? (
-                                        <span className="animate-pulse">Se încarcă...</span>
+                                        <span className="animate-pulse">{t('cabinet.common.loading')}</span>
                                       ) : (
                                         <>
-                                          <Plus className="w-3 h-3" /> Bon
+                                          <Plus className="w-3 h-3" /> {t('company.estimateWizard.stagesStep.receipt')}
                                         </>
                                       )}
                                       <input
@@ -229,7 +236,7 @@ export function StagesStep({ wizard }: Props) {
                               <button
                                 type="button"
                                 onClick={() => handleDeleteLine(line.id, stage.id)}
-                                title="Șterge linia"
+                                title={t('cabinet.common.delete')}
                                 className="rounded-lg bg-red-50 border border-red-100 p-1.5 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -242,7 +249,7 @@ export function StagesStep({ wizard }: Props) {
                   </table>
                 </div>
               ) : (
-                <p className="text-xs text-gray-400 italic">Nu există linii. Apăsați «Calculează smeta» pentru a genera liniile automat.</p>
+                <p className="text-xs text-gray-400 italic">{t('company.estimateWizard.stagesStep.noLines')}</p>
               )}
 
               <button
@@ -251,7 +258,7 @@ export function StagesStep({ wizard }: Props) {
                 disabled={addLineMutation.isPending}
                 className="w-full mt-2 rounded-xl border border-dashed border-violet-200 bg-violet-50/50 py-2 text-xs font-semibold text-violet-700 hover:bg-violet-100 transition-colors inline-flex items-center justify-center gap-1.5"
               >
-                <Plus className="w-3.5 h-3.5" /> Adaugă lucrare nouă
+                <Plus className="w-3.5 h-3.5" /> {t('company.estimateWizard.stagesStep.addNewLine')}
               </button>
             </div>
           ))}

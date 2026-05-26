@@ -1,9 +1,12 @@
 import type { CompanyRole } from '@/types/roles';
 
+export type CatalogTranslations = Record<string, { name?: string }>;
+
 export interface CatalogOptionDto {
   id: string;
   name: string;
   slug: string;
+  translations?: CatalogTranslations | null;
 }
 
 export interface CompanyGalleryImageDto {
@@ -23,8 +26,8 @@ export interface PublicCompanyListItemDto {
   totalReviews: number;
   teamSize: number;
   contactPhone?: string | null;
-  city?: { id: string; name: string; slug: string } | null;
-  category?: { id: string; name: string; slug: string } | null;
+  city?: { id: string; name: string; slug: string; translations?: CatalogTranslations | null } | null;
+  category?: { id: string; name: string; slug: string; translations?: CatalogTranslations | null } | null;
   galleryImages?: CompanyGalleryImageDto[];
 }
 
@@ -40,7 +43,7 @@ export interface PublicCompanyDetailDto extends PublicCompanyListItemDto {
     defaultPrice: number | string;
     currency?: string;
     durationMinutes?: number | null;
-    category?: { id: string; name: string; slug?: string } | null;
+    category?: { id: string; name: string; slug?: string; translations?: CatalogTranslations | null } | null;
   }>;
   members?: unknown[];
   badges?: unknown[];
