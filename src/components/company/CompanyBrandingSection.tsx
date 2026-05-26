@@ -7,7 +7,7 @@ import {
   cabinetLabelClass,
   FormSection,
 } from '@/components/cabinet/cabinet-ui';
-import type { CompanyGalleryImageDto } from '@/features/companies/types';
+import type { CompanyGalleryImageDto } from '@/types/companies';
 import { MediaImage } from '@/components/ui/MediaImage';
 import { validateImageFile } from '@/utils/validateFile';
 import { isVideoUrl } from '@/utils/validateFile';
@@ -147,7 +147,7 @@ export function CompanyBrandingSection({
         {galleryImages.length === 0 && pendingGallery.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-8 text-center text-sm text-gray-400">
             Încărcați fotografii sau videoclipuri cu lucrările companiei — vor apărea pe pagina publică.
-            <span className="block text-[11px] text-slate-400 mt-1">Max 3 videoclipuri · max 2 minute fiecare</span>
+            <span className="block text-[11px] text-slate-400 mt-1">Max 2 videoclipuri · max 2 minute fiecare · max 150 MB</span>
           </div>
         ) : (
           <div className={`grid gap-3 ${isSidebar ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-3'}`}>

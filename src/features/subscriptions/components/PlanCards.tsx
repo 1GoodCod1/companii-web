@@ -1,30 +1,19 @@
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import type { CompanyPlanDto, CompanySubscriptionPlanCode } from '../types';
+import type { ClaimableSubscriptionPlanCode, CompanyPlanDto, CompanySubscriptionPlanCode } from '@/types/subscriptions';
 import type { PublicAuthCta } from '@/features/auth/usePublicAuthCta';
 import { canActivatePlan, plansForDisplay } from '@/config/planEntitlements';
-import { planFeatures, planPriceLabel } from '../types';
-
-const PLAN_ACCENTS: Record<
-  CompanySubscriptionPlanCode,
-  { ring: string; badge: string; btn: string }
-> = {
-  FREE: {
-    ring: 'border-gray-200',
-    badge: 'bg-gray-100 text-gray-600',
-    btn: 'bg-gray-900 hover:bg-gray-800 text-white',
-  },
-  PRO: {
-    ring: 'border-violet-300 ring-2 ring-violet-100',
-    badge: 'bg-violet-100 text-violet-700',
-    btn: 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white',
-  },
-  BUSINESS: {
-    ring: 'border-indigo-200',
-    badge: 'bg-indigo-100 text-indigo-700',
-    btn: 'bg-indigo-600 hover:bg-indigo-700 text-white',
-  },
-};
+import { planFeatures, planPriceLabel } from '@/utils/subscriptions';
+import {
+  isBusinessPlan,
+  isClaimablePlanCode,
+  isFreePlan,
+  isProPlan,
+} from '@/utils/subscriptionPlan';
+import {
+  PLAN_ACCENTS,
+  SUBSCRIPTION_PLAN,
+} from '@/constants/subscriptions.constants';
 
 export function PlanCards({
   plans,
@@ -37,7 +26,7 @@ export function PlanCards({
   plans: CompanyPlanDto[];
   currentPlanCode?: CompanySubscriptionPlanCode;
   ctaMode?: 'public' | 'cabinet';
-  onClaimFree?: (planCode: Extract<CompanySubscriptionPlanCode, 'PRO' | 'BUSINESS'>) => void;
+  onClaimFree?: (planCode: ClaimableSubscriptionPlanCode) => void;
   claimingPlanCode?: CompanySubscriptionPlanCode | null;
   authCta?: PublicAuthCta | null;
 }) {
@@ -54,13 +43,15 @@ export function PlanCards({
       {visiblePlans.map((plan) => {
         const accent = PLAN_ACCENTS[plan.code];
         const isCurrent = currentPlanCode === plan.code;
-        const isPopular = plan.code === 'PRO' && !isCurrent;
+        const isPopular = plan.code === SUBSCRIPTION_PLAN.PRO && !isCurrent;
         const isClaimable =
           ctaMode === 'cabinet' &&
           !!onClaimFree &&
           canActivatePlan(currentPlanCode, plan.code) &&
           !isCurrent;
         const isClaiming = claimingPlanCode === plan.code;
+
+        const claimableTarget = isClaimablePlanCode(plan.code) ? plan.code : null;
 
         return (
           <article
@@ -97,7 +88,7 @@ export function PlanCards({
                   Până la {plan.maxTechnicians} tehnicieni
                 </p>
               )}
-              {plan.maxTechnicians == null && plan.code === 'BUSINESS' && (
+              {plan.maxTechnicians == null && isBusinessPlan(plan.code) && (
                 <p className="text-xs text-gray-400 font-semibold mt-1">Tehnicieni nelimitați</p>
               )}
             </div>
@@ -116,26 +107,24 @@ export function PlanCards({
                 <div className="text-center text-xs font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-xl py-3">
                   Planul tău curent
                 </div>
-                {currentPlanCode === 'PRO' && onClaimFree ? (
+                {isProPlan(currentPlanCode) && onClaimFree ? (
                   <button
                     type="button"
                     disabled={!!claimingPlanCode}
-                    onClick={() => onClaimFree('BUSINESS')}
-                    className={`w-full text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm disabled:opacity-50 ${PLAN_ACCENTS.BUSINESS.btn}`}
+                    onClick={() => onClaimFree(SUBSCRIPTION_PLAN.BUSINESS)}
+                    className={`w-full text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm disabled:opacity-50 ${PLAN_ACCENTS[SUBSCRIPTION_PLAN.BUSINESS].btn}`}
                   >
-                    {claimingPlanCode === 'BUSINESS'
+                    {claimingPlanCode === SUBSCRIPTION_PLAN.BUSINESS
                       ? 'Se activează Business...'
                       : 'Treci la Business — Pro se înlocuiește'}
                   </button>
                 ) : null}
               </div>
-            ) : isClaimable && onClaimFree ? (
+            ) : isClaimable && claimableTarget ? (
               <button
                 type="button"
                 disabled={!!claimingPlanCode}
-                onClick={() =>
-                  onClaimFree(plan.code as Extract<CompanySubscriptionPlanCode, 'PRO' | 'BUSINESS'>)
-                }
+                onClick={() => onClaimFree!(claimableTarget)}
                 className={`w-full text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm disabled:opacity-50 ${accent.btn}`}
               >
                 {isClaiming ? 'Se activează...' : 'Activează 30 zile gratuit'}
@@ -154,7 +143,7 @@ export function PlanCards({
               >
                 Începe acum
               </Link>
-            ) : plan.code === 'FREE' ? (
+            ) : isFreePlan(plan.code) ? (
               <div className="text-center text-xs font-semibold text-gray-400 bg-gray-50 border border-gray-100 rounded-xl py-3">
                 Plan de bază inclus
               </div>

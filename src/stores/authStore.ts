@@ -3,10 +3,10 @@ import {
   clearAccessSession,
   persistAccessSession,
 } from '@/features/auth/persist';
-import type { AuthUserSnapshot } from '@/features/auth/types';
+import type { AuthUserSnapshot } from '@/types/auth';
 import { useCompanyContextStore } from '@/stores/companyContextStore';
 
-export type { AccountKind, AuthUserSnapshot } from '@/features/auth/types';
+export type { AccountKind, AuthUserSnapshot } from '@/types/auth';
 
 type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'anonymous';
 

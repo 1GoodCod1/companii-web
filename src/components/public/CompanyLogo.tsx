@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { companyInitials } from '@/features/companies/types';
+import { companyInitials } from '@/types/companies';
 import { MediaImage } from '@/components/ui/MediaImage';
 
 export function CompanyLogo({

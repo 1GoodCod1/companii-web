@@ -9,7 +9,7 @@ import {
   useCitiesQuery,
   useCompaniesListQuery,
 } from '@/features/companies/api/useCompanies';
-import type { CatalogOptionDto } from '@/features/companies/types';
+import type { CatalogOptionDto } from '@/types/companies';
 import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
 import { cabinetFieldClass } from '@/components/cabinet/cabinet-ui';
 

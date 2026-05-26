@@ -10,6 +10,7 @@ import {
   isCabinetNavItemActive,
   type CabinetNavSection,
 } from '@/components/layout/cabinet-nav';
+import { formatPersonName } from '@/utils/person';
 
 export function CabinetShell({
   basePath,
@@ -47,9 +48,10 @@ export function CabinetShell({
   );
 
   const displayName =
-    [meData?.firstName, meData?.lastName].filter(Boolean).join(' ').trim() ||
-    user?.email ||
-    '';
+    formatPersonName(
+      { firstName: meData?.firstName, lastName: meData?.lastName, email: user?.email },
+      user?.email ?? '',
+    );
 
   return (
     <div className="min-h-screen flex bg-gray-50/30">

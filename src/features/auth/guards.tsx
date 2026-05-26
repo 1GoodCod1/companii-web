@@ -1,10 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { useAuthStore, type AccountKind } from '@/stores/authStore';
-import {
-  canAccessCompanyRoute,
-  defaultRouteForRole,
-} from '@/features/companies/roleAccess';
+import { canAccessCompanyRoute, defaultRouteForRole } from '@/utils/roleAccess';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
 import { useMySubscriptionQuery } from '@/features/subscriptions/api/useSubscriptions';
 import { useCompanyContextStore } from '@/stores/companyContextStore';
@@ -13,7 +10,8 @@ import {
   hasMinPlan,
   requiredPlanForRoute,
 } from '@/config/planEntitlements';
-import type { CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
+import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
+import { resolveSubscriptionPlanCode } from '@/utils/subscriptionPlan';
 import { PlanUpgradePanel } from '@/features/subscriptions/components/PlanUpgradePanel';
 
 export function RequireAuth({
@@ -26,36 +24,10 @@ export function RequireAuth({
   const user = useAuthStore((s) => s.user);
   const accessToken = useAuthStore((s) => s.accessToken);
   if (!user || !accessToken) return <Navigate to="/login" replace />;
-  if (kinds && !kinds.includes(user.accountKind)) {
+  if (kinds && (!user.accountKind || !kinds.includes(user.accountKind))) {
     return <Navigate to="/" replace />;
   }
   return children;
-}
-
-function resolveCurrentPlanCode(
-  subscriptionPlanCode: CompanySubscriptionPlanCode | undefined,
-  companyMe: ReturnType<typeof useCompanyMeQuery>['data'],
-  activeCompanyId: string | undefined,
-): CompanySubscriptionPlanCode | undefined {
-  if (subscriptionPlanCode) return subscriptionPlanCode;
-
-  if (!activeCompanyId || !companyMe) return undefined;
-
-  const owned = companyMe.owned?.find((item) => item.id === activeCompanyId);
-  const ownedCode = owned?.subscription?.plan?.code;
-  if (ownedCode === 'FREE' || ownedCode === 'PRO' || ownedCode === 'BUSINESS') {
-    return ownedCode;
-  }
-
-  const membership = companyMe.memberships?.find(
-    (item) => item.companyId === activeCompanyId,
-  );
-  const memberCode = membership?.company?.subscription?.plan?.code;
-  if (memberCode === 'FREE' || memberCode === 'PRO' || memberCode === 'BUSINESS') {
-    return memberCode;
-  }
-
-  return undefined;
 }
 
 export function RequireCompanyRole({
@@ -81,7 +53,7 @@ export function RequireCompanyRole({
 
   const requiredPlan = requiredPlanForRoute(routePath);
   if (requiredPlan) {
-    const currentPlan = resolveCurrentPlanCode(
+    const currentPlan = resolveSubscriptionPlanCode(
       subscription?.plan?.code as CompanySubscriptionPlanCode | undefined,
       companyMe,
       activeCompanyId,

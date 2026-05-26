@@ -32,7 +32,9 @@ import { CompanyGallery } from '@/components/public/CompanyGallery';
 import { CompanyReviewsSection } from '@/components/reviews/CompanyReviewsSection';
 import { formatServiceDuration } from '@/utils/serviceDuration';
 import { useAuthStore } from '@/stores/authStore';
+import { formatPersonName } from '@/utils/person';
 import { useMeQuery } from '@/features/auth/api/useAuth';
+import { getErrorMessage } from '@/utils/errors';
 
 function ClientProfileSummary({
   name,
@@ -76,9 +78,10 @@ export function CompanyDetailPage() {
   const [projectMessage, setProjectMessage] = useState('');
 
   const profileName =
-    [me?.firstName, me?.lastName].filter(Boolean).join(' ').trim() ||
-    me?.email?.split('@')[0] ||
-    '';
+    formatPersonName(
+      { firstName: me?.firstName, lastName: me?.lastName, email: me?.email },
+      me?.email?.split('@')[0] ?? '',
+    );
   const profilePhone = me?.phone?.trim() ?? '';
   const profileEmail = me?.email ?? '';
 
@@ -127,7 +130,7 @@ export function CompanyDetailPage() {
       setRequestModal(null);
       setMessage('');
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Nu s-a putut trimite cererea.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut trimite cererea.'));
     }
   };
 
@@ -164,7 +167,7 @@ export function CompanyDetailPage() {
       setProjectModalOpen(false);
       resetProjectForm();
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Nu s-a putut trimite cererea.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut trimite cererea.'));
     }
   };
 

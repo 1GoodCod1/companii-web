@@ -8,14 +8,7 @@ import { AppModal } from '@/components/ui/AppModal';
 import { useChangePasswordMutation } from '@/features/auth/api/useAuth';
 import { getAuthErrorMessage } from '@/features/auth/authErrors';
 
-function initialsFromName(name: string, email: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length >= 2) {
-    return `${parts[0]![0] ?? ''}${parts[1]![0] ?? ''}`.toUpperCase();
-  }
-  if (parts.length === 1) return parts[0]!.slice(0, 2).toUpperCase();
-  return email.slice(0, 2).toUpperCase();
-}
+import { personInitials } from '@/utils/person';
 
 export function CabinetProfileCard({
   displayName,
@@ -36,7 +29,7 @@ export function CabinetProfileCard({
 }) {
   const { t } = useTranslation();
   const roleLabel = role ? (COMPANY_ROLE_LABELS[role] ?? role) : null;
-  const initials = initialsFromName(displayName, email);
+  const initials = personInitials(displayName, email);
 
   // Password change modal state
   const changePasswordMutation = useChangePasswordMutation();

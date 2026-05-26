@@ -1,4 +1,9 @@
 import type { ReactNode } from 'react';
+import {
+  COMPANY_BASELINE_ROUTES,
+  COMPANY_ONBOARDING_ROUTES,
+} from '@/constants/companyNav.constants';
+import { COMPANY_ROLE } from '@/constants/roles.constants';
 
 export type CabinetNavItem = {
   key: string;
@@ -14,12 +19,7 @@ export type CabinetNavSection = {
   items: CabinetNavItem[];
 };
 
-export const COMPANY_ROLE_LABELS: Record<string, string> = {
-  OWNER: 'Proprietar',
-  MANAGER: 'Manager',
-  MEMBER: 'Tehnician',
-  Administrator: 'Administrator',
-};
+export { COMPANY_ROLE_LABELS } from '@/constants/team.constants';
 
 export function buildCabinetPath(basePath: string, itemTo: string): string {
   return itemTo ? `${basePath}${itemTo}` : basePath;
@@ -53,7 +53,7 @@ export function resolveCompanyRole(
 
   if (activeCompanyId && companyMe) {
     const ownedMatch = companyMe.owned?.find((item) => item.id === activeCompanyId);
-    if (ownedMatch) return 'OWNER';
+    if (ownedMatch) return COMPANY_ROLE.OWNER;
 
     const membership = companyMe.memberships?.find(
       (item) => item.companyId === activeCompanyId,
@@ -61,14 +61,14 @@ export function resolveCompanyRole(
     if (membership?.role) return membership.role;
   }
 
-  if (companyMe?.owned?.length) return 'OWNER';
+  if (companyMe?.owned?.length) return COMPANY_ROLE.OWNER;
   const membershipRole = companyMe?.memberships?.find((item) => item.role)?.role;
   if (membershipRole) return membershipRole;
   return undefined;
 }
 
 /** Routes visible to any company staff member when role is still resolving. */
-export const COMPANY_BASELINE_ROUTES = ['', '/lucrari', '/calendar'] as const;
+export { COMPANY_BASELINE_ROUTES };
 
 /** Routes for a new account before the first company profile is created. */
-export const COMPANY_ONBOARDING_ROUTES = ['', '/profile'] as const;
+export { COMPANY_ONBOARDING_ROUTES };

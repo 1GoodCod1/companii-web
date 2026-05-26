@@ -6,6 +6,14 @@ import { useRegisterMutation } from '@/features/auth/api/useAuth';
 import { usePortalInvitePreviewQuery } from '@/features/portal/api/usePortal';
 import { useTeamInvitePreviewQuery } from '@/features/companies/api/useCompanies';
 import { getAuthErrorMessage } from '@/features/auth/authErrors';
+import { ACCOUNT_KIND } from '@/constants/roles.constants';
+import { ROUTE_ABS } from '@/constants/routes.constants';
+import {
+  isCompanyStaffAccount,
+  isEndClientAccount,
+  isManagerRole,
+  isPlatformAdminAccount,
+} from '@/utils/roles';
 import type { AccountKind } from '@/stores/authStore';
 import { useAuthStore } from '@/stores/authStore';
 import { ApiError } from '@/api/client';
@@ -20,7 +28,7 @@ export function RegisterPage() {
   const [params] = useSearchParams();
   const portalInviteToken = params.get('invite') ?? undefined;
   const teamInviteToken = params.get('teamInvite') ?? undefined;
-  const initialKind = (params.get('kind') as AccountKind | null) ?? 'COMPANY_STAFF';
+  const initialKind = (params.get('kind') as AccountKind | null) ?? ACCOUNT_KIND.COMPANY_STAFF;
   const register = useRegisterMutation();
   const { user, accessToken } = useAuthStore();
   const { data: invitePreview, isLoading: portalInviteLoading } = usePortalInvitePreviewQuery(
@@ -34,7 +42,7 @@ export function RegisterPage() {
   const isTeamInviteFlow = !!teamInviteToken && !!teamPreview && !teamPreview.alreadyMember;
 
   const [accountKind, setAccountKind] = useState<AccountKind>(
-    portalInviteToken ? 'END_CLIENT' : teamInviteToken ? 'COMPANY_STAFF' : initialKind,
+    portalInviteToken ? ACCOUNT_KIND.END_CLIENT : teamInviteToken ? ACCOUNT_KIND.COMPANY_STAFF : initialKind,
   );
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -47,9 +55,9 @@ export function RegisterPage() {
 
   useEffect(() => {
     if (user && accessToken) {
-      if (user.accountKind === 'END_CLIENT') nav('/portal', { replace: true });
-      else if (user.accountKind === 'PLATFORM_ADMIN') nav('/admin', { replace: true });
-      else nav('/company', { replace: true });
+      if (isEndClientAccount(user.accountKind)) nav(ROUTE_ABS.PORTAL, { replace: true });
+      else if (isPlatformAdminAccount(user.accountKind)) nav(ROUTE_ABS.ADMIN, { replace: true });
+      else nav(ROUTE_ABS.COMPANY, { replace: true });
     }
   }, [user, accessToken, nav]);
 
@@ -103,7 +111,7 @@ export function RegisterPage() {
               Invitație în echipa <strong>{teamPreview.companyName}</strong>
             </p>
             <p className="text-xs text-indigo-800">
-              Rol: <strong>{teamPreview.role === 'MANAGER' ? 'Manager' : 'Tehnician'}</strong>
+              Rol: <strong>{isManagerRole(teamPreview.role) ? 'Manager' : 'Tehnician'}</strong>
             </p>
             {teamPreview.invitedEmail ? (
               <p className="text-[11px] text-indigo-700/80">
@@ -147,7 +155,7 @@ export function RegisterPage() {
 
         {!portalInviteToken && !teamInviteToken ? (
           <div className="flex gap-2 mb-6">
-            {(['COMPANY_STAFF', 'END_CLIENT'] as const).map((k) => (
+            {([ACCOUNT_KIND.COMPANY_STAFF, ACCOUNT_KIND.END_CLIENT] as const).map((k) => (
               <button
                 key={k}
                 type="button"
@@ -158,7 +166,7 @@ export function RegisterPage() {
                     : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-500'
                 }`}
               >
-                {k === 'COMPANY_STAFF' ? t('auth.companyStaff') : t('auth.endClient')}
+                {k === ACCOUNT_KIND.COMPANY_STAFF ? t('auth.companyStaff') : t('auth.endClient')}
               </button>
             ))}
           </div>
@@ -178,7 +186,7 @@ export function RegisterPage() {
               return;
             }
 
-            if (!isPortalInviteFlow && !isTeamInviteFlow && accountKind === 'END_CLIENT' && !phone.trim()) {
+            if (!isPortalInviteFlow && !isTeamInviteFlow && isEndClientAccount(accountKind) && !phone.trim()) {
               const message = t('auth.phoneRequired');
               setFormError(message);
               toast.error(message);
@@ -201,7 +209,7 @@ export function RegisterPage() {
                       ? teamPreview.invitedEmail
                       : email,
                 password,
-                accountKind: accountKind as 'COMPANY_STAFF' | 'END_CLIENT',
+                accountKind: accountKind as typeof ACCOUNT_KIND.COMPANY_STAFF | typeof ACCOUNT_KIND.END_CLIENT,
                 firstName: isPortalInviteFlow || isTeamInviteFlow ? firstName || undefined : firstName || undefined,
                 lastName: isPortalInviteFlow || isTeamInviteFlow ? lastName || undefined : lastName || undefined,
                 phone: isPortalInviteFlow || isTeamInviteFlow ? undefined : phone.trim() || undefined,
@@ -212,7 +220,7 @@ export function RegisterPage() {
               toast.success('Cont activat cu succes!');
               if (isTeamInviteFlow) nav('/company/team', { replace: true });
               else if (isPortalInviteFlow) nav('/portal', { replace: true });
-              else if (accountKind === 'END_CLIENT') nav('/portal', { replace: true });
+              else if (isEndClientAccount(accountKind)) nav(ROUTE_ABS.PORTAL, { replace: true });
               else {
                 const sessionUser = useAuthStore.getState().user;
                 nav(
@@ -331,7 +339,7 @@ export function RegisterPage() {
             </div>
           ) : null}
 
-          {!isPortalInviteFlow && !isTeamInviteFlow && accountKind === 'END_CLIENT' ? (
+          {!isPortalInviteFlow && !isTeamInviteFlow && isEndClientAccount(accountKind) ? (
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
                 {t('auth.phone')} *
@@ -350,7 +358,7 @@ export function RegisterPage() {
             </div>
           ) : null}
 
-          {!isPortalInviteFlow && !isTeamInviteFlow && accountKind === 'COMPANY_STAFF' ? (
+          {!isPortalInviteFlow && !isTeamInviteFlow && isCompanyStaffAccount(accountKind) ? (
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
                 {t('auth.phone')} ({t('auth.optional', 'opțional')})

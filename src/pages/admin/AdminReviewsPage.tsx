@@ -1,5 +1,7 @@
 import toast from 'react-hot-toast';
 import { useAdminReviewsQuery, useModerateReviewMutation, type AdminReviewDto } from '@/features/admin/api/useAdmin';
+import { formatPersonName } from '@/utils/person';
+import { getErrorMessage } from '@/utils/errors';
 
 export function AdminReviewsPage() {
   const { data: reviews, isLoading } = useAdminReviewsQuery();
@@ -10,7 +12,7 @@ export function AdminReviewsPage() {
       await moderateReview.mutateAsync({ id: review.id, status });
       toast.success(status === 'HIDDEN' ? 'Recenzie ascunsă.' : 'Recenzie vizibilă.');
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Moderarea a eșuat.');
+      toast.error(getErrorMessage(err, 'Moderarea a eșuat.'));
     }
   };
 
@@ -49,8 +51,7 @@ export function AdminReviewsPage() {
                       </td>
                       <td className="px-6 py-4 text-gray-600">
                         {review.clientName ||
-                          [review.author.firstName, review.author.lastName].filter(Boolean).join(' ') ||
-                          review.author.email}
+                          formatPersonName(review.author, review.author.email)}
                       </td>
                       <td className="px-6 py-4 font-bold text-amber-600">{review.rating}/5</td>
                       <td className="px-6 py-4 text-gray-600 max-w-xs truncate">

@@ -50,206 +50,217 @@ import { AdminWaitlistPage } from '@/pages/admin/AdminWaitlistPage';
 import { AdminReviewsPage } from '@/pages/admin/AdminReviewsPage';
 import { AdminAuditPage } from '@/pages/admin/AdminAuditPage';
 import { RequireAuth, RequireCompanyRole } from '@/features/auth/guards';
+import {
+  ADMIN_ROUTE,
+  COMPANY_CABINET_PATH,
+  COMPANY_ROUTE,
+  INVITE_ROUTE,
+  PORTAL_ROUTE,
+  PUBLIC_ROUTE,
+  ROUTE_ABS,
+  ROUTE_ACCESS,
+  ROUTE_ROOT,
+} from '@/constants/routes.constants';
 
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-  {
-    element: <PublicLayout />,
-    children: [
-      { index: true, element: <LandingPage /> },
-      { path: 'companii', element: <LandingPage /> },
-      { path: 'how-it-works', element: <HowItWorksPage /> },
-      { path: 'faq', element: <FaqPage /> },
-      { path: 'contacts', element: <ContactsPage /> },
-      { path: 'privacy', element: <PrivacyPage /> },
-      { path: 'terms', element: <TermsPage /> },
-      { path: 'subscriptions', element: <SubscriptionsPage /> },
-      { path: 'login', element: <LoginPage /> },
-      { path: 'register', element: <RegisterPage /> },
-      { path: 'forgot-password', element: <ForgotPasswordPage /> },
-      { path: 'reset-password', element: <ResetPasswordPage /> },
-      { path: 'portal/invite', element: <PortalInvitePage /> },
-      { path: 'team/invite', element: <TeamInvitePage /> },
-      { path: 'companies', element: <CompaniesListPage /> },
-      { path: 'companies/:slug', element: <CompanyDetailPage /> },
-    ],
-  },
-  {
-    path: 'company',
-    element: (
-      <RequireAuth kinds={['COMPANY_STAFF', 'PLATFORM_ADMIN']}>
-        <CompanyLayout />
-      </RequireAuth>
-    ),
-    children: [
       {
-        index: true,
-        element: (
-          <RequireCompanyRole routePath="">
-            <CompanyDashboardPage />
-          </RequireCompanyRole>
-        ),
+        element: <PublicLayout />,
+        children: [
+          { index: true, element: <LandingPage /> },
+          { path: PUBLIC_ROUTE.COMPANII, element: <LandingPage /> },
+          { path: PUBLIC_ROUTE.HOW_IT_WORKS, element: <HowItWorksPage /> },
+          { path: PUBLIC_ROUTE.FAQ, element: <FaqPage /> },
+          { path: PUBLIC_ROUTE.CONTACTS, element: <ContactsPage /> },
+          { path: PUBLIC_ROUTE.PRIVACY, element: <PrivacyPage /> },
+          { path: PUBLIC_ROUTE.TERMS, element: <TermsPage /> },
+          { path: PUBLIC_ROUTE.SUBSCRIPTIONS, element: <SubscriptionsPage /> },
+          { path: PUBLIC_ROUTE.LOGIN, element: <LoginPage /> },
+          { path: PUBLIC_ROUTE.REGISTER, element: <RegisterPage /> },
+          { path: PUBLIC_ROUTE.FORGOT_PASSWORD, element: <ForgotPasswordPage /> },
+          { path: PUBLIC_ROUTE.RESET_PASSWORD, element: <ResetPasswordPage /> },
+          { path: INVITE_ROUTE.PORTAL, element: <PortalInvitePage /> },
+          { path: INVITE_ROUTE.TEAM, element: <TeamInvitePage /> },
+          { path: PUBLIC_ROUTE.COMPANIES, element: <CompaniesListPage /> },
+          { path: PUBLIC_ROUTE.COMPANY_DETAIL, element: <CompanyDetailPage /> },
+        ],
       },
       {
-        path: 'profile',
+        path: ROUTE_ROOT.COMPANY,
         element: (
-          <RequireCompanyRole routePath="/profile">
-            <CompanyProfilePage />
-          </RequireCompanyRole>
+          <RequireAuth kinds={[...ROUTE_ACCESS.COMPANY_CABINET]}>
+            <CompanyLayout />
+          </RequireAuth>
         ),
+        children: [
+          {
+            index: true,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.DASHBOARD}>
+                <CompanyDashboardPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.PROFILE,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.PROFILE}>
+                <CompanyProfilePage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.TEAM,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.TEAM}>
+                <CompanyTeamPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.CLIENTI,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.CLIENTI}>
+                <CompanyCustomersPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.CERERI,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.CERERI}>
+                <CompanyLeadsPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.LUCRARI,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.LUCRARI}>
+                <CompanyInterventionsPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.CALENDAR,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.CALENDAR}>
+                <CompanyCalendarPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.LUCRARI_FISA,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.LUCRARI_FISA}>
+                <EstimateWorkSheetPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.SMETE,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
+                <CompanyEstimatesPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.SMETE_NEW,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
+                <CompanyEstimateWizardPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.SMETE_DETAIL,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
+                <CompanyEstimateWizardPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.OFERTE,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.OFERTE}>
+                <CompanyQuotesPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.SERVICII,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SERVICII}>
+                <CompanyServicesPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.FACTURI,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.FACTURI}>
+                <CompanyInvoicesPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.RECENZII,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.RECENZII}>
+                <CompanyReviewsPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.SUBSCRIPTION,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SUBSCRIPTION}>
+                <CompanySubscriptionPage />
+              </RequireCompanyRole>
+            ),
+          },
+        ],
       },
       {
-        path: 'team',
+        path: ROUTE_ROOT.PORTAL,
         element: (
-          <RequireCompanyRole routePath="/team">
-            <CompanyTeamPage />
-          </RequireCompanyRole>
+          <RequireAuth kinds={[...ROUTE_ACCESS.END_CLIENT]}>
+            <PortalLayout />
+          </RequireAuth>
         ),
+        children: [
+          { index: true, element: <PortalDashboardPage /> },
+          { path: PORTAL_ROUTE.CERERI, element: <PortalCereriPage /> },
+          { path: PORTAL_ROUTE.LUCRARI, element: <PortalLucrariPage /> },
+          { path: PORTAL_ROUTE.OFERTE, element: <PortalOfertePage /> },
+          { path: PORTAL_ROUTE.SMETE, element: <PortalSmetePage /> },
+          { path: PORTAL_ROUTE.FACTURI, element: <PortalFacturiPage /> },
+        ],
       },
       {
-        path: 'clienti',
+        path: ROUTE_ROOT.ADMIN,
         element: (
-          <RequireCompanyRole routePath="/clienti">
-            <CompanyCustomersPage />
-          </RequireCompanyRole>
+          <RequireAuth kinds={[...ROUTE_ACCESS.PLATFORM_ADMIN]}>
+            <AdminLayout />
+          </RequireAuth>
         ),
+        children: [
+          { index: true, element: <AdminHomePage /> },
+          { path: ADMIN_ROUTE.COMPANIES, element: <AdminCompaniesPage /> },
+          { path: ADMIN_ROUTE.SUBSCRIPTIONS, element: <AdminSubscriptionsPage /> },
+          { path: ADMIN_ROUTE.WAITLIST, element: <AdminWaitlistPage /> },
+          { path: ADMIN_ROUTE.REVIEWS, element: <AdminReviewsPage /> },
+          { path: ADMIN_ROUTE.AUDIT, element: <AdminAuditPage /> },
+          { path: ADMIN_ROUTE.CITIES, element: <AdminCitiesPage /> },
+          { path: ADMIN_ROUTE.CATEGORIES, element: <AdminCategoriesPage /> },
+          { path: ADMIN_ROUTE.CLIENTS, element: <AdminClientsPage /> },
+        ],
       },
-      {
-        path: 'cereri',
-        element: (
-          <RequireCompanyRole routePath="/cereri">
-            <CompanyLeadsPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'lucrari',
-        element: (
-          <RequireCompanyRole routePath="/lucrari">
-            <CompanyInterventionsPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'calendar',
-        element: (
-          <RequireCompanyRole routePath="/calendar">
-            <CompanyCalendarPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'lucrari/:id/fisa',
-        element: (
-          <RequireCompanyRole routePath="/lucrari/fisa">
-            <EstimateWorkSheetPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'smete',
-        element: (
-          <RequireCompanyRole routePath="/smete">
-            <CompanyEstimatesPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'smete/new',
-        element: (
-          <RequireCompanyRole routePath="/smete">
-            <CompanyEstimateWizardPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'smete/:id',
-        element: (
-          <RequireCompanyRole routePath="/smete">
-            <CompanyEstimateWizardPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'oferte',
-        element: (
-          <RequireCompanyRole routePath="/oferte">
-            <CompanyQuotesPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'servicii',
-        element: (
-          <RequireCompanyRole routePath="/servicii">
-            <CompanyServicesPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'facturi',
-        element: (
-          <RequireCompanyRole routePath="/facturi">
-            <CompanyInvoicesPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'recenzii',
-        element: (
-          <RequireCompanyRole routePath="/recenzii">
-            <CompanyReviewsPage />
-          </RequireCompanyRole>
-        ),
-      },
-      {
-        path: 'subscription',
-        element: (
-          <RequireCompanyRole routePath="/subscription">
-            <CompanySubscriptionPage />
-          </RequireCompanyRole>
-        ),
-      },
-    ],
-  },
-  {
-    path: 'portal',
-    element: (
-      <RequireAuth kinds={['END_CLIENT']}>
-        <PortalLayout />
-      </RequireAuth>
-    ),
-    children: [
-      { index: true, element: <PortalDashboardPage /> },
-      { path: 'cereri', element: <PortalCereriPage /> },
-      { path: 'lucrari', element: <PortalLucrariPage /> },
-      { path: 'oferte', element: <PortalOfertePage /> },
-      { path: 'smete', element: <PortalSmetePage /> },
-      { path: 'facturi', element: <PortalFacturiPage /> },
-    ],
-  },
-  {
-    path: 'admin',
-    element: (
-      <RequireAuth kinds={['PLATFORM_ADMIN']}>
-        <AdminLayout />
-      </RequireAuth>
-    ),
-    children: [
-      { index: true, element: <AdminHomePage /> },
-      { path: 'companies', element: <AdminCompaniesPage /> },
-      { path: 'subscriptions', element: <AdminSubscriptionsPage /> },
-      { path: 'waitlist', element: <AdminWaitlistPage /> },
-      { path: 'reviews', element: <AdminReviewsPage /> },
-      { path: 'audit', element: <AdminAuditPage /> },
-      { path: 'cities', element: <AdminCitiesPage /> },
-      { path: 'categories', element: <AdminCategoriesPage /> },
-      { path: 'clients', element: <AdminClientsPage /> },
-    ],
-  },
-  { path: '*', element: <Navigate to="/" replace /> },
+      { path: '*', element: <Navigate to={ROUTE_ABS.HOME} replace /> },
     ],
   },
 ]);

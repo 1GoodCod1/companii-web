@@ -5,7 +5,11 @@ import {
   useClaimFreePlanMutation,
 } from '@/features/subscriptions/api/useSubscriptions';
 import { PlanCards } from '@/features/subscriptions/components/PlanCards';
-import type { CompanyPlanDto, CompanySubscriptionDto, CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
+import type { CompanyPlanDto, CompanySubscriptionDto, ClaimableSubscriptionPlanCode, CompanySubscriptionPlanCode } from '@/types/subscriptions';
+import {
+  isOnFreePlan,
+  isProToBusinessUpgrade,
+} from '@/utils/subscriptionPlan';
 import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
@@ -29,14 +33,14 @@ export function SubscriptionsPage() {
   const plans = (data ?? []) as CompanyPlanDto[];
   const subscription = subData as CompanySubscriptionDto | null | undefined;
   const currentPlanCode = hasCompany ? subscription?.plan?.code : undefined;
-  const onFreePlan = !currentPlanCode || currentPlanCode === 'FREE';
+  const onFreePlan = isOnFreePlan(currentPlanCode);
 
-  const handleClaimFree = async (planCode: Extract<CompanySubscriptionPlanCode, 'PRO' | 'BUSINESS'>) => {
+  const handleClaimFree = async (planCode: ClaimableSubscriptionPlanCode) => {
     setClaimingPlanCode(planCode);
     try {
       await claimFree.mutateAsync(planCode);
       toast.success(
-        currentPlanCode === 'PRO' && planCode === 'BUSINESS'
+        isProToBusinessUpgrade(currentPlanCode, planCode)
           ? 'Planul Business a fost activat. Pro a fost înlocuit automat.'
           : `Planul ${planCode} a fost activat gratuit pentru 30 de zile!`,
       );

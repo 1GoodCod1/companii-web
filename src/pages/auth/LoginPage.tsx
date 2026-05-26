@@ -13,6 +13,15 @@ import {
 } from '@/features/companies/api/useCompanies';
 import { getAuthErrorMessage } from '@/features/auth/authErrors';
 import { useAuthStore } from '@/stores/authStore';
+import { ACCOUNT_KIND } from '@/constants/roles.constants';
+import { COMPANY_ROUTE, PUBLIC_ROUTE, ROUTE_ABS } from '@/constants/routes.constants';
+import { companyAbsolutePath } from '@/utils/routes';
+import {
+  isCompanyStaffAccount,
+  isEndClientAccount,
+  isManagerRole,
+  isPlatformAdminAccount,
+} from '@/utils/roles';
 import { resolveCompanyHomeRoute } from '@/features/companies/companyHomeRoute';
 
 export function LoginPage() {
@@ -38,12 +47,12 @@ export function LoginPage() {
 
   useEffect(() => {
     if (user && accessToken) {
-      if (safeReturnUrl && user.accountKind === 'END_CLIENT') {
+      if (safeReturnUrl && isEndClientAccount(user.accountKind)) {
         nav(safeReturnUrl, { replace: true });
         return;
       }
-      if (user.accountKind === 'END_CLIENT') nav('/portal', { replace: true });
-      else if (user.accountKind === 'PLATFORM_ADMIN') nav('/admin', { replace: true });
+      if (isEndClientAccount(user.accountKind)) nav(ROUTE_ABS.PORTAL, { replace: true });
+      else if (isPlatformAdminAccount(user.accountKind)) nav(ROUTE_ABS.ADMIN, { replace: true });
       else {
         nav(
           resolveCompanyHomeRoute({
@@ -72,7 +81,7 @@ export function LoginPage() {
         {teamPreview ? (
           <p className="mb-4 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-xs font-semibold text-indigo-800">
             Invitație în echipa <strong>{teamPreview.companyName}</strong> ca{' '}
-            <strong>{teamPreview.role === 'MANAGER' ? 'Manager' : 'Tehnician'}</strong>.
+            <strong>{isManagerRole(teamPreview.role) ? 'Manager' : 'Tehnician'}</strong>.
           </p>
         ) : null}
 
@@ -96,18 +105,18 @@ export function LoginPage() {
                 password,
                 rememberMe,
               });
-              if (inviteToken && res.user.accountKind === 'END_CLIENT') {
+              if (inviteToken && isEndClientAccount(res.user.accountKind)) {
                 await acceptInvite.mutateAsync(inviteToken);
                 toast.success('Invitația a fost acceptată.');
               }
-              if (teamInviteToken && res.user.accountKind === 'COMPANY_STAFF') {
+              if (teamInviteToken && isCompanyStaffAccount(res.user.accountKind)) {
                 await acceptTeamInvite.mutateAsync(teamInviteToken);
                 toast.success('Ai intrat în echipă!');
               }
-              if (res.user.accountKind === 'END_CLIENT') {
-                nav(safeReturnUrl ?? '/portal');
-              } else if (res.user.accountKind === 'PLATFORM_ADMIN') nav('/admin');
-              else if (teamInviteToken) nav('/company/team');
+              if (isEndClientAccount(res.user.accountKind)) {
+                nav(safeReturnUrl ?? ROUTE_ABS.PORTAL);
+              } else if (isPlatformAdminAccount(res.user.accountKind)) nav(ROUTE_ABS.ADMIN);
+              else if (teamInviteToken) nav(companyAbsolutePath(COMPANY_ROUTE.TEAM));
               else {
                 nav(
                   resolveCompanyHomeRoute({
@@ -188,10 +197,10 @@ export function LoginPage() {
           <Link
             to={
               teamInviteToken
-                ? `/register?teamInvite=${encodeURIComponent(teamInviteToken)}&kind=COMPANY_STAFF`
+                ? `/register?teamInvite=${encodeURIComponent(teamInviteToken)}&kind=${ACCOUNT_KIND.COMPANY_STAFF}`
                 : inviteToken
-                  ? `/register?invite=${encodeURIComponent(inviteToken)}&kind=END_CLIENT`
-                  : '/register'
+                  ? `/register?invite=${encodeURIComponent(inviteToken)}&kind=${ACCOUNT_KIND.END_CLIENT}`
+                  : `/${PUBLIC_ROUTE.REGISTER}`
             }
             className="text-violet-600 hover:text-violet-700 font-bold transition-colors"
           >

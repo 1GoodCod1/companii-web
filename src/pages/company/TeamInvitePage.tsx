@@ -7,10 +7,8 @@ import {
 } from '@/features/companies/api/useCompanies';
 import { useAuthStore } from '@/stores/authStore';
 
-const ROLE_LABELS: Record<string, string> = {
-  MANAGER: 'Manager',
-  MEMBER: 'Tehnician',
-};
+import { TEAM_INVITE_ROLE_LABELS } from '@/constants/team.constants';
+import { getErrorMessage } from '@/utils/errors';
 
 export function TeamInvitePage() {
   const [params] = useSearchParams();
@@ -35,7 +33,7 @@ export function TeamInvitePage() {
       toast.success('Ai intrat în echipă!');
       nav('/company/team', { replace: true });
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Nu s-a putut accepta invitația.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut accepta invitația.'));
     }
   };
 
@@ -63,7 +61,7 @@ export function TeamInvitePage() {
   }
 
   const registerHref = `/register?teamInvite=${encodeURIComponent(token)}&kind=COMPANY_STAFF`;
-  const roleLabel = ROLE_LABELS[data.role] ?? data.role;
+  const roleLabel = TEAM_INVITE_ROLE_LABELS[data.role] ?? data.role;
 
   return (
     <div className="max-w-lg mx-auto py-20 px-4 animate-fade-in">

@@ -10,7 +10,7 @@ import type {
   EstimateProjectListDto,
   Plan2dData,
   WorkSheetDto,
-} from '../types';
+} from '@/types/estimates';
 
 const base = '/estimates';
 

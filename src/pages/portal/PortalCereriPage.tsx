@@ -8,36 +8,12 @@ import {
   SoftBadge,
 } from '@/components/cabinet/cabinet-ui';
 import { usePortalLeadsQuery } from '@/features/portal/api/usePortal';
-import type { PortalLeadDto } from '@/features/portal/api/usePortal';
-
-const LEAD_STATUS_LABELS: Record<PortalLeadDto['status'], string> = {
-  NEW: 'Nouă',
-  CONTACTED: 'Contactată',
-  QUALIFIED: 'Calificată',
-  IN_PROGRESS: 'În lucru',
-  CONVERTED: 'Finalizată',
-  LOST: 'Pierdută',
-};
-
-const LEAD_STATUS_TONES: Record<
-  PortalLeadDto['status'],
-  'gray' | 'amber' | 'blue' | 'emerald' | 'violet'
-> = {
-  NEW: 'amber',
-  CONTACTED: 'blue',
-  QUALIFIED: 'violet',
-  IN_PROGRESS: 'blue',
-  CONVERTED: 'emerald',
-  LOST: 'gray',
-};
-
-const LEAD_SOURCE_LABELS: Record<PortalLeadDto['source'], string> = {
-  SERVICE_REQUEST: 'Cerere serviciu',
-  PROJECT_REQUEST: 'Cerere proiect',
-  MANUAL: 'Cerere manuală',
-  PHONE: 'Telefon',
-  WEBSITE: 'Site',
-};
+import { formatDateRo } from '@/utils/date';
+import {
+  LEAD_STATUS_LABELS,
+  LEAD_STATUS_TONES,
+  PORTAL_LEAD_SOURCE_LABELS,
+} from '@/constants/leads.constants';
 
 export function PortalCereriPage() {
   const { data: leads, isLoading, isError } = usePortalLeadsQuery();
@@ -85,7 +61,7 @@ export function PortalCereriPage() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="space-y-1 min-w-0">
                     <p className="text-sm font-bold text-gray-900 truncate">
-                      {lead.serviceTitle || LEAD_SOURCE_LABELS[lead.source]}
+                      {lead.serviceTitle || PORTAL_LEAD_SOURCE_LABELS[lead.source]}
                     </p>
                     <Link
                       to={`/companies/${lead.company.slug}`}
@@ -98,7 +74,7 @@ export function PortalCereriPage() {
                     <SoftBadge tone={LEAD_STATUS_TONES[lead.status]}>
                       {LEAD_STATUS_LABELS[lead.status]}
                     </SoftBadge>
-                    <SoftBadge tone="gray">{LEAD_SOURCE_LABELS[lead.source]}</SoftBadge>
+                    <SoftBadge tone="gray">{PORTAL_LEAD_SOURCE_LABELS[lead.source]}</SoftBadge>
                   </div>
                 </div>
 
@@ -117,11 +93,7 @@ export function PortalCereriPage() {
                   ) : null}
                   {lead.address ? <span>{lead.address}</span> : null}
                   <span>
-                    {new Date(lead.createdAt).toLocaleDateString('ro-RO', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    {formatDateRo(lead.createdAt, 'medium')}
                   </span>
                 </div>
               </article>

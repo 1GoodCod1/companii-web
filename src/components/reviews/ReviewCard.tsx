@@ -1,5 +1,6 @@
 import { StarRating } from '@/components/reviews/StarRating';
-import type { CompanyReviewDto } from '@/features/reviews/types';
+import type { CompanyReviewDto } from '@/types/reviews';
+import { formatDateRo } from '@/utils/date';
 
 type ReviewCardProps = {
   review: CompanyReviewDto;
@@ -7,11 +8,7 @@ type ReviewCardProps = {
 
 export function ReviewCard({ review }: ReviewCardProps) {
   const author = review.clientName?.trim() || 'Client verificat';
-  const date = new Date(review.createdAt).toLocaleDateString('ro-MD', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  const date = formatDateRo(review.createdAt, 'long');
 
   return (
     <article className="rounded-2xl bg-white/60 p-4 shadow-xs hover:bg-violet-50/20 transition-colors">

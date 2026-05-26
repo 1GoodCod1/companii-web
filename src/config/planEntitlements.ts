@@ -1,63 +1,67 @@
-import type { CompanyPlanDto, CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
-
-/** Keep route gates in sync with companii-api plan-entitlements.constants.ts */
-export const PLAN_RANK: Record<CompanySubscriptionPlanCode, number> = {
-  FREE: 0,
-  PRO: 1,
-  BUSINESS: 2,
-};
-
-export function hasMinPlan(
-  current: CompanySubscriptionPlanCode | undefined,
-  required: CompanySubscriptionPlanCode,
-): boolean {
-  if (!current) return required === 'FREE';
-  return PLAN_RANK[current] >= PLAN_RANK[required];
-}
-
-/** Cabinet routes → minimum plan (null = any active plan). */
-export const COMPANY_ROUTE_MIN_PLAN: Record<string, CompanySubscriptionPlanCode | null> = {
-  '': null,
-  '/profile': null,
-  '/team': null,
-  '/servicii': 'FREE',
-  '/lucrari': 'FREE',
-  '/lucrari/fisa': 'PRO',
-  '/calendar': 'FREE',
-  '/recenzii': 'FREE',
-  '/cereri': 'PRO',
-  '/clienti': 'PRO',
-  '/smete': 'BUSINESS',
-  '/oferte': 'BUSINESS',
-  '/facturi': 'BUSINESS',
-  '/subscription': null,
-};
-
-export function requiredPlanForRoute(routePath: string): CompanySubscriptionPlanCode | null {
-  return COMPANY_ROUTE_MIN_PLAN[routePath] ?? null;
-}
-
-export const PLAN_LABELS: Record<CompanySubscriptionPlanCode, string> = {
-  FREE: 'Free',
-  PRO: 'Pro',
-  BUSINESS: 'Business',
-};
-
-export function canActivatePlan(
-  current: CompanySubscriptionPlanCode | undefined,
-  target: CompanySubscriptionPlanCode,
-): boolean {
-  if (target === 'FREE') return false;
-  if (!current || current === 'FREE') return target === 'PRO' || target === 'BUSINESS';
-  if (current === 'PRO') return target === 'BUSINESS';
-  return false;
-}
-
-export function plansForDisplay(
-  plans: CompanyPlanDto[],
-  currentPlanCode?: CompanySubscriptionPlanCode,
-): CompanyPlanDto[] {
-  const sorted = [...plans].sort((a, b) => Number(a.price) - Number(b.price));
-  if (!currentPlanCode || currentPlanCode === 'FREE') return sorted;
-  return sorted.filter((plan) => plan.code === currentPlanCode);
-}
+import type { CompanyPlanDto, CompanySubscriptionPlanCode } from '@/types/subscriptions';
+import {
+  isOnFreePlan,
+  isProPlan,
+  isClaimablePlanCode,
+} from '@/utils/subscriptionPlan';
+import {
+  PLAN_RANK,
+  SUBSCRIPTION_PLAN,
+} from '@/constants/subscriptions.constants';
+import { COMPANY_CABINET_PATH } from '@/constants/routes.constants';
+export {
+  PLAN_LABELS,
+  PLAN_RANK,
+  SUBSCRIPTION_PLAN,
+} from '@/constants/subscriptions.constants';
+
+export function hasMinPlan(
+  current: CompanySubscriptionPlanCode | undefined,
+  required: CompanySubscriptionPlanCode,
+): boolean {
+  if (!current) return required === SUBSCRIPTION_PLAN.FREE;
+  return PLAN_RANK[current] >= PLAN_RANK[required];
+};
+
+/** Cabinet routes → minimum plan (null = any active plan). */
+export const COMPANY_ROUTE_MIN_PLAN: Record<string, CompanySubscriptionPlanCode | null> = {
+  [COMPANY_CABINET_PATH.DASHBOARD]: null,
+  [COMPANY_CABINET_PATH.PROFILE]: null,
+  [COMPANY_CABINET_PATH.TEAM]: null,
+  [COMPANY_CABINET_PATH.SERVICII]: SUBSCRIPTION_PLAN.FREE,
+  [COMPANY_CABINET_PATH.LUCRARI]: SUBSCRIPTION_PLAN.FREE,
+  [COMPANY_CABINET_PATH.LUCRARI_FISA]: SUBSCRIPTION_PLAN.PRO,
+  [COMPANY_CABINET_PATH.CALENDAR]: SUBSCRIPTION_PLAN.FREE,
+  [COMPANY_CABINET_PATH.RECENZII]: SUBSCRIPTION_PLAN.FREE,
+  [COMPANY_CABINET_PATH.CERERI]: SUBSCRIPTION_PLAN.PRO,
+  [COMPANY_CABINET_PATH.CLIENTI]: SUBSCRIPTION_PLAN.PRO,
+  [COMPANY_CABINET_PATH.SMETE]: SUBSCRIPTION_PLAN.BUSINESS,
+  [COMPANY_CABINET_PATH.OFERTE]: SUBSCRIPTION_PLAN.BUSINESS,
+  [COMPANY_CABINET_PATH.FACTURI]: SUBSCRIPTION_PLAN.BUSINESS,
+  [COMPANY_CABINET_PATH.SUBSCRIPTION]: null,
+};
+
+export function requiredPlanForRoute(routePath: string): CompanySubscriptionPlanCode | null {
+  return COMPANY_ROUTE_MIN_PLAN[routePath] ?? null;
+}
+
+export function canActivatePlan(
+  current: CompanySubscriptionPlanCode | undefined,
+  target: CompanySubscriptionPlanCode,
+): boolean {
+  if (target === SUBSCRIPTION_PLAN.FREE) return false;
+  if (isOnFreePlan(current)) return isClaimablePlanCode(target);
+  if (isProPlan(current)) return target === SUBSCRIPTION_PLAN.BUSINESS;
+  return false;
+};
+
+export function plansForDisplay(
+  plans: CompanyPlanDto[],
+  currentPlanCode?: CompanySubscriptionPlanCode,
+): CompanyPlanDto[] {
+  const sorted = [...plans].sort((a, b) => Number(a.price) - Number(b.price));
+  if (isOnFreePlan(currentPlanCode)) return sorted;
+  return sorted.filter((plan) => plan.code === currentPlanCode);
+};
+
+

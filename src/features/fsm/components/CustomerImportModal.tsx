@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Download, FileSpreadsheet, Upload } from 'lucide-react';
 import { AppModal } from '@/components/ui/AppModal';
+import { getErrorMessage } from '@/utils/errors';
 import {
   cabinetBtnPrimary,
   cabinetBtnSecondary,
@@ -10,29 +11,15 @@ import {
   SoftBadge,
 } from '@/components/cabinet/cabinet-ui';
 import {
+  CUSTOMER_IMPORT_ACTION_LABELS,
+  CUSTOMER_IMPORT_ACTION_TONES,
+} from '@/constants/customerImport.constants';
+import {
   downloadCustomerImportTemplate,
   useConfirmCustomerImportMutation,
   usePreviewCustomerImportMutation,
   type CustomerImportPreviewResult,
-  type CustomerImportPreviewRow,
 } from '@/features/fsm/api/useCustomerImport';
-
-const ACTION_LABELS: Record<CustomerImportPreviewRow['action'], string> = {
-  create: 'Nou',
-  update: 'Actualizare',
-  skip: 'Omis',
-  error: 'Eroare',
-};
-
-const ACTION_TONES: Record<
-  CustomerImportPreviewRow['action'],
-  'emerald' | 'blue' | 'gray' | 'amber'
-> = {
-  create: 'emerald',
-  update: 'blue',
-  skip: 'gray',
-  error: 'amber',
-};
 
 type Props = {
   open: boolean;
@@ -62,7 +49,7 @@ export function CustomerImportModal({ open, onClose }: Props) {
       await downloadCustomerImportTemplate(format);
       toast.success(format === 'xlsx' ? 'Șablon Excel descărcat.' : 'Șablon CSV descărcat.');
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Nu s-a putut descărca șablonul.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut descărca șablonul.'));
     }
   };
 
@@ -81,7 +68,7 @@ export function CustomerImportModal({ open, onClose }: Props) {
       }
     } catch (err: unknown) {
       setPreview(null);
-      toast.error((err as Error).message || 'Nu s-a putut analiza fișierul.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut analiza fișierul.'));
     }
   };
 
@@ -112,7 +99,7 @@ export function CustomerImportModal({ open, onClose }: Props) {
       );
       handleClose();
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Importul a eșuat.');
+      toast.error(getErrorMessage(err, 'Importul a eșuat.'));
     }
   };
 
@@ -207,8 +194,8 @@ export function CustomerImportModal({ open, onClose }: Props) {
                         {row.address}
                       </td>
                       <td className="p-2 space-y-1">
-                        <SoftBadge tone={ACTION_TONES[row.action]}>
-                          {ACTION_LABELS[row.action]}
+                        <SoftBadge tone={CUSTOMER_IMPORT_ACTION_TONES[row.action]}>
+                          {CUSTOMER_IMPORT_ACTION_LABELS[row.action]}
                         </SoftBadge>
                         {row.reason ? (
                           <p className="text-[10px] text-gray-400 leading-snug">{row.reason}</p>

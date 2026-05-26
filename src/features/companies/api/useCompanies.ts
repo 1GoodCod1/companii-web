@@ -10,14 +10,16 @@ import { queryKeys } from '@/api/queryKeys';
 import { refreshAuthSession } from '@/features/auth/api/useAuth';
 import { useAuthStore } from '@/stores/authStore';
 import { useCompanyContextStore } from '@/stores/companyContextStore';
-import type { AuthUserSnapshot } from '@/features/auth/types';
-import type { CompanyMemberDto } from '@/features/fsm/types';
+import type { AuthUserSnapshot } from '@/types/auth';
+import type { CompanyMemberDto } from '@/types/fsm';
+import { COMPANY_ROLE } from '@/constants/roles.constants';
+import type { CompanyRole, InvitableCompanyRole } from '@/types/roles';
 import type {
   CatalogOptionDto,
   CompaniesListResponse,
   CompanyMeResponse,
   PublicCompanyDetailDto,
-} from '@/features/companies/types';
+} from '@/types/companies';
 
 export function useCompaniesListQuery(
   filters: Record<string, string | undefined> = {},
@@ -43,7 +45,7 @@ export function useCompanyMeQuery(): UseQueryResult<CompanyMeResponse, Error> {
 export function useCompanyMembersQuery(options?: { enabled?: boolean }): UseQueryResult<CompanyMemberDto[], Error> {
   const enabled = options?.enabled ?? true;
   return useQuery<CompanyMemberDto[], Error>({
-    queryKey: ['companies', 'members'] as const,
+    queryKey: queryKeys.companies.members,
     queryFn: () => apiFetch<CompanyMemberDto[]>('/companies/members/list'),
     ...cabinetQueryDefaults,
     enabled,
@@ -53,7 +55,7 @@ export function useCompanyMembersQuery(options?: { enabled?: boolean }): UseQuer
 export interface CompanyInvitationDto {
   id: string;
   invitedEmail: string | null;
-  role: 'OWNER' | 'MANAGER' | 'MEMBER';
+  role: CompanyRole;
   status: string;
   token: string;
   expiresAt: string;
@@ -70,7 +72,7 @@ export interface TeamInviteLinkResponse extends CompanyInvitationDto {
 export interface TeamInvitePreviewDto {
   token: string;
   expiresAt: string;
-  role: 'OWNER' | 'MANAGER' | 'MEMBER';
+  role: CompanyRole;
   invitedEmail: string | null;
   companyName: string;
   companySlug: string;
@@ -84,7 +86,7 @@ export function buildTeamInviteUrl(token: string): string {
 
 export function useCompanyInvitationsQuery(): UseQueryResult<CompanyInvitationDto[], Error> {
   return useQuery<CompanyInvitationDto[], Error>({
-    queryKey: ['companies', 'invitations'] as const,
+    queryKey: queryKeys.companies.invitations,
     queryFn: () => apiFetch<CompanyInvitationDto[]>('/companies/members/invitations'),
     ...cabinetQueryDefaults,
   });
@@ -93,13 +95,13 @@ export function useCompanyInvitationsQuery(): UseQueryResult<CompanyInvitationDt
 export function useCreateTeamInviteLinkMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: { role: 'MANAGER' | 'MEMBER'; email?: string }) =>
+    mutationFn: (body: { role: InvitableCompanyRole; email?: string }) =>
       apiFetch<TeamInviteLinkResponse>('/companies/members/invite-link', {
         method: 'POST',
         body: JSON.stringify(body),
       }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ['companies', 'invitations'] });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.invitations });
     },
   });
 }
@@ -107,21 +109,21 @@ export function useCreateTeamInviteLinkMutation() {
 export function useAddTeamMemberDirectMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: { contact: string; role: 'MANAGER' | 'MEMBER' }) =>
+    mutationFn: (body: { contact: string; role: InvitableCompanyRole }) =>
       apiFetch('/companies/members/add-direct', {
         method: 'POST',
         body: JSON.stringify(body),
       }),
     onSuccess: async () => {
-      void qc.invalidateQueries({ queryKey: ['companies', 'invitations'] });
-      void qc.invalidateQueries({ queryKey: ['companies', 'members'] });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.invitations });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.members });
     },
   });
 }
 
 export function useTeamInvitePreviewQuery(token: string) {
   return useQuery<TeamInvitePreviewDto, Error>({
-    queryKey: ['team', 'invite-preview', token],
+    queryKey: queryKeys.companies.teamInvitePreview(token),
     queryFn: () =>
       apiFetch<TeamInvitePreviewDto>(
         `/companies/members/invitations/preview?token=${encodeURIComponent(token)}`,
@@ -141,7 +143,7 @@ export function useAcceptTeamInvitationMutation() {
       }),
     onSuccess: async () => {
       await refreshAuthSession();
-      void qc.invalidateQueries({ queryKey: ['companies', 'members'] });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.members });
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: queryKeys.auth.me });
     },
@@ -150,7 +152,7 @@ export function useAcceptTeamInvitationMutation() {
 
 export function useCitiesQuery(): UseQueryResult<CatalogOptionDto[], Error> {
   return useQuery<CatalogOptionDto[], Error>({
-    queryKey: ['companies', 'cities'] as const,
+    queryKey: queryKeys.companies.cities,
     queryFn: () => apiFetch<CatalogOptionDto[]>('/companies/cities'),
     ...publicListQueryOptions,
   });
@@ -158,7 +160,7 @@ export function useCitiesQuery(): UseQueryResult<CatalogOptionDto[], Error> {
 
 export function useCategoriesQuery(): UseQueryResult<CatalogOptionDto[], Error> {
   return useQuery<CatalogOptionDto[], Error>({
-    queryKey: ['companies', 'categories'] as const,
+    queryKey: queryKeys.companies.categories,
     queryFn: () => apiFetch<CatalogOptionDto[]>('/companies/categories'),
     ...publicListQueryOptions,
   });
@@ -187,7 +189,7 @@ export function useCreateCompanyMutation() {
         setTokens(accessToken, {
           ...user,
           activeCompanyId: company.id,
-          companyRole: user.companyRole ?? 'OWNER',
+          companyRole: user.companyRole ?? COMPANY_ROLE.OWNER,
         });
       }
       await refreshAuthSession();
@@ -276,8 +278,8 @@ export function useSwitchCompanyMutation() {
       setTokens(session.accessToken, session.user);
       await refreshAuthSession();
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
-      void qc.invalidateQueries({ queryKey: ['companies', 'members'] });
-      void qc.invalidateQueries({ queryKey: ['companies', 'invitations'] });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.members });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.invitations });
       void qc.invalidateQueries({ queryKey: queryKeys.subscriptions.me });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.customers });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
@@ -289,13 +291,13 @@ export function useSwitchCompanyMutation() {
 export function useUpdateMemberRoleMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ memberId, role }: { memberId: string; role: 'MANAGER' | 'MEMBER' }) =>
+    mutationFn: ({ memberId, role }: { memberId: string; role: InvitableCompanyRole }) =>
       apiFetch(`/companies/members/${memberId}/role`, {
         method: 'PATCH',
         body: JSON.stringify({ role }),
       }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ['companies', 'members'] });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.members });
     },
   });
 }
@@ -306,7 +308,7 @@ export function useDeactivateMemberMutation() {
     mutationFn: (memberId: string) =>
       apiFetch(`/companies/members/${memberId}/deactivate`, { method: 'POST' }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ['companies', 'members'] });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.members });
     },
   });
 }
@@ -317,7 +319,7 @@ export function useRevokeInvitationMutation() {
     mutationFn: (invitationId: string) =>
       apiFetch(`/companies/members/invitations/${invitationId}`, { method: 'DELETE' }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ['companies', 'invitations'] });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.invitations });
     },
   });
 }
@@ -339,7 +341,7 @@ export function useTransferOwnershipMutation() {
     onSuccess: async () => {
       await refreshAuthSession();
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
-      void qc.invalidateQueries({ queryKey: ['companies', 'members'] });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.members });
     },
   });
 }
@@ -357,7 +359,7 @@ export function useLeaveCompanyMutation() {
       setTokens(session.accessToken, session.user);
       await refreshAuthSession();
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
-      void qc.invalidateQueries({ queryKey: ['companies', 'members'] });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.members });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
     },
   });

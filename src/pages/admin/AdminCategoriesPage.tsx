@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/components/ui/AppModal';
+import { getErrorMessage } from '@/utils/errors';
 import {
   PageHero,
   Panel,
@@ -68,7 +69,7 @@ export function AdminCategoriesPage() {
       }
       setModalOpen(false);
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Operația a eșuat.');
+      toast.error(getErrorMessage(err, 'Operația a eșuat.'));
     }
   };
 
@@ -78,7 +79,7 @@ export function AdminCategoriesPage() {
       await deleteCategory.mutateAsync(category.id);
       toast.success('Categoria a fost ștearsă.');
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Nu s-a putut șterge categoria.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut șterge categoria.'));
     }
   };
 

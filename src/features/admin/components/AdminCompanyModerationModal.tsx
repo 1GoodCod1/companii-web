@@ -14,28 +14,12 @@ import {
   useRejectCompanyMutation,
   useUnpublishCompanyMutation,
   useVerifyCompanyMutation,
-  type AdminAuditLogDto,
   type AdminCompanyDto,
 } from '@/features/admin/api/useAdmin';
-
-function formatUserName(user?: AdminAuditLogDto['user']) {
-  if (!user) return 'Sistem';
-  const name = [user.firstName, user.lastName].filter(Boolean).join(' ');
-  return name || user.email;
-}
-
-function auditActionLabel(action: string): string {
-  const labels: Record<string, string> = {
-    COMPANY_VERIFIED: 'Companie verificată',
-    COMPANY_REJECTED: 'Companie respinsă',
-    COMPANY_UNPUBLISHED: 'Publicare retrasă',
-    COMPANY_PUBLISHED: 'Companie publicată',
-    SUBSCRIPTION_CHANGED: 'Plan abonament schimbat',
-    REVIEW_MODERATED: 'Recenzie moderată',
-    COMPANY_CREATED: 'Companie creată',
-  };
-  return labels[action] ?? action;
-}
+import { auditActionLabel } from '@/utils/audit';
+import { formatAuditActorName, formatPersonNameOrDash } from '@/utils/person';
+import { formatDateTimeRo } from '@/utils/date';
+import { getErrorMessage } from '@/utils/errors';
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -73,7 +57,7 @@ function CompanyModerationContent({
       toast.success(`Compania „${company.name}” a fost verificată.`);
       onClose();
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Verificarea a eșuat.');
+      toast.error(getErrorMessage(err, 'Verificarea a eșuat.'));
     }
   };
 
@@ -84,7 +68,7 @@ function CompanyModerationContent({
       toast.success(`Compania „${company.name}” a fost respinsă.`);
       onClose();
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Respingerea a eșuat.');
+      toast.error(getErrorMessage(err, 'Respingerea a eșuat.'));
     }
   };
 
@@ -94,7 +78,7 @@ function CompanyModerationContent({
       await unpublishCompany.mutateAsync({ companyId: company.id, note: note || undefined });
       toast.success(`Publicarea companiei „${company.name}” a fost retrasă.`);
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Nu s-a putut retrage publicarea.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut retrage publicarea.'));
     }
   };
 
@@ -149,7 +133,7 @@ function CompanyModerationContent({
       <div className="rounded-xl border border-gray-100 bg-slate-50/80 p-4 space-y-2">
         <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Proprietar cont</p>
         <p className="text-sm font-semibold text-gray-900">
-          {[company.owner?.firstName, company.owner?.lastName].filter(Boolean).join(' ') || '—'}
+          {formatPersonNameOrDash(company.owner)}
         </p>
         <p className="text-sm text-gray-600">{company.owner?.email}</p>
         {company.owner?.phone ? <p className="text-sm text-gray-600">{company.owner.phone}</p> : null}
@@ -248,10 +232,10 @@ function CompanyModerationContent({
                 <div className="flex justify-between gap-2">
                   <span className="font-semibold text-gray-800">{auditActionLabel(entry.action)}</span>
                   <span className="text-gray-400 shrink-0">
-                    {new Date(entry.createdAt).toLocaleString('ro-MD')}
+                    {formatDateTimeRo(entry.createdAt)}
                   </span>
                 </div>
-                <p className="text-gray-500 mt-0.5">{formatUserName(entry.user)}</p>
+                <p className="text-gray-500 mt-0.5">{formatAuditActorName(entry.user)}</p>
                 {entry.newData &&
                 typeof entry.newData === 'object' &&
                 'note' in entry.newData &&

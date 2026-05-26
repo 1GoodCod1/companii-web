@@ -15,7 +15,7 @@ function pick(...vals: Array<string | undefined | null>): string | undefined {
 export const env: AppEnv = Object.freeze({
   apiUrl:
     pick(import.meta.env.VITE_API_URL) ??
-    (import.meta.env.DEV ? '/api/v1' : 'https://api.companii.faber.md/api/v1'),
+    (import.meta.env.DEV ? '/api/v1' : 'https://api.faber.md/api/v1'),
   envName: pick(import.meta.env.VITE_ENV) ?? import.meta.env.MODE ?? 'development',
   useHttpOnly: (() => {
     const explicit = import.meta.env.VITE_USE_HTTPONLY_COOKIE;

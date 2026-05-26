@@ -3,9 +3,8 @@ import toast from 'react-hot-toast';
 import { useAdminCompaniesQuery, type AdminCompanyDto } from '@/features/admin/api/useAdmin';
 import { AdminCompanyModerationModal } from '@/features/admin/components/AdminCompanyModerationModal';
 import { useAdminSetCompanyPlanMutation } from '@/features/subscriptions/api/useSubscriptions';
-import type { CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
-
-const PLAN_OPTIONS: CompanySubscriptionPlanCode[] = ['FREE', 'PRO', 'BUSINESS'];
+import { DEFAULT_SUBSCRIPTION_PLAN, SUBSCRIPTION_PLAN_CODES } from '@/constants/subscriptions.constants';
+import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
 
 export function AdminCompaniesPage() {
   const [params, setParams] = useSearchParams();
@@ -81,14 +80,14 @@ export function AdminCompaniesPage() {
                     <td className="px-6 py-4 text-gray-600">{company.city?.name ?? '—'}</td>
                     <td className="px-6 py-4">
                       <select
-                        value={company.subscription?.plan?.code ?? 'FREE'}
+                        value={company.subscription?.plan?.code ?? DEFAULT_SUBSCRIPTION_PLAN}
                         onChange={(e) =>
                           handleSetPlan(company.id, e.target.value as CompanySubscriptionPlanCode)
                         }
                         disabled={setPlan.isPending}
                         className="border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-wider bg-white"
                       >
-                        {PLAN_OPTIONS.map((code) => (
+                        {SUBSCRIPTION_PLAN_CODES.map((code) => (
                           <option key={code} value={code}>
                             {code}
                           </option>

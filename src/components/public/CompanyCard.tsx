@@ -7,7 +7,7 @@ import {
   companyCoverImage,
   companyInitials,
   type PublicCompanyListItemDto,
-} from '@/features/companies/types';
+} from '@/types/companies';
 import { MediaImage } from '@/components/ui/MediaImage';
 
 const COVER_GRADIENTS = [

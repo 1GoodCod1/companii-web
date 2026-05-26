@@ -6,6 +6,7 @@ import {
   usePortalInvitePreviewQuery,
 } from '@/features/portal/api/usePortal';
 import { useAuthStore } from '@/stores/authStore';
+import { getErrorMessage } from '@/utils/errors';
 
 export function PortalInvitePage() {
   const [params] = useSearchParams();
@@ -30,7 +31,7 @@ export function PortalInvitePage() {
       toast.success('Contul tău a fost legat de profilul client.');
       nav('/portal', { replace: true });
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Nu s-a putut accepta invitația.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut accepta invitația.'));
     }
   };
 

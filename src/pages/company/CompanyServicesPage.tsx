@@ -1,49 +1,29 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { AppModal } from '@/components/ui/AppModal';
-import {
-  PageHero,
-  Panel,
-  PanelHeader,
-  EmptyState,
-  SoftBadge,
-  cabinetBtnPrimary,
-  cabinetBtnSecondary,
-  cabinetFieldClass,
-  cabinetLabelClass,
-  cabinetSelectClass,
-} from '@/components/cabinet/cabinet-ui';
-import {
-  DURATION_UNIT_OPTIONS,
-  durationFormToMinutes,
-  formatServiceDuration,
-  minutesToDurationForm,
-  type DurationUnit,
-} from '@/utils/serviceDuration';
+import { PageHero, Panel, PanelHeader, cabinetBtnPrimary } from '@/components/cabinet/cabinet-ui';
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
 import { useCategoriesQuery } from '@/features/companies/api/useCompanies';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
 import { useMySubscriptionQuery } from '@/features/subscriptions/api/useSubscriptions';
 import { hasMinPlan } from '@/config/planEntitlements';
-import type { CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
+import { SUBSCRIPTION_PLAN } from '@/constants/subscriptions.constants';
 import {
   useCompanyServicesQuery,
   useCreateCompanyServiceMutation,
   useDeleteCompanyServiceMutation,
   useUpdateCompanyServiceMutation,
-} from '@/features/fsm/api/useFsm';
-import type { CompanyServiceDto } from '@/features/fsm/types';
-
-const emptyForm = {
-  name: '',
-  description: '',
-  defaultPrice: '',
-  durationValue: '',
-  durationUnit: 'hours' as DurationUnit,
-  isPublished: true,
-  materialsCost: '',
-};
+} from '@/features/fsm/api/useCompanyServices';
+import type { CompanyServiceDto } from '@/types/fsm';
+import { CompanyServiceFormModal } from '@/features/fsm/components/services/CompanyServiceFormModal';
+import { ServicesCatalogPanel } from '@/features/fsm/components/services/ServicesCatalogPanel';
+import { getErrorMessage } from '@/utils/errors';
+import { EMPTY_SERVICE_FORM } from '@/constants/serviceForm.constants';
+import type { ServiceFormState } from '@/types/serviceForm';
+import {
+  buildServicePayload,
+  serviceToForm,
+} from '@/utils/serviceForm';
 
 export function CompanyServicesPage() {
   const { data: services, isLoading } = useCompanyServicesQuery();
@@ -58,31 +38,22 @@ export function CompanyServicesPage() {
   const updateService = useUpdateCompanyServiceMutation();
   const deleteService = useDeleteCompanyServiceMutation();
 
-  const planCode = subscription?.plan?.code as CompanySubscriptionPlanCode | undefined;
-  const canUseInternalPricing = hasMinPlan(planCode, 'PRO');
+  const planCode = subscription?.plan?.code;
+  const canUseInternalPricing = hasMinPlan(planCode, SUBSCRIPTION_PLAN.PRO);
 
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<CompanyServiceDto | null>(null);
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState<ServiceFormState>(EMPTY_SERVICE_FORM);
 
   const openCreate = () => {
     setEditing(null);
-    setForm(emptyForm);
+    setForm(EMPTY_SERVICE_FORM);
     setShowModal(true);
   };
 
   const openEdit = (service: CompanyServiceDto) => {
-    const duration = minutesToDurationForm(service.durationMinutes);
     setEditing(service);
-    setForm({
-      name: service.name,
-      description: service.description ?? '',
-      defaultPrice: String(service.defaultPrice),
-      durationValue: duration.value,
-      durationUnit: duration.unit,
-      isPublished: service.isPublished ?? false,
-      materialsCost: service.materialsCost != null ? String(service.materialsCost) : '',
-    });
+    setForm(serviceToForm(service));
     setShowModal(true);
   };
 
@@ -97,42 +68,28 @@ export function CompanyServicesPage() {
       return;
     }
 
-    const durationMinutes = form.durationValue.trim()
-      ? durationFormToMinutes(form.durationValue, form.durationUnit) ?? undefined
-      : undefined;
+    const payload = buildServicePayload(form, canUseInternalPricing);
 
     try {
       if (editing) {
         await updateService.mutateAsync({
           id: editing.id,
-          name: form.name.trim(),
-          description: form.description.trim(),
-          defaultPrice: Number(form.defaultPrice),
-          isPublished: form.isPublished,
-          durationMinutes: durationMinutes ?? null,
-          ...(canUseInternalPricing
-            ? {
-                materialsCost: form.materialsCost.trim() ? Number(form.materialsCost) : null,
-              }
-            : {}),
+          ...payload,
+          durationMinutes: payload.durationMinutes ?? null,
         });
         toast.success('Serviciu actualizat.');
       } else {
+        const { materialsCost, durationMinutes, ...rest } = payload;
         await createService.mutateAsync({
-          name: form.name.trim(),
-          description: form.description.trim(),
-          defaultPrice: Number(form.defaultPrice),
-          isPublished: form.isPublished,
+          ...rest,
           ...(durationMinutes != null ? { durationMinutes } : {}),
-          ...(canUseInternalPricing && form.materialsCost.trim()
-            ? { materialsCost: Number(form.materialsCost) }
-            : {}),
+          ...(typeof materialsCost === 'number' ? { materialsCost } : {}),
         });
         toast.success('Serviciu adăugat.');
       }
       setShowModal(false);
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Eroare.');
+      toast.error(getErrorMessage(err, 'Eroare.'));
     }
   };
 
@@ -142,7 +99,7 @@ export function CompanyServicesPage() {
       await deleteService.mutateAsync(id);
       toast.success('Serviciu șters.');
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Eroare.');
+      toast.error(getErrorMessage(err, 'Eroare.'));
     }
   };
 
@@ -161,168 +118,26 @@ export function CompanyServicesPage() {
 
         <Panel>
           <PanelHeader title="Catalog servicii" />
-          {isLoading ? (
-            <p className="text-sm text-gray-400 p-4">Se încarcă...</p>
-          ) : !services?.length ? (
-            <EmptyState
-              message="Niciun serviciu în catalog."
-              action={
-                <button type="button" onClick={openCreate} className="text-violet-600 font-semibold text-xs">
-                  Adaugă primul serviciu
-                </button>
-              }
-            />
-          ) : (
-            <div className="divide-y divide-gray-100">
-              {(services ?? []).map((service) => {
-                const durationLabel = formatServiceDuration(service.durationMinutes);
-                return (
-                <div key={service.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-semibold text-gray-900">{service.name}</p>
-                      {service.isPublished ? (
-                        <SoftBadge tone="emerald">Public</SoftBadge>
-                      ) : (
-                        <SoftBadge tone="gray">Draft</SoftBadge>
-                      )}
-                    </div>
-                    {service.description ? (
-                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{service.description}</p>
-                    ) : null}
-                    <p className="text-sm text-violet-700 font-bold mt-1">
-                      {Number(service.defaultPrice).toLocaleString('ro-MD')} {service.currency ?? 'MDL'}
-                      {durationLabel ? ` · ${durationLabel}` : ''}
-                      {service.category?.name ? ` · ${service.category.name}` : ''}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button type="button" onClick={() => openEdit(service)} className={cabinetBtnSecondary}>
-                      Editează
-                    </button>
-                    <button type="button" onClick={() => handleDelete(service.id)} className={cabinetBtnSecondary}>
-                      Șterge
-                    </button>
-                  </div>
-                </div>
-              );
-              })}
-            </div>
-          )}
+          <ServicesCatalogPanel
+            services={services}
+            isLoading={isLoading}
+            onEdit={openEdit}
+            onDelete={handleDelete}
+            onCreate={openCreate}
+          />
         </Panel>
       </div>
 
-      <AppModal
+      <CompanyServiceFormModal
         open={showModal}
+        editing={!!editing}
+        form={form}
+        defaultCategoryName={defaultCategoryName}
+        canUseInternalPricing={canUseInternalPricing}
         onClose={() => setShowModal(false)}
-        title={editing ? 'Editează serviciu' : 'Serviciu nou'}
-      >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <label className={cabinetLabelClass}>
-            Denumire *
-            <input
-              value={form.name}
-              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              className={cabinetFieldClass}
-              required
-            />
-          </label>
-          <label className={cabinetLabelClass}>
-            Descriere (opțional)
-            <textarea
-              value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              className={cabinetFieldClass}
-              rows={3}
-            />
-          </label>
-          <div className={cabinetLabelClass}>
-            Categorie
-            <input
-              value={defaultCategoryName}
-              className={`${cabinetFieldClass} bg-gray-50 text-gray-600 cursor-not-allowed`}
-              readOnly
-              tabIndex={-1}
-            />
-            <p className="text-[11px] font-medium text-gray-400 mt-1">
-              Moștenită din profilul companiei — se modifică doar acolo.
-            </p>
-          </div>
-          <label className={cabinetLabelClass}>
-            Preț (MDL) *
-            <input
-              type="number"
-              min={0}
-              step="0.01"
-              value={form.defaultPrice}
-              onChange={(e) => setForm((f) => ({ ...f, defaultPrice: e.target.value }))}
-              className={cabinetFieldClass}
-              required
-            />
-          </label>
-          <div className={cabinetLabelClass}>
-            Durată (opțional)
-            <div className="grid grid-cols-[1fr_auto] gap-2">
-              <input
-                type="number"
-                min={1}
-                step={1}
-                value={form.durationValue}
-                onChange={(e) => setForm((f) => ({ ...f, durationValue: e.target.value }))}
-                className={cabinetFieldClass}
-                placeholder="Ex: 2"
-              />
-              <select
-                value={form.durationUnit}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, durationUnit: e.target.value as DurationUnit }))
-                }
-                className={cabinetSelectClass}
-              >
-                {DURATION_UNIT_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-            <input
-              type="checkbox"
-              checked={form.isPublished}
-              onChange={(e) => setForm((f) => ({ ...f, isPublished: e.target.checked }))}
-              className="rounded border-gray-300"
-            />
-            Public pe profilul companiei
-          </label>
-          {canUseInternalPricing ? (
-            <label className={cabinetLabelClass}>
-              Cost materiale (opțional)
-              <input
-                type="number"
-                min={0}
-                step="0.01"
-                value={form.materialsCost}
-                onChange={(e) => setForm((f) => ({ ...f, materialsCost: e.target.value }))}
-                className={cabinetFieldClass}
-              />
-            </label>
-          ) : (
-            <p className="text-xs text-gray-500 bg-gray-50 rounded-xl px-3 py-2">
-              Cost materiale pentru devize — disponibil din planul Pro.
-            </p>
-          )}
-          <div className="flex gap-3 pt-2">
-            <button type="submit" className={cabinetBtnPrimary}>
-              {editing ? 'Salvează' : 'Adaugă'}
-            </button>
-            <button type="button" onClick={() => setShowModal(false)} className={cabinetBtnSecondary}>
-              Anulează
-            </button>
-          </div>
-        </form>
-      </AppModal>
+        onSubmit={handleSubmit}
+        onFormChange={setForm}
+      />
     </CompanyManagementGate>
   );
 }

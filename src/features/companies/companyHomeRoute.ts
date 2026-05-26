@@ -1,4 +1,6 @@
-import { defaultRouteForRole } from '@/features/companies/roleAccess';
+import { defaultRouteForRole } from '@/utils/roleAccess';
+import { COMPANY_ROUTE } from '@/constants/routes.constants';
+import { companyAbsolutePath } from '@/utils/routes';
 
 type CompanyHomeInput = {
   companyRole?: string;
@@ -15,7 +17,7 @@ export function needsCompanyOnboarding(input: CompanyHomeInput): boolean {
 
 export function resolveCompanyHomeRoute(input: CompanyHomeInput): string {
   if (needsCompanyOnboarding(input)) {
-    return '/company/profile';
+    return companyAbsolutePath(COMPANY_ROUTE.PROFILE);
   }
   return defaultRouteForRole(input.companyRole);
 }

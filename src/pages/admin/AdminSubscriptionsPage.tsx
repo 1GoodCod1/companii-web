@@ -1,7 +1,7 @@
 import { useAdminCompaniesQuery, type AdminCompanyDto } from '@/features/admin/api/useAdmin';
 import { useSubscriptionPlansQuery } from '@/features/subscriptions/api/useSubscriptions';
-import type { CompanyPlanDto } from '@/features/subscriptions/types';
-import { planPriceLabel } from '@/features/subscriptions/types';
+import type { CompanyPlanDto } from '@/types/subscriptions';
+import { planPriceLabel } from '@/utils/subscriptions';
 
 export function AdminSubscriptionsPage() {
   const { data: plansData, isLoading: plansLoading } = useSubscriptionPlansQuery();

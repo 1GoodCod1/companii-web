@@ -1,4 +1,5 @@
 import { useAdminWaitlistQuery } from '@/features/admin/api/useAdmin';
+import { formatDateTimeRo } from '@/utils/date';
 
 export function AdminWaitlistPage() {
   const { data: entries, isLoading } = useAdminWaitlistQuery();
@@ -34,7 +35,7 @@ export function AdminWaitlistPage() {
                       <td className="px-6 py-4 font-semibold text-gray-900">{entry.companyName}</td>
                       <td className="px-6 py-4 text-gray-600">{entry.email}</td>
                       <td className="px-6 py-4 text-gray-500">
-                        {new Date(entry.createdAt).toLocaleString('ro-MD')}
+                        {formatDateTimeRo(entry.createdAt)}
                       </td>
                     </tr>
                   ))}

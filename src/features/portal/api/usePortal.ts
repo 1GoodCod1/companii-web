@@ -2,11 +2,13 @@ import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tan
 import { apiFetch } from '@/api/client';
 import { cabinetQueryDefaults } from '@/api/queryPolicies';
 import { queryKeys } from '@/api/queryKeys';
-import type { CustomerDto, QuoteDto, InvoiceDto } from '@/features/fsm/types';
-import type { EstimateProjectListDto, EstimateProjectDto } from '@/features/estimates/types';
-import type { CompanyReviewDto, PortalInterventionDto } from '@/features/reviews/types';
+import type { CustomerDto, QuoteDto, InvoiceDto } from '@/types/fsm';
+import type { EstimateProjectListDto, EstimateProjectDto } from '@/types/estimates';
+import type { CompanyReviewDto, PortalInterventionDto } from '@/types/reviews';
 
-import type { CompanyLeadDto } from '@/features/fsm/types';
+import type { PortalEstimateActionStatus } from '@/constants/estimateStatus.constants';
+import type { PortalQuoteActionStatus } from '@/constants/quoteStatus.constants';
+import type { CompanyLeadDto } from '@/types/fsm';
 
 export type PortalLeadDto = Pick<
   CompanyLeadDto,
@@ -61,7 +63,7 @@ export function usePortalEstimateQuery(id: string, enabled = true): UseQueryResu
 export function useUpdatePortalQuoteMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: 'ACCEPTED' | 'REJECTED' }) =>
+    mutationFn: ({ id, status }: { id: string; status: PortalQuoteActionStatus }) =>
       apiFetch(`/portal/quotes/${id}/status`, {
         method: 'POST',
         body: JSON.stringify({ status }),
@@ -75,7 +77,7 @@ export function useUpdatePortalQuoteMutation() {
 export function useUpdatePortalEstimateMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: 'ACCEPTED' | 'REJECTED' }) =>
+    mutationFn: ({ id, status }: { id: string; status: PortalEstimateActionStatus }) =>
       apiFetch(`/portal/estimates/${id}/status`, {
         method: 'POST',
         body: JSON.stringify({ status }),
@@ -116,7 +118,7 @@ export interface PortalInvitePreviewDto {
 
 export function usePortalInvitePreviewQuery(token: string) {
   return useQuery<PortalInvitePreviewDto, Error>({
-    queryKey: ['portal', 'invite-preview', token],
+    queryKey: queryKeys.portal.invitePreview(token),
     queryFn: () =>
       apiFetch<PortalInvitePreviewDto>(`/portal/invitations/preview?token=${encodeURIComponent(token)}`),
     enabled: !!token,

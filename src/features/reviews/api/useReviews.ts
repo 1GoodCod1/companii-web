@@ -12,7 +12,7 @@ import type {
   CompanyReviewDto,
   CompanyReviewsPageDto,
   CreateReviewPayload,
-} from '@/features/reviews/types';
+} from '@/types/reviews';
 
 export function useCompanyReviewsBySlugQuery(
   slug: string,

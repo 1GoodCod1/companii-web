@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, Play, Film } from 'lucide-react';
-import type { CompanyGalleryImageDto } from '@/features/companies/types';
+import type { CompanyGalleryImageDto } from '@/types/companies';
 import { MediaImage } from '@/components/ui/MediaImage';
 import { isVideoUrl } from '@/utils/validateFile';
 
@@ -117,7 +117,7 @@ type MediaFilter = 'all' | 'photo' | 'video';
 
 /* ─────────────────── Main Component ─────────────────── */
 export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] }) {
-  const [filter, setFilter] = useState<MediaFilter>('all');
+  const [filter] = useState<MediaFilter>('all');
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -126,7 +126,6 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
   const lightboxVideoRef = useRef<HTMLVideoElement | null>(null);
 
   // Derived filtered list
-  const hasVideos = images.some((img) => isVideoUrl(img.url));
   const filteredImages =
     filter === 'all'
       ? images
@@ -138,37 +137,39 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
   const active = filteredImages[activeIndex] ?? filteredImages[0];
   const lightboxActive = lightboxIndex !== null ? filteredImages[lightboxIndex] : null;
 
-  // Reset active index when filter changes
-  const handleFilterChange = useCallback((f: MediaFilter) => {
-    setFilter(f);
-    setActiveIndex(0);
+  const selectSlide = useCallback((index: number) => {
+    videoRef.current?.pause();
     setIsPlaying(false);
+    setActiveIndex(index);
+  }, []);
+
+  const openLightbox = useCallback((index: number | null) => {
+    lightboxVideoRef.current?.pause();
+    setLightboxPlaying(false);
+    setLightboxIndex(index);
   }, []);
 
   const goPrev = useCallback(() => {
-    setIsPlaying(false);
-    setActiveIndex((i) => (i === 0 ? filteredImages.length - 1 : i - 1));
-  }, [filteredImages.length]);
+    selectSlide(activeIndex === 0 ? filteredImages.length - 1 : activeIndex - 1);
+  }, [activeIndex, filteredImages.length, selectSlide]);
 
   const goNext = useCallback(() => {
-    setIsPlaying(false);
-    setActiveIndex((i) => (i === filteredImages.length - 1 ? 0 : i + 1));
-  }, [filteredImages.length]);
+    selectSlide(activeIndex === filteredImages.length - 1 ? 0 : activeIndex + 1);
+  }, [activeIndex, filteredImages.length, selectSlide]);
 
   const lightboxPrev = useCallback(() => {
-    setLightboxPlaying(false);
-    setLightboxIndex((i) => (i === null || i === 0 ? filteredImages.length - 1 : i - 1));
-  }, [filteredImages.length]);
+    if (lightboxIndex === null) return;
+    openLightbox(lightboxIndex === 0 ? filteredImages.length - 1 : lightboxIndex - 1);
+  }, [lightboxIndex, filteredImages.length, openLightbox]);
 
   const lightboxNext = useCallback(() => {
-    setLightboxPlaying(false);
-    setLightboxIndex((i) => (i === null || i === filteredImages.length - 1 ? 0 : i + 1));
-  }, [filteredImages.length]);
+    if (lightboxIndex === null) return;
+    openLightbox(lightboxIndex === filteredImages.length - 1 ? 0 : lightboxIndex + 1);
+  }, [lightboxIndex, filteredImages.length, openLightbox]);
 
   const closeLightbox = useCallback(() => {
-    setLightboxPlaying(false);
-    setLightboxIndex(null);
-  }, []);
+    openLightbox(null);
+  }, [openLightbox]);
 
   const handlePlayToggle = useCallback(() => {
     if (!videoRef.current) return;
@@ -192,18 +193,6 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
     }
   }, [lightboxPlaying]);
 
-  // Pause video when switching slides
-  useEffect(() => {
-    setIsPlaying(false);
-    if (videoRef.current) videoRef.current.pause();
-  }, [activeIndex]);
-
-  useEffect(() => {
-    setLightboxPlaying(false);
-    if (lightboxVideoRef.current) lightboxVideoRef.current.pause();
-  }, [lightboxIndex]);
-
-  // Keyboard nav for lightbox
   useEffect(() => {
     if (lightboxIndex === null) return;
 
@@ -238,7 +227,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
       <>
         <div
           className="relative rounded-2xl overflow-hidden bg-slate-100 aspect-[16/10] cursor-pointer group"
-          onClick={() => setLightboxIndex(0)}
+          onClick={() => openLightbox(0)}
         >
           {isSoloVideo ? (
             <div className="relative w-full h-full">
@@ -401,16 +390,13 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                 <MediaThumb
                   item={item}
                   isActive={i === activeIndex}
-                  onClick={() => {
-                    setIsPlaying(false);
-                    setActiveIndex(i);
-                  }}
+                  onClick={() => selectSlide(i)}
                   index={i}
                 />
                 {isLast && (
                   <button
                     type="button"
-                    onClick={() => setLightboxIndex(i)}
+                    onClick={() => openLightbox(i)}
                     className="absolute inset-0 rounded-2xl bg-black/55 backdrop-blur-[2px] flex items-center justify-center cursor-pointer transition-colors hover:bg-black/65"
                   >
                     <span className="text-sm font-bold text-white">
@@ -428,7 +414,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
           className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-100 cursor-pointer group"
           onClick={() => {
             if (!isVideoUrl(active!.url)) {
-              setLightboxIndex(activeIndex);
+              openLightbox(activeIndex);
             }
           }}
         >
@@ -495,7 +481,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
             <button
               key={img.id}
               type="button"
-              onClick={() => { setIsPlaying(false); setActiveIndex(i); }}
+              onClick={() => selectSlide(i)}
               className={`h-1.5 rounded-full transition-all cursor-pointer ${
                 i === activeIndex ? 'w-6 bg-violet-600' : 'w-1.5 bg-slate-300 hover:bg-slate-400'
               }`}

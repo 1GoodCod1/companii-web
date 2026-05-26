@@ -12,7 +12,7 @@ import { useEstimateProjectsQuery } from '@/features/estimates/api/useEstimates'
 import {
   ESTIMATE_STATUS_LABELS,
   ESTIMATE_STATUS_TONES,
-} from '@/features/estimates/statusLabels';
+} from '@/constants/estimates.constants';
 
 export function CompanyEstimatesPage() {
   const { data: projects, isLoading } = useEstimateProjectsQuery();

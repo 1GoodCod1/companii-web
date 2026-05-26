@@ -1,4 +1,5 @@
-import type { CompanyRole } from '@/features/companies/roleAccess';
+import { COMPANY_ROLE_GROUPS } from '@/constants/roles.constants';
+import type { CompanyRole } from '@/types/roles';
 
 export type CompanyPermissionAction =
   | 'manage_subscription'
@@ -23,36 +24,31 @@ export type CompanyPermissionAction =
   | 'delete_any_note'
   | 'delete_own_note';
 
-const ALL_MANAGEMENT: CompanyRole[] = ['OWNER', 'MANAGER'];
-const OWNER_ONLY: CompanyRole[] = ['OWNER'];
-const ANY_MEMBER: CompanyRole[] = ['OWNER', 'MANAGER', 'MEMBER'];
-
-/** Role permission matrix for company cabinet UI. */
 export const COMPANY_ROLE_PERMISSIONS: Record<
   CompanyPermissionAction,
-  CompanyRole[]
+  readonly CompanyRole[]
 > = {
-  manage_subscription: OWNER_ONLY,
-  transfer_ownership: OWNER_ONLY,
-  publish_company: OWNER_ONLY,
-  edit_legal_profile: OWNER_ONLY,
-  manage_team: ALL_MANAGEMENT,
-  invite_manager: OWNER_ONLY,
-  manage_public_services: ALL_MANAGEMENT,
-  manage_customers: ALL_MANAGEMENT,
-  manage_leads: ALL_MANAGEMENT,
-  create_interventions: ALL_MANAGEMENT,
-  delete_interventions: ALL_MANAGEMENT,
-  update_intervention_details: ALL_MANAGEMENT,
-  update_assigned_intervention: ANY_MEMBER,
-  change_intervention_status: ANY_MEMBER,
-  manage_internal_services: ALL_MANAGEMENT,
-  manage_quotes: ALL_MANAGEMENT,
-  manage_invoices: ALL_MANAGEMENT,
-  manage_estimates: ALL_MANAGEMENT,
-  view_reviews: ALL_MANAGEMENT,
-  delete_any_note: ALL_MANAGEMENT,
-  delete_own_note: ANY_MEMBER,
+  manage_subscription: COMPANY_ROLE_GROUPS.OWNER_ONLY,
+  transfer_ownership: COMPANY_ROLE_GROUPS.OWNER_ONLY,
+  publish_company: COMPANY_ROLE_GROUPS.OWNER_ONLY,
+  edit_legal_profile: COMPANY_ROLE_GROUPS.OWNER_ONLY,
+  manage_team: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  invite_manager: COMPANY_ROLE_GROUPS.OWNER_ONLY,
+  manage_public_services: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  manage_customers: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  manage_leads: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  create_interventions: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  delete_interventions: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  update_intervention_details: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  update_assigned_intervention: COMPANY_ROLE_GROUPS.ALL_STAFF,
+  change_intervention_status: COMPANY_ROLE_GROUPS.ALL_STAFF,
+  manage_internal_services: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  manage_quotes: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  manage_invoices: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  manage_estimates: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  view_reviews: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  delete_any_note: COMPANY_ROLE_GROUPS.MANAGEMENT,
+  delete_own_note: COMPANY_ROLE_GROUPS.ALL_STAFF,
 };
 
 export function companyRoleCan(
@@ -62,3 +58,4 @@ export function companyRoleCan(
   if (!role) return false;
   return COMPANY_ROLE_PERMISSIONS[action].includes(role);
 }
+

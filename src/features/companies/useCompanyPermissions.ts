@@ -3,11 +3,12 @@ import { useCompanyContextStore } from '@/stores/companyContextStore';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
 import { resolveCompanyRole } from '@/components/layout/cabinet-nav';
 import {
-  canAccessCompanyRoute,
   isManagementRole,
+  isOwnerRole,
   isTechnicianRole,
-  type CompanyRole,
-} from '@/features/companies/roleAccess';
+} from '@/utils/roles';
+import type { CompanyRole } from '@/types/roles';
+import { canAccessCompanyRoute } from '@/utils/roleAccess';
 import { companyRoleCan } from '@/config/rolePermissions';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import type { CompanyPermissionAction } from '@/config/rolePermissions';
@@ -25,7 +26,7 @@ export function useCompanyPermissions() {
   const { isOwner: isLegalOwner } = resolveActiveCompany(companyMe, activeCompanyId);
   const canRegisterCompany = (companyMe?.owned?.length ?? 0) === 0;
 
-  const isOwner = role === 'OWNER';
+  const isOwner = isOwnerRole(role);
   const isManagement = isManagementRole(role);
   const isTechnician = isTechnicianRole(role);
 

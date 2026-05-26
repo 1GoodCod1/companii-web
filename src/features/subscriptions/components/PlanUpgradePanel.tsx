@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { PLAN_LABELS } from '@/config/planEntitlements';
-import type { CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
+import { PLAN_LABELS } from '@/constants/subscriptions.constants';
+import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
 import { cabinetBtnPrimary, cabinetPanelClass } from '@/components/cabinet/cabinet-ui';
 
 export function PlanUpgradePanel({

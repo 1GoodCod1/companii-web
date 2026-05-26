@@ -1,18 +1,6 @@
-import type { InterventionStatus, InvoicePaymentStatus } from './types';
-
-export const INTERVENTION_STATUS_LABELS: Record<InterventionStatus, string> = {
-  NEW: 'Nouă',
-  SCHEDULED: 'Programată',
-  EN_ROUTE: 'În deplasare',
-  IN_PROGRESS: 'În lucru',
-  COMPLETED: 'Finalizată',
-  INVOICED: 'Facturată',
-  PAID: 'Plătită',
-  CANCELLED: 'Anulată',
-};
-
-export const PAYMENT_STATUS_LABELS: Record<InvoicePaymentStatus, string> = {
-  UNPAID: 'Neplătită',
-  PAID: 'Plătită',
-  OVERDUE: 'Restantă',
-};
+export {
+  INTERVENTION_STATUS_LABELS,
+  INTERVENTION_STATUS_TABS,
+  INTERVENTION_CALENDAR_STATUS_TONES,
+} from '@/constants/interventions.constants';
+export { PAYMENT_STATUS_LABELS } from '@/constants/invoices.constants';

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAdminPendingCompaniesQuery, useAdminStatsQuery, type AdminCompanyDto } from '@/features/admin/api/useAdmin';
 import { AdminCompanyModerationModal } from '@/features/admin/components/AdminCompanyModerationModal';
+import { formatDateRo } from '@/utils/date';
 
 export function AdminHomePage() {
   const { data: stats, isLoading: statsLoading } = useAdminStatsQuery();
@@ -69,7 +70,7 @@ export function AdminHomePage() {
                     <td className="px-6 py-4 text-gray-500">{company.owner?.email ?? '—'}</td>
                     <td className="px-6 py-4 text-gray-500">{company.city?.name ?? '—'}</td>
                     <td className="px-6 py-4 text-gray-500">
-                      {new Date(company.createdAt).toLocaleDateString('ro-MD')}
+                      {formatDateRo(company.createdAt)}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button

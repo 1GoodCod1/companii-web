@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import { useAdminAuditQuery, useAdminCompaniesQuery, type AdminAuditLogDto } from '@/features/admin/api/useAdmin';
 import {
   AUDIT_ACTION_FILTER_OPTIONS,
+} from '@/constants/admin.constants';
+import {
   auditActionLabel,
   formatAuditDetails,
-} from '@/features/admin/auditLabels';
+} from '@/utils/audit';
+import { formatAuditActorName } from '@/utils/person';
+import { formatDateTimeRo } from '@/utils/date';
 
 export function AdminAuditPage() {
   const { data: companies } = useAdminCompaniesQuery();
@@ -75,10 +79,7 @@ export function AdminAuditPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {logs.map((entry: AdminAuditLogDto) => {
-                    const userName = entry.user
-                      ? [entry.user.firstName, entry.user.lastName].filter(Boolean).join(' ') ||
-                        entry.user.email
-                      : 'Sistem';
+                    const userName = formatAuditActorName(entry.user);
                     const details = formatAuditDetails(
                       entry.action,
                       entry.newData,
@@ -88,7 +89,7 @@ export function AdminAuditPage() {
                     return (
                       <tr key={entry.id}>
                         <td className="px-6 py-4 text-gray-500 whitespace-nowrap">
-                          {new Date(entry.createdAt).toLocaleString('ro-MD')}
+                          {formatDateTimeRo(entry.createdAt)}
                         </td>
                         <td className="px-6 py-4 font-semibold text-gray-900">
                           {auditActionLabel(entry.action)}

@@ -12,11 +12,9 @@ import {
   useUpdateAdminClientMutation,
   type AdminClientDto,
 } from '@/features/admin/api/useAdmin';
-
-function clientName(client: AdminClientDto): string {
-  const full = [client.firstName, client.lastName].filter(Boolean).join(' ').trim();
-  return full || client.portalCustomer?.fullName || client.email;
-}
+import { formatDateRo } from '@/utils/date';
+import { getErrorMessage } from '@/utils/errors';
+import { formatPersonName } from '@/utils/person';
 
 export function AdminClientsPage() {
   const { data: clients, isLoading } = useAdminClientsQuery();
@@ -27,7 +25,7 @@ export function AdminClientsPage() {
       await updateClient.mutateAsync({ id: client.id, isActive: !client.isActive });
       toast.success(client.isActive ? 'Contul a fost dezactivat.' : 'Contul a fost activat.');
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Operația a eșuat.');
+      toast.error(getErrorMessage(err, 'Operația a eșuat.'));
     }
   };
 
@@ -65,9 +63,19 @@ export function AdminClientsPage() {
                 {clients.map((client) => (
                   <tr key={client.id}>
                     <td className="px-4 py-3">
-                      <p className="font-semibold text-gray-900">{clientName(client)}</p>
+                      <p className="font-semibold text-gray-900">
+                        {formatPersonName(
+                          {
+                            firstName: client.firstName,
+                            lastName: client.lastName,
+                            fullName: client.portalCustomer?.fullName,
+                            email: client.email,
+                          },
+                          client.email,
+                        )}
+                      </p>
                       <p className="text-xs text-gray-400 mt-0.5">
-                        {new Date(client.createdAt).toLocaleDateString('ro-MD')}
+                        {formatDateRo(client.createdAt)}
                       </p>
                     </td>
                     <td className="px-4 py-3 text-gray-600">

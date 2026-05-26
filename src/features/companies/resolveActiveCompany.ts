@@ -1,4 +1,4 @@
-import type { CompanyMeResponse, OwnedCompanyDto } from './types';
+import type { CompanyMeResponse, OwnedCompanyDto } from '@/types/companies';
 
 export function resolveActiveCompany(
   me: CompanyMeResponse | undefined,

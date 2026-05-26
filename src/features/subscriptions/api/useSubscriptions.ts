@@ -4,7 +4,7 @@ import { cabinetQueryDefaults, publicPlansQueryOptions } from '@/api/queryPolici
 import { queryKeys } from '@/api/queryKeys';
 import { useAuthStore } from '@/stores/authStore';
 import { useCompanyContextStore } from '@/stores/companyContextStore';
-import type { CompanyPlanDto, CompanySubscriptionDto, CompanySubscriptionPlanCode } from '../types';
+import type { ClaimableSubscriptionPlanCode, CompanyPlanDto, CompanySubscriptionDto, CompanySubscriptionPlanCode } from '@/types/subscriptions';
 
 export function useSubscriptionPlansQuery(): UseQueryResult<CompanyPlanDto[], Error> {
   return useQuery<CompanyPlanDto[], Error>({
@@ -29,7 +29,7 @@ export function useMySubscriptionQuery(): UseQueryResult<CompanySubscriptionDto 
 export function useClaimFreePlanMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (planCode: Extract<CompanySubscriptionPlanCode, 'PRO' | 'BUSINESS'>) =>
+    mutationFn: (planCode: ClaimableSubscriptionPlanCode) =>
       apiFetch<CompanySubscriptionDto>('/subscriptions/claim-free', {
         method: 'POST',
         body: JSON.stringify({ planCode }),

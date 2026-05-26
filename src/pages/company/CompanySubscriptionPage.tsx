@@ -15,18 +15,21 @@ import {
   useClaimFreePlanMutation,
 } from '@/features/subscriptions/api/useSubscriptions';
 import { PlanCards } from '@/features/subscriptions/components/PlanCards';
-import type { CompanyPlanDto, CompanySubscriptionDto, CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
-import { planPriceLabel } from '@/features/subscriptions/types';
+import type {
+  ClaimableSubscriptionPlanCode,
+  CompanyPlanDto,
+  CompanySubscriptionDto,
+  CompanySubscriptionPlanCode,
+} from '@/types/subscriptions';
+import {
+  isOnFreePlan,
+  isProPlan,
+  isProToBusinessUpgrade,
+} from '@/utils/subscriptionPlan';
+import { planPriceLabel } from '@/utils/subscriptions';
 import { useAuthStore } from '@/stores/authStore';
 import { CompanyOwnerGate } from '@/features/companies/CompanyManagementGate';
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('ro-MD', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-}
+import { formatDateRo } from '@/utils/date';
 
 export function CompanySubscriptionPage() {
   const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
@@ -38,16 +41,15 @@ export function CompanySubscriptionPage() {
   const plans = (plansData ?? []) as CompanyPlanDto[];
   const subscription = subData as CompanySubscriptionDto | null | undefined;
   const currentPlanCode = subscription?.plan?.code;
-  const onFreePlan = !currentPlanCode || currentPlanCode === 'FREE';
+  const onFreePlan = isOnFreePlan(currentPlanCode);
 
-  const handleClaimFree = async (planCode: Extract<CompanySubscriptionPlanCode, 'PRO' | 'BUSINESS'>) => {
+  const handleClaimFree = async (planCode: ClaimableSubscriptionPlanCode) => {
     setClaimingPlanCode(planCode);
     try {
       await claimFree.mutateAsync(planCode);
-      const message =
-        currentPlanCode === 'PRO' && planCode === 'BUSINESS'
-          ? 'Planul Business a fost activat. Pro a fost înlocuit automat.'
-          : `Planul ${planCode} a fost activat gratuit pentru 30 de zile!`;
+      const message = isProToBusinessUpgrade(currentPlanCode, planCode)
+        ? 'Planul Business a fost activat. Pro a fost înlocuit automat.'
+        : `Planul ${planCode} a fost activat gratuit pentru 30 de zile!`;
       toast.success(message);
     } catch (err: unknown) {
       const error = err as Error;
@@ -99,7 +101,7 @@ export function CompanySubscriptionPage() {
           </div>
           <p className="text-xs text-gray-500 mt-4">
             Valabil până la:{' '}
-            <strong className="text-gray-700">{formatDate(subscription.currentPeriodEnd)}</strong>
+            <strong className="text-gray-700">{formatDateRo(subscription.currentPeriodEnd, 'long')}</strong>
           </p>
           {subscription.usage ? (
             <div className="mt-4 grid gap-3 sm:grid-cols-2 text-xs">
@@ -127,7 +129,7 @@ export function CompanySubscriptionPage() {
             <p className="text-xs text-violet-700 font-medium mt-3 bg-violet-50 rounded-xl px-4 py-3">
               Sunteți pe planul Free — activați Pro sau Business gratuit pentru 30 de zile.
             </p>
-          ) : currentPlanCode === 'PRO' ? (
+          ) : isProPlan(currentPlanCode) ? (
             <p className="text-xs text-indigo-700 font-medium mt-3 bg-indigo-50 rounded-xl px-4 py-3">
               Puteți trece oricând la Business — planul Pro se anulează automat la upgrade.
             </p>

@@ -19,14 +19,20 @@ import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
 import { useLeadsQuery } from '@/features/fsm/api/useFsm';
 import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
 import { COMPANY_ROUTE_MIN_PLAN, hasMinPlan } from '@/config/planEntitlements';
-import { canAccessCompanyRoute } from '@/features/companies/roleAccess';
-import type { CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
+import { SUBSCRIPTION_PLAN } from '@/constants/subscriptions.constants';
+import { LEAD_STATUS } from '@/constants/leadStatus.constants';
+import { canAccessCompanyRoute } from '@/utils/roleAccess';
+import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
 import type { CabinetNavItem, CabinetNavSection } from '@/components/layout/cabinet-nav';
 import { resolveCompanyRole } from '@/components/layout/cabinet-nav';
 import { CompanySwitcher } from '@/components/layout/CompanySwitcher';
 import { useAuthStore } from '@/stores/authStore';
 import { useCompanyContextStore } from '@/stores/companyContextStore';
 import { refreshAuthSession } from '@/features/auth/api/useAuth';
+import {
+  COMPANY_NAV_SECTION_LABELS,
+  COMPANY_NAV_SECTION_ORDER,
+} from '@/constants/companyNav.constants';
 
 const NAV_DEFS: Array<
   CabinetNavItem & { sectionKey: 'main' | 'operations' | 'company'; minPlanKey: string }
@@ -137,14 +143,6 @@ const NAV_DEFS: Array<
   },
 ];
 
-const SECTION_ORDER = ['main', 'operations', 'company'] as const;
-
-const SECTION_LABELS: Record<(typeof SECTION_ORDER)[number], string> = {
-  main: 'company.sections.main',
-  operations: 'company.sections.operations',
-  company: 'company.sections.company',
-};
-
 function buildCompanySections(
   currentPlan: string | undefined,
   companyRole: string | undefined,
@@ -158,7 +156,7 @@ function buildCompanySections(
     return hasMinPlan(currentPlan as CompanySubscriptionPlanCode | undefined, required);
   });
 
-  return SECTION_ORDER.flatMap((sectionKey) => {
+  return COMPANY_NAV_SECTION_ORDER.flatMap((sectionKey) => {
     const items = visible
       .filter((item) => item.sectionKey === sectionKey)
       .map(({ key, to, labelKey, icon, badge }) => ({ key, to, labelKey, icon, badge }));
@@ -167,7 +165,7 @@ function buildCompanySections(
 
     return [{
       key: sectionKey,
-      labelKey: SECTION_LABELS[sectionKey],
+      labelKey: COMPANY_NAV_SECTION_LABELS[sectionKey],
       items,
     }];
   });
@@ -190,9 +188,9 @@ export function CompanyLayout() {
     (activeCompany?.subscription?.plan?.code as CompanySubscriptionPlanCode | undefined);
   const profileRole = resolveCompanyRole(user?.companyRole, companyMe, activeCompanyId);
   const { isManagement } = useCompanyPermissions();
-  const cereriPlanAllowed = hasMinPlan(currentPlan, 'PRO');
+  const cereriPlanAllowed = hasMinPlan(currentPlan, SUBSCRIPTION_PLAN.PRO);
   const cereriRoleAllowed = canAccessCompanyRoute(profileRole, '/cereri');
-  const { data: newLeads } = useLeadsQuery('NEW', {
+  const { data: newLeads } = useLeadsQuery(LEAD_STATUS.NEW, {
     enabled: isManagement && cereriPlanAllowed && cereriRoleAllowed && !!activeCompanyId,
   });
   const newLeadCount = newLeads?.length ?? 0;

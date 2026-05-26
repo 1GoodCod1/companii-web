@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
+import { COMPANY_ROLE } from '@/constants/roles.constants';
 import toast from 'react-hot-toast';
 import { useCompanyMeQuery, useSwitchCompanyMutation } from '@/features/companies/api/useCompanies';
 import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
 import { cabinetSelectClass, cabinetLabelClass } from '@/components/cabinet/cabinet-ui';
+import { getErrorMessage } from '@/utils/errors';
 
 export function CompanySwitcher() {
   const { data: companyMe } = useCompanyMeQuery();
@@ -14,14 +16,14 @@ export function CompanySwitcher() {
     const owned = companyMe.owned.map((company) => ({
       id: company.id,
       label: company.name,
-      role: 'OWNER' as const,
+      role: COMPANY_ROLE.OWNER,
     }));
     const memberships = companyMe.memberships
       .filter((membership) => !companyMe.owned.some((owned) => owned.id === membership.companyId))
       .map((membership) => ({
         id: membership.companyId,
         label: membership.company.name,
-        role: membership.role ?? 'MEMBER',
+        role: membership.role ?? COMPANY_ROLE.MEMBER,
       }));
     return [...owned, ...memberships];
   }, [companyMe]);
@@ -34,7 +36,7 @@ export function CompanySwitcher() {
       await switchCompany.mutateAsync(companyId);
       toast.success('Compania activă a fost schimbată.');
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Nu s-a putut schimba compania.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut schimba compania.'));
     }
   };
 

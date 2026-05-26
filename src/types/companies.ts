@@ -1,3 +1,5 @@
+import type { CompanyRole } from '@/types/roles';
+
 export interface CatalogOptionDto {
   id: string;
   name: string;
@@ -82,7 +84,7 @@ export interface OwnedCompanyDto {
 export interface CompanyMembershipDto {
   id?: string;
   companyId: string;
-  role?: 'OWNER' | 'MANAGER' | 'MEMBER';
+  role?: CompanyRole;
   company: OwnedCompanyDto;
 }
 

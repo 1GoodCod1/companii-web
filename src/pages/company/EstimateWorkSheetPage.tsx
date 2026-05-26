@@ -7,6 +7,7 @@ import { PlanEditor } from '@/features/estimates/components/PlanEditor';
 import { useWorksheetByInterventionQuery } from '@/features/estimates/api/useEstimates';
 import { useUpdateChecklistMutation } from '@/features/fsm/api/useFsm';
 import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { getErrorMessage } from '@/utils/errors';
 
 export function EstimateWorkSheetPage() {
   const { id: interventionId } = useParams();
@@ -26,7 +27,7 @@ export function EstimateWorkSheetPage() {
       setPendingProgress(null);
     } catch (err: unknown) {
       setPendingProgress(null);
-      toast.error((err as Error).message || 'Nu s-a putut salva progresul.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut salva progresul.'));
     }
   };
 

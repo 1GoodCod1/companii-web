@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/components/ui/AppModal';
+import { getErrorMessage } from '@/utils/errors';
 import {
   PageHero,
   Panel,
@@ -68,7 +69,7 @@ export function AdminCitiesPage() {
       }
       setModalOpen(false);
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Operația a eșuat.');
+      toast.error(getErrorMessage(err, 'Operația a eșuat.'));
     }
   };
 
@@ -78,7 +79,7 @@ export function AdminCitiesPage() {
       await deleteCity.mutateAsync(city.id);
       toast.success('Orașul a fost șters.');
     } catch (err: unknown) {
-      toast.error((err as Error).message || 'Nu s-a putut șterge orașul.');
+      toast.error(getErrorMessage(err, 'Nu s-a putut șterge orașul.'));
     }
   };
 

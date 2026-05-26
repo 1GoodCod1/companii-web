@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tan
 import { apiFetch } from '@/api/client';
 import { cabinetQueryDefaults } from '@/api/queryPolicies';
 import { queryKeys } from '@/api/queryKeys';
-import type { CompanySubscriptionPlanCode } from '@/features/subscriptions/types';
+import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
 
 export interface AdminStatsDto {
   companies: number;
