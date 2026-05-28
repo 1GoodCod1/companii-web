@@ -76,6 +76,9 @@ export const queryKeys = {
     projects: [QUERY_KEY_ROOT.ESTIMATES, QUERY_KEY_ESTIMATES.PROJECTS] as const,
     project: (id: string) =>
       [QUERY_KEY_ROOT.ESTIMATES, QUERY_KEY_ESTIMATES.PROJECTS, id] as const,
+    templates: [QUERY_KEY_ROOT.ESTIMATES, 'templates'] as const,
+    template: (id: string) =>
+      [QUERY_KEY_ROOT.ESTIMATES, 'templates', id] as const,
     worksheetIntervention: (id: string) =>
       [
         QUERY_KEY_ROOT.ESTIMATES,

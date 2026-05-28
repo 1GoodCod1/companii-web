@@ -16,6 +16,10 @@ import {
   useCreateEstimateProjectMutation,
   useEstimateBlueprintsQuery,
 } from '@/features/estimates/api/useEstimates';
+import {
+  useEstimateTemplatesQuery,
+  useApplyEstimateTemplateMutation,
+} from '@/features/estimates/api/useEstimateTemplates';
 import { CategoryDescriptionPanel } from '@/features/estimates/components/CategoryDescriptionPanel';
 import { ExcludedCategoryNotice } from '@/features/estimates/components/ExcludedCategoryNotice';
 import { isEstimateExcludedCategorySlug } from '@/constants/estimateCategorySlugs.constants';
@@ -33,7 +37,9 @@ export function NewEstimateForm({ activeCompany }: Props) {
   const { data: categories } = useCategoriesQuery();
   const { data: blueprints } = useEstimateBlueprintsQuery();
   const { data: customers } = useCustomersQuery();
+  const { data: templates } = useEstimateTemplatesQuery();
   const createProject = useCreateEstimateProjectMutation();
+  const applyTemplate = useApplyEstimateTemplateMutation();
 
   // K-01: only categories that have an active blueprint are selectable
   const blueprintCategoryIds = useMemo(
@@ -48,6 +54,9 @@ export function NewEstimateForm({ activeCompany }: Props) {
   const [customerId, setCustomerId] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState(
     () => searchParams.get('categoryId') ?? '',
+  );
+  const [templateId, setTemplateId] = useState(
+    () => searchParams.get('templateId') ?? '',
   );
   const [title, setTitle] = useState('');
 
@@ -85,6 +94,15 @@ export function NewEstimateForm({ activeCompany }: Props) {
         title: title || undefined,
         siteType: 'apartment',
       });
+
+      if (templateId) {
+        await applyTemplate.mutateAsync({
+          id: templateId,
+          projectId: created.id,
+          mode: 'overwrite',
+        });
+      }
+
       toast.success(t('company.estimateWizard.newForm.created'));
       navigate(`/company/smete/${created.id}`, { replace: true });
     } catch (err: unknown) {
@@ -155,6 +173,24 @@ export function NewEstimateForm({ activeCompany }: Props) {
         {/* K-03: blueprint description (only when a blueprint resolves) */}
         {categoryId && activeBlueprint && (
           <CategoryDescriptionPanel blueprint={activeBlueprint} />
+        )}
+
+        {templates && templates.length > 0 && (
+          <label className={cabinetLabelClass}>
+            {t('company.estimatesTemplatesPage.initializingFromTemplate')}
+            <select
+              value={templateId}
+              onChange={(e) => setTemplateId(e.target.value)}
+              className={cabinetSelectClass}
+            >
+              <option value="">{t('company.estimatesTemplatesPage.noTemplate')}</option>
+              {templates.map((tpl) => (
+                <option key={tpl.id} value={tpl.id}>
+                  {tpl.name}
+                </option>
+              ))}
+            </select>
+          </label>
         )}
 
         <label className={cabinetLabelClass}>

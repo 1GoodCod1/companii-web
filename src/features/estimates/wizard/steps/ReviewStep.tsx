@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
-import { CheckCircle2, Check, CircleDashed, Eye, FileText, Hammer, Paperclip, Plus, PlusCircle, Send, Trash2 } from 'lucide-react';
+import { CheckCircle2, Check, CircleDashed, Eye, FileText, Hammer, Paperclip, Plus, PlusCircle, Send, Trash2, Download, Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
+import { SaveTemplateModal } from '@/features/estimates/components/SaveTemplateModal';
 import {
   Panel,
   cabinetBtnPrimary,
@@ -8,6 +11,9 @@ import {
 } from '@/components/cabinet/cabinet-ui';
 import { downloadFile } from '@/api/files';
 import { EstimateLineSourceBadge } from '@/features/estimates/components/EstimateLineSourceBadge';
+import { useDownloadEstimatePdf } from '@/features/estimates/api/useEstimates';
+import { EstimateVersionHistory } from '@/features/estimates/components/EstimateVersionHistory';
+import { EstimateCommentThread } from '@/features/estimates/components/EstimateCommentThread';
 import type { EstimateStageDto } from '@/types/estimates';
 import type { EstimateWizardApi } from '../useEstimateWizard';
 
@@ -67,6 +73,7 @@ function ScopeColumn({
 
 export function ReviewStep({ wizard }: Props) {
   const { t } = useTranslation();
+  const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
   const {
     project,
     activeCustomPricing,
@@ -88,7 +95,21 @@ export function ReviewStep({ wizard }: Props) {
     previewTotals,
     previewVsBackendDiff,
     previewIsStale,
+    sanityWarnings,
   } = wizard;
+
+  const downloadPdf = useDownloadEstimatePdf();
+  const [pdfLang, setPdfLang] = useState<'ro' | 'ru'>(
+    (typeof window !== 'undefined'
+      ? (localStorage.getItem('companii_lang') as 'ro' | 'ru')
+      : 'ro') === 'ru'
+      ? 'ru'
+      : 'ro',
+  );
+
+  const handleDownloadPdf = () => {
+    downloadPdf.download(project.id, `${project.number}.pdf`, pdfLang);
+  };
 
   const showScope =
     scopeSummary.included.length > 0 ||
@@ -100,6 +121,26 @@ export function ReviewStep({ wizard }: Props) {
 
   return (
     <div className="space-y-4">
+      {sanityWarnings.length > 0 && (
+        <Panel className="p-4 border border-amber-200 bg-amber-50/60 space-y-2">
+          <p className="text-[10px] font-black uppercase tracking-wider text-amber-800">
+            {t('company.estimateWizard.reviewStep.sanityTitle')}
+          </p>
+          <ul className="space-y-1">
+            {sanityWarnings.map((w) => (
+              <li
+                key={w.key}
+                className={`text-xs font-semibold flex items-start gap-2 ${
+                  w.severity === 'warning' ? 'text-rose-700' : 'text-amber-700'
+                }`}
+              >
+                <span aria-hidden>{w.severity === 'warning' ? '⚠' : 'ℹ'}</span>
+                <span>{w.message}</span>
+              </li>
+            ))}
+          </ul>
+        </Panel>
+      )}
       {showPreview && (
         <Panel className="p-5 border border-amber-100 bg-amber-50/40">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -134,7 +175,7 @@ export function ReviewStep({ wizard }: Props) {
           <h3 className="font-bold text-gray-900 mb-3">
             {t('company.estimateWizard.scopeSummary.title')}
           </h3>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <ScopeColumn
               icon={<CheckCircle2 className="w-4 h-4 text-emerald-600" />}
               title={t('company.estimateWizard.scopeSummary.included')}
@@ -197,20 +238,20 @@ export function ReviewStep({ wizard }: Props) {
         )}
         {project.tvaRate !== null && Number(project.tvaRate) > 0 ? (
           <>
-            <div className="grid sm:grid-cols-3 gap-4 mb-4">
-              <div className="rounded-2xl bg-gray-50 p-4">
-                <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.labor')}</p>
-                <p className="text-xl font-black text-gray-900">{Number(project.laborTotal).toLocaleString('ro-MD')} MDL</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-4">
+              <div className="rounded-2xl bg-gray-50 p-3 sm:p-4">
+                <p className="text-[11px] sm:text-xs text-gray-500">{t('company.estimateWizard.reviewStep.labor')}</p>
+                <p className="text-base sm:text-xl font-black text-gray-900">{Number(project.laborTotal).toLocaleString('ro-MD')} MDL</p>
               </div>
-              <div className="rounded-2xl bg-gray-50 p-4">
-                <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.materials')}</p>
-                <p className="text-xl font-black text-gray-900">{Number(project.materialTotal).toLocaleString('ro-MD')} MDL</p>
+              <div className="rounded-2xl bg-gray-50 p-3 sm:p-4">
+                <p className="text-[11px] sm:text-xs text-gray-500">{t('company.estimateWizard.reviewStep.materials')}</p>
+                <p className="text-base sm:text-xl font-black text-gray-900">{Number(project.materialTotal).toLocaleString('ro-MD')} MDL</p>
               </div>
-              <div className="rounded-2xl bg-gray-50 p-4 border border-slate-100">
-                <p className="text-xs text-gray-500">
+              <div className="rounded-2xl bg-gray-50 p-3 sm:p-4 border border-slate-100 col-span-2 sm:col-span-1">
+                <p className="text-[11px] sm:text-xs text-gray-500">
                   {t('company.estimateWizard.reviewStep.totalWithMargin', { margin: Number(project.marginPct) })}
                 </p>
-                <p className="text-xl font-black text-gray-900">{Number(project.grandTotal).toLocaleString('ro-MD')} MDL</p>
+                <p className="text-base sm:text-xl font-black text-gray-900">{Number(project.grandTotal).toLocaleString('ro-MD')} MDL</p>
               </div>
             </div>
             <div className="grid sm:grid-cols-2 gap-4 mb-6">
@@ -228,20 +269,20 @@ export function ReviewStep({ wizard }: Props) {
           </>
         ) : (
           <>
-            <div className="grid sm:grid-cols-3 gap-4 mb-4">
-              <div className="rounded-2xl bg-gray-50 p-4">
-                <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.labor')}</p>
-                <p className="text-xl font-black text-gray-900">{Number(project.laborTotal).toLocaleString('ro-MD')} MDL</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-4">
+              <div className="rounded-2xl bg-gray-50 p-3 sm:p-4">
+                <p className="text-[11px] sm:text-xs text-gray-500">{t('company.estimateWizard.reviewStep.labor')}</p>
+                <p className="text-base sm:text-xl font-black text-gray-900">{Number(project.laborTotal).toLocaleString('ro-MD')} MDL</p>
               </div>
-              <div className="rounded-2xl bg-gray-50 p-4">
-                <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.materials')}</p>
-                <p className="text-xl font-black text-gray-900">{Number(project.materialTotal).toLocaleString('ro-MD')} MDL</p>
+              <div className="rounded-2xl bg-gray-50 p-3 sm:p-4">
+                <p className="text-[11px] sm:text-xs text-gray-500">{t('company.estimateWizard.reviewStep.materials')}</p>
+                <p className="text-base sm:text-xl font-black text-gray-900">{Number(project.materialTotal).toLocaleString('ro-MD')} MDL</p>
               </div>
-              <div className="rounded-2xl bg-violet-50 p-4 border border-violet-100">
-                <p className="text-xs text-violet-600">
+              <div className="rounded-2xl bg-violet-50 p-3 sm:p-4 border border-violet-100 col-span-2 sm:col-span-1">
+                <p className="text-[11px] sm:text-xs text-violet-600">
                   {t('company.estimateWizard.reviewStep.totalWithMargin', { margin: Number(project.marginPct) })}
                 </p>
-                <p className="text-2xl font-black text-violet-700">{Number(project.grandTotal).toLocaleString('ro-MD')} MDL</p>
+                <p className="text-base sm:text-2xl font-black text-violet-700">{Number(project.grandTotal).toLocaleString('ro-MD')} MDL</p>
               </div>
             </div>
             <p className="text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 mb-6 leading-relaxed">
@@ -249,42 +290,98 @@ export function ReviewStep({ wizard }: Props) {
             </p>
           </>
         )}
-        <div className="flex flex-wrap gap-3">
-          {canSendEstimate ? (
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Primary actions */}
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+            {canSendEstimate ? (
+              <button
+                type="button"
+                onClick={handleSendEstimate}
+                disabled={sendEstimate.isPending}
+                className={cabinetBtnPrimary}
+              >
+                <Send className="w-4 h-4 flex-shrink-0" />{' '}
+                <span className="truncate">
+                  {sendEstimate.isPending
+                    ? t('company.estimateWizard.reviewStep.sending')
+                    : t('company.estimateWizard.reviewStep.sendToClient')}
+                </span>
+              </button>
+            ) : null}
             <button
               type="button"
-              onClick={handleSendEstimate}
-              disabled={sendEstimate.isPending}
+              onClick={handleGenerateQuote}
+              disabled={!!project.quote || generateQuote.isPending}
               className={cabinetBtnPrimary}
             >
-              <Send className="w-4 h-4" />{' '}
-              {sendEstimate.isPending
-                ? t('company.estimateWizard.reviewStep.sending')
-                : t('company.estimateWizard.reviewStep.sendToClient')}
+              <FileText className="w-4 h-4 flex-shrink-0" />{' '}
+              <span className="truncate">{t('company.estimateWizard.reviewStep.generateQuote')}</span>
             </button>
-          ) : null}
-          <button type="button" onClick={handleGenerateQuote} disabled={!!project.quote || generateQuote.isPending} className={cabinetBtnPrimary}>
-            <FileText className="w-4 h-4" /> {t('company.estimateWizard.reviewStep.generateQuote')}
-          </button>
-          {canConvertEstimate ? (
-            <>
-              <button type="button" onClick={() => handleConvert('single')} className={cabinetBtnSecondary}>
-                <Hammer className="w-4 h-4" /> {t('company.estimateWizard.reviewStep.convertSingle')}
-              </button>
-              <button type="button" onClick={() => handleConvert('by-stage')} className={cabinetBtnSecondary}>
-                <Send className="w-4 h-4" /> {t('company.estimateWizard.reviewStep.convertByStage')}
-              </button>
-            </>
-          ) : (
-            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2">
-              {t('company.estimateWizard.reviewStep.convertUnavailable')}
-            </p>
-          )}
-          {project.quote && (
-            <Link to="/company/oferte" className={cabinetBtnSecondary}>
-              {t('company.estimateWizard.reviewStep.viewQuote', { number: project.quote.number })}
-            </Link>
-          )}
+          </div>
+
+          {/* Secondary actions */}
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+            {canConvertEstimate ? (
+              <>
+                <button type="button" onClick={() => handleConvert('single')} className={cabinetBtnSecondary}>
+                  <Hammer className="w-4 h-4 flex-shrink-0" />{' '}
+                  <span className="truncate">{t('company.estimateWizard.reviewStep.convertSingle')}</span>
+                </button>
+                <button type="button" onClick={() => handleConvert('by-stage')} className={cabinetBtnSecondary}>
+                  <Send className="w-4 h-4 flex-shrink-0" />{' '}
+                  <span className="truncate">{t('company.estimateWizard.reviewStep.convertByStage')}</span>
+                </button>
+              </>
+            ) : (
+              <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 w-full sm:w-auto">
+                {t('company.estimateWizard.reviewStep.convertUnavailable')}
+              </p>
+            )}
+            {project.quote && (
+              <Link to="/company/oferte" className={cabinetBtnSecondary}>
+                {t('company.estimateWizard.reviewStep.viewQuote', { number: project.quote.number })}
+              </Link>
+            )}
+            <button
+              type="button"
+              onClick={() => setSaveTemplateOpen(true)}
+              className={cabinetBtnSecondary}
+            >
+              <Copy className="w-4 h-4 flex-shrink-0 text-violet-500" />{' '}
+              <span className="truncate">{t('company.estimatesTemplatesPage.saveAsTemplate')}</span>
+            </button>
+          </div>
+
+          {/* PDF download with language toggle — full width on mobile */}
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto mt-1 sm:mt-0">
+            <div className="inline-flex items-center rounded-lg border border-gray-200 bg-gray-50/80 p-0.5 gap-0.5 flex-shrink-0">
+              {(['ro', 'ru'] as const).map((lang) => (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => setPdfLang(lang)}
+                  className={`rounded-md px-2.5 py-1 text-[11px] font-bold uppercase transition-colors ${
+                    pdfLang === lang
+                      ? 'bg-white text-violet-700 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  {lang}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={handleDownloadPdf}
+              disabled={downloadPdf.isDownloading}
+              className={cn(cabinetBtnSecondary, 'flex-1 sm:flex-none')}
+            >
+              <Download className="w-4 h-4 flex-shrink-0" />{' '}
+              {downloadPdf.isDownloading
+                ? t('company.estimateWizard.wizard.toasts.pdfDownloading', 'Se descarcă...')
+                : t('company.estimateWizard.reviewStep.downloadEstimatePdf', 'Descarcă PDF')}
+            </button>
+          </div>
         </div>
       </Panel>
 
@@ -314,16 +411,16 @@ export function ReviewStep({ wizard }: Props) {
                   </span>
                 </div>
 
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto -mx-2 sm:mx-0">
                   <table className="min-w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider">
-                        <th className="py-2">{t('company.estimateWizard.reviewStep.colDescription')}</th>
-                        <th className="py-2 w-20">{t('company.estimateWizard.reviewStep.colQty')}</th>
-                        <th className="py-2 w-20">{t('company.estimateWizard.reviewStep.colUnit')}</th>
-                        <th className="py-2 w-28">{t('company.estimateWizard.reviewStep.colUnitPrice')}</th>
-                        <th className="py-2 w-28">{t('company.estimateWizard.reviewStep.colTotal')}</th>
-                        <th className="py-2">{t('company.estimateWizard.reviewStep.colStore')}</th>
+                        <th className="py-2 pr-2">{t('company.estimateWizard.reviewStep.colDescription')}</th>
+                        <th className="py-2 w-16 sm:w-20">{t('company.estimateWizard.reviewStep.colQty')}</th>
+                        <th className="py-2 hidden sm:table-cell w-16 sm:w-20">{t('company.estimateWizard.reviewStep.colUnit')}</th>
+                        <th className="py-2 hidden sm:table-cell w-24 sm:w-28">{t('company.estimateWizard.reviewStep.colUnitPrice')}</th>
+                        <th className="py-2 w-24 sm:w-28">{t('company.estimateWizard.reviewStep.colTotal')}</th>
+                        <th className="py-2 pr-2">{t('company.estimateWizard.reviewStep.colStore')}</th>
                         <th className="py-2 text-right">{t('company.estimateWizard.reviewStep.colReceipt')}</th>
                       </tr>
                     </thead>
@@ -354,11 +451,11 @@ export function ReviewStep({ wizard }: Props) {
                                     Number(e.target.value),
                                   )
                                 }
-                                className="w-16 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                                className="w-14 sm:w-16 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
                               />
                             </td>
-                            <td className="py-3 text-gray-500 font-medium">{line.unit}</td>
-                            <td className="py-3">
+                            <td className="py-3 text-gray-500 font-medium hidden sm:table-cell">{line.unit}</td>
+                            <td className="py-3 hidden sm:table-cell">
                               <div className="flex items-center gap-1">
                                 <input
                                   type="number"
@@ -471,6 +568,22 @@ export function ReviewStep({ wizard }: Props) {
           })}
         </div>
       </Panel>
+
+      {/* V-05: Version History */}
+      <div className="mt-6">
+        <EstimateVersionHistory projectId={project.id} />
+      </div>
+
+      {/* V-06: Comment Thread */}
+      <div className="mt-6">
+        <EstimateCommentThread projectId={project.id} isPortal={false} />
+      </div>
+
+      <SaveTemplateModal
+        open={saveTemplateOpen}
+        onClose={() => setSaveTemplateOpen(false)}
+        projectId={project.id}
+      />
     </div>
   );
 }

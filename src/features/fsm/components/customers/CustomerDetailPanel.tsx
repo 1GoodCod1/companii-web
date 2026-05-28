@@ -28,9 +28,11 @@ import { getErrorMessage } from '@/utils/errors';
 
 type Props = {
   customer: CustomerDto | null;
+  onEdit?: (customer: CustomerDto) => void;
+  onDelete?: (id: string) => void;
 };
 
-export function CustomerDetailPanel({ customer }: Props) {
+export function CustomerDetailPanel({ customer, onEdit, onDelete }: Props) {
   const { t } = useTranslation();
   const locale = useLocale();
   const createPortalInvite = useCreatePortalInviteMutation();
@@ -86,9 +88,29 @@ export function CustomerDetailPanel({ customer }: Props) {
       />
       {customer ? (
         <div className="space-y-4">
-          <div>
-            <p className="text-lg font-semibold text-gray-900">{customer.fullName}</p>
-            <p className="text-[10px] text-gray-400 mt-1">ID: {customer.id}</p>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-lg font-semibold text-gray-900">{customer.fullName}</p>
+              <p className="text-[10px] text-gray-400 mt-1">ID: {customer.id}</p>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                type="button"
+                onClick={() => onEdit?.(customer)}
+                className="p-2 hover:bg-violet-50 rounded-xl text-gray-500 hover:text-violet-600 border border-transparent hover:border-violet-100 transition-all cursor-pointer text-xs"
+                title={t('cabinet.common.edit')}
+              >
+                ✏️
+              </button>
+              <button
+                type="button"
+                onClick={() => onDelete?.(customer.id)}
+                className="p-2 hover:bg-red-50 rounded-xl text-gray-500 hover:text-red-600 border border-transparent hover:border-red-100 transition-all cursor-pointer text-xs"
+                title={t('cabinet.common.delete')}
+              >
+                🗑️
+              </button>
+            </div>
           </div>
 
           <div className="space-y-2.5 text-sm text-gray-700 bg-slate-50/80 p-4 rounded-xl">

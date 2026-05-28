@@ -13,16 +13,16 @@ export function LeadsStatusFilter({
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-1.5 pb-2">
       {LEAD_STATUS_FILTERS.map((filter) => (
         <button
           key={filter.value ?? 'all'}
           type="button"
           onClick={() => onChange(filter.value)}
-          className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
             value === filter.value
-              ? 'bg-violet-600 text-white shadow-md'
-              : 'bg-white text-gray-600 border border-gray-200 hover:border-violet-200'
+              ? 'bg-violet-600 text-white shadow-xs'
+              : 'bg-white/80 text-gray-500 hover:bg-slate-100'
           }`}
         >
           {leadFilterLabel(filter.value, t)}

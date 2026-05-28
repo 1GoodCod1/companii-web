@@ -11,6 +11,7 @@ import type {
   EstimateLineDto,
   EstimateProjectDto,
   EstimateProjectListDto,
+  EstimateProjectPhotoDto,
   Plan2dData,
   WorkSheetDto,
 } from '@/types/estimates';
@@ -100,6 +101,11 @@ export function useUpdateEstimateProjectMutation() {
       address?: string;
       validUntil?: string | null;
       marginPct?: number;
+      riskReservePct?: number;
+      buildingYear?: number | null;
+      siteFloor?: number | null;
+      accessDifficulty?: string | null;
+      urgency?: string | null;
       diagnosticAnswers?: Record<string, unknown>;
       notes?: string | null;
     }) =>
@@ -110,6 +116,19 @@ export function useUpdateEstimateProjectMutation() {
     onSuccess: (_, { id }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(id) });
+    },
+  });
+}
+
+export function useDeleteEstimateProjectMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      apiFetch<{ success: boolean }>(`${base}/projects/${id}`, {
+        method: 'DELETE',
+      }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
     },
   });
 }
@@ -128,14 +147,76 @@ export function useSaveSitePlanMutation() {
   });
 }
 
+export type EstimateCalculateResponse = EstimateProjectDto & {
+  sanityWarnings?: Array<{ key: string; severity: 'info' | 'warning'; message: string }>;
+};
+
 export function useCalculateEstimateMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) =>
-      apiFetch<EstimateProjectDto>(`${base}/projects/${id}/calculate`, { method: 'POST' }),
+      apiFetch<EstimateCalculateResponse>(`${base}/projects/${id}/calculate`, { method: 'POST' }),
     onSuccess: (_, id) => {
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(id) });
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
+    },
+  });
+}
+
+// Slice 5: project-level site survey photos.
+export function useAddEstimateProjectPhotosMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      projectId,
+      fileKeys,
+      caption,
+    }: {
+      projectId: string;
+      fileKeys: string[];
+      caption?: string;
+    }) =>
+      apiFetch<EstimateProjectPhotoDto[]>(`${base}/projects/${projectId}/photos`, {
+        method: 'POST',
+        body: JSON.stringify({ fileKeys, caption }),
+      }),
+    onSuccess: (_, { projectId }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(projectId) });
+    },
+  });
+}
+
+export function useUpdateEstimateProjectPhotoCaptionMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      projectId,
+      photoId,
+      caption,
+    }: {
+      projectId: string;
+      photoId: string;
+      caption: string | null;
+    }) =>
+      apiFetch<EstimateProjectPhotoDto>(`${base}/projects/${projectId}/photos/${photoId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ caption }),
+      }),
+    onSuccess: (_, { projectId }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(projectId) });
+    },
+  });
+}
+
+export function useDeleteEstimateProjectPhotoMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ projectId, photoId }: { projectId: string; photoId: string }) =>
+      apiFetch<{ success: boolean }>(`${base}/projects/${projectId}/photos/${photoId}`, {
+        method: 'DELETE',
+      }),
+    onSuccess: (_, { projectId }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(projectId) });
     },
   });
 }
@@ -183,8 +264,9 @@ export function useSendEstimateMutation() {
   });
 }
 
-export async function downloadPortalEstimatePdf(projectId: string, filename: string) {
-  return downloadApiBlob(`/portal/estimates/${projectId}/pdf`, filename);
+export async function downloadPortalEstimatePdf(projectId: string, filename: string, lang?: 'ro' | 'ru') {
+  const langParam = lang === 'ru' ? '?lang=ru' : '';
+  return downloadApiBlob(`/portal/estimates/${projectId}/pdf${langParam}`, filename);
 }
 
 // U-08: Hook for cancellable estimate PDF download.
@@ -192,14 +274,15 @@ export function useDownloadEstimatePdf() {
   const abortRef = useRef<AbortController | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const download = useCallback(async (projectId: string, filename: string) => {
+  const download = useCallback(async (projectId: string, filename: string, lang?: 'ro' | 'ru') => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
     setIsDownloading(true);
     try {
+      const langParam = lang === 'ru' ? '?lang=ru' : '';
       await downloadApiBlob(
-        `${base}/projects/${projectId}/pdf`,
+        `${base}/projects/${projectId}/pdf${langParam}`,
         filename,
         false,
         { signal: controller.signal },
@@ -228,14 +311,15 @@ export function useDownloadPortalEstimatePdf() {
   const abortRef = useRef<AbortController | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const download = useCallback(async (projectId: string, filename: string) => {
+  const download = useCallback(async (projectId: string, filename: string, lang?: 'ro' | 'ru') => {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
     setIsDownloading(true);
     try {
+      const langParam = lang === 'ru' ? '?lang=ru' : '';
       await downloadApiBlob(
-        `/portal/estimates/${projectId}/pdf`,
+        `/portal/estimates/${projectId}/pdf${langParam}`,
         filename,
         false,
         { signal: controller.signal },

@@ -76,6 +76,13 @@ export function useEstimateWizard(project: EstimateProjectDto) {
   const [siteType, setSiteType] = useState(project.siteType ?? 'apartment');
   const [address, setAddress] = useState(project.address ?? '');
   const [marginPct, setMarginPct] = useState(Number(project.marginPct));
+  const [riskReservePct, setRiskReservePct] = useState(Number(project.riskReservePct ?? 0));
+  const [buildingYear, setBuildingYear] = useState<number | null>(project.buildingYear ?? null);
+  const [siteFloor, setSiteFloor] = useState<number | null>(project.siteFloor ?? null);
+  const [accessDifficulty, setAccessDifficulty] = useState<string | null>(
+    project.accessDifficulty ?? null,
+  );
+  const [urgency, setUrgency] = useState<string | null>(project.urgency ?? null);
   const [plan2d, setPlan2d] = useState<Plan2dData>(project.sitePlan?.plan2d ?? EMPTY_PLAN);
   const [diagnostic, setDiagnostic] = useState<Record<string, unknown>>(
     (project.diagnosticAnswers as Record<string, unknown>) ?? {},
@@ -163,13 +170,15 @@ export function useEstimateWizard(project: EstimateProjectDto) {
         config,
         extractMeasurementsFromDiagnostic(persistDiagnostic(diagnostic)),
         enabledWorkModules,
+        accessDifficulty,
+        urgency,
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [config, diagnostic, customPricing, enabledWorkModules],
+    [config, diagnostic, customPricing, enabledWorkModules, accessDifficulty, urgency],
   );
   const previewTotals = useMemo(
-    () => computePreviewTotals(previewLines, marginPct, customPricing),
-    [previewLines, marginPct, customPricing],
+    () => computePreviewTotals(previewLines, marginPct, customPricing, riskReservePct),
+    [previewLines, marginPct, customPricing, riskReservePct],
   );
 
   // L-02: divergence between local preview and authoritative backend grandTotal.
@@ -181,9 +190,106 @@ export function useEstimateWizard(project: EstimateProjectDto) {
   const previewIsStale = Math.abs(previewVsBackendDiff) >= 1;
 
   const [apiWarnings, setApiWarnings] = useState<Array<{ key: string; message: string }>>([]);
+  const [sanityWarnings, setSanityWarnings] = useState<
+    Array<{ key: string; severity: 'info' | 'warning'; message: string }>
+  >([]);
   const offline = useEstimateOfflineCache(project.id);
   const [syncing, setSyncing] = useState(false);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const snapshotRef = useRef({
+    title,
+    siteType,
+    address,
+    marginPct,
+    riskReservePct,
+    buildingYear,
+    siteFloor,
+    accessDifficulty,
+    urgency,
+    diagnostic,
+    customPricing,
+    plan2d,
+  });
+
+  // H-06: Clear siteFloor if type is house
+  useEffect(() => {
+    if (siteType === 'house' && siteFloor !== null) {
+      setSiteFloor(null);
+      setDirty(true);
+    }
+  }, [siteType, siteFloor]);
+
+  // H-05: Smart Defaults based on siteType (office / commercial)
+  useEffect(() => {
+    if (!siteType) return;
+    if (siteType === 'office' || siteType === 'commercial') {
+      if (!accessDifficulty) {
+        setAccessDifficulty('medium');
+        setDirty(true);
+      }
+      const categorySlug = project.category.slug;
+      setDiagnostic((prev) => {
+        const next = { ...prev };
+        let changed = false;
+        if (categorySlug === 'elektrika') {
+          if (!next.wallMaterial) {
+            next.wallMaterial = 'beton';
+            changed = true;
+          }
+          if (next.voltageStabilizer === undefined) {
+            next.voltageStabilizer = true;
+            changed = true;
+          }
+          if (next.groundingRequired === undefined) {
+            next.groundingRequired = true;
+            changed = true;
+          }
+        }
+        if (categorySlug === 'clima') {
+          if (next.isMultiSplit === undefined) {
+            next.isMultiSplit = true;
+            changed = true;
+          }
+        }
+        if (categorySlug === 'it-networks') {
+          if (!next.projectScope) {
+            next.projectScope = 'Mediu (6-20 pagini / 1-2 săptămâni)';
+            changed = true;
+          }
+          if (next.multilingual === undefined) {
+            next.multilingual = true;
+            changed = true;
+          }
+          if (next.customDesign === undefined) {
+            next.customDesign = true;
+            changed = true;
+          }
+        }
+        if (changed) {
+          setDirty(true);
+          return next;
+        }
+        return prev;
+      });
+    }
+  }, [siteType, project.category.slug, accessDifficulty]);
+
+  useEffect(() => {
+    snapshotRef.current = {
+      title,
+      siteType,
+      address,
+      marginPct,
+      riskReservePct,
+      buildingYear,
+      siteFloor,
+      accessDifficulty,
+      urgency,
+      diagnostic,
+      customPricing,
+      plan2d,
+    };
+  });
 
   useEffect(() => {
     queueMicrotask(() => setSavingStatus('saving'));
@@ -192,6 +298,11 @@ export function useEstimateWizard(project: EstimateProjectDto) {
       siteType,
       address,
       marginPct,
+      riskReservePct,
+      buildingYear,
+      siteFloor,
+      accessDifficulty,
+      urgency,
       diagnostic,
       customPricing,
       plan2d,
@@ -209,24 +320,31 @@ export function useEstimateWizard(project: EstimateProjectDto) {
         resetTimerRef.current = null;
       }
     };
-  }, [offline, title, siteType, address, marginPct, diagnostic, customPricing, plan2d]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    title,
+    siteType,
+    address,
+    marginPct,
+    riskReservePct,
+    buildingYear,
+    siteFloor,
+    accessDifficulty,
+    urgency,
+    diagnostic,
+    customPricing,
+    plan2d,
+  ]);
 
   // M-04 — flush autosave on tab unload so refresh never loses unsynced data
   useEffect(() => {
     const handleBeforeUnload = () => {
-      void offline.flushAutosave({
-        title,
-        siteType,
-        address,
-        marginPct,
-        diagnostic,
-        customPricing,
-        plan2d,
-      });
+      void offline.flushAutosave(snapshotRef.current);
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [offline, title, siteType, address, marginPct, diagnostic, customPricing, plan2d]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSyncNow = useCallback(async () => {
     if (syncing) return;
@@ -291,11 +409,16 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     }
     void handleSyncNow();
   }, [offline, project.id, handleSyncNow]);
+  const handleSyncNowRef = useRef(handleSyncNow);
+  useEffect(() => {
+    handleSyncNowRef.current = handleSyncNow;
+  });
+
   useEffect(() => {
     if (offline.online && offline.pendingMutations > 0 && !syncing) {
-      queueMicrotask(() => void handleSyncNow());
+      queueMicrotask(() => void handleSyncNowRef.current());
     }
-  }, [offline.online, offline.pendingMutations, syncing, handleSyncNow]);
+  }, [offline.online, offline.pendingMutations, syncing]);
 
   const updateLine = useUpdateEstimateLineMutation();
   const addLineMutation = useAddEstimateLineMutation();
@@ -412,6 +535,11 @@ export function useEstimateWizard(project: EstimateProjectDto) {
         siteType,
         address,
         marginPct,
+        riskReservePct,
+        buildingYear,
+        siteFloor,
+        accessDifficulty,
+        urgency,
         diagnosticAnswers: persistDiagnostic(diagnostic),
       })) as { warnings?: Array<{ key: string; message: string }> } | undefined;
       setDiagnostic(persistDiagnostic(diagnostic));
@@ -514,7 +642,10 @@ export function useEstimateWizard(project: EstimateProjectDto) {
 
       await savePlan.mutateAsync({ id: project.id, plan2d });
 
-      await calculate.mutateAsync(project.id);
+      const result = (await calculate.mutateAsync(project.id)) as
+        | { sanityWarnings?: Array<{ key: string; severity: 'info' | 'warning'; message: string }> }
+        | undefined;
+      setSanityWarnings(Array.isArray(result?.sanityWarnings) ? result!.sanityWarnings! : []);
       setDirty(false);
       toast.success(t('company.estimateWizard.wizard.toasts.calculateSuccess'));
       setStepIndex(steps.indexOf('review'));
@@ -582,6 +713,16 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     setAddress,
     marginPct,
     setMarginPct,
+    riskReservePct,
+    setRiskReservePct,
+    buildingYear,
+    setBuildingYear,
+    siteFloor,
+    setSiteFloor,
+    accessDifficulty,
+    setAccessDifficulty,
+    urgency,
+    setUrgency,
     plan2d,
     setPlan2d,
     diagnostic,
@@ -619,6 +760,7 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     handleKeepLocalChanges,
     acknowledgeConflict: offline.acknowledgeConflict,
     apiWarnings,
+    sanityWarnings,
     dirty,
     setDirty,
     savingStatus,

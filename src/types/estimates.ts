@@ -110,10 +110,33 @@ export type EstimateClientFeedbackEntry = {
   createdAt: string;
 };
 
+export type EstimateAccessDifficulty = 'easy' | 'medium' | 'difficult';
+export type EstimateUrgency = 'normal' | 'urgent' | 'emergency';
+
+export type EstimateSanityWarning = {
+  key: string;
+  severity: 'info' | 'warning';
+  message: string;
+};
+
+export type EstimateProjectPhotoDto = {
+  id: string;
+  projectId: string;
+  fileKey: string;
+  caption: string | null;
+  sortOrder: number;
+  createdAt: string;
+};
+
 export type EstimateProjectDto = Omit<EstimateProjectListDto, 'stages'> & {
   siteType?: string | null;
   address?: string | null;
-  marginPct: number;
+  buildingYear?: number | null;
+  siteFloor?: number | null;
+  accessDifficulty?: EstimateAccessDifficulty | null;
+  urgency?: EstimateUrgency | null;
+  marginPct?: number;
+  riskReservePct?: number;
   laborTotal: number;
   materialTotal: number;
   validUntil?: string | null;
@@ -123,6 +146,7 @@ export type EstimateProjectDto = Omit<EstimateProjectListDto, 'stages'> & {
   blueprint?: { id: string; config: EstimateBlueprintConfig } | null;
   sitePlan?: { plan2d: Plan2dData; plan3d?: unknown } | null;
   measurements?: Array<{ key: string; label?: string; value: number; unit: string }>;
+  photos?: EstimateProjectPhotoDto[];
   stages: EstimateStageDto[];
   sourceLead?: {
     id: string;
@@ -190,3 +214,29 @@ export type WorkSheetDto = {
     stageTotal?: number;
   }>;
 };
+
+export interface EstimateVersionSummary {
+  id: string;
+  version: number;
+  label: string | null;
+  lineCount: number;
+  grandTotal: number;
+  createdAt: string;
+}
+
+export interface EstimateVersionDiff {
+  versionA: number;
+  versionB: number;
+  lineCountDelta: number;
+  grandTotalDelta: number;
+  addedLines: string[];
+  removedLines: string[];
+}
+
+export interface EstimateCommentDto {
+  id: string;
+  authorKind: 'CLIENT' | 'CONTRACTOR';
+  authorId: string;
+  body: string;
+  createdAt: string;
+}

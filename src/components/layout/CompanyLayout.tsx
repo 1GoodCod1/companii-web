@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import {
   Calendar,
   Calculator,
+  BookOpen,
   CreditCard,
   FileText,
   Inbox,
@@ -9,6 +10,7 @@ import {
   List,
   MessageSquareQuote,
   Receipt,
+  Settings,
   User,
   Users,
   Wrench,
@@ -102,6 +104,14 @@ const NAV_DEFS: Array<
     minPlanKey: '/smete',
   },
   {
+    key: 'smeteTemplates',
+    sectionKey: 'operations',
+    to: '/smete/templates',
+    labelKey: 'company.smeteTemplates',
+    icon: <BookOpen />,
+    minPlanKey: '/smete',
+  },
+  {
     key: 'oferte',
     sectionKey: 'operations',
     to: '/oferte',
@@ -140,6 +150,14 @@ const NAV_DEFS: Array<
     labelKey: 'company.subscription',
     icon: <CreditCard />,
     minPlanKey: '/subscription',
+  },
+  {
+    key: 'settings',
+    sectionKey: 'company',
+    to: '/settings',
+    labelKey: 'company.settings',
+    icon: <Settings />,
+    minPlanKey: '',
   },
 ];
 

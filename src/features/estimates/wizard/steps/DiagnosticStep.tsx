@@ -11,6 +11,7 @@ import { CustomFieldInput } from '@/features/estimates/components/CustomFieldInp
 import { CustomPricingFields } from '@/features/estimates/components/CustomPricingFields';
 import { WorkModulesPicker } from '@/features/estimates/components/WorkModulesPicker';
 import { parseNumberInputValue } from '@/features/estimates/diagnosticValidation';
+import { useTranslateOption } from '@/utils/translateOption';
 import type { EstimateWizardApi } from '../useEstimateWizard';
 
 type Props = {
@@ -19,6 +20,7 @@ type Props = {
 
 export function DiagnosticStep({ wizard }: Props) {
   const { t } = useTranslation();
+  const translateOption = useTranslateOption();
   const {
     project,
     config,
@@ -83,6 +85,7 @@ export function DiagnosticStep({ wizard }: Props) {
           <div className="grid sm:grid-cols-2 gap-4">
             {diagnosticQuestions.map((q) => {
               const error = validationErrors?.[q.key];
+              const warning = warningByKey.get(q.key);
               const currentValue = diagnostic[q.key];
               return (
                 <label key={q.key} className={cabinetLabelClass}>
@@ -115,7 +118,7 @@ export function DiagnosticStep({ wizard }: Props) {
                       <option value="">—</option>
                       {(q.options ?? []).map((opt) => (
                         <option key={opt} value={opt}>
-                          {opt}
+                          {translateOption(opt)}
                         </option>
                       ))}
                     </select>
@@ -132,7 +135,22 @@ export function DiagnosticStep({ wizard }: Props) {
                       className={cabinetFieldClass}
                     />
                   )}
-                  {error && <span className="text-xs text-rose-600 mt-1">{error}</span>}
+                  {error && (
+                    <div className="mt-1.5 flex items-start gap-2 rounded-xl bg-rose-50/60 border border-rose-100/80 p-2.5 shadow-2xs animate-fade-in">
+                      <span className="text-rose-600 font-extrabold text-xs shrink-0">🚫</span>
+                      <span className="text-[11px] font-semibold text-rose-900 leading-relaxed">
+                        {error}
+                      </span>
+                    </div>
+                  )}
+                  {!error && warning && (
+                    <div className="mt-1.5 flex items-start gap-2 rounded-xl bg-amber-50/60 border border-amber-100 p-2.5 shadow-2xs animate-fade-in">
+                      <span className="text-amber-600 font-extrabold text-xs shrink-0">⚠️</span>
+                      <span className="text-[11px] font-semibold text-amber-950 leading-relaxed">
+                        {warning}
+                      </span>
+                    </div>
+                  )}
                 </label>
               );
             })}

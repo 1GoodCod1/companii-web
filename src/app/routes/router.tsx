@@ -16,6 +16,7 @@ import {
   CompanyDetailPage,
   // U-09: Lazy-loaded company routes for code splitting.
   CompanyEstimatesPage,
+  CompanyTemplatesPage,
   CompanyEstimateWizardPage,
   EstimateWorkSheetPage,
   MyWorksheetsPage,
@@ -40,6 +41,7 @@ import { CompanyCalendarPage } from '@/pages/company/CompanyCalendarPage';
 import { CompanyQuotesPage } from '@/pages/company/CompanyQuotesPage';
 import { CompanyInvoicesPage } from '@/pages/company/CompanyInvoicesPage';
 import { CompanySubscriptionPage } from '@/pages/company/CompanySubscriptionPage';
+import { SettingsPage } from '@/features/settings/SettingsPage';
 import { CompanyReviewsPage } from '@/pages/company/CompanyReviewsPage';
 import { CompanyLeadsPage } from '@/pages/company/CompanyLeadsPage';
 import { PortalCereriPage } from '@/pages/portal/PortalCereriPage';
@@ -236,6 +238,16 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: COMPANY_ROUTE.SMETE_TEMPLATES,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
+                <Suspense fallback={null}>
+                  <CompanyTemplatesPage />
+                </Suspense>
+              </RequireCompanyRole>
+            ),
+          },
+          {
             path: COMPANY_ROUTE.SMETE_NEW,
             element: (
               <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
@@ -286,6 +298,10 @@ export const router = createBrowserRouter([
                 <CompanyReviewsPage />
               </RequireCompanyRole>
             ),
+          },
+          {
+            path: COMPANY_ROUTE.SETTINGS,
+            element: <SettingsPage />,
           },
           {
             path: COMPANY_ROUTE.SUBSCRIPTION,

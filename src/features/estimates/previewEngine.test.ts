@@ -104,6 +104,23 @@ describe('computePreviewTotals (L-01)', () => {
     expect(totals.marginAmount).toBe(0);
     expect(totals.grandTotal).toBe(totals.subtotal);
   });
+
+  it('applies risk reserve before margin (compound)', () => {
+    const lines = computePreviewLines(config, { paintArea: 50, tileArea: 20 }, ['paint', 'tile'])
+    const totals = computePreviewTotals(lines, 20, undefined, 10);
+    expect(totals.subtotal).toBe(9500);
+    expect(totals.riskReserveAmount).toBe(950);
+    expect(totals.marginAmount).toBe(2090);
+    expect(totals.grandTotal).toBe(12540);
+  });
+
+  it('riskReservePct=0 keeps grandTotal identical to no-reserve case', () => {
+    const lines = computePreviewLines(config, { paintArea: 50 }, ['paint']);
+    const withZeroReserve = computePreviewTotals(lines, 15, undefined, 0);
+    const withoutArg = computePreviewTotals(lines, 15);
+    expect(withZeroReserve.grandTotal).toBe(withoutArg.grandTotal);
+    expect(withZeroReserve.riskReserveAmount).toBe(0);
+  });
 });
 
 describe('extractMeasurementsFromDiagnostic (L-01)', () => {

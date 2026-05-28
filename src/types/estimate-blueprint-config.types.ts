@@ -91,6 +91,19 @@ export type BlueprintPricingRule = {
   enabledWhen?: BlueprintPricingRuleEnabledWhen;
 };
 
+export type BlueprintAccessDifficultyImpact = {
+  easy: number;
+  medium: number;
+  difficult: number;
+  appliesToMaterial?: boolean;
+};
+
+export type BlueprintUrgencyImpact = {
+  urgent: number;
+  emergency: number;
+  appliesToMaterial?: boolean;
+};
+
 export type EstimateBlueprintConfig = {
   wizardSteps: BlueprintWizardStep[];
   siteTypes: BlueprintSiteType[];
@@ -102,4 +115,6 @@ export type EstimateBlueprintConfig = {
   pricingRules: BlueprintPricingRule[];
   defaultLaborRate: number;
   defaultMarginPct: number;
+  accessDifficultyImpact?: BlueprintAccessDifficultyImpact;
+  urgencyImpact?: BlueprintUrgencyImpact;
 };

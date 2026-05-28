@@ -28,6 +28,11 @@ export function CompanyCustomersPage() {
   const importModal = useEntityModal();
   const [viewCustomer, setViewCustomer] = useState<CustomerDto | null>(null);
 
+  const selectedCustomer = useMemo(() => {
+    if (!viewCustomer) return null;
+    return customers?.find((c: CustomerDto) => c.id === viewCustomer.id) ?? viewCustomer;
+  }, [customers, viewCustomer]);
+
   const filtered = useMemo(
     () =>
       customers?.filter(
@@ -84,13 +89,17 @@ export function CompanyCustomersPage() {
             <CustomersListTable
               customers={filtered}
               isLoading={isLoading}
-              selectedId={viewCustomer?.id ?? null}
+              selectedId={selectedCustomer?.id ?? null}
               onSelect={setViewCustomer}
+            />
+          }
+          detail={
+            <CustomerDetailPanel
+              customer={selectedCustomer}
               onEdit={formModal.openEdit}
               onDelete={handleDelete}
             />
           }
-          detail={<CustomerDetailPanel customer={viewCustomer} />}
         />
 
         <CustomerFormModal

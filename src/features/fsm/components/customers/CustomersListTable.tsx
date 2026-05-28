@@ -7,8 +7,6 @@ type Props = {
   isLoading: boolean;
   selectedId: string | null;
   onSelect: (customer: CustomerDto) => void;
-  onEdit: (customer: CustomerDto) => void;
-  onDelete: (id: string) => void;
 };
 
 export function CustomersListTable({
@@ -16,8 +14,6 @@ export function CustomersListTable({
   isLoading,
   selectedId,
   onSelect,
-  onEdit,
-  onDelete,
 }: Props) {
   const { t } = useTranslation();
 
@@ -41,9 +37,6 @@ export function CustomersListTable({
               <th className="p-4 text-xs uppercase tracking-wider">
                 {t('company.fsm.customers.list.columns.address')}
               </th>
-              <th className="p-4 text-xs uppercase tracking-wider text-right">
-                {t('company.fsm.customers.list.columns.actions')}
-              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -61,24 +54,6 @@ export function CustomersListTable({
                   {c.email && <div className="text-gray-400 mt-0.5">{c.email}</div>}
                 </td>
                 <td className="p-4 text-xs text-gray-500 max-w-xs truncate">{c.address}</td>
-                <td className="p-4 text-right" onClick={(e) => e.stopPropagation()}>
-                  <div className="flex justify-end gap-2">
-                    <button
-                      onClick={() => onEdit(c)}
-                      className="p-2 hover:bg-violet-50 rounded-xl text-gray-500 hover:text-violet-600 transition-colors cursor-pointer text-xs"
-                      title={t('cabinet.common.edit')}
-                    >
-                      ✏️
-                    </button>
-                    <button
-                      onClick={() => onDelete(c.id)}
-                      className="p-2 hover:bg-red-50 rounded-xl text-gray-500 hover:text-red-600 transition-colors cursor-pointer text-xs"
-                      title={t('cabinet.common.delete')}
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                </td>
               </tr>
             ))}
           </tbody>

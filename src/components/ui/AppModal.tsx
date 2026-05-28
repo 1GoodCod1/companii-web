@@ -85,7 +85,7 @@ export function AppModal({
 
       <div
         className={cn(
-          'relative z-10 flex max-h-[min(92vh,900px)] w-full flex-col overflow-hidden rounded-3xl border border-white/30 bg-white/95 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl animate-modal-in',
+          'relative z-10 flex max-h-[min(92vh,900px)] w-full flex-col overflow-hidden rounded-none border border-white/30 bg-white/95 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl animate-modal-in',
           SIZE_CLASSES[size],
         )}
         onClick={(event) => event.stopPropagation()}
@@ -95,7 +95,7 @@ export function AppModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-xl font-medium text-gray-400 transition-colors hover:bg-slate-100 hover:text-gray-700"
+            className="flex h-10 w-10 items-center justify-center rounded-none text-xl font-medium text-gray-400 transition-colors hover:bg-slate-100 hover:text-gray-700"
           >
             ✕
           </button>

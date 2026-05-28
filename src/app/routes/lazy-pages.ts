@@ -23,6 +23,12 @@ export const CompanyEstimatesPage = lazy(() =>
   })),
 );
 
+export const CompanyTemplatesPage = lazy(() =>
+  import('@/pages/company/CompanyTemplatesPage').then((m) => ({
+    default: m.CompanyTemplatesPage,
+  })),
+);
+
 export const CompanyEstimateWizardPage = lazy(() =>
   import('@/pages/company/CompanyEstimateWizardPage').then((m) => ({
     default: m.CompanyEstimateWizardPage,

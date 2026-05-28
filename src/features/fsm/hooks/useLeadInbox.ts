@@ -41,6 +41,10 @@ export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD
     }
   };
 
+  const handleNotesChange = async (lead: CompanyLeadDto, notes: string | null) => {
+    await updateLead.mutateAsync({ id: lead.id, notes });
+  };
+
   const handleConvertIntervention = async (leadId: string) => {
     try {
       const result = await convertLead.mutateAsync({ id: leadId, mode: 'intervention' });
@@ -119,6 +123,7 @@ export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD
     convertPending: convertLead.isPending,
     completePending: completeLead.isPending,
     handleStatusChange,
+    handleNotesChange,
     handleConvertIntervention,
     handleCompleteLead,
     handleConvertCustomer,

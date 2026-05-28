@@ -43,6 +43,7 @@ export function CompanyLeadsPage() {
                   convertPending={inbox.convertPending}
                   completePending={inbox.completePending}
                   onStatusChange={inbox.handleStatusChange}
+                  onNotesChange={inbox.handleNotesChange}
                   onConvertCustomer={inbox.handleConvertCustomer}
                   onConvertIntervention={inbox.handleConvertIntervention}
                   onConvertEstimate={inbox.openEstimateConvert}

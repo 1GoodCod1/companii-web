@@ -49,6 +49,11 @@ export type WizardSnapshot = {
   siteType?: string;
   address?: string;
   marginPct?: number;
+  riskReservePct?: number;
+  buildingYear?: number | null;
+  siteFloor?: number | null;
+  accessDifficulty?: string | null;
+  urgency?: string | null;
   diagnostic?: Record<string, unknown>;
   customPricing?: CustomPricingValues;
   plan2d?: Plan2dData;

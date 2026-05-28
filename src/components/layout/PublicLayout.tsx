@@ -1,6 +1,9 @@
+import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher';
+import { MobileSheet } from '@/components/layout/MobileSheet';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
 import { FaberLogo } from '@/components/brand/FaberLogo';
@@ -29,51 +32,140 @@ export function PublicLayout() {
   const barePath = stripLocalePrefix(location.pathname);
   const isLanding = barePath === '/' || barePath === '/companii';
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const openMobileMenu = useCallback(() => setMobileMenuOpen(true), []);
+  const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
+
+  const navLinks = PUBLIC_NAV_ITEMS.filter(
+    (item) => !('hideForEndClient' in item && item.hideForEndClient && user?.accountKind === 'END_CLIENT'),
+  );
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f9fafb]">
       <header className="public-site-header">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 lg:gap-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4 lg:gap-6">
+          {/* Logo */}
           <Link to={lp('/')} className="shrink-0">
             <FaberLogo size="sm" />
           </Link>
 
-          <div className="flex min-w-0 items-center justify-center overflow-hidden">
-            <nav
-              className="flex max-w-full flex-nowrap items-center gap-4 lg:gap-5 text-[11px] font-bold uppercase tracking-wide"
-              aria-label="Main"
-            >
-              {PUBLIC_NAV_ITEMS.map((item) => {
-                if ('hideForEndClient' in item && item.hideForEndClient && user?.accountKind === 'END_CLIENT') {
-                  return null;
-                }
-                return (
-                  <Link key={item.path} to={lp(item.path)} className={NAV_LINK_CLASS}>
-                    {t(item.labelKey)}
-                  </Link>
-                );
-              })}
-            </nav>
-          </div>
-
-          <div className="flex shrink-0 items-center gap-2 border-l border-gray-200 pl-3">
-            {isAuthed ? (
-              <Link to={cabinetRoute} className={NAV_CTA_CLASS}>
-                {cabinetLabel}
+          {/* Desktop nav: hidden on mobile */}
+          <nav
+            className="hidden lg:flex items-center gap-4 lg:gap-5 text-[11px] font-bold uppercase tracking-wide"
+            aria-label="Main"
+          >
+            {navLinks.map((item) => (
+              <Link key={item.path} to={lp(item.path)} className={NAV_LINK_CLASS}>
+                {t(item.labelKey)}
               </Link>
-            ) : (
-              <>
-                <Link to="/login" className={NAV_LINK_CLASS}>
-                  {t('nav.login')}
+            ))}
+          </nav>
+
+          {/* Right side: auth + language + hamburger */}
+          <div className="flex shrink-0 items-center gap-2 border-l border-gray-200 pl-3">
+            {/* Desktop auth */}
+            <div className="hidden lg:contents">
+              {isAuthed ? (
+                <Link to={cabinetRoute} className={NAV_CTA_CLASS}>
+                  {cabinetLabel}
                 </Link>
-                <Link to="/register" className={NAV_CTA_CLASS}>
-                  {t('nav.register')}
-                </Link>
-              </>
-            )}
-            <LanguageSwitcher />
+              ) : (
+                <>
+                  <Link to="/login" className={NAV_LINK_CLASS}>
+                    {t('nav.login')}
+                  </Link>
+                  <Link to="/register" className={NAV_CTA_CLASS}>
+                    {t('nav.register')}
+                  </Link>
+                </>
+              )}
+            </div>
+            <div className="hidden lg:contents">
+              <LanguageSwitcher />
+            </div>
+
+            {/* Mobile hamburger */}
+            <button
+              type="button"
+              onClick={openMobileMenu}
+              className="lg:hidden rounded-lg p-2 text-gray-500 hover:bg-gray-100 transition-colors"
+              aria-label="Menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
           </div>
         </div>
       </header>
+
+      {/* Mobile menu drawer */}
+      <MobileSheet open={mobileMenuOpen} onClose={closeMobileMenu}>
+        <div className="flex flex-col h-full p-5">
+          {/* Top row: logo + close */}
+          <div className="flex items-center justify-between mb-6">
+            <Link to={lp('/')} onClick={closeMobileMenu}>
+              <FaberLogo size="sm" />
+            </Link>
+            <button
+              type="button"
+              onClick={closeMobileMenu}
+              className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Nav links */}
+          <nav className="flex flex-col gap-1 mb-6">
+            {navLinks.map((item) => (
+              <Link
+                key={item.path}
+                to={lp(item.path)}
+                onClick={closeMobileMenu}
+                className="flex items-center rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+              >
+                {t(item.labelKey)}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Auth section */}
+          <div className="border-t border-gray-100 pt-4 space-y-3">
+            {isAuthed ? (
+              <Link
+                to={cabinetRoute}
+                onClick={closeMobileMenu}
+                className="flex items-center justify-center w-full rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-bold text-white"
+              >
+                {cabinetLabel}
+              </Link>
+            ) : (
+              <div className="space-y-2">
+                <Link
+                  to="/login"
+                  onClick={closeMobileMenu}
+                  className="flex items-center justify-center w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  {t('nav.login')}
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={closeMobileMenu}
+                  className="flex items-center justify-center w-full rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-sm font-bold text-white"
+                >
+                  {t('nav.register')}
+                </Link>
+              </div>
+            )}
+
+            <div className="pt-2 flex justify-center">
+              <LanguageSwitcher />
+            </div>
+          </div>
+
+          {/* Spacer */}
+          <div className="flex-1" />
+        </div>
+      </MobileSheet>
 
       <div className="shrink-0" style={{ height: 'var(--public-header-height)' }} aria-hidden />
 

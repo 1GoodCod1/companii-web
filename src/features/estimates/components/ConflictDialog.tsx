@@ -5,19 +5,11 @@ import type { EstimateVersionConflict } from '../offline/conflictResolution';
 type Props = {
   conflict: EstimateVersionConflict;
   busy?: boolean;
-  /** Reload server state; drop offline queue + local draft. */
   onDiscardLocal: () => void;
-  /** Take latest server state but try to re-apply local changes on top. */
   onKeepLocal: () => void;
   onClose: () => void;
 };
 
-/**
- * M-05: shown when the server rejects a write with
- * `ESTIMATE_VERSION_CONFLICT` — two tabs (or stale offline edit) tried
- * to overwrite each other. The dialog forces an explicit choice instead
- * of silently dropping data.
- */
 export function ConflictDialog({
   conflict,
   busy,

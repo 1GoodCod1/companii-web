@@ -49,6 +49,7 @@ export const COMPANY_ROUTE = {
   CALENDAR: 'calendar',
   LUCRARI_FISA: 'lucrari/:id/fisa',
   SMETE: 'smete',
+  SMETE_TEMPLATES: 'smete/templates',
   SMETE_NEW: 'smete/new',
   SMETE_DETAIL: 'smete/:id',
   OFERTE: 'oferte',
@@ -56,6 +57,7 @@ export const COMPANY_ROUTE = {
   FACTURI: 'facturi',
   RECENZII: 'recenzii',
   SUBSCRIPTION: 'subscription',
+  SETTINGS: 'settings',
 } as const;
 
 /**
@@ -73,11 +75,13 @@ export const COMPANY_CABINET_PATH = {
   CALENDAR: '/calendar',
   LUCRARI_FISA: '/lucrari/fisa',
   SMETE: '/smete',
+  SMETE_TEMPLATES: '/smete/templates',
   OFERTE: '/oferte',
   SERVICII: '/servicii',
   FACTURI: '/facturi',
   RECENZII: '/recenzii',
   SUBSCRIPTION: '/subscription',
+  SETTINGS: '/settings',
 } as const;
 
 export const PORTAL_ROUTE = {

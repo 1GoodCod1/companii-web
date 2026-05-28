@@ -16,31 +16,74 @@ export type PreviewTotals = {
   laborTotal: number;
   materialTotal: number;
   subtotal: number;
+  riskReserveAmount: number;
   marginAmount: number;
   grandTotal: number;
   lineCount: number;
-  /** True when the user has at least one enabled module that produced lines. */
   hasContent: boolean;
 };
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
-/**
- * L-01: client-side preview engine. Mirrors a subset of backend
- * `buildLinesFromRules`: filters rules by enabledModules + enabledWhen,
- * multiplies qty × unitPrice, applies wastePct. Skips advanced derive
- * helpers (per-category measurement derivation) — relies on diagnostic
- * answers and plan-derived counts that already live in the answers map.
- *
- * Used purely for live UI feedback. Authoritative totals always come
- * from backend `/calculate` (L-02).
- */
+export type AccessDifficultyLevel = 'easy' | 'medium' | 'difficult';
+export type UrgencyLevel = 'normal' | 'urgent' | 'emergency';
+
+function normalizeAccessLevel(raw: unknown): AccessDifficultyLevel {
+  if (raw == null || raw === '') return 'easy';
+  const n = String(raw).trim().toLowerCase().normalize('NFD').replace(/\p{M}/gu, '');
+  if (n === 'difficult' || n === 'dificil' || n === 'hard') return 'difficult';
+  if (n === 'medium' || n === 'mediu') return 'medium';
+  return 'easy';
+}
+
+function normalizeUrgencyLevel(raw: unknown): UrgencyLevel {
+  if (raw == null || raw === '') return 'normal';
+  const n = String(raw).trim().toLowerCase();
+  if (n === 'emergency') return 'emergency';
+  if (n === 'urgent') return 'urgent';
+  return 'normal';
+}
+
+function resolveAccessMultipliers(
+  config: EstimateBlueprintConfig | null | undefined,
+  level: AccessDifficultyLevel,
+): { labor: number; material: number } {
+  const impact = config?.accessDifficultyImpact;
+  if (!impact) return { labor: 1, material: 1 };
+  const pick = impact[level];
+  const labor = Number.isFinite(pick) ? pick : 1;
+  const material = impact.appliesToMaterial ? labor : 1;
+  return { labor, material };
+}
+
+function resolveUrgencyMultipliers(
+  config: EstimateBlueprintConfig | null | undefined,
+  level: UrgencyLevel,
+): { labor: number; material: number } {
+  if (level === 'normal') return { labor: 1, material: 1 };
+  const impact = config?.urgencyImpact;
+  if (!impact) return { labor: 1, material: 1 };
+  const pick = level === 'emergency' ? impact.emergency : impact.urgent;
+  const labor = Number.isFinite(pick) ? pick : 1;
+  const material = impact.appliesToMaterial ? labor : 1;
+  return { labor, material };
+}
+
+const round2v = (n: number) => Math.round(n * 100) / 100;
+
 export function computePreviewLines(
   config: EstimateBlueprintConfig | null | undefined,
   measurements: Record<string, number>,
   enabledModules: string[],
+  accessDifficulty?: unknown,
+  urgency?: unknown,
 ): PreviewLine[] {
   if (!config?.pricingRules?.length) return [];
+
+  const access = resolveAccessMultipliers(config, normalizeAccessLevel(accessDifficulty));
+  const urg = resolveUrgencyMultipliers(config, normalizeUrgencyLevel(urgency));
+  const laborMult = round2v(access.labor * urg.labor);
+  const materialMult = round2v(access.material * urg.material);
 
   const out: PreviewLine[] = [];
   for (const rule of config.pricingRules) {
@@ -54,7 +97,9 @@ export function computePreviewLines(
 
     const waste = rule.wastePct ? 1 + rule.wastePct / 100 : 1;
     const qty = round2(rawQty * waste);
-    const unitPrice = rule.unitPrice;
+    const kind = rule.kind ?? 'material';
+    const accessMult = kind === 'labor' ? laborMult : materialMult;
+    const unitPrice = round2(rule.unitPrice * accessMult);
     const lineTotal = round2(qty * unitPrice);
     out.push({
       stageCode: rule.stageCode,
@@ -63,7 +108,7 @@ export function computePreviewLines(
       unit: rule.unit,
       unitPrice,
       lineTotal,
-      kind: rule.kind ?? 'material',
+      kind,
     });
   }
   return out;
@@ -73,6 +118,7 @@ export function computePreviewTotals(
   lines: PreviewLine[],
   marginPct: number,
   customPricing?: CustomPricingValues,
+  riskReservePct = 0,
 ): PreviewTotals {
   let laborTotal = 0;
   let materialTotal = 0;
@@ -89,14 +135,18 @@ export function computePreviewTotals(
   }
 
   const subtotal = round2(laborTotal + materialTotal);
+  const reserve = Number.isFinite(riskReservePct) ? riskReservePct : 0;
   const margin = Number.isFinite(marginPct) ? marginPct : 0;
-  const marginAmount = round2(subtotal * (margin / 100));
-  const grandTotal = round2(subtotal + marginAmount);
+  const riskReserveAmount = round2(subtotal * (reserve / 100));
+  const adjustedSubtotal = round2(subtotal + riskReserveAmount);
+  const marginAmount = round2(adjustedSubtotal * (margin / 100));
+  const grandTotal = round2(adjustedSubtotal + marginAmount);
 
   return {
     laborTotal,
     materialTotal,
     subtotal,
+    riskReserveAmount,
     marginAmount,
     grandTotal,
     lineCount: lines.length,

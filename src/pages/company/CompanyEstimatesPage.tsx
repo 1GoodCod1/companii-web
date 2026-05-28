@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Calculator, ChevronRight, Plus, Sparkles } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Calculator, ChevronRight, Plus, Sparkles, Trash2 } from 'lucide-react';
 import {
   PageHero,
   Panel,
@@ -10,7 +11,10 @@ import {
   SoftBadge,
 } from '@/components/cabinet/cabinet-ui';
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
-import { useEstimateProjectsQuery } from '@/features/estimates/api/useEstimates';
+import {
+  useEstimateProjectsQuery,
+  useDeleteEstimateProjectMutation,
+} from '@/features/estimates/api/useEstimates';
 import {
   ESTIMATE_STATUS_TONES,
 } from '@/constants/estimates.constants';
@@ -19,6 +23,19 @@ import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
 export function CompanyEstimatesPage() {
   const { t } = useTranslation();
   const { data: projects, isLoading } = useEstimateProjectsQuery();
+  const deleteProjectMutation = useDeleteEstimateProjectMutation();
+
+  const handleDelete = async (projectId: string, projectNumber: string) => {
+    if (!confirm(t('company.estimatesPage.confirmDelete', { number: projectNumber }))) {
+      return;
+    }
+    try {
+      await deleteProjectMutation.mutateAsync(projectId);
+      toast.success(t('company.estimatesPage.deleteSuccess'));
+    } catch (err: unknown) {
+      toast.error(t('company.estimatesPage.deleteError'));
+    }
+  };
 
   return (
     <CompanyManagementGate>
@@ -100,12 +117,23 @@ export function CompanyEstimatesPage() {
                         {Number(project.grandTotal).toLocaleString('ro-MD')} MDL
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <Link
-                          to={`/company/smete/${project.id}`}
-                          className="inline-flex items-center gap-1 text-violet-600 font-semibold hover:text-violet-700"
-                        >
-                          {t('company.estimatesPage.open')} <ChevronRight className="w-4 h-4" />
-                        </Link>
+                        <div className="flex items-center justify-end gap-3.5">
+                          <Link
+                            to={`/company/smete/${project.id}`}
+                            className="inline-flex items-center gap-1 text-violet-600 font-semibold hover:text-violet-700 transition-colors"
+                          >
+                            {t('company.estimatesPage.open')} <ChevronRight className="w-4 h-4" />
+                          </Link>
+                          {project.status !== 'IN_EXECUTION' && (
+                            <button
+                              onClick={() => handleDelete(project.id, project.number)}
+                              className="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-all cursor-pointer"
+                              title={t('common.actions.delete') || 'Șterge'}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
