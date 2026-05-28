@@ -83,6 +83,7 @@ export const queryKeys = {
         QUERY_KEY_ESTIMATES.INTERVENTION,
         id,
       ] as const,
+    myWorksheets: [QUERY_KEY_ROOT.ESTIMATES, QUERY_KEY_ESTIMATES.MY_WORKSHEETS] as const,
   },
   admin: {
     stats: [QUERY_KEY_ROOT.ADMIN, QUERY_KEY_ADMIN.STATS] as const,

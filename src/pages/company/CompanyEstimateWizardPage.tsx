@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
-import { PageHero } from '@/components/cabinet/cabinet-ui';
+import { PageHero, SkeletonForm } from '@/components/cabinet/cabinet-ui';
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
 import { useEstimateProjectQuery } from '@/features/estimates/api/useEstimates';
 import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
@@ -24,7 +24,7 @@ export function CompanyEstimateWizardPage() {
   const { data: project, isLoading } = useEstimateProjectQuery(isNew ? '' : id!);
 
   if (!isNew && isLoading) {
-    return <p className="p-8 text-sm text-gray-400">{t('company.estimateWizardPage.loading')}</p>;
+    return <SkeletonForm fields={6} />;
   }
 
   return (

@@ -1,51 +1,54 @@
-import type { GlobalHouseParams, Plan2dData } from '@/types/estimates';
+import type { Plan2dData, Plan2dGlobalParameters, Plan2dWorkContext } from '@/types/estimate-plan2d.types';
+import { ENABLED_WORK_MODULES_KEY } from '@/features/estimates/workModules';
 
+/**
+ * Синхронизирует plan2d.globalParameters → diagnosticAnswers.
+ * Логика зеркалит backend: utils/sync-global-params-to-diagnostic.util.ts (A-03).
+ *
+ * **I-01/I-02 (context-aware mapping):**
+ * `baseArea` теперь маппится по `workContext`, а не во все 5 area-ключей сразу:
+ *  - roof → roofArea
+ *  - facade → не мапит в floor-ключи (facadeArea отдельно)
+ *  - indoor → finishArea, cleanArea
+ *  - general → builtArea, pavementArea
+ *
+ * **I-03 (plan не auto-enables modules):**
+ * Sync **никогда** не трогает `enabledWorkModules` — модули включаются только
+ * явным toggle в DiagnosticStep. Plan лишь заполняет qty-hints.
+ */
 export function syncGlobalParamsToDiagnostic(
   plan: Plan2dData,
   currentDiag: Record<string, unknown>,
 ): Record<string, unknown> {
   const next = { ...currentDiag };
-  const params: Partial<GlobalHouseParams> = plan.globalParameters ?? {};
+  const params: Partial<Plan2dGlobalParameters> = plan.globalParameters ?? {};
+  const ctx: Plan2dWorkContext = params.workContext ?? 'general';
 
-  // 1. Map global parameters if set by user
   if (params.baseArea != null) {
     next.baseArea = params.baseArea;
-    next.roofArea = params.baseArea;
-    next.builtArea = params.baseArea;
-    next.pavementArea = params.baseArea;
-    next.cleanArea = params.baseArea;
-    next.finishArea = params.baseArea;
+    applyBaseAreaForContext(next, ctx, params.baseArea);
   }
   if (params.wallHeight != null) {
     next.wallHeight = params.wallHeight;
   }
   if (params.floorsCount != null) {
     next.storyCount = params.floorsCount;
-    next.roomCount = params.floorsCount;
   }
-  if (params.roofSlope != null) {
+  if (params.roofSlope != null && ctx === 'roof') {
     next.roofSlope = params.roofSlope;
   }
-  if (params.facadeArea != null) {
+  if (params.facadeArea != null && ctx === 'facade') {
     next.facadeArea = params.facadeArea;
     next.scaffoldingArea = params.facadeArea;
   }
 
-  // 2. Map Room counts & calculated area
-  if (plan.rooms && plan.rooms.length > 0) {
+  if (plan.rooms?.length) {
     const totalArea = plan.rooms.reduce((acc, r) => acc + r.width * r.height, 0);
     next.totalFloorArea = totalArea;
     next.roomCount = plan.rooms.length;
-
-    // Set fallbacks if not set
-    if (next.roofArea == null) next.roofArea = totalArea;
-    if (next.builtArea == null) next.builtArea = totalArea;
-    if (next.pavementArea == null) next.pavementArea = totalArea;
-    if (next.cleanArea == null) next.cleanArea = totalArea;
-    if (next.finishArea == null) next.finishArea = totalArea;
+    applyBaseAreaForContext(next, ctx, totalArea, { onlyIfMissing: true });
   }
 
-  // 3. Map point counts dynamically to diagnostic answers
   const pointsCount = (type: string) => plan.points?.filter((p) => p.type === type).length ?? 0;
 
   // Clima
@@ -90,5 +93,38 @@ export function syncGlobalParamsToDiagnostic(
   const borderPoints = pointsCount('border');
   if (borderPoints > 0) next.borderLengthM = borderPoints * 8;
 
+  // I-03 safety: never touch enabled modules from plan.
+  delete (next as Record<string, unknown>)[ENABLED_WORK_MODULES_KEY + '__fromPlan'];
+
   return next;
+}
+
+function applyBaseAreaForContext(
+  target: Record<string, unknown>,
+  ctx: Plan2dWorkContext,
+  area: number,
+  options: { onlyIfMissing?: boolean } = {},
+) {
+  const set = (key: string) => {
+    if (options.onlyIfMissing && target[key] != null) return;
+    target[key] = area;
+  };
+
+  switch (ctx) {
+    case 'roof':
+      set('roofArea');
+      break;
+    case 'facade':
+      // facadeArea приходит отдельно через params.facadeArea
+      break;
+    case 'indoor':
+      set('finishArea');
+      set('cleanArea');
+      break;
+    case 'general':
+    default:
+      set('builtArea');
+      set('pavementArea');
+      break;
+  }
 }

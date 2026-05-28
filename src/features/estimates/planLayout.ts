@@ -47,19 +47,80 @@ const CATEGORY_ROOM_TEMPLATES: Record<string, RoomTemplate[]> = {
     { nameKey: 'bedroom', width: 3.6, height: 3.4 },
     { nameKey: 'hallway', width: 2.2, height: 1.8 },
   ],
-  plitka: [
-    { nameKey: 'bathroom', width: 2.6, height: 2.4 },
-    { nameKey: 'kitchen', width: 3.5, height: 3 },
-  ],
-  'kondicionery-otoplenie': [
+  clima: [
     { nameKey: 'living', width: 4.5, height: 4 },
     { nameKey: 'bedroom', width: 3.5, height: 3.2 },
   ],
-  'otdelochnye-raboty': [
+  'lucrari-finisaj': [
     { nameKey: 'mainRoom', width: 4.8, height: 4.5 },
     { nameKey: 'secondaryRoom', width: 3.2, height: 3 },
+    { nameKey: 'bathroom', width: 2.4, height: 2.2 },
   ],
+  acoperis: [{ nameKey: 'mainRoom', width: 10, height: 8 }],
+  fatade: [{ nameKey: 'mainRoom', width: 10, height: 8 }],
+  'okna-dveri': [
+    { nameKey: 'living', width: 5, height: 4.2 },
+    { nameKey: 'bedroom', width: 3.6, height: 3.4 },
+  ],
+  mobila: [
+    { nameKey: 'kitchen', width: 3.5, height: 3 },
+    { nameKey: 'bedroom', width: 3.6, height: 3.4 },
+  ],
+  cleaning: [
+    { nameKey: 'mainRoom', width: 4.8, height: 4.5 },
+    { nameKey: 'bathroom', width: 2.4, height: 2.2 },
+  ],
+  'panouri-solare': [{ nameKey: 'mainRoom', width: 10, height: 6 }],
+  constructii: [{ nameKey: 'mainRoom', width: 10, height: 10 }],
+  pavaj: [{ nameKey: 'mainRoom', width: 6, height: 8 }],
 };
+
+type PointTemplate = { type: string; count: number };
+
+const CATEGORY_POINT_TEMPLATES: Record<string, PointTemplate[]> = {
+  elektrika: [
+    { type: 'socket', count: 12 },
+    { type: 'switch', count: 6 },
+    { type: 'light', count: 6 },
+  ],
+  santehnika: [
+    { type: 'water', count: 4 },
+    { type: 'drain', count: 4 },
+    { type: 'mixer', count: 3 },
+    { type: 'toilet', count: 1 },
+  ],
+  clima: [
+    { type: 'indoor', count: 2 },
+    { type: 'outdoor', count: 1 },
+    { type: 'route', count: 2 },
+  ],
+  'okna-dveri': [
+    { type: 'window', count: 4 },
+    { type: 'door', count: 2 },
+  ],
+  'panouri-solare': [{ type: 'solar_panel', count: 10 }],
+  acoperis: [{ type: 'gutter', count: 4 }],
+  pavaj: [{ type: 'border', count: 4 }],
+};
+
+export function defaultPointsForCategory(categorySlug?: string): Plan2dPoint[] {
+  if (!categorySlug) return [];
+  const templates = CATEGORY_POINT_TEMPLATES[categorySlug] ?? [];
+  return templates.flatMap((tpl) =>
+    Array.from({ length: tpl.count }, () => ({
+      id: crypto.randomUUID(),
+      type: tpl.type,
+      elevation: 1.05,
+    })),
+  );
+}
+
+export function hasQuickTemplate(categorySlug?: string): boolean {
+  if (!categorySlug) return false;
+  return (
+    !!CATEGORY_ROOM_TEMPLATES[categorySlug] || !!CATEGORY_POINT_TEMPLATES[categorySlug]
+  );
+}
 
 function roomNameFromKey(nameKey: string, t?: TFunction): string {
   if (t) {

@@ -5,6 +5,7 @@ import {
   PageHero,
   Panel,
   EmptyState,
+  SkeletonPage,
   cabinetBtnPrimary,
   SoftBadge,
 } from '@/components/cabinet/cabinet-ui';
@@ -53,7 +54,7 @@ export function CompanyEstimatesPage() {
 
         <Panel>
           {isLoading ? (
-            <p className="p-6 text-sm text-gray-400">{t('company.estimatesPage.loading')}</p>
+            <SkeletonPage rows={6} />
           ) : !projects?.length ? (
             <EmptyState
               message={t('company.estimatesPage.empty')}

@@ -64,6 +64,7 @@ export const QUERY_KEY_ESTIMATES = {
   PROJECTS: 'projects',
   WORKSHEET: 'worksheet',
   INTERVENTION: 'intervention',
+  MY_WORKSHEETS: 'my-worksheets',
 } as const;
 
 export const QUERY_KEY_ADMIN = {

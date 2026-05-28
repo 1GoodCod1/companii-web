@@ -14,6 +14,11 @@ import {
   LandingPage,
   CompaniesListPage,
   CompanyDetailPage,
+  // U-09: Lazy-loaded company routes for code splitting.
+  CompanyEstimatesPage,
+  CompanyEstimateWizardPage,
+  EstimateWorkSheetPage,
+  MyWorksheetsPage,
 } from './lazy-pages';
 import { HowItWorksPage } from '@/pages/public/HowItWorksPage';
 import { FaqPage } from '@/pages/public/FaqPage';
@@ -36,9 +41,6 @@ import { CompanyQuotesPage } from '@/pages/company/CompanyQuotesPage';
 import { CompanyInvoicesPage } from '@/pages/company/CompanyInvoicesPage';
 import { CompanySubscriptionPage } from '@/pages/company/CompanySubscriptionPage';
 import { CompanyReviewsPage } from '@/pages/company/CompanyReviewsPage';
-import { CompanyEstimatesPage } from '@/pages/company/CompanyEstimatesPage';
-import { CompanyEstimateWizardPage } from '@/pages/company/CompanyEstimateWizardPage';
-import { EstimateWorkSheetPage } from '@/pages/company/EstimateWorkSheetPage';
 import { CompanyLeadsPage } from '@/pages/company/CompanyLeadsPage';
 import { PortalCereriPage } from '@/pages/portal/PortalCereriPage';
 import { PortalDashboardPage } from '@/pages/portal/PortalDashboardPage';
@@ -188,6 +190,16 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: COMPANY_ROUTE.LUCRARI_MY,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.LUCRARI_MY}>
+                <Suspense fallback={null}>
+                  <MyWorksheetsPage />
+                </Suspense>
+              </RequireCompanyRole>
+            ),
+          },
+          {
             path: COMPANY_ROUTE.LUCRARI,
             element: (
               <RequireCompanyRole routePath={COMPANY_CABINET_PATH.LUCRARI}>
@@ -207,7 +219,9 @@ export const router = createBrowserRouter([
             path: COMPANY_ROUTE.LUCRARI_FISA,
             element: (
               <RequireCompanyRole routePath={COMPANY_CABINET_PATH.LUCRARI_FISA}>
-                <EstimateWorkSheetPage />
+                <Suspense fallback={null}>
+                  <EstimateWorkSheetPage />
+                </Suspense>
               </RequireCompanyRole>
             ),
           },
@@ -215,7 +229,9 @@ export const router = createBrowserRouter([
             path: COMPANY_ROUTE.SMETE,
             element: (
               <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
-                <CompanyEstimatesPage />
+                <Suspense fallback={null}>
+                  <CompanyEstimatesPage />
+                </Suspense>
               </RequireCompanyRole>
             ),
           },
@@ -223,7 +239,9 @@ export const router = createBrowserRouter([
             path: COMPANY_ROUTE.SMETE_NEW,
             element: (
               <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
-                <CompanyEstimateWizardPage />
+                <Suspense fallback={null}>
+                  <CompanyEstimateWizardPage />
+                </Suspense>
               </RequireCompanyRole>
             ),
           },
@@ -231,7 +249,9 @@ export const router = createBrowserRouter([
             path: COMPANY_ROUTE.SMETE_DETAIL,
             element: (
               <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
-                <CompanyEstimateWizardPage />
+                <Suspense fallback={null}>
+                  <CompanyEstimateWizardPage />
+                </Suspense>
               </RequireCompanyRole>
             ),
           },

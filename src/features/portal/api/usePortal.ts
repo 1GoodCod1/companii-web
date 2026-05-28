@@ -88,6 +88,21 @@ export function useUpdatePortalEstimateMutation() {
   });
 }
 
+export function useRequestPortalEstimateChangesMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, comment }: { id: string; comment: string }) =>
+      apiFetch(`/portal/estimates/${id}/request-changes`, {
+        method: 'POST',
+        body: JSON.stringify({ comment }),
+      }),
+    onSuccess: (_, { id }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.portal.dashboard });
+      void qc.invalidateQueries({ queryKey: queryKeys.portal.estimate(id) });
+    },
+  });
+}
+
 export function useAcceptPortalInvitationMutation() {
   const qc = useQueryClient();
   return useMutation({

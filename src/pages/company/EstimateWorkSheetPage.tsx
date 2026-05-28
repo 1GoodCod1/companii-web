@@ -3,8 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Circle, ClipboardList, MapPin, Phone, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { PageHero, Panel, SoftBadge, EmptyState } from '@/components/cabinet/cabinet-ui';
+import { PageHero, Panel, SkeletonPage, SoftBadge, EmptyState } from '@/components/cabinet/cabinet-ui';
 import { PlanEditor } from '@/features/estimates/components/PlanEditor';
+import { WorksheetPhotos } from '@/features/estimates/components/WorksheetPhotos';
 import { useWorksheetByInterventionQuery } from '@/features/estimates/api/useEstimates';
 import { useUpdateChecklistMutation } from '@/features/fsm/api/useFsm';
 import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
@@ -35,7 +36,7 @@ export function EstimateWorkSheetPage() {
   };
 
   if (isLoading) {
-    return <p className="p-8 text-sm text-gray-400">{t('company.workSheetPage.loading')}</p>;
+    return <SkeletonPage rows={3} />;
   }
 
   if (isError || !sheet || !interventionId) {
@@ -112,6 +113,15 @@ export function EstimateWorkSheetPage() {
           categoryName={sheet.project.category.name}
           categorySlug={sheet.project.category.slug}
         />
+      )}
+
+      {sheet.intervention && (
+        <Panel className="p-6">
+          <WorksheetPhotos
+            interventionId={sheet.intervention.id}
+            photos={sheet.photos ?? []}
+          />
+        </Panel>
       )}
 
       <div className="space-y-4">

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Check, Eye, FileText, Hammer, Paperclip, Plus, Send, Trash2 } from 'lucide-react';
+import { CheckCircle2, Check, CircleDashed, Eye, FileText, Hammer, Paperclip, Plus, PlusCircle, Send, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import {
   Panel,
@@ -7,12 +7,63 @@ import {
   cabinetBtnSecondary,
 } from '@/components/cabinet/cabinet-ui';
 import { downloadFile } from '@/api/files';
+import { EstimateLineSourceBadge } from '@/features/estimates/components/EstimateLineSourceBadge';
 import type { EstimateStageDto } from '@/types/estimates';
 import type { EstimateWizardApi } from '../useEstimateWizard';
 
 type Props = {
   wizard: EstimateWizardApi;
 };
+
+type ScopeEntry = {
+  key: string;
+  label: string;
+  hint: string;
+  tone: 'emerald' | 'amber' | 'slate';
+};
+
+const SCOPE_TONE: Record<ScopeEntry['tone'], string> = {
+  emerald: 'border-emerald-100 bg-emerald-50/40 text-emerald-900',
+  amber: 'border-amber-100 bg-amber-50/40 text-amber-900',
+  slate: 'border-slate-100 bg-slate-50/60 text-slate-700',
+};
+
+function ScopeColumn({
+  icon,
+  title,
+  entries,
+  emptyMessage,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  entries: ScopeEntry[];
+  emptyMessage?: string;
+}) {
+  return (
+    <div className="rounded-2xl bg-white/60 p-4 space-y-2">
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-700">
+        {icon} {title}
+      </div>
+      {entries.length === 0 ? (
+        emptyMessage ? (
+          <p className="text-[11px] text-gray-400 italic">{emptyMessage}</p>
+        ) : null
+      ) : (
+        <ul className="space-y-1.5">
+          {entries.map((e) => (
+            <li
+              key={e.key}
+              className={`rounded-xl border px-3 py-2 text-xs ${SCOPE_TONE[e.tone]}`}
+            >
+              <p className="font-semibold">{e.label}</p>
+              <p className="text-[11px] opacity-80 mt-0.5">{e.hint}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 export function ReviewStep({ wizard }: Props) {
   const { t } = useTranslation();
@@ -33,10 +84,95 @@ export function ReviewStep({ wizard }: Props) {
     handleSaveStore,
     handleUploadReceipt,
     handleDeleteReceipt,
+    scopeSummary,
+    previewTotals,
+    previewVsBackendDiff,
+    previewIsStale,
   } = wizard;
+
+  const showScope =
+    scopeSummary.included.length > 0 ||
+    scopeSummary.enabledWithoutLines.length > 0 ||
+    scopeSummary.available.length > 0;
+
+  const showPreview = previewTotals.hasContent;
+  const backendCalculated = Number(project.grandTotal ?? 0) > 0;
 
   return (
     <div className="space-y-4">
+      {showPreview && (
+        <Panel className="p-5 border border-amber-100 bg-amber-50/40">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700">
+                {t('company.estimateWizard.preview.label')}
+              </span>
+              <p className="text-xs text-gray-600 leading-snug">
+                {t('company.estimateWizard.preview.hint')}
+              </p>
+            </div>
+            <div className="flex items-center gap-4 text-xs">
+              <span className="text-gray-600">
+                {t('company.estimateWizard.preview.lines', { count: previewTotals.lineCount })}
+              </span>
+              <span className="font-bold text-amber-900">
+                {previewTotals.grandTotal.toLocaleString('ro-MD')} MDL
+              </span>
+              {backendCalculated && previewIsStale && (
+                <span className="text-rose-700">
+                  Δ {previewVsBackendDiff > 0 ? '+' : ''}
+                  {previewVsBackendDiff.toLocaleString('ro-MD')} MDL
+                </span>
+              )}
+            </div>
+          </div>
+        </Panel>
+      )}
+
+      {showScope && (
+        <Panel className="p-6">
+          <h3 className="font-bold text-gray-900 mb-3">
+            {t('company.estimateWizard.scopeSummary.title')}
+          </h3>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <ScopeColumn
+              icon={<CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+              title={t('company.estimateWizard.scopeSummary.included')}
+              entries={scopeSummary.included.map((m) => ({
+                key: m.key,
+                label: m.label,
+                hint: t('company.estimateWizard.scopeSummary.moduleLineCount', {
+                  count: m.lineCount,
+                  amount: m.amount.toLocaleString('ro-MD'),
+                }),
+                tone: 'emerald',
+              }))}
+              emptyMessage={t('company.estimateWizard.scopeSummary.emptyIncluded')}
+            />
+            <ScopeColumn
+              icon={<CircleDashed className="w-4 h-4 text-amber-600" />}
+              title={t('company.estimateWizard.scopeSummary.enabledWithoutLines')}
+              entries={scopeSummary.enabledWithoutLines.map((m) => ({
+                key: m.key,
+                label: m.label,
+                hint: t('company.estimateWizard.scopeSummary.moduleEnabledNoLines'),
+                tone: 'amber',
+              }))}
+            />
+            <ScopeColumn
+              icon={<PlusCircle className="w-4 h-4 text-slate-500" />}
+              title={t('company.estimateWizard.scopeSummary.available')}
+              entries={scopeSummary.available.map((m) => ({
+                key: m.key,
+                label: m.label,
+                hint: t('company.estimateWizard.scopeSummary.moduleAvailableHint'),
+                tone: 'slate',
+              }))}
+            />
+          </div>
+        </Panel>
+      )}
+
       <Panel className="p-6">
         <h3 className="font-bold text-gray-900 mb-4">{t('company.estimateWizard.reviewStep.summaryTitle')}</h3>
         {(activeCustomPricing.customUnitPriceSqm ||
@@ -59,22 +195,60 @@ export function ReviewStep({ wizard }: Props) {
             ) : null}
           </div>
         )}
-        <div className="grid sm:grid-cols-3 gap-4 mb-6">
-          <div className="rounded-2xl bg-gray-50 p-4">
-            <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.labor')}</p>
-            <p className="text-xl font-black text-gray-900">{Number(project.laborTotal).toLocaleString('ro-MD')} MDL</p>
-          </div>
-          <div className="rounded-2xl bg-gray-50 p-4">
-            <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.materials')}</p>
-            <p className="text-xl font-black text-gray-900">{Number(project.materialTotal).toLocaleString('ro-MD')} MDL</p>
-          </div>
-          <div className="rounded-2xl bg-violet-50 p-4 border border-violet-100">
-            <p className="text-xs text-violet-600">
-              {t('company.estimateWizard.reviewStep.totalWithMargin', { margin: Number(project.marginPct) })}
+        {project.tvaRate !== null && Number(project.tvaRate) > 0 ? (
+          <>
+            <div className="grid sm:grid-cols-3 gap-4 mb-4">
+              <div className="rounded-2xl bg-gray-50 p-4">
+                <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.labor')}</p>
+                <p className="text-xl font-black text-gray-900">{Number(project.laborTotal).toLocaleString('ro-MD')} MDL</p>
+              </div>
+              <div className="rounded-2xl bg-gray-50 p-4">
+                <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.materials')}</p>
+                <p className="text-xl font-black text-gray-900">{Number(project.materialTotal).toLocaleString('ro-MD')} MDL</p>
+              </div>
+              <div className="rounded-2xl bg-gray-50 p-4 border border-slate-100">
+                <p className="text-xs text-gray-500">
+                  {t('company.estimateWizard.reviewStep.totalWithMargin', { margin: Number(project.marginPct) })}
+                </p>
+                <p className="text-xl font-black text-gray-900">{Number(project.grandTotal).toLocaleString('ro-MD')} MDL</p>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4 mb-6">
+              <div className="rounded-2xl bg-amber-50 p-4 border border-amber-100">
+                <p className="text-xs text-amber-700">{t('company.estimateWizard.reviewStep.tva', 'Suma TVA')}</p>
+                <p className="text-xl font-black text-amber-800">{Number(project.tvaAmount ?? 0).toLocaleString('ro-MD')} MDL</p>
+              </div>
+              <div className="rounded-2xl bg-violet-50 p-4 border border-violet-100">
+                <p className="text-xs text-violet-600">
+                  {t('company.estimateWizard.reviewStep.totalWithVat', 'Total spre plată (cu TVA)')}
+                </p>
+                <p className="text-2xl font-black text-violet-700">{Number(project.grandTotalWithVat ?? project.grandTotal).toLocaleString('ro-MD')} MDL</p>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="grid sm:grid-cols-3 gap-4 mb-4">
+              <div className="rounded-2xl bg-gray-50 p-4">
+                <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.labor')}</p>
+                <p className="text-xl font-black text-gray-900">{Number(project.laborTotal).toLocaleString('ro-MD')} MDL</p>
+              </div>
+              <div className="rounded-2xl bg-gray-50 p-4">
+                <p className="text-xs text-gray-500">{t('company.estimateWizard.reviewStep.materials')}</p>
+                <p className="text-xl font-black text-gray-900">{Number(project.materialTotal).toLocaleString('ro-MD')} MDL</p>
+              </div>
+              <div className="rounded-2xl bg-violet-50 p-4 border border-violet-100">
+                <p className="text-xs text-violet-600">
+                  {t('company.estimateWizard.reviewStep.totalWithMargin', { margin: Number(project.marginPct) })}
+                </p>
+                <p className="text-2xl font-black text-violet-700">{Number(project.grandTotal).toLocaleString('ro-MD')} MDL</p>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 mb-6 leading-relaxed">
+              ⚠️ {t('company.estimateWizard.reviewStep.tvaExemptNote', 'Fără TVA. Compania nu este înregistrată ca plătitor TVA conform Codului Fiscal al RM (art. 112).')}
             </p>
-            <p className="text-2xl font-black text-violet-700">{Number(project.grandTotal).toLocaleString('ro-MD')} MDL</p>
-          </div>
-        </div>
+          </>
+        )}
         <div className="flex flex-wrap gap-3">
           {canSendEstimate ? (
             <button
@@ -162,7 +336,12 @@ export function ReviewStep({ wizard }: Props) {
                           line.description.toLowerCase().includes('manopera');
                         return (
                           <tr key={line.id} className="hover:bg-violet-50/20 transition-colors">
-                            <td className="py-3 font-semibold text-gray-700">{line.description}</td>
+                            <td className="py-3 font-semibold text-gray-700">
+                              <span className="inline-flex items-center gap-1.5">
+                                {line.description}
+                                <EstimateLineSourceBadge source={line.source} />
+                              </span>
+                            </td>
                             <td className="py-3">
                               <input
                                 type="number"

@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Minus, Plus, PlusCircle, Sparkles } from 'lucide-react';
+import { Minus, Plus, PlusCircle, Sparkles, LayoutTemplate } from 'lucide-react';
 import type { EstimateBlueprintConfig } from '@/types/estimates';
+import { getTemplatesForCategory, type PointTemplate } from '../planTemplates';
 
 type CustomCounter = { label: string; count: number };
 
 type Props = {
   config?: EstimateBlueprintConfig | null;
   readOnly?: boolean;
+  categorySlug?: string;
   pointCounts: Map<string, number>;
   onAdjustPointCount: (type: string, delta: number) => void;
+  onSetPointCounts?: (counts: Record<string, number>) => void;
   customCounters: CustomCounter[];
   onAdjustCustomCount: (label: string, delta: number) => void;
 };
@@ -17,12 +20,14 @@ type Props = {
 export function PlanWorkItemsPanel({
   config,
   readOnly,
+  categorySlug,
   pointCounts,
   onAdjustPointCount,
+  onSetPointCounts,
   customCounters,
   onAdjustCustomCount,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [newCustomLabel, setNewCustomLabel] = useState('');
 
   const handleAddCustomCounter = () => {
@@ -31,6 +36,29 @@ export function PlanWorkItemsPanel({
     onAdjustCustomCount(label, 1);
     setNewCustomLabel('');
   };
+
+  // I-05: Quick category templates
+  const templates = useMemo(
+    () => (categorySlug ? getTemplatesForCategory(categorySlug) : []),
+    [categorySlug],
+  );
+
+  const handleApplyTemplate = (template: PointTemplate) => {
+    if (!onSetPointCounts) return;
+
+    // Reset all existing point counts to 0, then apply template
+    const resetCounts: Record<string, number> = {};
+    for (const pt of config?.planPointTypes ?? []) {
+      resetCounts[pt.type] = 0;
+    }
+    for (const [type, count] of Object.entries(template.counts)) {
+      resetCounts[type] = (resetCounts[type] ?? 0) + count;
+    }
+    onSetPointCounts(resetCounts);
+  };
+
+  const templateLabel = (tpl: PointTemplate) =>
+    i18n.language === 'ru' ? tpl.labelRu : tpl.labelRo;
 
   return (
     <div className="rounded-3xl border border-slate-100 bg-white p-6 glass-panel space-y-5">
@@ -42,6 +70,23 @@ export function PlanWorkItemsPanel({
           {t('company.estimateWizard.workItems.description')}
         </p>
       </div>
+
+      {/* I-05: Quick template buttons */}
+      {templates.length > 0 && onSetPointCounts && !readOnly && (
+        <div className="flex flex-wrap gap-2">
+          <LayoutTemplate className="w-4 h-4 text-amber-500 my-auto" />
+          {templates.map((tpl) => (
+            <button
+              key={tpl.key}
+              type="button"
+              onClick={() => handleApplyTemplate(tpl)}
+              className="rounded-xl border border-amber-200 bg-amber-50/60 px-3 py-1.5 text-[11px] font-bold text-amber-800 hover:bg-amber-100 transition-colors active:scale-95"
+            >
+              {templateLabel(tpl)}
+            </button>
+          ))}
+        </div>
+      )}
 
       {config?.planPointTypes?.length ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

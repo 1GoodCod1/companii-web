@@ -29,6 +29,7 @@ export const COMPANY_ROLE_GROUPS = {
   ] as const,
   MANAGEMENT: [COMPANY_ROLE.OWNER, COMPANY_ROLE.MANAGER] as const,
   OWNER_ONLY: [COMPANY_ROLE.OWNER] as const,
+  MEMBER_ONLY: [COMPANY_ROLE.MEMBER] as const,
 };
 
 export const ACCOUNT_KIND_LABELS: Record<

@@ -1,3 +1,4 @@
+import { useCallback, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
 import { apiFetch } from '@/api/client';
 import { downloadApiBlob } from '@/api/client';
@@ -5,7 +6,9 @@ import { cabinetQueryDefaults } from '@/api/queryPolicies';
 import { queryKeys } from '@/api/queryKeys';
 import { useAuthStore } from '@/stores/authStore';
 import type {
+  AssignedWorksheetDto,
   EstimateBlueprintDto,
+  EstimateLineDto,
   EstimateProjectDto,
   EstimateProjectListDto,
   Plan2dData,
@@ -52,6 +55,18 @@ export function useWorksheetByInterventionQuery(
     queryFn: () => apiFetch<WorkSheetDto>(`${base}/worksheet/intervention/${interventionId}`),
     ...cabinetQueryDefaults,
     enabled: !!interventionId && enabled,
+  });
+}
+
+export function useMyAssignedWorksheetsQuery(
+  enabled = true,
+): UseQueryResult<AssignedWorksheetDto[], Error> {
+  const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
+  return useQuery({
+    queryKey: queryKeys.estimates.myWorksheets,
+    queryFn: () => apiFetch<AssignedWorksheetDto[]>(`${base}/worksheets/my`),
+    ...cabinetQueryDefaults,
+    enabled: !!activeCompanyId && enabled,
   });
 }
 
@@ -172,6 +187,78 @@ export async function downloadPortalEstimatePdf(projectId: string, filename: str
   return downloadApiBlob(`/portal/estimates/${projectId}/pdf`, filename);
 }
 
+// U-08: Hook for cancellable estimate PDF download.
+export function useDownloadEstimatePdf() {
+  const abortRef = useRef<AbortController | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const download = useCallback(async (projectId: string, filename: string) => {
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setIsDownloading(true);
+    try {
+      await downloadApiBlob(
+        `${base}/projects/${projectId}/pdf`,
+        filename,
+        false,
+        { signal: controller.signal },
+      );
+    } catch (err: unknown) {
+      if ((err as Error)?.name !== 'AbortError') throw err;
+    } finally {
+      if (abortRef.current === controller) {
+        abortRef.current = null;
+      }
+      setIsDownloading(false);
+    }
+  }, []);
+
+  const cancel = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setIsDownloading(false);
+  }, []);
+
+  return { download, cancel, isDownloading };
+}
+
+// U-08: Hook for cancellable portal estimate PDF download.
+export function useDownloadPortalEstimatePdf() {
+  const abortRef = useRef<AbortController | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const download = useCallback(async (projectId: string, filename: string) => {
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setIsDownloading(true);
+    try {
+      await downloadApiBlob(
+        `/portal/estimates/${projectId}/pdf`,
+        filename,
+        false,
+        { signal: controller.signal },
+      );
+    } catch (err: unknown) {
+      if ((err as Error)?.name !== 'AbortError') throw err;
+    } finally {
+      if (abortRef.current === controller) {
+        abortRef.current = null;
+      }
+      setIsDownloading(false);
+    }
+  }, []);
+
+  const cancel = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setIsDownloading(false);
+  }, []);
+
+  return { download, cancel, isDownloading };
+}
+
 export function useUpdateEstimateLineMutation() {
   const qc = useQueryClient();
   return useMutation({
@@ -198,7 +285,33 @@ export function useUpdateEstimateLineMutation() {
           body: JSON.stringify(body),
         },
       ),
-    onSuccess: (_, { projectId }) => {
+    // U-06: Optimistic update — immediately apply the change to cached data.
+    onMutate: async ({ projectId, stageId, lineId, ...body }) => {
+      await qc.cancelQueries({ queryKey: queryKeys.estimates.project(projectId) });
+      const previous = qc.getQueryData<EstimateProjectDto>(queryKeys.estimates.project(projectId));
+      if (previous) {
+        qc.setQueryData<EstimateProjectDto>(queryKeys.estimates.project(projectId), {
+          ...previous,
+          stages: previous.stages?.map((s) =>
+            s.id === stageId
+              ? {
+                  ...s,
+                  lines: s.lines?.map((l) =>
+                    l.id === lineId ? { ...l, ...body } : l,
+                  ),
+                }
+              : s,
+          ),
+        });
+      }
+      return { previous };
+    },
+    onError: (_err, { projectId }, context) => {
+      if (context?.previous) {
+        qc.setQueryData(queryKeys.estimates.project(projectId), context.previous);
+      }
+    },
+    onSettled: (_, __, { projectId }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(projectId) });
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
     },
@@ -227,7 +340,33 @@ export function useAddEstimateLineMutation() {
           body: JSON.stringify(body),
         },
       ),
-    onSuccess: (_, { projectId }) => {
+    // U-06: Optimistic — prepend a temp line with an optimistic id.
+    onMutate: async ({ projectId, stageId, ...body }) => {
+      await qc.cancelQueries({ queryKey: queryKeys.estimates.project(projectId) });
+      const previous = qc.getQueryData<EstimateProjectDto>(queryKeys.estimates.project(projectId));
+      if (previous) {
+        const optimisticLine: EstimateLineDto = {
+          id: `optimistic-${Date.now()}`,
+          source: 'manual',
+          ...body,
+        };
+        qc.setQueryData<EstimateProjectDto>(queryKeys.estimates.project(projectId), {
+          ...previous,
+          stages: previous.stages?.map((s) =>
+            s.id === stageId
+              ? { ...s, lines: [...(s.lines ?? []), optimisticLine] }
+              : s,
+          ),
+        });
+      }
+      return { previous };
+    },
+    onError: (_err, { projectId }, context) => {
+      if (context?.previous) {
+        qc.setQueryData(queryKeys.estimates.project(projectId), context.previous);
+      }
+    },
+    onSettled: (_, __, { projectId }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(projectId) });
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
     },
@@ -252,7 +391,28 @@ export function useDeleteEstimateLineMutation() {
           method: 'DELETE',
         },
       ),
-    onSuccess: (_, { projectId }) => {
+    // U-06: Optimistic — remove the line immediately.
+    onMutate: async ({ projectId, stageId, lineId }) => {
+      await qc.cancelQueries({ queryKey: queryKeys.estimates.project(projectId) });
+      const previous = qc.getQueryData<EstimateProjectDto>(queryKeys.estimates.project(projectId));
+      if (previous) {
+        qc.setQueryData<EstimateProjectDto>(queryKeys.estimates.project(projectId), {
+          ...previous,
+          stages: previous.stages?.map((s) =>
+            s.id === stageId
+              ? { ...s, lines: s.lines?.filter((l) => l.id !== lineId) }
+              : s,
+          ),
+        });
+      }
+      return { previous };
+    },
+    onError: (_err, { projectId }, context) => {
+      if (context?.previous) {
+        qc.setQueryData(queryKeys.estimates.project(projectId), context.previous);
+      }
+    },
+    onSettled: (_, __, { projectId }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(projectId) });
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
     },

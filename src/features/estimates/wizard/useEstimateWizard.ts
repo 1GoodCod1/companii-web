@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
@@ -12,11 +12,27 @@ import {
   useAddEstimateLineMutation,
   useDeleteEstimateLineMutation,
 } from '@/features/estimates/api/useEstimates';
+import { mergeCustomPricing, readCustomPricing, type CustomPricingValues } from '@/features/estimates/customPricing';
 import {
-  mergeCustomPricing,
-  readCustomPricing,
-  type CustomPricingValues,
-} from '@/features/estimates/customPricing';
+  ENABLED_WORK_MODULES_KEY,
+  mergeEnabledWorkModulesIntoDiagnostic,
+  readEnabledWorkModules,
+  toggleWorkModule,
+} from '@/features/estimates/workModules';
+import { validateDiagnostic } from '@/features/estimates/diagnosticValidation';
+import {
+  getCustomFieldKeys,
+  groupVisibleCustomFields,
+} from '@/features/estimates/groupCustomFields';
+import { getVisibleStages } from '@/features/estimates/stageVisibility';
+import { groupStagesByWorkModule } from '@/features/estimates/stageGrouping';
+import { buildScopeSummary, hasManualLines } from '@/features/estimates/scopeSummary';
+import {
+  computePreviewLines,
+  computePreviewTotals,
+  extractMeasurementsFromDiagnostic,
+} from '@/features/estimates/previewEngine';
+import { useEstimateOfflineCache } from '@/features/estimates/offline/useEstimateOfflineCache';
 import type { EstimateBlueprintConfig, EstimateProjectDto, Plan2dData } from '@/types/estimates';
 import { ESTIMATE_STATUS } from '@/constants/estimateStatus.constants';
 import { DUPLICATE_DIAGNOSTIC_KEYS, EMPTY_PLAN } from '@/constants/estimatesWizard.constants';
@@ -36,12 +52,20 @@ export function useEstimateWizard(project: EstimateProjectDto) {
 
   const diagnosticQuestions = useMemo(() => {
     const allQuestions = config?.diagnosticQuestions ?? [];
-    return allQuestions.filter((q) => !(DUPLICATE_DIAGNOSTIC_KEYS as readonly string[]).includes(q.key));
+    const customKeys = getCustomFieldKeys(config);
+    return allQuestions.filter(
+      (q) =>
+        !(DUPLICATE_DIAGNOSTIC_KEYS as readonly string[]).includes(q.key) &&
+        !customKeys.has(q.key),
+    );
   }, [config]);
 
   const steps = useMemo(() => {
     const defaultSteps = config?.wizardSteps ?? ['object', 'plan', 'diagnostic', 'stages', 'review'];
-    if (diagnosticQuestions.length === 0) {
+    const hasCustomFields = config?.customFields && config.customFields.length > 0;
+    const hasWorkModules = config?.workModules && config.workModules.length > 0;
+    const hasQuestions = diagnosticQuestions.length > 0;
+    if (!hasCustomFields && !hasWorkModules && !hasQuestions) {
       return defaultSteps.filter((s) => s !== 'diagnostic');
     }
     return defaultSteps;
@@ -59,6 +83,219 @@ export function useEstimateWizard(project: EstimateProjectDto) {
   const [customPricing, setCustomPricing] = useState<CustomPricingValues>(() =>
     readCustomPricing((project.diagnosticAnswers as Record<string, unknown>) ?? {}),
   );
+  const [dirty, setDirty] = useState(false);
+  const [estimateMode, setEstimateMode] = useState<'brief' | 'detailed' | 'by-room'>('detailed');
+  const [savingStatus, setSavingStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
+
+  const enabledWorkModules = useMemo(
+    () => (config ? readEnabledWorkModules(diagnostic, config) : []),
+    [diagnostic, config],
+  );
+
+  const setEnabledWorkModules = (next: string[]) => {
+    setDiagnostic((prev) => ({ ...prev, [ENABLED_WORK_MODULES_KEY]: next }));
+    setDirty(true);
+  };
+
+  const setWorkModuleEnabled = (moduleKey: string, enabled: boolean) => {
+    setEnabledWorkModules(toggleWorkModule(enabledWorkModules, moduleKey, enabled));
+  };
+
+  const updateDiagnosticField = (key: string, value: unknown) => {
+    setDiagnostic((prev) => ({ ...prev, [key]: value }));
+    setDirty(true);
+  };
+
+  const persistDiagnostic = (answers: Record<string, unknown>) =>
+    mergeEnabledWorkModulesIntoDiagnostic(
+      mergeCustomPricing(answers, customPricing),
+      config,
+    );
+
+  const validation = useMemo(
+    () => validateDiagnostic(config, persistDiagnostic(diagnostic)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [config, diagnostic, customPricing],
+  );
+  const validationErrors = validation.fieldErrors;
+  const validationWarnings = validation.warnings;
+  const hasBlockingErrors = !validation.ok;
+  const canGoNext = !hasBlockingErrors;
+
+  const customFieldSections = useMemo(
+    () => groupVisibleCustomFields(config, enabledWorkModules),
+    [config, enabledWorkModules],
+  );
+
+  const visibleStages = useMemo(
+    () => getVisibleStages(project.stages ?? [], config, enabledWorkModules),
+    [project.stages, config, enabledWorkModules],
+  );
+
+  const stageGroups = useMemo(
+    () =>
+      groupStagesByWorkModule(
+        project.stages ?? [],
+        config,
+        enabledWorkModules,
+        t('company.estimateWizard.stagesStep.unlabeledGroup'),
+      ),
+    [project.stages, config, enabledWorkModules, t],
+  );
+
+  const scopeSummary = useMemo(
+    () => buildScopeSummary(config, enabledWorkModules, project.stages ?? []),
+    [config, enabledWorkModules, project.stages],
+  );
+
+  const projectHasManualLines = useMemo(
+    () => hasManualLines(project.stages ?? []),
+    [project.stages],
+  );
+
+  // L-01: client-side preview engine — mirrors the subset of backend
+  // pricing-engine that depends on diagnosticAnswers + customPricing.
+  // Final totals always come from backend after /calculate (L-02).
+  const previewLines = useMemo(
+    () =>
+      computePreviewLines(
+        config,
+        extractMeasurementsFromDiagnostic(persistDiagnostic(diagnostic)),
+        enabledWorkModules,
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [config, diagnostic, customPricing, enabledWorkModules],
+  );
+  const previewTotals = useMemo(
+    () => computePreviewTotals(previewLines, marginPct, customPricing),
+    [previewLines, marginPct, customPricing],
+  );
+
+  // L-02: divergence between local preview and authoritative backend grandTotal.
+  const backendGrandTotal = Number(project.grandTotal ?? 0);
+  const previewVsBackendDiff =
+    backendGrandTotal > 0 && previewTotals.hasContent
+      ? Math.round((previewTotals.grandTotal - backendGrandTotal) * 100) / 100
+      : 0;
+  const previewIsStale = Math.abs(previewVsBackendDiff) >= 1;
+
+  const [apiWarnings, setApiWarnings] = useState<Array<{ key: string; message: string }>>([]);
+  const offline = useEstimateOfflineCache(project.id);
+  const [syncing, setSyncing] = useState(false);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    queueMicrotask(() => setSavingStatus('saving'));
+    offline.saveDraft({
+      title,
+      siteType,
+      address,
+      marginPct,
+      diagnostic,
+      customPricing,
+      plan2d,
+    });
+    const id = setTimeout(() => {
+      setSavingStatus('saved');
+      setLastSavedAt(offline.lastSavedAt ?? null);
+      const resetId = setTimeout(() => setSavingStatus('idle'), 2000);
+      resetTimerRef.current = resetId;
+    }, 700);
+    return () => {
+      clearTimeout(id);
+      if (resetTimerRef.current) {
+        clearTimeout(resetTimerRef.current);
+        resetTimerRef.current = null;
+      }
+    };
+  }, [offline, title, siteType, address, marginPct, diagnostic, customPricing, plan2d]);
+
+  // M-04 — flush autosave on tab unload so refresh never loses unsynced data
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      void offline.flushAutosave({
+        title,
+        siteType,
+        address,
+        marginPct,
+        diagnostic,
+        customPricing,
+        plan2d,
+      });
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [offline, title, siteType, address, marginPct, diagnostic, customPricing, plan2d]);
+
+  const handleSyncNow = useCallback(async () => {
+    if (syncing) return;
+    setSyncing(true);
+    try {
+      await offline.flush(async (record) => {
+        const payload = record.payload as Record<string, unknown>;
+        const meta = {
+          clientMutationId: record.clientMutationId,
+          clientDraftId: offline.clientDraftId,
+          expectedVersion: payload.expectedVersion as number | undefined,
+        };
+        switch (record.kind) {
+          case 'update-project':
+            await updateProject.mutateAsync({
+              id: record.projectId,
+              ...(payload as Record<string, never>),
+              ...meta,
+            });
+            return;
+          case 'save-plan':
+            await savePlan.mutateAsync({
+              id: record.projectId,
+              plan2d: payload.plan2d as Plan2dData,
+              ...meta,
+            });
+            return;
+          default:
+            throw new Error(`unsupported mutation kind: ${record.kind}`);
+        }
+      });
+    } finally {
+      setSyncing(false);
+    }
+  }, [offline, syncing, updateProject, savePlan]);
+
+  /**
+   * M-05: drop local offline state + reload server truth. Used when the
+   * user explicitly accepts server-side changes after a 409 conflict.
+   */
+  const handleDiscardLocalChanges = useCallback(async () => {
+    await offline.dropDraft();
+    const { clearOfflineQueue } = await import('@/features/estimates/offline/mutationQueue');
+    await clearOfflineQueue();
+    offline.acknowledgeConflict();
+    await offline.refresh();
+  }, [offline]);
+
+  const handleKeepLocalChanges = useCallback(async () => {
+    offline.acknowledgeConflict();
+    // Drop expectedVersion from every queued mutation so they re-apply
+    // against whatever version the server is at now.
+    const { readMutationQueue, idbPut } = await Promise.all([
+      import('@/features/estimates/offline/mutationQueue'),
+      import('@/utils/idb'),
+    ]).then(([mq, idb]) => ({ readMutationQueue: mq.readMutationQueue, idbPut: idb.idbPut }));
+    const queue = await readMutationQueue(project.id);
+    for (const record of queue) {
+      const payload = { ...(record.payload as Record<string, unknown>) };
+      delete payload.expectedVersion;
+      await idbPut('estimate_mutation_queue', { ...record, payload });
+    }
+    void handleSyncNow();
+  }, [offline, project.id, handleSyncNow]);
+  useEffect(() => {
+    if (offline.online && offline.pendingMutations > 0 && !syncing) {
+      queueMicrotask(() => void handleSyncNow());
+    }
+  }, [offline.online, offline.pendingMutations, syncing, handleSyncNow]);
 
   const updateLine = useUpdateEstimateLineMutation();
   const addLineMutation = useAddEstimateLineMutation();
@@ -167,20 +404,19 @@ export function useEstimateWizard(project: EstimateProjectDto) {
 
   const currentStep = steps[stepIndex] ?? 'object';
 
-  const persistCustomPricing = (answers: Record<string, unknown>) =>
-    mergeCustomPricing(answers, customPricing);
-
   const handleSaveObject = async () => {
     try {
-      await updateProject.mutateAsync({
+      const result = (await updateProject.mutateAsync({
         id: project.id,
         title,
         siteType,
         address,
         marginPct,
-        diagnosticAnswers: persistCustomPricing(diagnostic),
-      });
-      setDiagnostic(persistCustomPricing(diagnostic));
+        diagnosticAnswers: persistDiagnostic(diagnostic),
+      })) as { warnings?: Array<{ key: string; message: string }> } | undefined;
+      setDiagnostic(persistDiagnostic(diagnostic));
+      setDirty(false);
+      setApiWarnings(Array.isArray(result?.warnings) ? result!.warnings! : []);
       toast.success(t('company.estimateWizard.wizard.toasts.dataSaved'));
       setStepIndex((i) => Math.min(i + 1, steps.length - 1));
     } catch (err: unknown) {
@@ -192,8 +428,9 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     try {
       const nextDiag = syncGlobalParamsToDiagnostic(plan2d, diagnostic);
       await savePlan.mutateAsync({ id: project.id, plan2d });
-      await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: persistCustomPricing(nextDiag) });
-      setDiagnostic(persistCustomPricing(nextDiag));
+      await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: persistDiagnostic(nextDiag) });
+      setDiagnostic(persistDiagnostic(nextDiag));
+      setDirty(false);
       toast.success(t('company.estimateWizard.wizard.toasts.dataSaved'));
       setStepIndex((i) => Math.min(i + 1, steps.length - 1));
     } catch (err: unknown) {
@@ -202,10 +439,19 @@ export function useEstimateWizard(project: EstimateProjectDto) {
   };
 
   const handleSaveDiagnostic = async () => {
+    if (hasBlockingErrors) {
+      toast.error(t('company.estimateWizard.wizard.toasts.validationFailed'));
+      return;
+    }
     try {
-      const nextDiagnostic = persistCustomPricing(diagnostic);
-      await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: nextDiagnostic });
+      const nextDiagnostic = persistDiagnostic(diagnostic);
+      const result = (await updateProject.mutateAsync({
+        id: project.id,
+        diagnosticAnswers: nextDiagnostic,
+      })) as { warnings?: Array<{ key: string; message: string }> } | undefined;
       setDiagnostic(nextDiagnostic);
+      setDirty(false);
+      setApiWarnings(Array.isArray(result?.warnings) ? result!.warnings! : []);
       toast.success(t('company.estimateWizard.wizard.toasts.diagnosticSaved'));
       setStepIndex((i) => Math.min(i + 1, steps.length - 1));
     } catch (err: unknown) {
@@ -214,21 +460,33 @@ export function useEstimateWizard(project: EstimateProjectDto) {
   };
 
   const handleStepChange = async (targetIndex: number) => {
+    const diagnosticIndex = steps.indexOf('diagnostic');
+    if (
+      targetIndex > stepIndex &&
+      diagnosticIndex !== -1 &&
+      stepIndex >= diagnosticIndex &&
+      hasBlockingErrors
+    ) {
+      toast.error(t('company.estimateWizard.wizard.toasts.validationFailed'));
+      return;
+    }
     if (currentStep === 'plan') {
       try {
         const nextDiag = syncGlobalParamsToDiagnostic(plan2d, diagnostic);
         await savePlan.mutateAsync({ id: project.id, plan2d });
-        await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: persistCustomPricing(nextDiag) });
-        setDiagnostic(persistCustomPricing(nextDiag));
+        await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: persistDiagnostic(nextDiag) });
+        setDiagnostic(persistDiagnostic(nextDiag));
+        setDirty(false);
       } catch (err) {
         console.error('Autosave plan failed:', err);
       }
     }
     if (currentStep === 'diagnostic') {
       try {
-        const nextDiagnostic = persistCustomPricing(diagnostic);
+        const nextDiagnostic = persistDiagnostic(diagnostic);
         await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: nextDiagnostic });
         setDiagnostic(nextDiagnostic);
+        setDirty(false);
       } catch (err) {
         console.error('Autosave diagnostic failed:', err);
       }
@@ -237,15 +495,27 @@ export function useEstimateWizard(project: EstimateProjectDto) {
   };
 
   const handleCalculate = async () => {
+    if (hasBlockingErrors) {
+      toast.error(t('company.estimateWizard.wizard.toasts.validationFailed'));
+      return;
+    }
+    // J-03: warn before recalculate when manual lines exist
+    if (projectHasManualLines) {
+      const confirmed = window.confirm(
+        t('company.estimateWizard.wizard.toasts.recalculateConfirm'),
+      );
+      if (!confirmed) return;
+    }
     try {
       const nextDiag = syncGlobalParamsToDiagnostic(plan2d, diagnostic);
-      const nextDiagnostic = persistCustomPricing(nextDiag);
+      const nextDiagnostic = persistDiagnostic(nextDiag);
       await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: nextDiagnostic });
       setDiagnostic(nextDiagnostic);
 
       await savePlan.mutateAsync({ id: project.id, plan2d });
 
       await calculate.mutateAsync(project.id);
+      setDirty(false);
       toast.success(t('company.estimateWizard.wizard.toasts.calculateSuccess'));
       setStepIndex(steps.indexOf('review'));
     } catch (err: unknown) {
@@ -290,7 +560,7 @@ export function useEstimateWizard(project: EstimateProjectDto) {
 
   const canSendEstimate = project.status === 'CALCULATED' || project.status === 'APPROVED';
   const canConvertEstimate = project.status === ESTIMATE_STATUS.ACCEPTED;
-  const activeCustomPricing = readCustomPricing(persistCustomPricing(diagnostic));
+  const activeCustomPricing = readCustomPricing(persistDiagnostic(diagnostic));
   const isServiceCategory = ['it-networks'].includes(project.category.slug);
   const pricingUnitLabel = isServiceCategory
     ? t('company.estimateWizard.customPricing.unitPriceHour')
@@ -316,6 +586,43 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     setPlan2d,
     diagnostic,
     setDiagnostic,
+    updateDiagnosticField,
+    enabledWorkModules,
+    setEnabledWorkModules,
+    setWorkModuleEnabled,
+    validationErrors,
+    validationWarnings,
+    hasBlockingErrors,
+    canGoNext,
+    customFieldSections,
+    visibleStages,
+    stageGroups,
+    scopeSummary,
+    projectHasManualLines,
+    previewLines,
+    previewTotals,
+    previewVsBackendDiff,
+    previewIsStale,
+    offlineState: {
+      online: offline.online,
+      syncState: offline.syncState,
+      pendingMutations: offline.pendingMutations,
+      lastSavedAt: offline.lastSavedAt,
+      lastSyncedAt: offline.lastSyncedAt,
+      conflict: offline.conflict,
+      clientDraftId: offline.clientDraftId,
+      draftVersion: offline.draftVersion,
+    },
+    handleSyncNow,
+    offlineSyncing: syncing,
+    handleDiscardLocalChanges,
+    handleKeepLocalChanges,
+    acknowledgeConflict: offline.acknowledgeConflict,
+    apiWarnings,
+    dirty,
+    setDirty,
+    savingStatus,
+    lastSavedAt,
     customPricing,
     setCustomPricing,
     editingStore,
@@ -344,6 +651,8 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     canConvertEstimate,
     activeCustomPricing,
     pricingUnitLabel,
+    estimateMode,
+    setEstimateMode,
   };
 }
 

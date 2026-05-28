@@ -7,6 +7,8 @@ import { PlanStep } from './steps/PlanStep';
 import { DiagnosticStep } from './steps/DiagnosticStep';
 import { StagesStep } from './steps/StagesStep';
 import { ReviewStep } from './steps/ReviewStep';
+import { OfflineBanner } from '../components/OfflineBanner';
+import { ConflictDialog } from '../components/ConflictDialog';
 
 type ExistingEstimateWizardProps = {
   project: EstimateProjectDto;
@@ -15,10 +17,54 @@ type ExistingEstimateWizardProps = {
 export function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps) {
   const { t } = useTranslation();
   const wizard = useEstimateWizard(project);
-  const { steps, stepIndex, currentStep, handleStepChange } = wizard;
+  const {
+    steps,
+    stepIndex,
+    currentStep,
+    handleStepChange,
+    offlineState,
+    handleSyncNow,
+    offlineSyncing,
+    savingStatus,
+    lastSavedAt,
+    handleDiscardLocalChanges,
+    handleKeepLocalChanges,
+    acknowledgeConflict,
+  } = wizard;
 
   return (
     <>
+      <OfflineBanner
+        online={offlineState.online}
+        syncState={offlineState.syncState}
+        pendingMutations={offlineState.pendingMutations}
+        lastSavedAt={offlineState.lastSavedAt}
+        lastSyncedAt={offlineState.lastSyncedAt}
+        onSyncNow={handleSyncNow}
+        syncing={offlineSyncing}
+      />
+      {offlineState.conflict && (
+        <ConflictDialog
+          conflict={offlineState.conflict}
+          busy={offlineSyncing}
+          onDiscardLocal={() => void handleDiscardLocalChanges()}
+          onKeepLocal={() => void handleKeepLocalChanges()}
+          onClose={acknowledgeConflict}
+        />
+      )}
+      {/* U-07: Autosave indicator */}
+      <div className="flex items-center justify-end gap-2 mb-1">
+        {savingStatus === 'saving' && (
+          <span className="text-xs text-amber-600 animate-pulse font-medium">
+            Se salvează...
+          </span>
+        )}
+        {savingStatus === 'saved' && lastSavedAt && (
+          <span className="text-xs text-emerald-600 font-medium">
+            Salvat {new Date(lastSavedAt).toLocaleTimeString()}
+          </span>
+        )}
+      </div>
       <div className="flex flex-wrap gap-2">
         {steps.map((step, index) => (
           <button

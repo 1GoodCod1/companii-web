@@ -138,3 +138,82 @@ export function FormSection({
     </section>
   );
 }
+
+// ──────────────────── Loading skeletons ────────────────────
+
+export function SkeletonCard({ className }: { className?: string }) {
+  return (
+    <div className={cn('rounded-2xl bg-white p-5 border border-slate-100 animate-pulse', className)}>
+      <div className="h-4 w-2/3 bg-slate-200 rounded mb-3" />
+      <div className="h-3 w-full bg-slate-100 rounded mb-2" />
+      <div className="h-3 w-4/5 bg-slate-100 rounded" />
+    </div>
+  );
+}
+
+export function SkeletonRow({ className }: { className?: string }) {
+  return (
+    <div className={cn('flex items-center gap-4 py-3 px-4 animate-pulse', className)}>
+      <div className="h-10 w-10 rounded-full bg-slate-200 shrink-0" />
+      <div className="flex-1 space-y-2">
+        <div className="h-4 w-1/3 bg-slate-200 rounded" />
+        <div className="h-3 w-1/2 bg-slate-100 rounded" />
+      </div>
+    </div>
+  );
+}
+
+export function SkeletonPage({ rows = 5 }: { rows?: number }) {
+  return (
+    <div className="space-y-6 animate-fade-in">
+      <div className="rounded-3xl bg-white p-6 border border-violet-100/60">
+        <div className="h-8 w-48 bg-slate-200 rounded animate-pulse mb-3" />
+        <div className="h-5 w-72 bg-slate-100 rounded animate-pulse" />
+      </div>
+      <div className="space-y-3">
+        {Array.from({ length: rows }).map((_, i) => (
+          <div key={i} className="rounded-2xl bg-white p-5 border border-slate-100 animate-pulse">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-4 w-4 bg-slate-200 rounded" />
+              <div className="h-4 w-40 bg-slate-200 rounded" />
+            </div>
+            <div className="h-3 w-full bg-slate-100 rounded mb-2" />
+            <div className="h-3 w-3/4 bg-slate-100 rounded" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function SkeletonForm({ fields = 4 }: { fields?: number }) {
+  return (
+    <div className="space-y-4 animate-pulse">
+      {Array.from({ length: fields }).map((_, i) => (
+        <div key={i} className="space-y-1.5">
+          <div className="h-4 w-24 bg-slate-200 rounded" />
+          <div className="h-10 w-full bg-slate-100 rounded-xl" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function InlineSpinner({ size = 16 }: { size?: number }) {
+  return (
+    <svg
+      className="animate-spin -ml-1 mr-2 text-white/80"
+      width={size}
+      height={size}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+      />
+    </svg>
+  );
+}

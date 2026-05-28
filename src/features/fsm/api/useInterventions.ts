@@ -149,7 +149,24 @@ export function useAddInterventionPhotosMutation(interventionId: string) {
         method: 'POST',
         body: JSON.stringify({ fileKeys }),
       }),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(interventionId) }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(interventionId) });
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.worksheetIntervention(interventionId) });
+    },
+  });
+}
+
+export function useDeleteInterventionPhotoMutation(interventionId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (photoId: string) =>
+      apiFetch(`${FSM_BASE}/interventions/${interventionId}/photos/${photoId}`, {
+        method: 'DELETE',
+      }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(interventionId) });
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.worksheetIntervention(interventionId) });
+    },
   });
 }
 
@@ -161,7 +178,27 @@ export function useUpdateChecklistMutation(interventionId: string) {
         method: 'PATCH',
         body: JSON.stringify({ progress }),
       }),
-    onSuccess: () => {
+    // U-06: Optimistic — apply checklist change immediately, rollback on error.
+    onMutate: async (progress) => {
+      await qc.cancelQueries({ queryKey: queryKeys.estimates.worksheetIntervention(interventionId) });
+      const previous = qc.getQueryData(queryKeys.estimates.worksheetIntervention(interventionId));
+      if (previous && typeof previous === 'object' && 'intervention' in previous) {
+        qc.setQueryData(queryKeys.estimates.worksheetIntervention(interventionId), {
+          ...(previous as Record<string, unknown>),
+          intervention: {
+            ...((previous as Record<string, unknown>).intervention as Record<string, unknown>),
+            checklistProgress: progress,
+          },
+        });
+      }
+      return { previous };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        qc.setQueryData(queryKeys.estimates.worksheetIntervention(interventionId), context.previous);
+      }
+    },
+    onSettled: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(interventionId) });
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.worksheetIntervention(interventionId) });
     },
