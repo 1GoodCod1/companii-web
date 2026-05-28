@@ -58,6 +58,7 @@ export const COMPANY_ROUTE = {
   RECENZII: 'recenzii',
   SUBSCRIPTION: 'subscription',
   SETTINGS: 'settings',
+  AUDIT: 'audit',
 } as const;
 
 /**
@@ -82,6 +83,7 @@ export const COMPANY_CABINET_PATH = {
   RECENZII: '/recenzii',
   SUBSCRIPTION: '/subscription',
   SETTINGS: '/settings',
+  AUDIT: '/audit',
 } as const;
 
 export const PORTAL_ROUTE = {

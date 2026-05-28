@@ -150,6 +150,7 @@ export type EstimateProjectDto = Omit<EstimateProjectListDto, 'stages'> & {
   stages: EstimateStageDto[];
   sourceLead?: {
     id: string;
+    serviceTitle?: string | null;
     estimatedBudget?: number | string | null;
     message?: string | null;
   } | null;

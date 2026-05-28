@@ -32,7 +32,7 @@ export function CompanyDashboardPage() {
           dashboard.onboardingRequired ? (
             <Link
               to="/company/profile"
-              className="inline-flex items-center rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-violet-700 transition-colors"
+              className="inline-flex items-center rounded-xl bg-gray-900 hover:bg-gray-800 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white transition-colors"
             >
               {t('company.dashboardPage.registerCompany')}
             </Link>
@@ -52,7 +52,7 @@ export function CompanyDashboardPage() {
           ) : dashboard.isManagement ? (
             <Link
               to="/company/profile"
-              className="inline-flex items-center rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-violet-700 transition-colors"
+              className="inline-flex items-center rounded-xl bg-gray-900 hover:bg-gray-800 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white transition-colors"
             >
               {t('company.dashboardPage.createProfile')}
             </Link>

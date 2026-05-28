@@ -254,6 +254,7 @@ export const companiiRu = {
     recenzii: 'Отзывы',
     subscription: 'Подписка',
     settings: 'Настройки',
+    audit: 'Журнал активности',
     sections: {
       main: 'Главное',
       operations: 'Операции',
@@ -1476,6 +1477,19 @@ export const companiiRu = {
       toastBusinessActivated: 'План Business активирован. Pro заменён автоматически.',
       toastPlanActivated: 'План {{plan}} активирован бесплатно на 30 дней!',
       toastActivateFailed: 'Не удалось активировать план.',
+    },
+    auditPage: {
+      title: 'Журнал активности',
+      description: 'История всех действий сотрудников: изменения цен, смет, статусов работ и настроек компании.',
+      filterAllActions: 'Все действия',
+      filterAllUsers: 'Все сотрудники',
+      loading: 'Загрузка журнала...',
+      empty: 'Журнал активности пуст. Действия ваших сотрудников будут записываться автоматически.',
+      colDate: 'Дата и время',
+      colAction: 'Действие',
+      colUser: 'Сотрудник',
+      colEntity: 'Объект',
+      colDetails: 'Детали',
     },
     servicesPage: {
       title: 'Услуги и цены',

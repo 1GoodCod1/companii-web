@@ -10,6 +10,7 @@ import { LandingHeroMock } from '@/components/landing/LandingHeroMock';
 import { LandingFinanceMock } from '@/components/landing/LandingFinanceMock';
 import { LandingTimeline } from '@/components/landing/LandingTimeline';
 import { LandingFeatures } from '@/components/landing/LandingFeatures';
+import { LandingSecurity } from '@/components/landing/LandingSecurity';
 import { LandingCta } from '@/components/landing/LandingCta';
 import { FaberSplashScreen } from '@/components/brand/FaberSplashScreen';
 
@@ -96,7 +97,7 @@ export function LandingPage() {
               <div className="mt-10 flex flex-wrap gap-4">
                 <Link
                   to={primaryCta.to}
-                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-500/25 hover:from-violet-700 hover:to-indigo-700 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-xl bg-gray-900 hover:bg-gray-800 px-7 py-3.5 text-sm font-black text-white transition-colors"
                 >
                   {primaryCta.label}
                   <ArrowRight className="h-4 w-4" />
@@ -170,6 +171,7 @@ export function LandingPage() {
 
       <LandingTimeline />
       <LandingFeatures />
+      <LandingSecurity />
       <LandingCta />
     </>
   );

@@ -22,6 +22,4 @@ export const DUPLICATE_DIAGNOSTIC_KEYS = [
   'storyCount',
   'pavementArea',
   'borderLengthM',
-  'facadeArea',
-  'scaffoldingArea',
 ] as const;

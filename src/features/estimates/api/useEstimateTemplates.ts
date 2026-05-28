@@ -91,6 +91,13 @@ export function useDeleteEstimateTemplateMutation() {
   });
 }
 
+export type ApplyEstimateTemplateMode = 'overwrite' | 'append' | 'pricing';
+
+/** Pricing-mode response carries an extra `pricingMatchedCount` field. */
+export type ApplyEstimateTemplateResponse = EstimateProjectDto & {
+  pricingMatchedCount?: number;
+};
+
 export function useApplyEstimateTemplateMutation() {
   const qc = useQueryClient();
   return useMutation({
@@ -101,9 +108,9 @@ export function useApplyEstimateTemplateMutation() {
     }: {
       id: string;
       projectId: string;
-      mode: 'overwrite' | 'append';
+      mode: ApplyEstimateTemplateMode;
     }) =>
-      apiFetch<EstimateProjectDto>(`${base}/${id}/apply/${projectId}`, {
+      apiFetch<ApplyEstimateTemplateResponse>(`${base}/${id}/apply/${projectId}`, {
         method: 'POST',
         body: JSON.stringify({ mode }),
       }),

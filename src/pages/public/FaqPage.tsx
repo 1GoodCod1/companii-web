@@ -27,7 +27,7 @@ export function FaqPage() {
 
       <div className="max-w-4xl mx-auto py-10 space-y-10 animate-fade-in">
         <div className="text-center space-y-3">
-          <span className="inline-block text-xs font-black uppercase tracking-widest text-violet-700 bg-violet-50 border border-violet-100 px-3.5 py-1.5 rounded-full shadow-xs">
+          <span className="inline-block text-xs font-black uppercase tracking-widest text-violet-700 bg-violet-50 border border-violet-100 px-3.5 py-1.5 shadow-xs">
             {t('faqPage.badge')}
           </span>
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
@@ -46,7 +46,7 @@ export function FaqPage() {
             <a
               key={section.id}
               href={`#faq-${section.id}`}
-              className="rounded-full border border-gray-200 bg-white/80 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-600 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+              className="border border-gray-200 bg-white/80 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-600 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700 transition-colors"
             >
               {section.title}
             </a>
@@ -69,7 +69,7 @@ export function FaqPage() {
                   return (
                     <div
                       key={key}
-                      className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
+                      className="bg-white border border-gray-100 overflow-hidden"
                     >
                       <button
                         type="button"
@@ -86,8 +86,8 @@ export function FaqPage() {
                         </span>
                       </button>
                       <div
-                        className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                          isOpen ? 'max-h-[480px] border-t border-gray-50' : 'max-h-0'
+                        className={`transition-all duration-500 ease-out overflow-hidden ${
+                          isOpen ? 'max-h-[480px] opacity-100' : 'max-h-0 opacity-0'
                         }`}
                       >
                         <p className="p-5 text-sm text-gray-600 leading-relaxed">{faq.a}</p>
@@ -100,18 +100,20 @@ export function FaqPage() {
           ))}
         </div>
 
-        <div className="rounded-3xl border border-violet-100 bg-gradient-to-br from-violet-50/80 to-indigo-50/40 p-6 text-center space-y-3">
-          <p className="text-sm font-bold text-gray-900">{t('faqPage.footerCta.title')}</p>
-          <p className="text-xs text-gray-500 max-w-md mx-auto">
+        <section className="border border-gray-100 rounded-3xl p-8 glass-panel text-center space-y-3">
+          <h2 className="text-lg font-black text-gray-900 tracking-tight">
+            {t('faqPage.footerCta.title')}
+          </h2>
+          <p className="text-sm text-gray-500 font-medium max-w-xl mx-auto">
             {t('faqPage.footerCta.description')}
           </p>
           <Link
             to={lp('/contacts')}
-            className="inline-flex items-center justify-center rounded-xl bg-violet-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white hover:bg-violet-700 transition-colors"
+            className="inline-block mt-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl transition-all"
           >
             {t('faqPage.footerCta.button')}
           </Link>
-        </div>
+        </section>
       </div>
     </>
   );

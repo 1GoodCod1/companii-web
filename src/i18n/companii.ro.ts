@@ -255,6 +255,7 @@ export const companiiRo = {
     recenzii: 'Recenzii',
     subscription: 'Abonament',
     settings: 'Setări',
+    audit: 'Jurnal de activitate',
     sections: {
       main: 'Principal',
       operations: 'Operațiuni',
@@ -1473,6 +1474,19 @@ export const companiiRo = {
       toastBusinessActivated: 'Planul Business a fost activat. Pro a fost înlocuit automat.',
       toastPlanActivated: 'Planul {{plan}} a fost activat gratuit pentru 30 de zile!',
       toastActivateFailed: 'Nu s-a putut activa planul.',
+    },
+    auditPage: {
+      title: 'Jurnal de activitate',
+      description: 'Istoricul tuturor acțiunilor angajaților: modificări de prețuri, smete, statusuri de lucrări și setări ale companiei.',
+      filterAllActions: 'Toate acțiunile',
+      filterAllUsers: 'Toți angajații',
+      loading: 'Se încarcă jurnalul...',
+      empty: 'Jurnalul de activitate este gol. Acțiunile angajaților vor fi înregistrate automat.',
+      colDate: 'Data și ora',
+      colAction: 'Acțiune',
+      colUser: 'Angajat',
+      colEntity: 'Obiect',
+      colDetails: 'Detalii',
     },
     servicesPage: {
       title: 'Servicii & prețuri',

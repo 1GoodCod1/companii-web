@@ -11,6 +11,7 @@ import {
 } from '@/components/cabinet/cabinet-ui';
 import { downloadFile } from '@/api/files';
 import { EstimateLineSourceBadge } from '@/features/estimates/components/EstimateLineSourceBadge';
+import { LeadBudgetGauge } from '@/features/estimates/components/LeadBudgetGauge';
 import { useDownloadEstimatePdf } from '@/features/estimates/api/useEstimates';
 import { EstimateVersionHistory } from '@/features/estimates/components/EstimateVersionHistory';
 import { EstimateCommentThread } from '@/features/estimates/components/EstimateCommentThread';
@@ -119,8 +120,17 @@ export function ReviewStep({ wizard }: Props) {
   const showPreview = previewTotals.hasContent;
   const backendCalculated = Number(project.grandTotal ?? 0) > 0;
 
+  const reviewCurrentTotal =
+    Number(project.grandTotal ?? 0) || previewTotals?.grandTotal || 0;
+
   return (
     <div className="space-y-4">
+      {project.sourceLead?.estimatedBudget && (
+        <LeadBudgetGauge
+          budget={project.sourceLead.estimatedBudget}
+          currentTotal={reviewCurrentTotal}
+        />
+      )}
       {sanityWarnings.length > 0 && (
         <Panel className="p-4 border border-amber-200 bg-amber-50/60 space-y-2">
           <p className="text-[10px] font-black uppercase tracking-wider text-amber-800">
@@ -196,7 +206,13 @@ export function ReviewStep({ wizard }: Props) {
               entries={scopeSummary.enabledWithoutLines.map((m) => ({
                 key: m.key,
                 label: m.label,
-                hint: t('company.estimateWizard.scopeSummary.moduleEnabledNoLines'),
+                hint:
+                  m.missingFieldLabels && m.missingFieldLabels.length > 0
+                    ? t('company.estimateWizard.scopeSummary.moduleMissingFields', {
+                        fields: m.missingFieldLabels.join(', '),
+                        defaultValue: 'Completați: {{fields}}',
+                      })
+                    : t('company.estimateWizard.scopeSummary.moduleEnabledNoLines'),
                 tone: 'amber',
               }))}
             />

@@ -92,6 +92,15 @@ export const OPTION_TRANSLATIONS: Record<string, { ro: string; ru: string }> = {
   xps: { ro: 'Polistiren extrudat (XPS) — Ultra-rezistent', ru: 'Экструдированный пенополистирол (XPS) — Цоколь' },
   damaged: { ro: 'Deteriorată (necesită reparații) — Dificil (+25% labor)', ru: 'Поврежденная (требуется ремонт) — Сложно (+25% к работе)' },
 
+  // wall material for facade dowel density (fatade.wallMaterial)
+  panel: { ro: 'Panou beton prefabricat — Dens (-15% dibluri)', ru: 'Бетонные панели — Плотный (-15% дюбелей)' },
+
+  // flat-roof waterproofing membranes (acoperis-plat.waterproofingType)
+  bitumen_membrane: { ro: 'Membrană bituminoasă — Econom, durabilitate 15 ani', ru: 'Битумная мембрана — Эконом, срок 15 лет' },
+  tpo: { ro: 'TPO termoplastic — Modern, durabilitate 25+ ani (+140% cost)', ru: 'TPO термопластик — Современный, 25+ лет (+140% к стоимости)' },
+  pvc: { ro: 'PVC sudat — Modern, durabilitate 25+ ani (+120% cost)', ru: 'ПВХ мембрана — Современная, 25+ лет (+120% к стоимости)' },
+  epdm: { ro: 'EPDM cauciuc — Premium, durabilitate 30+ ani (+95% cost)', ru: 'EPDM каучук — Премиум, 30+ лет (+95% к стоимости)' },
+
   // electrical wall materials (elektrika)
   gips: { ro: 'Gips-carton — Ușor (Fără ștrobire)', ru: 'Гипсокартон — Легко (без штробления)' },
   bca: { ro: 'BCA — Mediu (Ușor de frezat)', ru: 'Газобетон / пеноблок — Средне (легко режется)' },
@@ -130,7 +139,6 @@ export function useTranslateOption() {
     if (item) {
       return item[lang] || item['ro'] || key;
     }
-    // Fallback if not found: replace underscores with spaces and capitalize
     return key.replace(/_/g, ' ');
   };
 }

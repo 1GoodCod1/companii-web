@@ -1,4 +1,5 @@
 import type {
+  BlueprintCustomField,
   BlueprintWorkModule,
   EstimateBlueprintConfig,
 } from '@/types/estimate-blueprint-config.types';
@@ -9,6 +10,12 @@ export type ScopeModuleEntry = {
   label: string;
   lineCount: number;
   amount: number;
+  /**
+   * For `enabledWithoutLines` only: user-facing field labels whose value looks
+   * empty (null / 0 / false / blank). These are the most likely reason the
+   * module produced no lines — surface them so the user knows what to fill.
+   */
+  missingFieldLabels?: string[];
 };
 
 export type ScopeSummary = {
@@ -27,11 +34,15 @@ export type ScopeSummary = {
  * what was enabled but produced no lines, what is still available for the user
  * to add. Modules without `stageCodes` are still counted as available so the
  * client sees the full menu.
+ *
+ * Pass `diagnostic` to get explanations for `enabledWithoutLines` entries —
+ * each entry will list the customField labels that look empty.
  */
 export function buildScopeSummary(
   config: EstimateBlueprintConfig | null | undefined,
   enabledModules: string[],
   stages: EstimateStageDto[],
+  diagnostic?: Record<string, unknown> | null,
 ): ScopeSummary {
   const summary: ScopeSummary = {
     included: [],
@@ -47,6 +58,9 @@ export function buildScopeSummary(
   const stageByCode = new Map<string, EstimateStageDto>();
   for (const s of stages) stageByCode.set(s.code, s);
 
+  const customFieldByKey = new Map<string, BlueprintCustomField>();
+  for (const f of config?.customFields ?? []) customFieldByKey.set(f.key, f);
+
   for (const module of modules) {
     const entry = collectModuleStats(module, stageByCode);
 
@@ -59,6 +73,9 @@ export function buildScopeSummary(
       summary.included.push(entry);
       summary.includedAmount += entry.amount;
     } else {
+      if (diagnostic) {
+        entry.missingFieldLabels = findEmptyFieldLabels(module, customFieldByKey, diagnostic);
+      }
       summary.enabledWithoutLines.push(entry);
     }
   }
@@ -87,6 +104,35 @@ function collectModuleStats(
     lineCount,
     amount,
   };
+}
+
+function isEmptyValue(v: unknown): boolean {
+  if (v == null) return true;
+  if (typeof v === 'string') return v.trim() === '';
+  if (typeof v === 'number') return v === 0;
+  if (typeof v === 'boolean') return v === false;
+  return false;
+}
+
+function findEmptyFieldLabels(
+  module: BlueprintWorkModule,
+  customFieldByKey: Map<string, BlueprintCustomField>,
+  diagnostic: Record<string, unknown>,
+): string[] {
+  const labels: string[] = [];
+  const seen = new Set<string>();
+  const keys = [
+    ...(module.fieldKeys ?? []),
+    ...(module.requiresQtyKeys ?? []),
+  ];
+  for (const key of keys) {
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const field = customFieldByKey.get(key);
+    if (!field) continue;
+    if (isEmptyValue(diagnostic[key])) labels.push(field.label);
+  }
+  return labels;
 }
 
 export function hasManualLines(stages: EstimateStageDto[]): boolean {

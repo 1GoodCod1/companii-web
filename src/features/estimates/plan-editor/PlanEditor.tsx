@@ -15,7 +15,7 @@ import { PlanWorkItemsPanel } from './PlanWorkItemsPanel';
 
 type PlanEditorTab = 'rooms' | 'items' | 'global' | 'preview';
 
-const TABS: { key: PlanEditorTab; icon: React.FC<{ className?: string }> }[] = [
+const ALL_TABS: { key: PlanEditorTab; icon: React.FC<{ className?: string }> }[] = [
   { key: 'rooms', icon: MapPin },
   { key: 'items', icon: ListTree },
   { key: 'global', icon: Globe },
@@ -31,10 +31,18 @@ export function PlanEditor({
   readOnly,
 }: PlanEditorProps) {
   const { t } = useTranslation();
-  const [mobileTab, setMobileTab] = useState<PlanEditorTab>('rooms');
   const summary = useMemo(() => summarizePlan(value, config), [value, config]);
 
   const workContext = defaultContextFromSlug(categorySlug);
+  const isFacade = workContext === 'facade';
+
+  // Rooms are a horizontal-plane concept (floor area). For facade (vertical surface)
+  // they confuse the user — hide that tab entirely and default to global params.
+  const tabs = useMemo(
+    () => (isFacade ? ALL_TABS.filter((tab) => tab.key !== 'rooms') : ALL_TABS),
+    [isFacade],
+  );
+  const [mobileTab, setMobileTab] = useState<PlanEditorTab>(isFacade ? 'global' : 'rooms');
   const globalParams = value.globalParameters ?? {
     workContext,
   };
@@ -191,7 +199,7 @@ export function PlanEditor({
     <div className="space-y-6 animate-fade-in">
       {/* I-04: Mobile tabs — visible on small screens only */}
       <div className="md:hidden flex rounded-2xl bg-slate-100 p-1 overflow-x-auto">
-        {TABS.map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab.key}
             type="button"
@@ -215,20 +223,23 @@ export function PlanEditor({
           setGlobalParams={setGlobalParams}
           readOnly={readOnly}
           categoryName={categoryName}
+          categorySlug={categorySlug}
         />
       </div>
 
-      <div className={mobileTab === 'rooms' ? 'block' : 'hidden md:block'}>
-        <PlanRoomsTable
-          value={value}
-          readOnly={readOnly}
-          summaryArea={summary.area}
-          onAddRoom={addRoom}
-          onUpdateRoom={updateRoom}
-          onRemoveRoom={removeRoom}
-          onApplyCategoryTemplate={applyCategoryTemplate}
-        />
-      </div>
+      {!isFacade && (
+        <div className={mobileTab === 'rooms' ? 'block' : 'hidden md:block'}>
+          <PlanRoomsTable
+            value={value}
+            readOnly={readOnly}
+            summaryArea={summary.area}
+            onAddRoom={addRoom}
+            onUpdateRoom={updateRoom}
+            onRemoveRoom={removeRoom}
+            onApplyCategoryTemplate={applyCategoryTemplate}
+          />
+        </div>
+      )}
 
       <div className={mobileTab === 'items' ? 'block' : 'hidden md:block'}>
         <PlanWorkItemsPanel

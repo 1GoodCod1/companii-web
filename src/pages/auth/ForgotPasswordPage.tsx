@@ -89,7 +89,7 @@ export function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={forgotPassword.isPending}
-              className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 active:scale-[0.99] text-white py-3.5 rounded-xl font-bold transition-all shadow-md shadow-violet-500/10 hover:shadow-lg hover:shadow-violet-500/15 cursor-pointer text-xs uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5"
+              className="w-full bg-gray-900 hover:bg-gray-800 active:scale-[0.99] text-white py-3.5 rounded-xl font-black transition-all cursor-pointer text-xs uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5"
             >
               {forgotPassword.isPending
                 ? t('auth.forgotPasswordPage.submitting')

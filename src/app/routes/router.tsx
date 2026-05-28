@@ -41,6 +41,7 @@ import { CompanyCalendarPage } from '@/pages/company/CompanyCalendarPage';
 import { CompanyQuotesPage } from '@/pages/company/CompanyQuotesPage';
 import { CompanyInvoicesPage } from '@/pages/company/CompanyInvoicesPage';
 import { CompanySubscriptionPage } from '@/pages/company/CompanySubscriptionPage';
+import { CompanyAuditPage } from '@/pages/company/CompanyAuditPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 import { CompanyReviewsPage } from '@/pages/company/CompanyReviewsPage';
 import { CompanyLeadsPage } from '@/pages/company/CompanyLeadsPage';
@@ -296,6 +297,14 @@ export const router = createBrowserRouter([
             element: (
               <RequireCompanyRole routePath={COMPANY_CABINET_PATH.RECENZII}>
                 <CompanyReviewsPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
+            path: COMPANY_ROUTE.AUDIT,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.AUDIT}>
+                <CompanyAuditPage />
               </RequireCompanyRole>
             ),
           },

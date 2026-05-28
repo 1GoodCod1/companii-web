@@ -205,7 +205,7 @@ export function CompanyDetailPage() {
           </p>
           <Link
             to={lp('/companies')}
-            className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-sm font-bold text-white hover:opacity-95 transition-all"
+            className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-gray-900 hover:bg-gray-800 text-xs font-black uppercase tracking-wider text-white transition-colors"
           >
             {t('companyDetail.backToCatalog')}
           </Link>
@@ -436,7 +436,7 @@ export function CompanyDetailPage() {
                           <button
                             type="button"
                             onClick={() => openServiceRequest(service.id, service.name)}
-                            className="w-full py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-extrabold uppercase tracking-wider shadow-sm hover:shadow-md hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 cursor-pointer"
+                            className="w-full py-3 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider active:scale-[0.99] transition-all cursor-pointer"
                           >
                             {t('companyDetail.requestService')}
                           </button>
@@ -474,7 +474,7 @@ export function CompanyDetailPage() {
                   <button
                     type="button"
                     onClick={openProjectRequest}
-                    className="shrink-0 inline-flex items-center justify-center gap-2 py-4 px-8 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-violet-500/10 hover:shadow-xl hover:shadow-violet-500/15 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer"
+                    className="shrink-0 inline-flex items-center justify-center gap-2 py-4 px-8 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                   >
                     <Sparkles className="w-4 h-4" /> {t('companyDetail.projectCta')}
                   </button>
@@ -543,7 +543,7 @@ export function CompanyDetailPage() {
                   {company.contactPhone ? (
                     <a
                       href={`tel:${company.contactPhone.replace(/\s/g, '')}`}
-                      className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:opacity-95 text-white font-extrabold text-sm"
+                      className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-black text-xs uppercase tracking-wider transition-colors"
                     >
                       <Phone className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110" />
                       {t('companyDetail.callCompany')}

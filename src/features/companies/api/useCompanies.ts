@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
 import { apiFetch } from '@/api/client';
+import type { AdminAuditLogDto } from '@/features/admin/api/useAdmin';
 import { uploadFile } from '@/api/files';
 import {
   cabinetQueryDefaults,
@@ -412,5 +413,23 @@ export function useRequestPublicProjectMutation(companySlug: string) {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.detail(companySlug) });
       void qc.invalidateQueries({ queryKey: queryKeys.portal.leads });
     },
+  });
+}
+
+export function useCompanyAuditLogsQuery(
+  companyId: string,
+  filters: { action?: string; userId?: string; limit?: number } = {},
+): UseQueryResult<AdminAuditLogDto[], Error> {
+  const qs = new URLSearchParams();
+  if (filters.action) qs.set('action', filters.action);
+  if (filters.userId) qs.set('userId', filters.userId);
+  if (filters.limit) qs.set('limit', String(filters.limit));
+  const suffix = qs.toString() ? `?${qs}` : '';
+
+  return useQuery<AdminAuditLogDto[], Error>({
+    queryKey: ['companies', companyId, 'audit', filters],
+    queryFn: () => apiFetch<AdminAuditLogDto[]>(`/companies/${companyId}/audit${suffix}`),
+    ...cabinetQueryDefaults,
+    enabled: !!companyId,
   });
 }

@@ -201,7 +201,7 @@ export function LoginPage() {
 
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 active:scale-[0.99] text-white py-3 rounded-xl font-bold transition-all shadow-md shadow-violet-500/10 hover:shadow-lg hover:shadow-violet-500/15 cursor-pointer text-sm tracking-wide mt-2"
+          className="w-full bg-gray-900 hover:bg-gray-800 active:scale-[0.99] text-white py-3 rounded-xl font-black transition-all cursor-pointer text-xs uppercase tracking-wider mt-2"
           disabled={login.isPending || acceptInvite.isPending || acceptTeamInvite.isPending}
         >
           {login.isPending ? t('auth.loggingIn') : t('auth.login')}

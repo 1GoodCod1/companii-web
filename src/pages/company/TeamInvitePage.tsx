@@ -99,7 +99,7 @@ export function TeamInvitePage() {
             type="button"
             onClick={handleAccept}
             disabled={acceptInvite.isPending || accepted}
-            className="w-full rounded-xl bg-violet-600 py-3 text-sm font-bold text-white hover:bg-violet-700 disabled:opacity-60"
+            className="w-full rounded-xl bg-gray-900 hover:bg-gray-800 py-3 text-xs font-black uppercase tracking-wider text-white transition-colors disabled:opacity-60"
           >
             {acceptInvite.isPending ? t('company.teamInvitePage.processing') : t('company.teamInvitePage.accept')}
           </button>
@@ -107,7 +107,7 @@ export function TeamInvitePage() {
           <div className="space-y-3">
             <Link
               to={registerHref}
-              className="block w-full text-center rounded-xl bg-violet-600 py-3 text-sm font-bold text-white hover:bg-violet-700"
+              className="block w-full text-center rounded-xl bg-gray-900 hover:bg-gray-800 py-3 text-xs font-black uppercase tracking-wider text-white transition-colors"
             >
               {t('company.teamInvitePage.createAndAccept')}
             </Link>

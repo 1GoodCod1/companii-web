@@ -141,7 +141,7 @@ export function ContactsPage() {
           <button
             type="submit"
             disabled={sending}
-            className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-xs hover:shadow-sm disabled:opacity-60 cursor-pointer text-xs uppercase tracking-wider"
+            className="w-full bg-gray-900 hover:bg-gray-800 text-white font-black py-3 px-4 rounded-xl transition-all disabled:opacity-60 cursor-pointer text-xs uppercase tracking-wider"
           >
             {sending ? t('contacts.submitting') : t('contacts.submit')}
           </button>

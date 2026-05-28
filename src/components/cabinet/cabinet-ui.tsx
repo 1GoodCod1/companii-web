@@ -6,7 +6,7 @@ export const cabinetFieldClass =
   'w-full rounded-none bg-slate-50/90 px-3.5 py-2.5 text-sm text-gray-900 border border-transparent outline-none placeholder:text-gray-400 focus:bg-white focus:border-slate-300';
 export const cabinetSelectClass = `${cabinetFieldClass} cursor-pointer font-medium disabled:opacity-60 disabled:cursor-not-allowed`;
 export const cabinetBtnPrimary =
-  'inline-flex items-center justify-center bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white px-5 py-2.5 rounded-none font-semibold text-sm transition-all shadow-xs hover:shadow-md disabled:opacity-50 cursor-pointer';
+  'inline-flex items-center justify-center bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-none font-black text-xs uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer';
 export const cabinetBtnSecondary =
   'inline-flex items-center justify-center px-5 py-2.5 rounded-none text-sm font-medium text-gray-600 hover:bg-slate-100 transition-colors cursor-pointer';
 export const cabinetPanelClass = 'glass-panel rounded-none';

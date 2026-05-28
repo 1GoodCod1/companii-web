@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import {
   Calendar,
   Calculator,
+  ClipboardList,
   BookOpen,
   CreditCard,
   FileText,
@@ -142,6 +143,14 @@ const NAV_DEFS: Array<
     labelKey: 'company.team',
     icon: <Users />,
     minPlanKey: '/team',
+  },
+  {
+    key: 'audit',
+    sectionKey: 'company',
+    to: '/audit',
+    labelKey: 'company.audit',
+    icon: <ClipboardList />,
+    minPlanKey: '',
   },
   {
     key: 'subscription',

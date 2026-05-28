@@ -74,7 +74,7 @@ export function RegisterPage() {
         </p>
         <Link
           to={`/login?invite=${encodeURIComponent(portalInviteToken)}`}
-          className="inline-flex rounded-xl bg-violet-600 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white"
+          className="inline-flex rounded-xl bg-gray-900 hover:bg-gray-800 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors"
         >
           {t('auth.registerPage.goToLogin')}
         </Link>
@@ -90,7 +90,7 @@ export function RegisterPage() {
         </p>
         <Link
           to={`/login?teamInvite=${encodeURIComponent(teamInviteToken)}`}
-          className="inline-flex rounded-xl bg-violet-600 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white"
+          className="inline-flex rounded-xl bg-gray-900 hover:bg-gray-800 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors"
         >
           {t('auth.registerPage.goToLogin')}
         </Link>
@@ -482,7 +482,7 @@ export function RegisterPage() {
 
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 active:scale-[0.99] text-white py-2.5 rounded-xl font-bold transition-all shadow-md shadow-violet-500/10 hover:shadow-lg hover:shadow-violet-500/15 cursor-pointer text-xs uppercase tracking-wider mt-2 disabled:opacity-60"
+          className="w-full bg-gray-900 hover:bg-gray-800 active:scale-[0.99] text-white py-2.5 rounded-xl font-black transition-all cursor-pointer text-xs uppercase tracking-wider mt-2 disabled:opacity-60"
           disabled={
             register.isPending ||
             ((!!portalInviteToken || !!teamInviteToken) && inviteLoading)

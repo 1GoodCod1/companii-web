@@ -33,7 +33,7 @@ export function PortalCereriPage() {
         action={
           <Link
             to="/companies"
-            className="inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-white hover:opacity-95 transition-opacity"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gray-900 hover:bg-gray-800 px-4 py-2.5 text-xs font-black uppercase tracking-wide text-white transition-colors"
           >
             {t('portal.cereriPage.searchCompanies')}
           </Link>

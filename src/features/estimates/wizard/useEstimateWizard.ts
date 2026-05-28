@@ -152,8 +152,8 @@ export function useEstimateWizard(project: EstimateProjectDto) {
   );
 
   const scopeSummary = useMemo(
-    () => buildScopeSummary(config, enabledWorkModules, project.stages ?? []),
-    [config, enabledWorkModules, project.stages],
+    () => buildScopeSummary(config, enabledWorkModules, project.stages ?? [], diagnostic),
+    [config, enabledWorkModules, project.stages, diagnostic],
   );
 
   const projectHasManualLines = useMemo(
@@ -581,6 +581,21 @@ export function useEstimateWizard(project: EstimateProjectDto) {
       setDirty(false);
       setApiWarnings(Array.isArray(result?.warnings) ? result!.warnings! : []);
       toast.success(t('company.estimateWizard.wizard.toasts.diagnosticSaved'));
+
+      // O-01: auto-calculate so the user lands on the Stages step with the smeta
+      // already populated (no separate "Calculează" click required). Failure is
+      // non-fatal — the save itself succeeded, user can retry calculate manually.
+      try {
+        const calcResult = (await calculate.mutateAsync(project.id)) as
+          | { sanityWarnings?: Array<{ key: string; severity: 'info' | 'warning'; message: string }> }
+          | undefined;
+        setSanityWarnings(
+          Array.isArray(calcResult?.sanityWarnings) ? calcResult!.sanityWarnings! : [],
+        );
+      } catch (calcErr) {
+        console.warn('Auto-calculate after diagnostic save failed:', calcErr);
+      }
+
       setStepIndex((i) => Math.min(i + 1, steps.length - 1));
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.saveFailed')));

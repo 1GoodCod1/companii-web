@@ -1,12 +1,20 @@
-import { Calculator, Check, Eye, Layers, Plus, Trash2 } from 'lucide-react';
+import { Calculator, Check, Eye, Layers, Plus, Tag, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 import {
   Panel,
   cabinetBtnPrimary,
+  cabinetSelectClass,
 } from '@/components/cabinet/cabinet-ui';
 import { downloadFile } from '@/api/files';
 import { EstimateLineSourceBadge } from '@/features/estimates/components/EstimateLineSourceBadge';
+import { LeadBudgetGauge } from '@/features/estimates/components/LeadBudgetGauge';
+import {
+  useApplyEstimateTemplateMutation,
+  useEstimateTemplatesQuery,
+} from '@/features/estimates/api/useEstimateTemplates';
 import { getHiddenStagesCount } from '@/features/estimates/stageVisibility';
+import { getErrorMessage } from '@/utils/errors';
 import type { EstimateStageDto } from '@/types/estimates';
 import type { EstimateWizardApi } from '../useEstimateWizard';
 
@@ -271,7 +279,45 @@ export function StagesStep({ wizard }: Props) {
     handleCalculate,
     estimateMode,
     setEstimateMode,
+    previewTotals,
   } = wizard;
+
+  const currentTotal = Number(project.grandTotal ?? 0) || previewTotals?.grandTotal || 0;
+
+  // O-02: pricing-only template apply. Lets the master pick a saved template
+  // and override unitPrices on the current project's lines (matching by
+  // stage.code + line.description). Stage structure stays as the blueprint
+  // produced it.
+  const { data: templates } = useEstimateTemplatesQuery();
+  const applyTemplate = useApplyEstimateTemplateMutation();
+  const handleApplyPricingTemplate = async (templateId: string) => {
+    if (!templateId) return;
+    try {
+      const result = await applyTemplate.mutateAsync({
+        id: templateId,
+        projectId: project.id,
+        mode: 'pricing',
+      });
+      const count = result.pricingMatchedCount ?? 0;
+      if (count === 0) {
+        toast(
+          t('company.estimateWizard.stagesStep.pricingTemplateNoMatch', {
+            defaultValue: 'Niciun preț din șablon nu se potrivește cu liniile curente',
+          }),
+          { icon: 'ℹ️' },
+        );
+      } else {
+        toast.success(
+          t('company.estimateWizard.stagesStep.pricingTemplateAppliedCount', {
+            count,
+            defaultValue: '{{count}} prețuri actualizate din șablon',
+          }),
+        );
+      }
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Failed to apply pricing template'));
+    }
+  };
 
   const hiddenStagesCount = getHiddenStagesCount(
     project.stages ?? [],
@@ -280,7 +326,10 @@ export function StagesStep({ wizard }: Props) {
   );
 
   const hasGroups = stageGroups.length > 0;
-  const singleGroup = stageGroups.length <= 1 && (stageGroups[0]?.moduleKey === null);
+  // J-04: keep group header visible for any module-tagged group so the user always
+  // sees which module produced which stage. The header is hidden only when the
+  // single group is the legacy unlabeled bucket (no moduleKey).
+  const singleGroup = stageGroups.length <= 1 && (stageGroups[0]?.moduleKey == null);
 
   // J-06: brief mode — filter out groups that have no meaningful stages (no lines)
   const displayGroups = estimateMode === 'brief'
@@ -294,6 +343,12 @@ export function StagesStep({ wizard }: Props) {
 
   return (
     <div className="space-y-4">
+      {project.sourceLead?.estimatedBudget && (
+        <LeadBudgetGauge
+          budget={project.sourceLead.estimatedBudget}
+          currentTotal={currentTotal}
+        />
+      )}
       <Panel className="p-6">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
@@ -302,7 +357,33 @@ export function StagesStep({ wizard }: Props) {
               {t('company.estimateWizard.stagesStep.description')}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* O-02: Apply pricing-only template (overrides unitPrice on matching lines). */}
+            {templates && templates.length > 0 && (
+              <label className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
+                <Tag className="w-3.5 h-3.5 text-indigo-500" />
+                <select
+                  value=""
+                  onChange={(e) => {
+                    handleApplyPricingTemplate(e.target.value);
+                    e.target.value = '';
+                  }}
+                  disabled={applyTemplate.isPending}
+                  className={`${cabinetSelectClass} max-w-[180px] text-[11px] py-1.5`}
+                >
+                  <option value="">
+                    {t('company.estimateWizard.stagesStep.applyPricingTemplate', {
+                      defaultValue: 'Aplică prețuri din șablon...',
+                    })}
+                  </option>
+                  {templates.map((tpl) => (
+                    <option key={tpl.id} value={tpl.id}>
+                      {tpl.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
             {/* J-06: Estimate mode switcher */}
             <div className="flex rounded-xl bg-slate-100 p-0.5">
               {(['brief', 'detailed'] as const).map((mode) => (
@@ -333,9 +414,17 @@ export function StagesStep({ wizard }: Props) {
         )}
 
         {!hasGroups ? (
-          <p className="text-xs text-gray-400 italic py-8 text-center">
-            {t('company.estimateWizard.stagesStep.noStages')}
-          </p>
+          <div className="rounded-2xl border border-dashed border-amber-200 bg-amber-50/40 p-6 text-center space-y-2">
+            <p className="text-xs font-semibold text-amber-900">
+              {t('company.estimateWizard.stagesStep.noStages')}
+            </p>
+            <p className="text-[11px] text-amber-700/80 leading-relaxed">
+              {t('company.estimateWizard.stagesStep.noStagesHint', {
+                defaultValue:
+                  'Reveniți la pasul «Diagnostic» și activați modulele de care aveți nevoie — etapele se vor genera automat.',
+              })}
+            </p>
+          </div>
         ) : (
           <div className="space-y-6">
             {displayGroups.map((group) => (

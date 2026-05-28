@@ -11,77 +11,17 @@ import {
   FileCheck,
   KeyRound,
   Send,
-  Sparkles,
-  ShieldCheck,
   CheckCircle2,
+  ShieldCheck,
+  Sparkles,
   HeartHandshake,
+  ArrowLeftRight,
 } from 'lucide-react';
 
 const COMPANY_STEP_ICONS = [Building2, Calculator, CalendarDays, FileCheck] as const;
 const CLIENT_STEP_ICONS = [KeyRound, Send, CheckCircle2, ShieldCheck] as const;
-const STEP_CARD_TONES = [
-  'border-slate-100',
-  'border-slate-100',
-  'border-slate-100',
-  'border-slate-100',
-] as const;
-const STEP_ICON_TONES = [
-  'bg-violet-50 text-violet-750',
-  'bg-indigo-50 text-indigo-750',
-  'bg-amber-50 text-amber-700',
-  'bg-emerald-50 text-emerald-700',
-] as const;
-const STEP_NUMBER_TONES = [
-  'text-violet-50 group-hover:text-violet-100/80',
-  'text-indigo-50 group-hover:text-indigo-100/80',
-  'text-amber-50 group-hover:text-amber-100/80',
-  'text-emerald-50 group-hover:text-emerald-100/80',
-] as const;
 
 type HowItWorksStep = { title: string; description: string };
-
-function RoleSteps({
-  steps,
-  icons,
-}: {
-  steps: HowItWorksStep[];
-  icons: readonly (typeof COMPANY_STEP_ICONS)[number][];
-}) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {steps.map((step, index) => {
-        const Icon = icons[index] ?? Building2;
-        const stepNumber = String(index + 1).padStart(2, '0');
-
-        return (
-          <div
-            key={step.title}
-            className={`bg-white p-6 rounded-3xl border border-slate-100 ${STEP_CARD_TONES[index] ?? STEP_CARD_TONES[0]} relative flex flex-col justify-between group`}
-          >
-            <span
-              className={`absolute top-4 right-6 font-black text-6xl select-none transition-colors ${STEP_NUMBER_TONES[index] ?? STEP_NUMBER_TONES[0]}`}
-            >
-              {stepNumber}
-            </span>
-            <div className="space-y-4">
-              <div
-                className={`p-3.5 rounded-2xl w-13 h-13 flex items-center justify-center shadow-xs ${STEP_ICON_TONES[index] ?? STEP_ICON_TONES[0]}`}
-              >
-                <Icon className="w-6 h-6" />
-              </div>
-              <h3 className="text-base font-black text-slate-900 uppercase tracking-wider">
-                {step.title}
-              </h3>
-              <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-                {step.description}
-              </p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 export function HowItWorksPage() {
   const { t } = useTranslation();
@@ -101,14 +41,14 @@ export function HowItWorksPage() {
         hreflang
       />
 
-      <div className="max-w-5xl mx-auto space-y-16 py-10 px-4 animate-fade-in">
-        {/* Dynamic Background Elements */}
-        <div className="absolute top-24 left-1/4 w-96 h-96 bg-violet-200/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-48 right-1/4 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="max-w-6xl mx-auto space-y-16 py-12 px-4 animate-fade-in">
+        {/* Dynamic Background Glow Elements */}
+        <div className="absolute top-24 left-1/4 w-96 h-96 bg-violet-200/10 blur-3xl pointer-events-none" />
+        <div className="absolute top-48 right-1/4 w-96 h-96 bg-indigo-200/10 blur-3xl pointer-events-none" />
 
-        {/* Hero Header */}
+        {/* Hero Header Section */}
         <section className="text-center space-y-5 relative z-10">
-          <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-violet-750 bg-violet-50 border border-violet-100/80 px-4 py-2 rounded-full shadow-xs">
+          <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-violet-700 bg-violet-50 border border-violet-100/60 px-4 py-2 rounded-none">
             <Sparkles className="w-3.5 h-3.5 text-violet-600 animate-pulse" />
             {t('howItWorks.badge')}
           </span>
@@ -123,88 +63,218 @@ export function HowItWorksPage() {
           </p>
         </section>
 
-        {/* Interactive Role Switcher Tab Section */}
-        <section className="relative z-10 max-w-lg mx-auto bg-slate-100/80 backdrop-blur-md p-1.5 rounded-2xl border border-slate-200/50 flex shadow-sm">
-          <button
-            id="btn-role-company"
-            type="button"
-            onClick={() => setActiveRole('company')}
-            className={`flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
-              activeRole === 'company'
-                ? 'bg-white text-violet-750 shadow-md scale-102 border-b border-violet-100'
-                : 'text-slate-550 hover:text-slate-800'
-            }`}
-          >
-            <Building2 className={`w-4 h-4 transition-colors ${activeRole === 'company' ? 'text-violet-650' : 'text-slate-450'}`} />
-            {t('howItWorks.roles.company')}
-          </button>
-          <button
-            id="btn-role-client"
-            type="button"
-            onClick={() => setActiveRole('client')}
-            className={`flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
-              activeRole === 'client'
-                ? 'bg-white text-indigo-750 shadow-md scale-102 border-b border-indigo-100'
-                : 'text-slate-550 hover:text-slate-850'
-            }`}
-          >
-            <HeartHandshake className={`w-4 h-4 transition-colors ${activeRole === 'client' ? 'text-indigo-600' : 'text-slate-450'}`} />
-            {t('howItWorks.roles.client')}
-          </button>
-        </section>
+        {/* ========================================================================= */}
+        {/* 1. DESKTOP VIEW: Connected Side-by-Side Connected Pipeline Loop */}
+        {/* ========================================================================= */}
+        <div className="hidden lg:grid grid-cols-11 gap-y-10 gap-x-6 relative items-center py-6">
+          {/* Vertical central pipeline axis line */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-violet-200/60 via-indigo-250/50 to-emerald-200/60 -translate-x-1/2 pointer-events-none" />
 
-        {/* Content Area - Roles */}
-        <section className="relative z-10">
-          {activeRole === 'company' ? (
-            <div className="space-y-12 animate-fade-in">
-              <div className="text-center max-w-2xl mx-auto space-y-2">
-                <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-wide">
-                  {t('howItWorks.company.title')}
-                </h2>
-                <p className="text-xs md:text-sm text-slate-400 font-semibold leading-relaxed">
-                  {t('howItWorks.company.description')}
-                </p>
-              </div>
-
-              <RoleSteps steps={companySteps} icons={COMPANY_STEP_ICONS} />
+          {/* Connected Columns Headers */}
+          <div className="col-span-11 grid grid-cols-11 gap-6 items-end pb-4 mb-2">
+            <div className="col-span-5 text-right space-y-2 border-b border-violet-100/80 pb-3">
+              <h2 className="text-base font-black text-violet-700 tracking-wider uppercase">
+                {t('howItWorks.roles.company')}
+              </h2>
+              <p className="text-xs text-slate-400 font-semibold max-w-sm ml-auto">
+                {t('howItWorks.company.title')}
+              </p>
             </div>
-          ) : (
-            <div className="space-y-12 animate-fade-in">
-              <div className="text-center max-w-2xl mx-auto space-y-2">
-                <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-wide">
-                  {t('howItWorks.client.title')}
-                </h2>
-                <p className="text-xs md:text-sm text-slate-400 font-semibold leading-relaxed">
-                  {t('howItWorks.client.description')}
-                </p>
+            <div className="col-span-1 flex flex-col items-center justify-center self-center">
+              <div className="p-2 bg-slate-100 text-slate-400 border border-slate-200/60">
+                <ArrowLeftRight className="w-4 h-4" />
               </div>
-
-              <RoleSteps steps={clientSteps} icons={CLIENT_STEP_ICONS} />
             </div>
-          )}
-        </section>
+            <div className="col-span-5 text-left space-y-2 border-b border-indigo-100/80 pb-3">
+              <h2 className="text-base font-black text-indigo-750 tracking-wider uppercase">
+                {t('howItWorks.roles.client')}
+              </h2>
+              <p className="text-xs text-slate-400 font-semibold max-w-sm mr-auto">
+                {t('howItWorks.client.title')}
+              </p>
+            </div>
+          </div>
 
-        {/* Trust banner */}
-        <section className="relative z-10 bg-gradient-to-br from-violet-50/40 via-indigo-50/20 to-slate-50/30 p-8 rounded-3xl border border-violet-100/80 text-center max-w-2xl mx-auto space-y-6 glass-panel overflow-hidden">
-          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-violet-400/10 rounded-full blur-3xl pointer-events-none animate-pulse" />
+          {/* Loop through matching step pairs */}
+          {Array.from({ length: 4 }).map((_, index) => {
+            const CompanyIcon = COMPANY_STEP_ICONS[index] ?? Building2;
+            const ClientIcon = CLIENT_STEP_ICONS[index] ?? KeyRound;
+            const companyStep = companySteps[index] ?? { title: '', description: '' };
+            const clientStep = clientSteps[index] ?? { title: '', description: '' };
+            const stepNum = index + 1;
 
-          <h3 className="text-2xl font-black text-slate-950 uppercase tracking-tight">
+            return (
+              <div key={index} className="col-span-11 grid grid-cols-11 gap-6 items-stretch relative">
+                
+                {/* LEFT: Provider Step Block */}
+                <div className="col-span-5 bg-white/70 p-6 border border-slate-100/80 shadow-xs relative flex flex-col justify-between group hover:border-violet-250 hover:bg-white transition-all duration-300">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 bg-violet-50 text-violet-750 w-10 h-10 flex items-center justify-center">
+                        <CompanyIcon className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-xs font-black text-slate-900 tracking-wider uppercase">
+                        {companyStep.title}
+                      </h3>
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                      {companyStep.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* CENTER: Interactive Step Sync Connection Axis Node */}
+                <div className="col-span-1 flex flex-col items-center justify-center relative z-10 self-center">
+                  <div className="w-10 h-10 bg-slate-950 text-white font-mono font-bold text-sm flex items-center justify-center border-4 border-slate-50 shadow-sm">
+                    0{stepNum}
+                  </div>
+                </div>
+
+                {/* RIGHT: Client Step Block */}
+                <div className="col-span-5 bg-white/70 p-6 border border-slate-100/80 shadow-xs relative flex flex-col justify-between group hover:border-indigo-250 hover:bg-white transition-all duration-300">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 bg-indigo-50 text-indigo-750 w-10 h-10 flex items-center justify-center">
+                        <ClientIcon className="w-5 h-5" />
+                      </div>
+                      <h3 className="text-xs font-black text-slate-900 tracking-wider uppercase">
+                        {clientStep.title}
+                      </h3>
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                      {clientStep.description}
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ========================================================================= */}
+        {/* 2. MOBILE VIEW: Simplified Responsive Layout with Square Switching Tabs */}
+        {/* ========================================================================= */}
+        <div className="lg:hidden space-y-8">
+          
+          {/* Square Responsive Roles Switcher */}
+          <section className="relative z-10 max-w-sm mx-auto bg-slate-100 p-1 border border-slate-200 flex">
+            <button
+              id="btn-role-company-mob"
+              type="button"
+              onClick={() => setActiveRole('company')}
+              className={`flex-1 py-3 px-4 rounded-none text-xs font-black uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+                activeRole === 'company'
+                  ? 'bg-white text-violet-750 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <Building2 className={`w-4 h-4 ${activeRole === 'company' ? 'text-violet-600' : 'text-slate-400'}`} />
+              {t('howItWorks.roles.company')}
+            </button>
+            <button
+              id="btn-role-client-mob"
+              type="button"
+              onClick={() => setActiveRole('client')}
+              className={`flex-1 py-3 px-4 rounded-none text-xs font-black uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+                activeRole === 'client'
+                  ? 'bg-white text-indigo-750 shadow-sm'
+                  : 'text-slate-550 hover:text-slate-850'
+              }`}
+            >
+              <HeartHandshake className={`w-4 h-4 ${activeRole === 'client' ? 'text-indigo-650' : 'text-slate-400'}`} />
+              {t('howItWorks.roles.client')}
+            </button>
+          </section>
+
+          {/* Active mobile role steps content block */}
+          <section className="space-y-8">
+            {activeRole === 'company' ? (
+              <div className="space-y-8 animate-fade-in">
+                <div className="text-center max-w-md mx-auto space-y-2">
+                  <h2 className="text-lg font-black text-slate-900 uppercase tracking-wide">
+                    {t('howItWorks.company.title')}
+                  </h2>
+                  <p className="text-xs text-slate-400 font-semibold leading-relaxed">
+                    {t('howItWorks.company.description')}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {companySteps.map((step, idx) => {
+                    const CompanyIcon = COMPANY_STEP_ICONS[idx] ?? Building2;
+                    return (
+                      <div key={idx} className="bg-white p-5 border border-slate-100 space-y-3 relative">
+                        <span className="absolute top-4 right-4 font-mono font-bold text-slate-100 text-5xl select-none">
+                          0{idx + 1}
+                        </span>
+                        <div className="p-2.5 bg-violet-50 text-violet-750 w-9 h-9 flex items-center justify-center">
+                          <CompanyIcon className="w-4.5 h-4.5" />
+                        </div>
+                        <h3 className="text-xs font-black text-slate-900 tracking-wider uppercase pt-1">
+                          {step.title}
+                        </h3>
+                        <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                          {step.description}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-8 animate-fade-in">
+                <div className="text-center max-w-md mx-auto space-y-2">
+                  <h2 className="text-lg font-black text-slate-900 uppercase tracking-wide">
+                    {t('howItWorks.client.title')}
+                  </h2>
+                  <p className="text-xs text-slate-400 font-semibold leading-relaxed">
+                    {t('howItWorks.client.description')}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {clientSteps.map((step, idx) => {
+                    const ClientIcon = CLIENT_STEP_ICONS[idx] ?? KeyRound;
+                    return (
+                      <div key={idx} className="bg-white p-5 border border-slate-100 space-y-3 relative">
+                        <span className="absolute top-4 right-4 font-mono font-bold text-slate-100 text-5xl select-none">
+                          0{idx + 1}
+                        </span>
+                        <div className="p-2.5 bg-indigo-50 text-indigo-750 w-9 h-9 flex items-center justify-center">
+                          <ClientIcon className="w-4.5 h-4.5" />
+                        </div>
+                        <h3 className="text-xs font-black text-slate-900 tracking-wider uppercase pt-1">
+                          {step.title}
+                        </h3>
+                        <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                          {step.description}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </section>
+        </div>
+
+        <section className="border border-gray-100 rounded-3xl p-8 glass-panel text-center space-y-3">
+          <h3 className="text-lg font-black text-gray-900 tracking-tight">
             {isAuthed ? t('howItWorks.trust.titleAuthed') : t('howItWorks.trust.titleGuest')}
           </h3>
-          <p className="text-xs md:text-sm text-slate-500 leading-relaxed font-semibold max-w-md mx-auto">
+          <p className="text-sm text-gray-500 font-medium max-w-xl mx-auto">
             {isAuthed
               ? t('howItWorks.trust.descriptionAuthed')
               : t('howItWorks.trust.descriptionGuest')}
           </p>
-          <div className="flex justify-center gap-3 pt-2">
-            <Link
-              to={primaryCta.to}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-wider px-7 py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-95"
-            >
-              {primaryCta.label}
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
+          <Link
+            to={primaryCta.to}
+            className="inline-flex items-center gap-2 mt-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl transition-all"
+          >
+            {primaryCta.label}
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </section>
       </div>
     </>

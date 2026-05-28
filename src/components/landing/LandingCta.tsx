@@ -12,53 +12,48 @@ export function LandingCta() {
   const perks = t('landing.cta.perks', { returnObjects: true }) as string[];
 
   return (
-    <section className="py-24 sm:py-32">
+    <section className="py-24 sm:py-28">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-violet-600 via-indigo-600 to-violet-800 p-8 sm:p-12 lg:p-16 text-center shadow-[0_40px_80px_-20px_rgba(91,33,182,0.45)]"
+          transition={{ duration: 0.5 }}
+          className="border border-gray-100 rounded-3xl p-8 sm:p-12 glass-panel text-center space-y-4"
         >
-          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-          <div className="pointer-events-none absolute -left-16 bottom-0 h-48 w-48 rounded-full bg-fuchsia-400/20 blur-3xl" />
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-600">
+            {isAuthed ? t('landing.cta.eyebrowAuthed') : t('landing.cta.eyebrowGuest')}
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight text-balance">
+            {isAuthed ? t('landing.cta.titleAuthed') : t('landing.cta.titleGuest')}
+          </h2>
+          <p className="text-sm text-gray-500 font-medium leading-relaxed max-w-xl mx-auto">
+            {isAuthed ? t('landing.cta.descriptionAuthed') : t('landing.cta.descriptionGuest')}
+          </p>
 
-          <div className="relative z-10 max-w-2xl mx-auto">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-violet-200 mb-4">
-              {isAuthed ? t('landing.cta.eyebrowAuthed') : t('landing.cta.eyebrowGuest')}
-            </p>
-            <h2 className="font-black text-white tracking-tight text-balance">
-              {isAuthed ? t('landing.cta.titleAuthed') : t('landing.cta.titleGuest')}
-            </h2>
-            <p className="mt-4 text-violet-100/90 text-base leading-relaxed">
-              {isAuthed ? t('landing.cta.descriptionAuthed') : t('landing.cta.descriptionGuest')}
-            </p>
+          <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 py-2">
+            {perks.map((perk) => (
+              <li key={perk} className="flex items-center gap-2 text-sm text-gray-500">
+                <CheckCircle2 className="h-4 w-4 text-violet-500 shrink-0" />
+                {perk}
+              </li>
+            ))}
+          </ul>
 
-            <ul className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-2">
-              {perks.map((perk) => (
-                <li key={perk} className="flex items-center gap-2 text-sm text-violet-100">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-300 shrink-0" />
-                  {perk}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-10 flex flex-wrap justify-center gap-4">
-              <Link
-                to={signupCta.to}
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-sm font-bold text-violet-700 shadow-lg hover:bg-violet-50 transition-colors"
-              >
-                {signupCta.label}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                to={lp('/subscriptions')}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
-              >
-                {t('landing.cta.viewPlansLink')}
-              </Link>
-            </div>
+          <div className="flex flex-wrap justify-center gap-3 pt-2">
+            <Link
+              to={signupCta.to}
+              className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl transition-all"
+            >
+              {signupCta.label}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to={lp('/subscriptions')}
+              className="inline-flex items-center gap-2 border border-gray-200 bg-white text-gray-700 text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-xl hover:border-gray-300 transition-all"
+            >
+              {t('landing.cta.viewPlansLink')}
+            </Link>
           </div>
         </motion.div>
       </div>

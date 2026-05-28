@@ -36,62 +36,62 @@ export const publicRo = {
     },
     hero: {
       badge: 'CRM & Field Service Management',
-      title: 'Tot business-ul tău de servicii,',
-      titleHighlight: 'într-un singur panou',
+      title: 'Gestionează-ți business-ul de servicii',
+      titleHighlight: 'dintr-un singur loc',
       subtitle:
-        'Calcul automat de smete, CRM clienți, calendar pe teren, dimensionare încăperi, oferte și facturi PDF cu diacritice românești — fără Excel și fără grupuri WhatsApp.',
+        'Smete, clienți, calendar teren, dimensionare, oferte și facturi PDF cu diacritice — fără Excel și grupuri WhatsApp.',
       description:
-        'Faber Companii este platforma FSM creată pentru instalatori, electricieni, firme de curățenie și orice companie cu tehnicieni mobili din Republica Moldova.',
+        'Faber Companii — platforma FSM pentru instalatori, electricieni, firme de curățenie și orice companie cu tehnicieni mobili din Moldova.',
       howItWorksLink: 'Vezi cum funcționează',
     },
     stats: [
-      { value: '5', label: 'module FSM integrate' },
+      { value: '5', label: 'module FSM într-un sistem' },
       { value: '10 min', label: 'setup inițial' },
       { value: '0 MDL', label: 'plan Free permanent' },
       { value: '100%', label: 'cloud, fără instalare' },
     ],
     finance: {
-      eyebrow: 'Control financiar',
-      title: 'Facturi, TVA și încasări — calculate automat',
+      eyebrow: 'Finanțe',
+      title: 'Facturi, TVA și încasări — automat',
       description:
-        'Lucrarea finalizată devine factură cu un click. Vezi plățile, restanțele și raportul lunar fără Excel sau contabil separat pentru fiecare deviz.',
+        'Lucrarea e gata → factura e gata cu un click. Plăți, restanțe și raport lunar — fără Excel și calcule manuale.',
     },
     timeline: {
-      eyebrow: 'Fluxul complet',
+      eyebrow: 'Flux complet',
       title: 'De la primul apel la factura plătită —',
       titleHighlight: 'un singur sistem',
       description:
-        'Faber Companii înlocuiește haosul din WhatsApp, Excel și carnețele. Iată cum arată o zi normală cu CRM-ul tău FSM.',
+        'Faber Companii înlocuiește haosul din WhatsApp, Excel și carnețele. Iată cum arată o zi de lucru cu platforma.',
       steps: [
         {
           step: '01',
           title: 'Înregistrezi compania',
           description:
-            'Profil juridic, categorie de servicii, pachete fixe — totul într-un onboarding de câteva minute. Fără Excel, fără hârtii.',
+            'Profil juridic, categorie de servicii, pachete — totul în câteva minute. Fără Excel, fără hârtii.',
         },
         {
           step: '02',
-          title: 'Adaugi echipa & clienții',
+          title: 'Adaugi echipa și clienții',
           description:
-            'Inviți tehnicienii și managerii. Clienții au istoric centralizat: telefon, adresă, note, toate lucrările anterioare.',
+            'Inviți tehnicieni și manageri. Fiecare client are istoric complet: telefon, adresă, note, lucrările anterioare.',
         },
         {
           step: '03',
-          title: 'Planifici & execuți lucrări',
+          title: 'Planifici și execuți lucrări',
           description:
-            'Comenzi, calendar, status live (programat → în lucru → finalizat). Tehnicianul vede tot ce are de făcut azi.',
+            'Comenzi, calendar, status live: programat → în lucru → finalizat. Tehnicianul știe ce are de făcut azi.',
         },
         {
           step: '04',
-          title: 'Smete inteligente & Parametrizare',
+          title: 'Smete inteligente și dimensionare',
           description:
-            'Calculezi automat cantitățile de materiale și orele de manoperă prin configurarea dimensiunilor în editorul integrat sau prin chestionare de diagnostic.',
+            'Introduci parametrii încăperii și echipamentele — sistemul calculează materiale, ore și cost.',
         },
         {
           step: '05',
           title: 'Facturare automată',
           description:
-            'Lucrarea finalizată → factură cu TVA calculat. Plăți, restanțe, rapoarte — fluxul financiar sub control.',
+            'Lucrare gata → factură cu TVA. Plăți, restanțe, rapoarte — finanțele sub control.',
         },
       ],
     },
@@ -99,49 +99,72 @@ export const publicRo = {
       eyebrow: 'De ce Faber',
       title: 'Construit pentru companiile de servicii din Moldova',
       description:
-        'Instalatori, electricieni, curățenie, IT field service — orice business cu tehnicieni pe teren și clienți care așteaptă răspuns rapid.',
+        'Instalații, electrică, curățenie, IT field — orice business cu tehnicieni pe teren și clienți care așteaptă răspuns rapid.',
       items: [
         {
-          title: 'CRM + FSM într-un loc',
-          text: 'Clienți, echipă, lucrări, oferte și facturi — nu mai sari între 5 aplicații diferite.',
+          title: 'CRM și FSM într-un singur loc',
+          text: 'Clienți, echipă, lucrări, smete și facturi — nu mai sari între aplicații.',
         },
         {
           title: 'Calendar inteligent',
-          text: 'Programări pe tehnician, vizualizare zilnică, zero suprapuneri și uitări de vizite.',
+          text: 'Programări pe tehnician, vedere zilnică, zero suprapuneri și vizite uitate.',
         },
         {
-          title: 'Smetă Smart & Parametri',
-          text: 'Configurare dimensiuni încăperi și inventar de echipamente, cu calcul automat de materiale, manoperă și marjă de profit.',
+          title: 'Smetă cu parametri',
+          text: 'Dimensiuni încăperi, echipamente — sistemul calculează materiale, manoperă și marjă.',
         },
         {
-          title: 'Portal Client & Buget',
-          text: 'Clienții plasează cereri directe cu buget și adresă pre-completate. Descarcă oferte și facturi PDF cu diacritice românești.',
+          title: 'Portal client',
+          text: 'Clienții plasează cereri cu buget și adresă. Descarcă smete și facturi PDF cu diacritice.',
         },
         {
           title: 'Made for Moldova',
-          text: 'IDNO, adrese locale, MDL, regim fiscal moldovenesc — nu un CRM generic tradus.',
+          text: 'IDNO, adrese locale, MDL, TVA moldovenesc — nu un CRM generic tradus.',
         },
         {
-          title: 'Plan Free → Pro → Business',
-          text: 'Începi gratuit, scalezi când crești. Module deblocate progresiv, fără surprize.',
+          title: 'Free → Pro → Business',
+          text: 'Începi gratis. Crești — deblochezi module. Fără surprize.',
         },
       ],
     },
     cta: {
       eyebrowGuest: 'Gata să renunți la haos?',
       eyebrowAuthed: 'Continuă de unde ai rămas',
-      titleGuest: 'Începe gratuit. Scalează când echipa ta crește.',
+      titleGuest: 'Începe gratuit. Scalează când crește echipa.',
       titleAuthed: 'Cabinetul tău te așteaptă',
       descriptionGuest:
-        'Creează contul, înregistrează compania și lansează primul flux: client → lucrare → factură. Fără demo call, fără așteptare.',
+        'Creează contul, înregistrează compania și lansează primul flux: client → lucrare → factură. Fără demo, fără așteptare.',
       descriptionAuthed:
-        'Gestionează clienții, lucrările și facturile direct din panoul tău Faber Companii.',
+        'Clienți, lucrări și facturi — totul din panoul Faber Companii.',
       perks: [
-        'Plan Free — fără card bancar',
-        'Pro & Business — 30 zile gratuit',
+        'Free — fără card bancar',
+        'Pro și Business — 30 zile gratuit',
         'Setup în sub 10 minute',
       ],
       viewPlansLink: 'Vezi planurile',
+    },
+    security: {
+      eyebrow: 'Securitate',
+      title: 'Datele tale sunt protejate',
+      description: 'Protejăm baza de clienți, tarifele interne și istoricul financiar prin măsuri moderne, explicate simplu.',
+      items: [
+        {
+          title: '1. Seif digital izolat',
+          text: 'Fiecare companie are cont complet izolat. Prețurile, listele de clienți și contractele nu se amestecă niciodată cu altele.'
+        },
+        {
+          title: '2. Acces fără parole pentru clienți',
+          text: 'Clienții nu memorează parole complicate. Accesul în portal — prin link unic trimis pe email sau SMS.'
+        },
+        {
+          title: '3. Jurnal de activitate',
+          text: 'Orice modificare de preț, status sau smetă e înregistrată automat. Știi exact cine și când a făcut schimbarea.'
+        },
+        {
+          title: '4. Backup zilnic automat',
+          text: 'Date pe servere securizate cu backup zilnic. Chiar dacă se strică telefonul sau calculatorul — afacerea rămâne intactă.'
+        }
+      ]
     },
   },
   companies: {

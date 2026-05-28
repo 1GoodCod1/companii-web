@@ -10,6 +10,24 @@ export function auditActionLabel(action: string, t?: TFunction): string {
   return AUDIT_ACTION_LABELS[action] ?? action;
 }
 
+/** Map raw entityType values to human-readable labels. */
+const ENTITY_TYPE_LABELS: Record<string, string> = {
+  Company: 'Компания',
+  CompanyMember: 'Сотрудник',
+  User: 'Пользователь',
+  Estimate: 'Смета',
+  Intervention: 'Работа',
+  Invoice: 'Счёт',
+  Lead: 'Заявка',
+  Subscription: 'Подписка',
+  Service: 'Услуга',
+};
+
+export function formatEntityType(entityType: string | null | undefined): string {
+  if (!entityType) return '—';
+  return ENTITY_TYPE_LABELS[entityType] ?? entityType;
+}
+
 export function formatAuditDetails(
   action: string,
   newData: Record<string, unknown> | null | undefined,
@@ -32,6 +50,32 @@ export function formatAuditDetails(
   }
 
   switch (action) {
+    case 'COMPANY_CREATED':
+    case 'COMPANY_PUBLISHED':
+    case 'COMPANY_UNPUBLISHED':
+    case 'COMPANY_VERIFIED':
+    case 'COMPANY_REJECTED':
+      return newData.name ? String(newData.name) : '—';
+
+    case 'SUBSCRIPTION_CHANGED': {
+      const plan = newData.planCode ?? newData.plan ?? '';
+      const status = newData.status ?? '';
+      if (plan && status) return `${plan} · ${status}`;
+      if (plan) return String(plan);
+      return '—';
+    }
+
+    case 'ESTIMATE_SENT':
+    case 'ESTIMATE_ACCEPTED':
+    case 'ESTIMATE_REJECTED':
+    case 'ESTIMATE_CONVERTED': {
+      const title = newData.title ?? newData.estimateTitle ?? '';
+      const client = newData.clientName ?? '';
+      if (title && client) return `${title} → ${client}`;
+      if (title) return String(title);
+      return '—';
+    }
+
     case 'TEAM_MEMBER_ROLE_CHANGED':
       if (t) {
         return t('admin.auditPage.details.roleChanged', {
@@ -68,7 +112,24 @@ export function formatAuditDetails(
         });
       }
       return `Proprietar nou: ${newData.newOwnerUserId ?? '—'}`;
-    default:
-      return JSON.stringify(newData);
+    default: {
+      // Extract the most meaningful human-readable fields from newData
+      const readable = extractReadableFields(newData);
+      return readable || '—';
+    }
   }
+}
+
+/** Pull out the most meaningful key-value pairs from unknown newData payloads. */
+function extractReadableFields(data: Record<string, unknown>): string {
+  const SKIP = new Set(['id', 'createdAt', 'updatedAt', 'userId', 'companyId', 'entityId', 'entityType']);
+  const entries = Object.entries(data)
+    .filter(([key, val]) => !SKIP.has(key) && val != null && val !== '')
+    .slice(0, 3);
+  if (entries.length === 0) return '';
+  return entries.map(([, val]) => {
+    if (typeof val === 'string') return val;
+    if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+    return '';
+  }).filter(Boolean).join(' · ') || '';
 }
