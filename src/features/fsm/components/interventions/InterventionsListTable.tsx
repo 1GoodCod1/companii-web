@@ -1,9 +1,9 @@
-import type { InterventionStatus, InterventionDto } from '@/types/fsm';
-import { INTERVENTION_STATUS_TABS } from '@/constants/interventionStatus.constants';
+import type { InterventionDto } from '@/types/fsm';
 import { getInterventionStatusStyle } from '@/utils/interventionStatus';
-import { interventionStatusLabel, interventionTabLabel } from '@/utils/i18nStatusLabels';
+import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
 import { technicianDisplayName } from '@/utils/teamMembers';
-import { EntityListPanel, entityListRowClass } from '@/components/cabinet/EntityListPanel';
+import { EntityListPanel } from '@/components/cabinet/EntityListPanel';
+import { entityListRowClass } from '@/components/cabinet/rowStyles';
 import { formatDateTimeLocalized } from '@/utils/date';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/hooks/useLocale';
@@ -51,63 +51,36 @@ export function InterventionsListTable({ interventions, isLoading, selectedId, o
                 onClick={() => onSelect(item)}
                 className={entityListRowClass(selectedId === item.id)}
               >
-                  <td className="p-4">
-                    <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">{item.number}</span>
-                    <div className="font-bold text-gray-800 text-sm mt-0.5">{item.type}</div>
-                  </td>
-                  <td className="p-4 text-xs">
-                    <div className="font-bold text-gray-900">{item.customer?.fullName}</div>
-                    <div className="text-gray-500 mt-0.5 max-w-xs truncate">{item.address}</div>
-                  </td>
-                  <td className="p-4 text-xs text-gray-700">
-                    <div className="font-bold text-gray-800">
-                      {item.scheduledAt
-                        ? formatDateTimeLocalized(item.scheduledAt, locale, 'datetimeShort')
-                        : t('company.fsm.interventions.list.unscheduled')}
-                    </div>
-                    <div className="text-gray-400 mt-0.5">{technicianDisplayName(item.technician)}</div>
-                  </td>
-                  <td className="p-4">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black border ${getInterventionStatusStyle(
-                        item.status,
-                      )}`}
-                    >
-                      {interventionStatusLabel(item.status, t)}
-                    </span>
-                  </td>
-                </tr>
+                <td className="p-4">
+                  <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">{item.number}</span>
+                  <div className="font-bold text-gray-800 text-sm mt-0.5">{item.type}</div>
+                </td>
+                <td className="p-4 text-xs">
+                  <div className="font-bold text-gray-900">{item.customer?.fullName}</div>
+                  <div className="text-gray-500 mt-0.5 max-w-xs truncate">{item.address}</div>
+                </td>
+                <td className="p-4 text-xs text-gray-700">
+                  <div className="font-bold text-gray-800">
+                    {item.scheduledAt
+                      ? formatDateTimeLocalized(item.scheduledAt, locale, 'datetimeShort')
+                      : t('company.fsm.interventions.list.unscheduled')}
+                  </div>
+                  <div className="text-gray-400 mt-0.5">{technicianDisplayName(item.technician)}</div>
+                </td>
+                <td className="p-4">
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black border ${getInterventionStatusStyle(
+                      item.status,
+                    )}`}
+                  >
+                    {interventionStatusLabel(item.status, t)}
+                  </span>
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
       </div>
     </EntityListPanel>
-  );
-}
-
-type StatusFilterProps = {
-  value: string;
-  onChange: (value: InterventionStatus | '') => void;
-};
-
-export function InterventionsStatusFilter({ value, onChange }: StatusFilterProps) {
-  const { t } = useTranslation();
-
-  return (
-    <div className="flex flex-wrap gap-1.5 pb-2">
-      {INTERVENTION_STATUS_TABS.map((tab) => (
-        <button
-          key={tab.value}
-          onClick={() => onChange(tab.value as InterventionStatus | '')}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            value === tab.value
-              ? 'bg-violet-600 text-white shadow-xs'
-              : 'bg-white/80 text-gray-500 hover:bg-slate-100'
-          }`}
-        >
-          {interventionTabLabel(tab.value, t)}
-        </button>
-      ))}
-    </div>
   );
 }

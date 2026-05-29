@@ -7,7 +7,7 @@ import {
 import { EmptyState } from '@/components/cabinet/cabinet-ui';
 import { useMeQuery } from '@/features/auth/api/useAuth';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { CompanyProfileEditor } from '@/features/companies/profile/CompanyProfileEditor';
 
 export function CompanyProfilePage() {

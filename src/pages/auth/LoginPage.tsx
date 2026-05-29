@@ -1,78 +1,28 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
-import { useLoginMutation } from '@/features/auth/api/useAuth';
-import {
-  useAcceptPortalInvitationMutation,
-  usePortalInvitePreviewQuery,
-} from '@/features/portal/api/usePortal';
-import {
-  useAcceptTeamInvitationMutation,
-  useTeamInvitePreviewQuery,
-} from '@/features/companies/api/useCompanies';
-import { getAuthErrorMessage } from '@/features/auth/authErrors';
-import { useAuthStore } from '@/stores/authStore';
+import { Link } from 'react-router-dom';
+import { useLoginForm } from '@/features/auth/hooks/useLoginForm';
 import { ACCOUNT_KIND } from '@/constants/roles.constants';
-import { COMPANY_ROUTE, PUBLIC_ROUTE, ROUTE_ABS } from '@/constants/routes.constants';
-import { companyAbsolutePath } from '@/utils/routes';
-import {
-  isCompanyStaffAccount,
-  isEndClientAccount,
-  isManagerRole,
-  isPlatformAdminAccount,
-} from '@/utils/roles';
-import { resolveCompanyHomeRoute } from '@/features/companies/companyHomeRoute';
+import { PUBLIC_ROUTE } from '@/constants/routes.constants';
+import { LoginTeamInviteBanner } from '@/features/auth/components/LoginTeamInviteBanner';
+import { LoginPortalInviteBanner } from '@/features/auth/components/LoginPortalInviteBanner';
 
 export function LoginPage() {
-  const { t } = useTranslation();
-  const nav = useNavigate();
-  const [params] = useSearchParams();
-  const inviteToken = params.get('invite') ?? undefined;
-  const teamInviteToken = params.get('teamInvite') ?? undefined;
-  const queryLogin = params.get('login') ?? params.get('email') ?? '';
-  const returnUrl = params.get('returnUrl');
-  const safeReturnUrl =
-    returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : null;
-  const login = useLoginMutation();
-  const acceptInvite = useAcceptPortalInvitationMutation();
-  const acceptTeamInvite = useAcceptTeamInvitationMutation();
-  const { data: invitePreview } = usePortalInvitePreviewQuery(inviteToken ?? '');
-  const { data: teamPreview } = useTeamInvitePreviewQuery(teamInviteToken ?? '');
-  const { user, accessToken } = useAuthStore();
-  const [loginValue, setLoginValue] = useState('');
-  const [loginPresetApplied, setLoginPresetApplied] = useState(false);
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (user && accessToken) {
-      if (safeReturnUrl && isEndClientAccount(user.accountKind)) {
-        nav(safeReturnUrl, { replace: true });
-        return;
-      }
-      if (isEndClientAccount(user.accountKind)) nav(ROUTE_ABS.PORTAL, { replace: true });
-      else if (isPlatformAdminAccount(user.accountKind)) nav(ROUTE_ABS.ADMIN, { replace: true });
-      else {
-        nav(
-          resolveCompanyHomeRoute({
-            companyRole: user.companyRole,
-            activeCompanyId: user.activeCompanyId,
-          }),
-          { replace: true },
-        );
-      }
-    }
-  }, [user, accessToken, nav, safeReturnUrl]);
-
-  const presetLogin =
-    invitePreview?.customerEmail ||
-    invitePreview?.customerPhone ||
-    teamPreview?.invitedEmail ||
-    queryLogin ||
-    '';
-  const effectiveLogin = loginPresetApplied || !presetLogin ? loginValue : presetLogin;
+  const {
+    t,
+    inviteToken,
+    teamInviteToken,
+    invitePreview,
+    teamPreview,
+    setLoginValue,
+    setLoginPresetApplied,
+    password,
+    setPassword,
+    rememberMe,
+    setRememberMe,
+    formError,
+    effectiveLogin,
+    handleSubmit,
+    isPending,
+  } = useLoginForm();
 
   return (
     <div className="w-full animate-fade-in py-2">
@@ -85,65 +35,10 @@ export function LoginPage() {
         </p>
       </div>
 
-      {teamPreview ? (
-        <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50/50 px-4 py-3 text-xs font-semibold text-indigo-800 leading-relaxed">
-          {t('auth.teamInviteBanner', {
-            company: teamPreview.companyName,
-            role: isManagerRole(teamPreview.role)
-              ? t('auth.roleManager')
-              : t('auth.roleTechnician'),
-          })}
-        </div>
-      ) : null}
+      <LoginTeamInviteBanner teamPreview={teamPreview} />
+      <LoginPortalInviteBanner invitePreview={invitePreview} />
 
-      {invitePreview ? (
-        <div className="mb-5 rounded-2xl border border-violet-100 bg-violet-50/50 px-4 py-3 text-xs font-semibold text-violet-850 leading-relaxed">
-          {t('auth.portalInviteBanner', {
-            customer: invitePreview.customerName,
-            company: invitePreview.companyName,
-          })}
-        </div>
-      ) : null}
-
-      <form
-        className="space-y-5"
-        onSubmit={async (e) => {
-          e.preventDefault();
-          setFormError(null);
-
-          try {
-            const res = await login.mutateAsync({
-              login: effectiveLogin.trim(),
-              password,
-              rememberMe,
-            });
-            if (inviteToken && isEndClientAccount(res.user.accountKind)) {
-              await acceptInvite.mutateAsync(inviteToken);
-              toast.success(t('auth.inviteAccepted'));
-            }
-            if (teamInviteToken && isCompanyStaffAccount(res.user.accountKind)) {
-              await acceptTeamInvite.mutateAsync(teamInviteToken);
-              toast.success(t('auth.teamJoined'));
-            }
-            if (isEndClientAccount(res.user.accountKind)) {
-              nav(safeReturnUrl ?? ROUTE_ABS.PORTAL);
-            } else if (isPlatformAdminAccount(res.user.accountKind)) nav(ROUTE_ABS.ADMIN);
-            else if (teamInviteToken) nav(companyAbsolutePath(COMPANY_ROUTE.TEAM));
-            else {
-              nav(
-                resolveCompanyHomeRoute({
-                  companyRole: res.user.companyRole,
-                  activeCompanyId: res.user.activeCompanyId,
-                }),
-              );
-            }
-          } catch (err) {
-            const message = getAuthErrorMessage(err);
-            setFormError(message);
-            toast.error(message);
-          }
-        }}
-      >
+      <form className="space-y-5" onSubmit={(e) => void handleSubmit(e)}>
         {formError ? (
           <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700 leading-relaxed">
             {formError}
@@ -202,9 +97,9 @@ export function LoginPage() {
         <button
           type="submit"
           className="w-full bg-gray-900 hover:bg-gray-800 active:scale-[0.99] text-white py-3 rounded-xl font-black transition-all cursor-pointer text-xs uppercase tracking-wider mt-2"
-          disabled={login.isPending || acceptInvite.isPending || acceptTeamInvite.isPending}
+          disabled={isPending}
         >
-          {login.isPending ? t('auth.loggingIn') : t('auth.login')}
+          {isPending ? t('auth.loggingIn') : t('auth.login')}
         </button>
       </form>
 
@@ -226,4 +121,3 @@ export function LoginPage() {
     </div>
   );
 }
-

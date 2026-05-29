@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
+import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 import { SEOHead } from '@/components/seo/SEOHead';
 import {
   Building2,
@@ -105,7 +105,7 @@ export function HowItWorksPage() {
 
             return (
               <div key={index} className="col-span-11 grid grid-cols-11 gap-6 items-stretch relative">
-                
+
                 {/* LEFT: Provider Step Block */}
                 <div className="col-span-5 bg-white/70 p-6 border border-slate-100/80 shadow-xs relative flex flex-col justify-between group hover:border-violet-250 hover:bg-white transition-all duration-300">
                   <div className="space-y-4">
@@ -156,18 +156,17 @@ export function HowItWorksPage() {
         {/* 2. MOBILE VIEW: Simplified Responsive Layout with Square Switching Tabs */}
         {/* ========================================================================= */}
         <div className="lg:hidden space-y-8">
-          
+
           {/* Square Responsive Roles Switcher */}
           <section className="relative z-10 max-w-sm mx-auto bg-slate-100 p-1 border border-slate-200 flex">
             <button
               id="btn-role-company-mob"
               type="button"
               onClick={() => setActiveRole('company')}
-              className={`flex-1 py-3 px-4 rounded-none text-xs font-black uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
-                activeRole === 'company'
+              className={`flex-1 py-3 px-4 rounded-none text-xs font-black uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${activeRole === 'company'
                   ? 'bg-white text-violet-750 shadow-sm'
                   : 'text-slate-500 hover:text-slate-800'
-              }`}
+                }`}
             >
               <Building2 className={`w-4 h-4 ${activeRole === 'company' ? 'text-violet-600' : 'text-slate-400'}`} />
               {t('howItWorks.roles.company')}
@@ -176,11 +175,10 @@ export function HowItWorksPage() {
               id="btn-role-client-mob"
               type="button"
               onClick={() => setActiveRole('client')}
-              className={`flex-1 py-3 px-4 rounded-none text-xs font-black uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
-                activeRole === 'client'
+              className={`flex-1 py-3 px-4 rounded-none text-xs font-black uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${activeRole === 'client'
                   ? 'bg-white text-indigo-750 shadow-sm'
                   : 'text-slate-550 hover:text-slate-850'
-              }`}
+                }`}
             >
               <HeartHandshake className={`w-4 h-4 ${activeRole === 'client' ? 'text-indigo-650' : 'text-slate-400'}`} />
               {t('howItWorks.roles.client')}

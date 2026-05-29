@@ -32,7 +32,6 @@ export function OfflineBanner({
   const offline = !online;
   const hasPending = pendingMutations > 0;
 
-  // Idle online state with no pending mutations — render a slim "Saved" pill.
   if (!offline && !hasPending && !isError && syncState !== 'syncing') {
     if (!lastSavedAt) return null;
     return (

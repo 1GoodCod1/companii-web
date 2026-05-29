@@ -38,10 +38,7 @@ export type EstimateProjectStatus =
   (typeof ESTIMATE_STATUS)[keyof typeof ESTIMATE_STATUS];
 
 export type EstimateStageKind = BlueprintStageDef['kind'];
-
-/** @deprecated Prefer Plan2dRoomShapeType */
 export type RoomShapeType = Plan2dRoomShapeType;
-/** @deprecated Prefer Plan2dRoofType */
 export type RoofType = Plan2dRoofType;
 
 export type EstimateDiagnosticAnswers = {

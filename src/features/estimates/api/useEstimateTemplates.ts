@@ -7,7 +7,6 @@ import type { EstimateProjectDto, EstimateStageKind } from '@/types/estimates';
 
 const base = '/estimates/templates';
 
-/** A line snapshot stored inside a template stage (see EstimateTemplatesService.create). */
 export interface EstimateTemplateStageLine {
   description: string;
   qty: number;
@@ -17,7 +16,6 @@ export interface EstimateTemplateStageLine {
   vatRate?: number | null;
 }
 
-/** A stage snapshot stored in a template's `stages` JSON column. */
 export interface EstimateTemplateStage {
   name: string;
   code: string;

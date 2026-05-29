@@ -113,14 +113,12 @@ export function formatAuditDetails(
       }
       return `Proprietar nou: ${newData.newOwnerUserId ?? '—'}`;
     default: {
-      // Extract the most meaningful human-readable fields from newData
       const readable = extractReadableFields(newData);
       return readable || '—';
     }
   }
 }
 
-/** Pull out the most meaningful key-value pairs from unknown newData payloads. */
 function extractReadableFields(data: Record<string, unknown>): string {
   const SKIP = new Set(['id', 'createdAt', 'updatedAt', 'userId', 'companyId', 'entityId', 'entityType']);
   const entries = Object.entries(data)

@@ -12,26 +12,26 @@ import {
   useAddEstimateLineMutation,
   useDeleteEstimateLineMutation,
 } from '@/features/estimates/api/useEstimates';
-import { mergeCustomPricing, readCustomPricing, type CustomPricingValues } from '@/features/estimates/customPricing';
+import { mergeCustomPricing, readCustomPricing, type CustomPricingValues } from '@/features/estimates/utils/customPricing';
 import {
   ENABLED_WORK_MODULES_KEY,
   mergeEnabledWorkModulesIntoDiagnostic,
   readEnabledWorkModules,
   toggleWorkModule,
-} from '@/features/estimates/workModules';
-import { validateDiagnostic } from '@/features/estimates/diagnosticValidation';
+} from '@/features/estimates/diagnostic/workModules';
+import { validateDiagnostic } from '@/features/estimates/diagnostic/diagnosticValidation';
 import {
   getCustomFieldKeys,
   groupVisibleCustomFields,
-} from '@/features/estimates/groupCustomFields';
-import { getVisibleStages } from '@/features/estimates/stageVisibility';
-import { groupStagesByWorkModule } from '@/features/estimates/stageGrouping';
-import { buildScopeSummary, hasManualLines } from '@/features/estimates/scopeSummary';
+} from '@/features/estimates/diagnostic/groupCustomFields';
+import { getVisibleStages } from '@/features/estimates/stages/stageVisibility';
+import { groupStagesByWorkModule } from '@/features/estimates/stages/stageGrouping';
+import { buildScopeSummary, hasManualLines } from '@/features/estimates/stages/scopeSummary';
 import {
   computePreviewLines,
   computePreviewTotals,
   extractMeasurementsFromDiagnostic,
-} from '@/features/estimates/previewEngine';
+} from '@/features/estimates/preview/previewEngine';
 import { useEstimateOfflineCache } from '@/features/estimates/offline/useEstimateOfflineCache';
 import type { EstimateBlueprintConfig, EstimateProjectDto, Plan2dData } from '@/types/estimates';
 import { ESTIMATE_STATUS } from '@/constants/estimateStatus.constants';

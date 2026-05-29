@@ -6,7 +6,7 @@ import { PageHero, SkeletonForm } from '@/components/cabinet/cabinet-ui';
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
 import { useEstimateProjectQuery } from '@/features/estimates/api/useEstimates';
 import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import { ExistingEstimateWizard } from '@/features/estimates/wizard/ExistingEstimateWizard';
 import { NewEstimateForm } from '@/features/estimates/wizard/NewEstimateForm';

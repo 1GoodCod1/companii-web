@@ -1,12 +1,3 @@
-/**
- * Единый контракт EstimateBlueprintConfig — синхронизирован с
- * companii-api/prisma/estimate-blueprint-config.types.ts (задача A-02).
- *
- * Категорийные поля и work modules приходят из API blueprint config,
- * не hardcode-ятся по slug на фронте. Спецификация по категориям:
- * implementation_plan.md §4.1–4.13, implementation_tasks.md C-01–C-13.
- */
-
 import type { EstimateMeasurementUnit } from '@/constants/estimateMeasurementUnits.constants';
 
 export type BlueprintWizardStep = 'object' | 'plan' | 'diagnostic' | 'stages' | 'review';

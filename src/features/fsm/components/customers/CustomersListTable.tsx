@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type { CustomerDto } from '@/types/fsm';
-import { EntityListPanel, entityListRowClass } from '@/components/cabinet/EntityListPanel';
+import { EntityListPanel } from '@/components/cabinet/EntityListPanel';
+import { entityListRowClass } from '@/components/cabinet/rowStyles';
 
 type Props = {
   customers: CustomerDto[];

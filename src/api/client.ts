@@ -160,7 +160,6 @@ export async function apiFetch<T>(
   } catch (err) {
     cancelTimer();
     if (err instanceof DOMException && err.name === 'AbortError') {
-      // Surface external cancellations transparently; surface timeouts as 408.
       if (init.signal?.aborted) throw err;
       throw new ApiError('Request timeout', 408);
     }

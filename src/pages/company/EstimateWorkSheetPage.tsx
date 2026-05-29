@@ -8,7 +8,7 @@ import { PlanEditor } from '@/features/estimates/components/PlanEditor';
 import { WorksheetPhotos } from '@/features/estimates/components/WorksheetPhotos';
 import { useWorksheetByInterventionQuery } from '@/features/estimates/api/useEstimates';
 import { useUpdateChecklistMutation } from '@/features/fsm/api/useFsm';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { getErrorMessage } from '@/utils/errors';
 import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
 
@@ -109,7 +109,7 @@ export function EstimateWorkSheetPage() {
         <PlanEditor
           value={sheet.sitePlan.plan2d}
           readOnly={true}
-          onChange={() => {}}
+          onChange={() => { }}
           categoryName={sheet.project.category.name}
           categorySlug={sheet.project.category.slug}
         />

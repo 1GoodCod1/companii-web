@@ -6,7 +6,7 @@ import {
   cabinetLabelClass,
   cabinetSelectClass,
 } from '@/components/cabinet/cabinet-ui';
-import { parseNumberInputValue } from '@/features/estimates/diagnosticValidation';
+import { parseNumberInputValue } from '@/features/estimates/diagnostic/diagnosticValidation';
 import { useTranslateOption } from '@/utils/translateOption';
 
 type Props = {

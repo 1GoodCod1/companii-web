@@ -2,21 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { Target } from 'lucide-react';
 
 type Props = {
-  /** Customer-stated budget from the source lead (raw value — coerced to number). */
   budget: number | string | null | undefined;
-  /** Current estimate total (from backend grandTotal or preview engine). */
   currentTotal: number;
-  /** Compact mode for inline placement in step headers. */
   compact?: boolean;
 };
 
-/**
- * Visualises how close the current estimate total is to the budget the client
- * stated when creating the lead. Green ≤ 80%, amber 80-100%, red > 100%.
- *
- * Backend already raises a `budgetExceeded` sanity warning above 100%; this
- * component is the live, always-visible counterpart.
- */
 export function LeadBudgetGauge({ budget, currentTotal, compact }: Props) {
   const { t } = useTranslation();
   const budgetNum = Number(budget);

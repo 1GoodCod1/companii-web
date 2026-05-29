@@ -56,10 +56,6 @@ export function validateMediaFile(file: File): FileErrorKey | null {
   return null;
 }
 
-/**
- * Asynchronously check a video file's duration using an in-memory <video> element.
- * Resolves with the duration in seconds, or rejects if metadata cannot be loaded.
- */
 export function getVideoDuration(file: File): Promise<number> {
   return new Promise((resolve, reject) => {
     const video = document.createElement('video');

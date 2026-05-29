@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
-import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
+import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 
 export function LandingCta() {
   const { t } = useTranslation();

@@ -17,7 +17,6 @@ import {
 } from '@/components/cabinet/cabinet-ui';
 import { CompanyOwnerGate } from '@/features/companies/CompanyManagementGate';
 
-/** Company-level audit filter options relevant for an owner. */
 const COMPANY_AUDIT_ACTION_OPTIONS = [
   { value: 'COMPANY_CREATED', labelFallback: 'Companie creată' },
   { value: 'COMPANY_PUBLISHED', labelFallback: 'Companie publicată' },

@@ -25,7 +25,6 @@ export function resolveActiveCompany(
   return { company: null, isOwner: false };
 }
 
-/** Fields a manager may change on the company profile (marketing / contact). */
 export const MANAGER_PROFILE_FIELDS = [
   'contactPhone',
   'contactEmail',

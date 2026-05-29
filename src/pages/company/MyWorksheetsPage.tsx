@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ArrowRight, Calendar, Hammer, MapPin, Phone, User } from 'lucide-react';
 import { EmptyState, PageHero, Panel, SoftBadge } from '@/components/cabinet/cabinet-ui';
 import { useMyAssignedWorksheetsQuery } from '@/features/estimates/api/useEstimates';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
 
 /**
@@ -49,11 +49,11 @@ export function MyWorksheetsPage() {
           {data.map((item) => {
             const scheduled = item.intervention.scheduledAt
               ? new Date(item.intervention.scheduledAt).toLocaleString('ro-MD', {
-                  day: '2-digit',
-                  month: 'short',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
+                day: '2-digit',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit',
+              })
               : null;
 
             return (

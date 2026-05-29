@@ -1,9 +1,9 @@
 import { STORE_DRAFTS, idbDelete, idbGet, idbPut } from '@/utils/idb';
 import type { Plan2dData } from '@/types/estimate-plan2d.types';
-import type { CustomPricingValues } from '../customPricing';
+import type { CustomPricingValues } from '../utils/customPricing';
 
 export type EstimateDraft = {
-  id: string; // projectId
+  id: string; 
   title?: string;
   siteType?: string;
   address?: string;

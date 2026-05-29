@@ -11,8 +11,6 @@ import { getAuthErrorMessage } from '@/features/auth/authErrors';
 
 export function SettingsPage() {
   const { t } = useTranslation();
-
-  // Password change state
   const changePasswordMutation = useChangePasswordMutation();
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');

@@ -7,7 +7,7 @@ import {
   Clock, 
   Sparkles 
 } from 'lucide-react';
-import type { CustomPricingValues } from '../customPricing';
+import type { CustomPricingValues } from '../utils/customPricing';
 
 type Props = {
   values: CustomPricingValues;

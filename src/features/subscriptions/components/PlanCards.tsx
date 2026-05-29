@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import type { ClaimableSubscriptionPlanCode, CompanyPlanDto, CompanySubscriptionPlanCode } from '@/types/subscriptions';
-import type { PublicAuthCta } from '@/features/auth/usePublicAuthCta';
+import type { PublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 import { canActivatePlan, plansForDisplay } from '@/config/planEntitlements';
 import { planFeatures } from '@/utils/subscriptions';
 import {

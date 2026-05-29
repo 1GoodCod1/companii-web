@@ -27,7 +27,7 @@ import {
 import { getErrorMessage } from '@/utils/errors';
 import { getTranslatedCategoryName } from '@/utils/translateCityCategory';
 import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
-import { buildScopeSummary } from '@/features/estimates/scopeSummary';
+import { buildScopeSummary } from '@/features/estimates/stages/scopeSummary';
 
 export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();

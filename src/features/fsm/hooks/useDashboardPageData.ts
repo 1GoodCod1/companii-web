@@ -10,7 +10,7 @@ import {
 } from '@/features/fsm/api/useFsm';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
 import { useMySubscriptionQuery } from '@/features/subscriptions/api/useSubscriptions';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { needsCompanyOnboarding } from '@/features/companies/companyHomeRoute';
 import { INTERVENTION_STATUS } from '@/constants/interventionStatus.constants';
 import { LEAD_STATUS } from '@/constants/leadStatus.constants';
@@ -148,15 +148,17 @@ export function useDashboardPageData() {
         valueClass: 'text-emerald-600',
       },
     ];
-  }, [
-    isManagement,
-    customers?.length,
-    activeInterventions.length,
-    totalInvoiced,
-    totalPaid,
-    interventions,
-    i18n.language,
-  ]);
+  },
+    /* eslint-disable react-hooks/exhaustive-deps */
+    [
+      isManagement,
+      customers?.length,
+      activeInterventions.length,
+      totalInvoiced,
+      totalPaid,
+      interventions,
+      i18n.language,
+    ]);
 
   const handleConvertLead = async (leadId: string, mode: 'intervention' | 'estimate') => {
     try {

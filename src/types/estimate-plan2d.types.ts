@@ -1,18 +1,6 @@
-/**
- * Контракт Plan2dData — синхронизирован с
- * companii-api/src/modules/estimates/pricing/plan2d.types.ts (задача A-03).
- *
- * `globalParameters` сохраняется в plan2d и синхронизируется в diagnosticAnswers
- * при save plan (см. syncGlobalParamsToDiagnostic).
- */
-
 export type Plan2dWorkContext = 'indoor' | 'roof' | 'facade' | 'general';
-
 export type Plan2dRoomShapeType = 'rectangle' | 'l-shape' | 't-shape' | 'u-shape';
-
 export type Plan2dRoofType = 'flat' | 'gable' | 'hip';
-
-/** @deprecated Prefer Plan2dGlobalParameters — alias for backward compatibility. */
 export type GlobalHouseParams = Plan2dGlobalParameters;
 
 export type Plan2dGlobalParameters = {

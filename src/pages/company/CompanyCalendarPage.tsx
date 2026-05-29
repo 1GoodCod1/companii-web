@@ -11,7 +11,7 @@ import {
   useConvertLeadMutation,
 } from '@/features/fsm/api/useFsm';
 import { useCompanyMembersQuery } from '@/features/companies/api/useCompanies';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { filterAssignableTechnicians } from '@/utils/teamMembers';
 import { CalendarBoardView } from '@/features/fsm/components/calendar/CalendarBoardView';
 import { getWeekRange } from '@/utils/calendar';

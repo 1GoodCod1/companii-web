@@ -25,7 +25,7 @@ import {
   buildTeamInviteUrl,
   type CompanyInvitationDto,
 } from '@/features/companies/api/useCompanies';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { useAuthStore } from '@/stores/authStore';
 import {
   getTeamInviteErrorMessage,
@@ -320,11 +320,10 @@ export function CompanyTeamPage() {
               setDirectAddHint(null);
               setGeneratedLink(null);
             }}
-            className={`flex-1 rounded-xl px-3 py-2.5 text-xs font-bold uppercase tracking-wider border transition-colors ${
-              inviteMode === 'link'
+            className={`flex-1 rounded-xl px-3 py-2.5 text-xs font-bold uppercase tracking-wider border transition-colors ${inviteMode === 'link'
                 ? 'bg-violet-600 text-white border-violet-600'
                 : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
-            }`}
+              }`}
           >
             {t('company.teamPage.inviteModeLink')}
           </button>
@@ -334,11 +333,10 @@ export function CompanyTeamPage() {
               setInviteMode('direct');
               setDirectAddHint(null);
             }}
-            className={`flex-1 rounded-xl px-3 py-2.5 text-xs font-bold uppercase tracking-wider border transition-colors ${
-              inviteMode === 'direct'
+            className={`flex-1 rounded-xl px-3 py-2.5 text-xs font-bold uppercase tracking-wider border transition-colors ${inviteMode === 'direct'
                 ? 'bg-violet-600 text-white border-violet-600'
                 : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
-            }`}
+              }`}
           >
             {t('company.teamPage.inviteModeDirect')}
           </button>

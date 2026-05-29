@@ -11,7 +11,7 @@ import {
 import { CustomFieldInput } from '@/features/estimates/components/CustomFieldInput';
 import { CustomPricingFields } from '@/features/estimates/components/CustomPricingFields';
 import { WorkModulesPicker } from '@/features/estimates/components/WorkModulesPicker';
-import { parseNumberInputValue } from '@/features/estimates/diagnosticValidation';
+import { parseNumberInputValue } from '@/features/estimates/diagnostic/diagnosticValidation';
 import { useTranslateOption } from '@/utils/translateOption';
 import type { EstimateWizardApi } from '../useEstimateWizard';
 
@@ -59,18 +59,11 @@ export function DiagnosticStep({ wizard }: Props) {
   const heightRaw = diagnostic.buildingHeightM;
   const heightNum = typeof heightRaw === 'number' ? heightRaw : Number(heightRaw);
   const showHeightCoeffNotice = Number.isFinite(heightNum) && heightNum > 9;
-
-  // Roof: surface manual-review trigger mirrors backend
-  // (roofing-measurements.util.ts → shouldRequireRoofManualReview).
   const slopeRaw = diagnostic.roofSlope;
   const slopeNum = typeof slopeRaw === 'number' ? slopeRaw : Number(slopeRaw);
   const shapeRaw = diagnostic.roofShape;
   const showRoofManualReview =
     (Number.isFinite(slopeNum) && slopeNum > 60) || shapeRaw === 'complex';
-
-  // Cleaning: surface module/type mismatch (e.g. type=post_construction but
-  // post_construction module is OFF). Without the module the matching pricing
-  // line silently never appears.
   const cleaningTypeRaw = String(diagnostic.cleaningType ?? '');
   const cleaningMismatch =
     (cleaningTypeRaw === 'post_construction' &&

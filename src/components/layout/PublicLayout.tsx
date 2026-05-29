@@ -5,7 +5,7 @@ import { Menu, X } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher';
 import { MobileSheet } from '@/components/layout/MobileSheet';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
-import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
+import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 import { FaberLogo } from '@/components/brand/FaberLogo';
 import { stripLocalePrefix } from '@/lib/i18n/localeRoutes';
 import { cn } from '@/lib/utils';

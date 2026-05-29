@@ -97,3 +97,10 @@ export function formatWeekRangeLabel(
 ): string {
   return `${formatDateLocalized(from, locale, 'short')} – ${formatDateLocalized(to, locale, 'medium')}`;
 }
+
+export function daysSince(date: string | Date | number | null | undefined): number | null {
+  const d = parseDateInput(date);
+  if (!d) return null;
+  const ms = Date.now() - d.getTime();
+  return Math.floor(ms / (1000 * 60 * 60 * 24));
+}

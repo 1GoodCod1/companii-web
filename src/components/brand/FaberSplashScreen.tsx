@@ -11,13 +11,11 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
 
   useEffect(() => {
     sessionStorage.setItem('faber_splash_played', 'true');
-    
-    // Start fading out after 2000ms
+
     const fadeTimer = setTimeout(() => {
       setIsFadingOut(true);
     }, 2000);
 
-    // Call onComplete to unmount after fade-out transition finishes (2000ms + 650ms = 2650ms)
     const completeTimer = setTimeout(() => {
       onComplete();
     }, 2650);
@@ -54,11 +52,8 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
             transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1] } 
           }}
         >
-          {/* Renders the extra-large animated FaberLogo icon */}
           <FaberLogo size="xl" showText={false} />
         </motion.div>
-
-        {/* BRAND NAME REVEAL ANIMATION */}
         <div className="overflow-hidden py-2 text-center">
           <motion.div
             initial={{ y: 50, opacity: 0 }}
@@ -100,8 +95,6 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
           </motion.div>
         </div>
       </div>
-
-      {/* Bottom copyright notice */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.6 }}

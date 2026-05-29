@@ -100,12 +100,10 @@ export async function markMutationFailed(record: EstimateMutationRecord): Promis
   }
 }
 
-/** Exponential backoff: 1s, 2s, 4s, 8s, 16s, capped at 30s. */
 export function backoffDelayMs(attempts: number): number {
   return Math.min(30_000, 2 ** Math.max(0, attempts) * 1000);
 }
 
-/** A mutation is eligible to fire if enough time has passed since last error. */
 export function isReady(record: EstimateMutationRecord, now: number = Date.now()): boolean {
   if (record.attempts === 0 || !record.lastErrorAt) return true;
   return now - record.lastErrorAt >= backoffDelayMs(record.attempts);
@@ -120,10 +118,6 @@ export type FlushReport = {
   remaining: number;
 };
 
-/**
- * Flushes the queue FIFO. Stops on first failure for a given project (to
- * preserve causal order). Returns counts so callers can update UI banner.
- */
 export async function flushMutationQueue(
   handler: FlushHandler,
   options: { projectId?: string; maxAttempts?: number; now?: number } = {},

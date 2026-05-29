@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { EstimateBlueprintConfig, BlueprintWorkModule } from '@/types/estimate-blueprint-config.types';
-import { getModuleSection, MODULE_SECTIONS } from '@/features/estimates/moduleSections';
+import { getModuleSection, MODULE_SECTIONS } from '@/features/estimates/diagnostic/moduleSections';
 
 type Props = {
   config: EstimateBlueprintConfig | null;

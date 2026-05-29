@@ -1,13 +1,3 @@
-/**
- * Thin Promise-based wrapper around IndexedDB used by the estimate offline
- * cache (M-01). Intentionally minimal — no external `idb` dependency.
- *
- * Stores used by the wizard:
- *  - `estimate_drafts`        keyPath `id` (projectId)
- *  - `estimate_mutation_queue` keyPath `id` (mutationId, monotonic)
- *  - `estimate_meta`          key-value (projectId → { lastSyncedAt, lastSavedAt })
- */
-
 export const ESTIMATE_DB_NAME = 'companii-estimates';
 export const ESTIMATE_DB_VERSION = 1;
 export const STORE_DRAFTS = 'estimate_drafts';
@@ -113,10 +103,8 @@ export async function idbClear(store: EstimateStore): Promise<void> {
   });
 }
 
-/** Test helper: reset the cached database promise (used in vitest). */
 export function _resetEstimateDb(): void {
   dbPromise = null;
 }
 
-// Silence unused-export warning when txReq is not consumed directly.
 void txReq;

@@ -62,9 +62,6 @@ export async function downloadFile(fileId: string, filename?: string): Promise<v
   document.body.appendChild(a);
   a.click();
   a.remove();
-  // Safari can dispatch the download asynchronously after `a.click()` returns,
-  // so revoking the ObjectURL immediately may invalidate the URL before the
-  // browser fetches it. A short delay keeps the blob alive long enough.
   setTimeout(() => URL.revokeObjectURL(url), 1_500);
 }
 

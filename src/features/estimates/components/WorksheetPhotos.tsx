@@ -20,11 +20,6 @@ type Props = {
   readOnly?: boolean;
 };
 
-/**
- * N-03: photo upload UI for the field technician. Uses POST
- * /fsm/interventions/:id/photos (assigned-only on backend, F-03).
- * Files are PRIVATE by default (S-08 / FileVisibility migration).
- */
 export function WorksheetPhotos({ interventionId, photos, readOnly }: Props) {
   const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);

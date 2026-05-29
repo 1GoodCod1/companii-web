@@ -1,13 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
 import { AppModal } from '@/components/ui/AppModal';
-import { INTERVENTION_STATUS } from '@/constants/interventionStatus.constants';
-import { useCreateInvoiceMutation } from '@/features/fsm/api/useInvoices';
-import { useInterventionsQuery } from '@/features/fsm/api/useInterventions';
-import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
-import { useAuthStore } from '@/stores/authStore';
-import { getErrorMessage } from '@/utils/errors';
+import { useCreateInvoiceForm } from './hooks/useCreateInvoiceForm';
 
 type Props = {
   open: boolean;
@@ -32,48 +25,19 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
 
 function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
   const { t } = useTranslation();
-  const { data: interventions } = useInterventionsQuery(INTERVENTION_STATUS.COMPLETED);
-  const { data: companyMe } = useCompanyMeQuery();
-  const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
-  const createInvoice = useCreateInvoiceMutation();
 
-  // Default TVA rate mirrors company tax status. Non-TVA payers start at 0%
-  // (a master could still bump it manually if the contract requires it).
-  const activeCompany = useMemo(
-    () => companyMe?.owned.find((c) => c.id === activeCompanyId) ?? null,
-    [companyMe, activeCompanyId],
-  );
-  const defaultTvaRate = activeCompany?.isTvaPayer ? 20 : 0;
-  const [interventionId, setInterventionId] = useState('');
-  const [tvaRate, setTvaRate] = useState(defaultTvaRate);
-  const [dueDate, setDueDate] = useState('');
-
-  // Sync the default once the company info loads — but only if the user
-  // hasn't manually typed something else yet.
-  const [tvaTouched, setTvaTouched] = useState(false);
-  useEffect(() => {
-    if (!tvaTouched) setTvaRate(defaultTvaRate);
-  }, [defaultTvaRate, tvaTouched]);
-
-  const handleCreateSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!interventionId) {
-      toast.error(t('company.fsm.invoices.createModal.toast.selectIntervention'));
-      return;
-    }
-
-    try {
-      await createInvoice.mutateAsync({
-        interventionId,
-        tvaRate: Number(tvaRate),
-        dueDate: dueDate || undefined,
-      });
-      toast.success(t('company.fsm.invoices.createModal.toast.created'));
-      onClose();
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.fsm.invoices.createModal.toast.createError')));
-    }
-  };
+  const {
+    interventions,
+    activeCompany,
+    interventionId,
+    setInterventionId,
+    tvaRate,
+    setTvaRate,
+    dueDate,
+    setDueDate,
+    handleCreateSubmit,
+    isPending,
+  } = useCreateInvoiceForm({ onClose });
 
   return (
     <form onSubmit={handleCreateSubmit} className="space-y-4">
@@ -107,7 +71,6 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
           <select
             value={tvaRate}
             onChange={(e) => {
-              setTvaTouched(true);
               setTvaRate(Number(e.target.value));
             }}
             className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white cursor-pointer font-medium"
@@ -148,7 +111,7 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
         </button>
         <button
           type="submit"
-          disabled={createInvoice.isPending}
+          disabled={isPending}
           className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer"
         >
           {t('company.fsm.invoices.createModal.submit')}

@@ -12,7 +12,7 @@ import {
 } from '@/features/companies/api/useCompanies';
 import type { CatalogOptionDto } from '@/types/companies';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
-import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
+import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 import { cabinetFieldClass } from '@/components/cabinet/cabinet-ui';
 import {
   getCatalogSearchText,

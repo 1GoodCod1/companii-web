@@ -36,7 +36,6 @@ export function isClaimablePlanCode(
   return code === SUBSCRIPTION_PLAN.PRO || code === SUBSCRIPTION_PLAN.BUSINESS;
 }
 
-/** No paid plan active (missing code counts as free). */
 export function isOnFreePlan(
   code: CompanySubscriptionPlanCode | undefined | null,
 ): boolean {

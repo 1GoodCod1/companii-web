@@ -16,7 +16,6 @@ export const CompanyDetailPage = lazy(() =>
   })),
 );
 
-// U-09: Code splitting for heavy company admin routes.
 export const CompanyEstimatesPage = lazy(() =>
   import('@/pages/company/CompanyEstimatesPage').then((m) => ({
     default: m.CompanyEstimatesPage,

@@ -12,8 +12,6 @@ export function EntityListDetailLayout({ list, detail }: Props) {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-      {/* On mobile: list takes full width, detail below */}
-      {/* On lg+: classic 1:2 split */}
       <div className="lg:col-span-1 order-1 lg:order-none">
         {list}
       </div>

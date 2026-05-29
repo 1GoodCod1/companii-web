@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ArrowRight, PlayCircle } from 'lucide-react';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
-import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
+import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 import { LandingHeroMock } from '@/components/landing/LandingHeroMock';
 import { LandingFinanceMock } from '@/components/landing/LandingFinanceMock';
 import { LandingTimeline } from '@/components/landing/LandingTimeline';

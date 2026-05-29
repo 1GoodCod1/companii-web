@@ -40,8 +40,6 @@ export function NewEstimateForm({ activeCompany }: Props) {
   const { data: templates } = useEstimateTemplatesQuery();
   const createProject = useCreateEstimateProjectMutation();
   const applyTemplate = useApplyEstimateTemplateMutation();
-
-  // K-01: only categories that have an active blueprint are selectable
   const blueprintCategoryIds = useMemo(
     () => new Set((blueprints ?? []).map((bp) => bp.category.id)),
     [blueprints],
@@ -72,7 +70,6 @@ export function NewEstimateForm({ activeCompany }: Props) {
     return blueprints?.find((bp) => bp.category.id === categoryId) ?? null;
   }, [blueprints, categoryId]);
 
-  // K-02: when a deep-link / pinned company category resolves to an excluded slug
   const isExcluded =
     !!selectedCategory &&
     !activeBlueprint &&

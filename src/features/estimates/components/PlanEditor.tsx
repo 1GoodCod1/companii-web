@@ -1,2 +1,2 @@
-export { PlanEditor } from '@/features/estimates/plan-editor/PlanEditor';
+export { PlanEditor } from '@/features/estimates/plan/PlanEditor';
 export type { PlanEditorProps } from '@/types/planEditor';

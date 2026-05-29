@@ -1,7 +1,6 @@
 import type { CompanyRole } from '@/types/roles';
 
 export type TeamRoleKey = CompanyRole;
-
 export type TeamRoleConfig = {
   label: string;
   sectionTitle: string;

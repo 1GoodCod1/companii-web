@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PageHero, Panel, SoftBadge } from '@/components/cabinet/cabinet-ui';
 import { useAuthStore } from '@/stores/authStore';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { DashboardKpiGrid } from '@/features/fsm/components/dashboard/DashboardKpiGrid';
 import { DashboardNewLeadsPanel } from '@/features/fsm/components/dashboard/DashboardNewLeadsPanel';
 import { DashboardActiveInterventionsPanel } from '@/features/fsm/components/dashboard/DashboardActiveInterventionsPanel';

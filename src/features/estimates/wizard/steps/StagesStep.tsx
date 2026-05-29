@@ -13,7 +13,7 @@ import {
   useApplyEstimateTemplateMutation,
   useEstimateTemplatesQuery,
 } from '@/features/estimates/api/useEstimateTemplates';
-import { getHiddenStagesCount } from '@/features/estimates/stageVisibility';
+import { getHiddenStagesCount } from '@/features/estimates/stages/stageVisibility';
 import { getErrorMessage } from '@/utils/errors';
 import type { EstimateStageDto } from '@/types/estimates';
 import type { EstimateWizardApi } from '../useEstimateWizard';
@@ -298,11 +298,6 @@ export function StagesStep({ wizard }: Props) {
   } = wizard;
 
   const currentTotal = Number(project.grandTotal ?? 0) || previewTotals?.grandTotal || 0;
-
-  // O-02: pricing-only template apply. Lets the master pick a saved template
-  // and override unitPrices on the current project's lines (matching by
-  // stage.code + line.description). Stage structure stays as the blueprint
-  // produced it.
   const { data: templates } = useEstimateTemplatesQuery();
   const applyTemplate = useApplyEstimateTemplateMutation();
   const handleApplyPricingTemplate = async (templateId: string) => {
@@ -341,19 +336,14 @@ export function StagesStep({ wizard }: Props) {
   );
 
   const hasGroups = stageGroups.length > 0;
-  // J-04: keep group header visible for any module-tagged group so the user always
-  // sees which module produced which stage. The header is hidden only when the
-  // single group is the legacy unlabeled bucket (no moduleKey).
   const singleGroup = stageGroups.length <= 1 && (stageGroups[0]?.moduleKey == null);
 
-  // J-06: brief mode — filter out groups that have no meaningful stages (no lines)
   const displayGroups = estimateMode === 'brief'
     ? stageGroups.filter(
         (g) => g.stages.some((s) => s.meaningfulLineCount > 0),
       )
     : stageGroups;
 
-  // Flat index counter across all groups
   let globalIndex = 0;
 
   return (

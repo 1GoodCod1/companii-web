@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { syncGlobalParamsToDiagnostic } from './syncGlobalParamsToDiagnostic';
-import { ENABLED_WORK_MODULES_KEY } from '@/features/estimates/workModules';
+import { ENABLED_WORK_MODULES_KEY } from '@/features/estimates/diagnostic/workModules';
 import type { Plan2dData } from '@/types/estimate-plan2d.types';
 
 function plan(partial: Partial<Plan2dData>): Plan2dData {

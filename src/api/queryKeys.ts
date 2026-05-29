@@ -49,7 +49,6 @@ export const queryKeys = {
       [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.INVOICES, QUERY_KEY_FSM.DETAIL, id] as const,
     calendarBoard: (from: string, to: string) =>
       [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.CALENDAR_BOARD, from, to] as const,
-    /** Prefix key — invalidates all lead queries regardless of status filter. */
     leadsAll: [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.LEADS] as const,
     leads: (status?: string) => [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.LEADS, status] as const,
     lead: (id: string) => [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.LEADS, id] as const,

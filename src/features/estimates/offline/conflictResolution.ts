@@ -1,15 +1,3 @@
-/**
- * M-05: client-side conflict resolution helpers.
- *
- * The offline cache tracks `clientDraftId` (per device + project) and a
- * monotonic `draftVersion`. Each mutation enqueued for the server gets a
- * fresh `clientMutationId` (UUID) so the server can dedupe replays.
- *
- * When the server returns 409 with `code: ESTIMATE_VERSION_CONFLICT`
- * the wizard surfaces a dialog: keep local changes (apply on top of new
- * server state) or discard local (drop offline queue + draft).
- */
-
 export const ESTIMATE_VERSION_CONFLICT = 'ESTIMATE_VERSION_CONFLICT';
 
 export type EstimateVersionConflict = {

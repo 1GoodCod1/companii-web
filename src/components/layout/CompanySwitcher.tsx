@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { COMPANY_ROLE } from '@/constants/roles.constants';
 import toast from 'react-hot-toast';
 import { useCompanyMeQuery, useSwitchCompanyMutation } from '@/features/companies/api/useCompanies';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { cabinetSelectClass, cabinetLabelClass } from '@/components/cabinet/cabinet-ui';
 import { getErrorMessage } from '@/utils/errors';
 

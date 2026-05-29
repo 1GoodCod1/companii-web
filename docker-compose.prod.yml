@@ -1,4 +1,3 @@
-# Prod: Nginx on port 80
 services:
   web:
     build:

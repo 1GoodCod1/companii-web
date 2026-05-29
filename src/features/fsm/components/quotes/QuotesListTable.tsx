@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import type { QuoteDto } from '@/types/fsm';
 import { getQuoteStatusStyle } from '@/utils/quoteStatusStyles';
-import { EntityListPanel, entityListRowClass } from '@/components/cabinet/EntityListPanel';
+import { EntityListPanel } from '@/components/cabinet/EntityListPanel';
+import { entityListRowClass } from '@/components/cabinet/rowStyles';
 import { formatDateLocalized } from '@/utils/date';
 import { useLocale } from '@/hooks/useLocale';
 import { quoteStatusLabel } from '@/utils/i18nStatusLabels';

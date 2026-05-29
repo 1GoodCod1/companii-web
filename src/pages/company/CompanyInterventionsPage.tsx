@@ -7,11 +7,13 @@ import { PageHero, cabinetBtnPrimary } from '@/components/cabinet/cabinet-ui';
 import { EntityListDetailLayout } from '@/components/cabinet/EntityListDetailLayout';
 import type { InterventionStatus, InterventionDto } from '@/types/fsm';
 import { filterAssignableTechnicians } from '@/utils/teamMembers';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import {
   InterventionsListTable,
-  InterventionsStatusFilter,
 } from '@/features/fsm/components/interventions/InterventionsListTable';
+import {
+  InterventionsStatusFilter,
+} from '@/features/fsm/components/interventions/components/InterventionsStatusFilter';
 import { InterventionDetailPanel } from '@/features/fsm/components/interventions/InterventionDetailPanel';
 import { CreateInterventionModal } from '@/features/fsm/components/interventions/CreateInterventionModal';
 import { useEntityModal } from '@/hooks/useEntityModal';

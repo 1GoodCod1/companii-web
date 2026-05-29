@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import type { Plan2dData } from '@/types/estimate-plan2d.types';
-import type { CustomPricingValues } from '../customPricing';
+import type { CustomPricingValues } from '../utils/customPricing';
 import {
   clearDraft,
   readDraft,
@@ -34,11 +34,8 @@ export type OfflineCacheState = {
   pendingMutations: number;
   lastSavedAt?: number;
   lastSyncedAt?: number;
-  /** M-05: opaque per-device draft id created on first autosave. */
   clientDraftId?: string;
-  /** M-05: monotonic local revision counter. */
   draftVersion?: number;
-  /** M-05: latest server conflict that the UI must resolve. */
   conflict: EstimateVersionConflict | null;
 };
 
@@ -59,14 +56,6 @@ export type WizardSnapshot = {
   plan2d?: Plan2dData;
 };
 
-/**
- * M-01..M-05 — IndexedDB-backed wizard offline cache:
- *  - Autosaves `WizardSnapshot` with 600ms debounce (M-02).
- *  - Queues mutations while offline; flushes FIFO on reconnect (M-03).
- *  - Surfaces `{ online, syncState, pendingMutations, lastSavedAt }` for the UI banner (M-04).
- *  - Generates `clientDraftId` (once per device+project) and `clientMutationId`
- *    + `draftVersion` (monotonic) for the server's conflict resolution (M-05).
- */
 export function useEstimateOfflineCache(projectId: string | undefined) {
   const online = useOnlineStatus();
   const [state, setState] = useState<OfflineCacheState>({
@@ -77,7 +66,6 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
   });
   const lastSnapshotRef = useRef<string>('');
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // M-05: keep latest meta in refs so handlers don't need to await IDB.
   const draftIdRef = useRef<string | undefined>(undefined);
   const draftVersionRef = useRef<number>(0);
 
@@ -123,7 +111,6 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
     queueMicrotask(() => void refreshPending());
   }, [refreshPending]);
 
-  /** Schedule a debounced draft autosave (M-02). */
   const saveDraft = useCallback(
     (snapshot: WizardSnapshot) => {
       if (!projectId) return;
@@ -154,7 +141,6 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
     [projectId, ensureDraftId],
   );
 
-  /** Flush pending autosave timer immediately (e.g. before unload). */
   const flushAutosave = useCallback(
     async (snapshot: WizardSnapshot) => {
       if (!projectId) return;
@@ -194,7 +180,6 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
     draftVersionRef.current = 0;
   }, [projectId]);
 
-  /** Enqueue a mutation (M-03). Returns the assigned IDB id (or undefined). */
   const enqueue = useCallback(
     async (kind: EstimateMutationKind, payload: EstimateMutationPayload) => {
       if (!projectId) return undefined;
@@ -209,7 +194,6 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
     [projectId, refreshPending],
   );
 
-  /** Acknowledge & clear the active conflict so the UI can close the dialog. */
   const acknowledgeConflict = useCallback(() => {
     setState((prev) => ({ ...prev, conflict: null }));
   }, []);

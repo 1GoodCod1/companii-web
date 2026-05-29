@@ -1,70 +1,48 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
-import { useRegisterMutation } from '@/features/auth/api/useAuth';
-import { usePortalInvitePreviewQuery } from '@/features/portal/api/usePortal';
-import { useTeamInvitePreviewQuery } from '@/features/companies/api/useCompanies';
-import {
-  getAuthErrorMessage,
-  isAuthEmailTakenError,
-  isAuthPhoneTakenError,
-  isAuthRegistrationConflictError,
-} from '@/features/auth/authErrors';
-import { ACCOUNT_KIND } from '@/constants/roles.constants';
-import { ROUTE_ABS } from '@/constants/routes.constants';
+import { Link } from 'react-router-dom';
+import { useRegisterForm } from '@/features/auth/hooks/useRegisterForm';
 import {
   isCompanyStaffAccount,
   isEndClientAccount,
-  isManagerRole,
-  isPlatformAdminAccount,
 } from '@/utils/roles';
-import type { AccountKind } from '@/stores/authStore';
-import { useAuthStore } from '@/stores/authStore';
-import { resolveCompanyHomeRoute } from '@/features/companies/companyHomeRoute';
+import { RegisterTeamInviteBanner } from '@/features/auth/components/RegisterTeamInviteBanner';
+import { RegisterPortalInviteBanner } from '@/features/auth/components/RegisterPortalInviteBanner';
+import { RegisterAccountKindSelector } from '@/features/auth/components/RegisterAccountKindSelector';
 
 const fieldClass =
-  'w-full border border-slate-200 focus:border-slate-400 focus:ring-4 focus:ring-slate-100 rounded-xl px-3 py-2 text-sm outline-none transition-all bg-slate-50/50 hover:bg-slate-50/80 focus:bg-white text-slate-850 font-medium placeholder-slate-400';
+  'w-full border border-slate-200 focus:border-slate-400 focus:ring-4 focus:ring-slate-100 rounded-xl px-3 py-2 text-sm outline-none transition-all bg-slate-50/50 hover:bg-slate-50/80 focus:bg-white text-slate-855 font-medium placeholder-slate-400';
 
 export function RegisterPage() {
-  const { t } = useTranslation();
-  const nav = useNavigate();
-  const [params] = useSearchParams();
-  const portalInviteToken = params.get('invite') ?? undefined;
-  const teamInviteToken = params.get('teamInvite') ?? undefined;
-  const initialKind = (params.get('kind') as AccountKind | null) ?? ACCOUNT_KIND.COMPANY_STAFF;
-  const register = useRegisterMutation();
-  const { user, accessToken } = useAuthStore();
-  const { data: invitePreview, isLoading: portalInviteLoading } = usePortalInvitePreviewQuery(
-    portalInviteToken ?? '',
-  );
-  const { data: teamPreview, isLoading: teamInviteLoading } = useTeamInvitePreviewQuery(
-    teamInviteToken ?? '',
-  );
-  const isPortalInviteFlow =
-    !!portalInviteToken && !!invitePreview && !invitePreview.alreadyLinked;
-  const isTeamInviteFlow = !!teamInviteToken && !!teamPreview && !teamPreview.alreadyMember;
-
-  const [accountKind, setAccountKind] = useState<AccountKind>(
-    portalInviteToken ? ACCOUNT_KIND.END_CLIENT : teamInviteToken ? ACCOUNT_KIND.COMPANY_STAFF : initialKind,
-  );
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
-  const [conflictType, setConflictType] = useState<'email' | 'phone' | 'general' | null>(null);
-  const submittingRef = useRef(false);
-
-  useEffect(() => {
-    if (user && accessToken) {
-      if (isEndClientAccount(user.accountKind)) nav(ROUTE_ABS.PORTAL, { replace: true });
-      else if (isPlatformAdminAccount(user.accountKind)) nav(ROUTE_ABS.ADMIN, { replace: true });
-      else nav(ROUTE_ABS.COMPANY, { replace: true });
-    }
-  }, [user, accessToken, nav]);
+  const {
+    t,
+    portalInviteToken,
+    teamInviteToken,
+    invitePreview,
+    teamPreview,
+    isPortalInviteFlow,
+    isTeamInviteFlow,
+    accountKind,
+    setAccountKind,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    email,
+    setEmail,
+    phone,
+    setPhone,
+    password,
+    setPassword,
+    acceptTerms,
+    setAcceptTerms,
+    formError,
+    conflictType,
+    needsInviteEmail,
+    inviteLoading,
+    loginLinkTo,
+    showConflictBanner,
+    handleSubmit,
+    isPending,
+  } = useRegisterForm();
 
   if (portalInviteToken && invitePreview?.alreadyLinked) {
     return (
@@ -98,17 +76,6 @@ export function RegisterPage() {
     );
   }
 
-  const needsInviteEmail = isPortalInviteFlow && !invitePreview?.customerEmail;
-  const inviteLoading = portalInviteLoading || teamInviteLoading;
-  const loginPrefill =
-    conflictType === 'phone' && phone.trim() ? phone.trim() : email.trim();
-  const loginLinkTo = teamInviteToken
-    ? `/login?teamInvite=${encodeURIComponent(teamInviteToken)}&login=${encodeURIComponent(loginPrefill)}`
-    : portalInviteToken
-      ? `/login?invite=${encodeURIComponent(portalInviteToken)}&login=${encodeURIComponent(loginPrefill)}`
-      : `/login?login=${encodeURIComponent(loginPrefill)}`;
-  const showConflictBanner = conflictType === 'email' || conflictType === 'phone';
-
   return (
     <div className="w-full animate-fade-in">
       <div className="space-y-1 mb-4 text-center lg:text-left">
@@ -132,156 +99,17 @@ export function RegisterPage() {
         </p>
       ) : null}
 
-      {teamPreview ? (
-        <div className="mb-4 rounded-xl border border-indigo-105 bg-indigo-50/50 px-3.5 py-3 space-y-1.5">
-          <p className="text-xs font-semibold text-indigo-900">
-            {t('auth.registerPage.teamInviteTitle', { company: teamPreview.companyName })}
-          </p>
-          <p className="text-[11px] text-indigo-805 font-semibold leading-none">
-            {t('auth.registerPage.roleLabel', {
-              role: isManagerRole(teamPreview.role)
-                ? t('auth.roleManager')
-                : t('auth.roleTechnician'),
-            })}
-          </p>
-          {teamPreview.invitedEmail ? (
-            <p className="text-[10px] text-indigo-700/85 font-bold uppercase tracking-wider leading-none">
-              {t('auth.registerPage.emailMustMatch', { email: teamPreview.invitedEmail })}
-            </p>
-          ) : null}
-        </div>
-      ) : null}
+      <RegisterTeamInviteBanner teamPreview={teamPreview} />
+      <RegisterPortalInviteBanner invitePreview={invitePreview} />
 
-      {invitePreview ? (
-        <div className="mb-4 rounded-xl border border-violet-100 bg-violet-50/50 p-3.5 space-y-2">
-          <p className="text-xs font-semibold text-violet-900">
-            {t('auth.registerPage.portalInviteTitle', { company: invitePreview.companyName })}
-          </p>
-          <dl className="grid grid-cols-1 gap-1.5 text-xs">
-            <div className="flex justify-between gap-3 border-b border-violet-100/30 pb-1">
-              <dt className="text-violet-700/70 font-bold uppercase tracking-widest text-[8px]">
-                {t('auth.registerPage.nameLabel')}
-              </dt>
-              <dd className="font-semibold text-slate-800 text-right text-[11px]">{invitePreview.customerName}</dd>
-            </div>
-            <div className="flex justify-between gap-3 border-b border-violet-100/30 pb-1">
-              <dt className="text-violet-700/70 font-bold uppercase tracking-widest text-[8px]">
-                {t('auth.registerPage.phoneLabel')}
-              </dt>
-              <dd className="font-semibold text-slate-800 text-right text-[11px]">{invitePreview.customerPhone}</dd>
-            </div>
-            {invitePreview.customerEmail ? (
-              <div className="flex justify-between gap-3">
-                <dt className="text-violet-700/70 font-bold uppercase tracking-widest text-[8px]">
-                  {t('auth.registerPage.emailLabel')}
-                </dt>
-                <dd className="font-semibold text-slate-800 text-right break-all text-[11px]">{invitePreview.customerEmail}</dd>
-              </div>
-            ) : null}
-          </dl>
-          <p className="text-[10px] leading-relaxed text-violet-850">{t('auth.inviteRegisterHint')}</p>
-        </div>
-      ) : null}
+      <RegisterAccountKindSelector
+        portalInviteToken={portalInviteToken}
+        teamInviteToken={teamInviteToken}
+        accountKind={accountKind}
+        onAccountKindChange={setAccountKind}
+      />
 
-      {!portalInviteToken && !teamInviteToken ? (
-        <div className="flex gap-2.5 mb-4 bg-slate-100/50 p-1 rounded-2xl border border-slate-200 relative">
-          {([ACCOUNT_KIND.COMPANY_STAFF, ACCOUNT_KIND.END_CLIENT] as const).map((k) => (
-            <button
-              key={k}
-              type="button"
-              onClick={() => setAccountKind(k)}
-              className={`flex-1 py-1.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer text-center ${
-                accountKind === k
-                  ? 'bg-white border border-slate-200 text-violet-650 shadow-xs font-black'
-                  : 'border border-transparent text-slate-405 hover:text-slate-700'
-              }`}
-            >
-              {k === ACCOUNT_KIND.COMPANY_STAFF ? t('auth.companyStaff') : t('auth.endClient')}
-            </button>
-          ))}
-        </div>
-      ) : null}
-
-      <form
-        className="space-y-3"
-        onSubmit={async (e) => {
-          e.preventDefault();
-          if (submittingRef.current || register.isPending) return;
-
-          setFormError(null);
-          setConflictType(null);
-
-          if (!acceptTerms) {
-            const message = t('auth.termsRequired');
-            setFormError(message);
-            toast.error(message);
-            return;
-          }
-
-          if (!isPortalInviteFlow && !isTeamInviteFlow && isEndClientAccount(accountKind) && !phone.trim()) {
-            const message = t('auth.phoneRequired');
-            setFormError(message);
-            toast.error(message);
-            return;
-          }
-
-          if (isPortalInviteFlow && needsInviteEmail && !email.trim()) {
-            const message = t('auth.inviteEmailRequired');
-            setFormError(message);
-            toast.error(message);
-            return;
-          }
-
-          submittingRef.current = true;
-          try {
-            const registrationEmail =
-              isPortalInviteFlow && invitePreview?.customerEmail
-                ? invitePreview.customerEmail
-                : isTeamInviteFlow && teamPreview?.invitedEmail
-                  ? teamPreview.invitedEmail
-                  : email;
-
-            await register.mutateAsync({
-              email: registrationEmail,
-              password,
-              accountKind: accountKind as typeof ACCOUNT_KIND.COMPANY_STAFF | typeof ACCOUNT_KIND.END_CLIENT,
-              firstName: isPortalInviteFlow || isTeamInviteFlow ? firstName || undefined : firstName || undefined,
-              lastName: isPortalInviteFlow || isTeamInviteFlow ? lastName || undefined : lastName || undefined,
-              phone: isPortalInviteFlow || isTeamInviteFlow ? undefined : phone.trim() || undefined,
-              acceptTerms: true,
-              portalInviteToken: portalInviteToken,
-              teamInviteToken: teamInviteToken,
-            });
-            toast.success(t('auth.registerPage.accountActivated'));
-            if (isTeamInviteFlow) nav('/company/team', { replace: true });
-            else if (isPortalInviteFlow) nav('/portal', { replace: true });
-            else if (isEndClientAccount(accountKind)) nav(ROUTE_ABS.PORTAL, { replace: true });
-            else {
-              const sessionUser = useAuthStore.getState().user;
-              nav(
-                resolveCompanyHomeRoute({
-                  companyRole: sessionUser?.companyRole,
-                  activeCompanyId: sessionUser?.activeCompanyId,
-                }),
-                { replace: true },
-              );
-            }
-          } catch (err) {
-            const message = getAuthErrorMessage(err);
-            setFormError(message);
-            if (isAuthPhoneTakenError(err)) {
-              setConflictType('phone');
-            } else if (isAuthEmailTakenError(err)) {
-              setConflictType('email');
-            } else if (isAuthRegistrationConflictError(err)) {
-              setConflictType('general');
-            }
-            toast.error(message);
-          } finally {
-            submittingRef.current = false;
-          }
-        }}
-      >
+      <form className="space-y-3" onSubmit={(e) => void handleSubmit(e)}>
         {formError ? (
           <div
             className={`rounded-xl border px-3.5 py-2.5 text-xs font-semibold leading-relaxed ${
@@ -359,10 +187,6 @@ export function RegisterPage() {
                 onChange={(e) => {
                   if (isTeamInviteFlow && teamPreview?.invitedEmail) return;
                   setEmail(e.target.value);
-                  if (conflictType === 'email') {
-                    setFormError(null);
-                    setConflictType(null);
-                  }
                 }}
               />
             </div>
@@ -397,13 +221,7 @@ export function RegisterPage() {
                 conflictType === 'phone' ? 'border-amber-450 ring-2 ring-amber-200/60' : ''
               }`}
               value={phone}
-              onChange={(e) => {
-                setPhone(e.target.value);
-                if (conflictType === 'phone') {
-                  setFormError(null);
-                  setConflictType(null);
-                }
-              }}
+              onChange={(e) => setPhone(e.target.value)}
             />
             {conflictType === 'phone' ? (
               <p className="text-[10px] font-semibold text-amber-800 leading-snug mt-0.5">
@@ -427,13 +245,7 @@ export function RegisterPage() {
                 conflictType === 'phone' ? 'border-amber-450 ring-2 ring-amber-200/60' : ''
               }`}
               value={phone}
-              onChange={(e) => {
-                setPhone(e.target.value);
-                if (conflictType === 'phone') {
-                  setFormError(null);
-                  setConflictType(null);
-                }
-              }}
+              onChange={(e) => setPhone(e.target.value)}
             />
             {conflictType === 'phone' ? (
               <p className="text-[10px] font-semibold text-amber-800 leading-snug mt-0.5">
@@ -483,12 +295,9 @@ export function RegisterPage() {
         <button
           type="submit"
           className="w-full bg-gray-900 hover:bg-gray-800 active:scale-[0.99] text-white py-2.5 rounded-xl font-black transition-all cursor-pointer text-xs uppercase tracking-wider mt-2 disabled:opacity-60"
-          disabled={
-            register.isPending ||
-            ((!!portalInviteToken || !!teamInviteToken) && inviteLoading)
-          }
+          disabled={isPending || ((!!portalInviteToken || !!teamInviteToken) && inviteLoading)}
         >
-          {register.isPending
+          {isPending
             ? t('auth.registerPage.processing')
             : isPortalInviteFlow || isTeamInviteFlow
               ? t('auth.registerPage.activateAccount')
@@ -506,7 +315,7 @@ export function RegisterPage() {
                 ? `/login?invite=${encodeURIComponent(portalInviteToken)}`
                 : '/login'
           }
-          className="text-violet-600 hover:text-violet-700 font-extrabold transition-colors border-b-2 border-transparent hover:border-violet-650"
+          className="text-violet-650 hover:text-violet-750 font-extrabold transition-colors border-b-2 border-transparent hover:border-violet-650"
         >
           {t('auth.login')}
         </Link>

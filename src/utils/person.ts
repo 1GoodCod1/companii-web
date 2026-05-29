@@ -8,9 +8,6 @@ export function joinPersonName(
   return [firstName, lastName].filter(Boolean).join(' ').trim();
 }
 
-/**
- * Resolves display name: fullName → firstName + lastName → email → fallback.
- */
 export function formatPersonName(
   person?: PersonNameInput | null,
   fallback = '',

@@ -5,7 +5,7 @@ import { PageHero, Panel, PanelHeader, cabinetBtnPrimary } from '@/components/ca
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
 import { useCategoriesQuery } from '@/features/companies/api/useCompanies';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
-import { useCompanyPermissions } from '@/features/companies/useCompanyPermissions';
+import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { useMySubscriptionQuery } from '@/features/subscriptions/api/useSubscriptions';
 import { hasMinPlan } from '@/config/planEntitlements';
 import { SUBSCRIPTION_PLAN } from '@/constants/subscriptions.constants';

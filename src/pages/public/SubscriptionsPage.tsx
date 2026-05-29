@@ -12,7 +12,7 @@ import {
   isProToBusinessUpgrade,
 } from '@/utils/subscriptionPlan';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
-import { usePublicAuthCta } from '@/features/auth/usePublicAuthCta';
+import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 import { SEOHead } from '@/components/seo/SEOHead';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
@@ -23,15 +23,14 @@ export function SubscriptionsPage() {
   const { data, isLoading, isError } = useSubscriptionPlansQuery();
   const { isAuthed, user, cabinetRoute, planCardCta } = usePublicAuthCta();
   const isEndClient = user?.accountKind === 'END_CLIENT';
+  const hasCompany = user?.accountKind === 'COMPANY_STAFF' && !!user.activeCompanyId;
+  const { data: subData } = useMySubscriptionQuery();
+  const claimFree = useClaimFreePlanMutation();
+  const [claimingPlanCode, setClaimingPlanCode] = useState<CompanySubscriptionPlanCode | null>(null);
 
   if (isAuthed && isEndClient) {
     return <Navigate to="/portal" replace />;
   }
-  const hasCompany = user?.accountKind === 'COMPANY_STAFF' && !!user.activeCompanyId;
-
-  const { data: subData } = useMySubscriptionQuery();
-  const claimFree = useClaimFreePlanMutation();
-  const [claimingPlanCode, setClaimingPlanCode] = useState<CompanySubscriptionPlanCode | null>(null);
 
   const subscriptionLinkRoute = hasCompany ? '/company/subscription' : cabinetRoute;
 

@@ -14,7 +14,4 @@ createRoot(document.getElementById('root')!).render(
     </AppProviders>
   </StrictMode>,
 );
-
-// Collect Core Web Vitals (CLS, INP, LCP, FCP, TTFB) and ship them to the
-// API after each metric resolves. Fire-and-forget — never blocks UI.
 reportWebVitals();

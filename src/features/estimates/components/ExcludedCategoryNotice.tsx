@@ -12,7 +12,7 @@ import type { EstimateExcludedCategorySlug } from '@/constants/estimateCategoryS
 import {
   getExcludedAlternative,
   type ExcludedCategoryAlternative,
-} from '../excludedCategoryAlternatives';
+} from '../diagnostic/excludedCategoryAlternatives';
 
 const ICONS: Record<ExcludedCategoryAlternative['icon'], LucideIcon> = {
   megaphone: Megaphone,

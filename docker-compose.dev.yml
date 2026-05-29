@@ -1,7 +1,3 @@
-# Dev: Vite HMR on http://localhost:5174
-# Start once: npm run docker:up
-# Code changes in ./src hot-reload automatically — no rebuild needed.
-# Rebuild only after package.json changes: npm run docker:build && npm run docker:up
 services:
   web:
     build:
