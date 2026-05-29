@@ -321,7 +321,36 @@ export function InterventionDetailPanel({
                       <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
                         {t('company.fsm.interventions.detail.fields.technician')}
                       </span>
-                      <span className="text-xs font-bold text-gray-800">{technicianDisplayName(detail.technician)}</span>
+                      {/* Phase A — show all assignees if multi-assigned, fall back to legacy single technician. */}
+                      {detail.assignments && detail.assignments.length > 1 ? (
+                        <div className="space-y-1">
+                          {detail.assignments.map((a) => (
+                            <div key={a.memberId} className="flex items-center gap-2">
+                              <span className="text-xs font-bold text-gray-800">
+                                {a.member.fullName || '—'}
+                              </span>
+                              {a.isLead && (
+                                <span className="text-[8px] font-black uppercase tracking-wider text-violet-700 bg-violet-50 border border-violet-100 px-1.5 py-0.5 rounded">
+                                  {t('company.fsm.interventions.detail.fields.lead', { defaultValue: 'Lead' })}
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                          {detail.crew && (
+                            <div className="mt-1.5 inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">
+                              <span
+                                className="w-1.5 h-1.5 rounded-full"
+                                style={{ backgroundColor: detail.crew.color || '#6366f1' }}
+                              />
+                              {detail.crew.name}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-xs font-bold text-gray-800">
+                          {technicianDisplayName(detail.technician)}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-3.5">

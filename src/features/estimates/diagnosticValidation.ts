@@ -123,12 +123,12 @@ export function validateDiagnostic(
   const enabledModules = readEnabledWorkModules(answers, config);
 
   for (const field of config.customFields ?? []) {
-    if (!isCustomFieldActive(field, config, enabledModules)) continue;
+    if (!isCustomFieldActive(field, config, enabledModules, answers)) continue;
 
     const rawValue = answers[field.key];
     const val = isEmpty(rawValue) ? field.defaultValue : rawValue;
 
-    if (isCustomFieldRequired(field, config, enabledModules) && isEmpty(val)) {
+    if (isCustomFieldRequired(field, config, enabledModules, answers) && isEmpty(val)) {
       fieldErrors[field.key] = `${field.label} este obligatoriu`;
       continue;
     }

@@ -16,11 +16,13 @@ export type CustomFieldSection = {
 /**
  * Groups blueprint customFields by their `section` property, preserving config order.
  * Fields without a section land in DEFAULT_SECTION_KEY. Only fields that are active for
- * the current enabledModules set are returned (use H-04 conditional visibility).
+ * the current enabledModules set AND match the current itDirection (for IT categories)
+ * are returned (use H-04 conditional visibility).
  */
 export function groupVisibleCustomFields(
   config: EstimateBlueprintConfig | null | undefined,
   enabledModules: string[],
+  diagnostic?: Record<string, unknown> | null,
 ): CustomFieldSection[] {
   const fields = config?.customFields ?? [];
   if (!fields.length) return [];
@@ -29,7 +31,7 @@ export function groupVisibleCustomFields(
   const buckets = new Map<string, BlueprintCustomField[]>();
 
   for (const field of fields) {
-    if (!isCustomFieldActive(field, config, enabledModules)) continue;
+    if (!isCustomFieldActive(field, config, enabledModules, diagnostic)) continue;
     const sectionKey = field.section?.trim() || DEFAULT_SECTION_KEY;
     if (!buckets.has(sectionKey)) {
       buckets.set(sectionKey, []);

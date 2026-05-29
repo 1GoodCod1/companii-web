@@ -19,8 +19,12 @@ export function isPaidPaymentStatus(status: InvoicePaymentStatus): boolean {
   return status === INVOICE_PAYMENT_STATUS.PAID;
 }
 
-export function isTerminalPaymentStatus(status: InvoicePaymentStatus): boolean {
-  return isPaidPaymentStatus(status);
+/**
+ * PAID is no longer terminal — it can be reversed to UNPAID with a reason.
+ * Kept as a helper for UI affordances around "final" workflow states.
+ */
+export function isTerminalPaymentStatus(_status: InvoicePaymentStatus): boolean {
+  return false;
 }
 
 export function paymentStatusBadgeClass(status: string): string {

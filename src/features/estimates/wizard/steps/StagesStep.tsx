@@ -46,6 +46,7 @@ function StageCard({
     handleDeleteLine,
     handleAddLine,
     addLineMutation,
+    isReadOnly,
   } = wizard;
 
   return (
@@ -85,7 +86,7 @@ function StageCard({
                 <th className="py-2 w-28">{t('company.estimateWizard.stagesStep.colTotal')}</th>
                 <th className="py-2">{t('company.estimateWizard.stagesStep.colStore')}</th>
                 <th className="py-2 text-right">{t('company.estimateWizard.stagesStep.colReceipt')}</th>
-                <th className="py-2 w-10"></th>
+                {!isReadOnly && <th className="py-2 w-10"></th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100/50">
@@ -94,7 +95,10 @@ function StageCard({
                   line.unit === 'ore' ||
                   line.unit === 'h' ||
                   line.description.toLowerCase().includes('manoperă') ||
-                  line.description.toLowerCase().includes('manopera');
+                  line.description.toLowerCase().includes('manopera') ||
+                  line.description.toLowerCase().includes('lucrări') ||
+                  line.description.toLowerCase().includes('lucrari') ||
+                  line.description.toLowerCase().includes('labor');
                 return (
                   <tr key={line.id} className="hover:bg-violet-50/20 transition-colors">
                     <td className="py-3">
@@ -102,6 +106,7 @@ function StageCard({
                         <input
                           type="text"
                           defaultValue={line.description}
+                          disabled={isReadOnly}
                           onBlur={(e) => {
                             const val = e.target.value.trim();
                             if (val && val !== line.description) {
@@ -113,7 +118,7 @@ function StageCard({
                               });
                             }
                           }}
-                          className="w-full rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                          className="w-full rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
                         />
                         <EstimateLineSourceBadge source={line.source} />
                       </div>
@@ -122,6 +127,7 @@ function StageCard({
                       <input
                         type="number"
                         defaultValue={Number(line.qty)}
+                        disabled={isReadOnly}
                         onBlur={(e) =>
                           handleUpdateLineQtyOrPrice(
                             line.id,
@@ -130,7 +136,7 @@ function StageCard({
                             Number(e.target.value),
                           )
                         }
-                        className="w-16 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                        className="w-16 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
                       />
                     </td>
                     <td className="py-3 text-gray-500 font-medium">{line.unit}</td>
@@ -139,6 +145,7 @@ function StageCard({
                         <input
                           type="number"
                           defaultValue={Number(line.unitPrice)}
+                          disabled={isReadOnly}
                           onBlur={(e) =>
                             handleUpdateLineQtyOrPrice(
                               line.id,
@@ -147,7 +154,7 @@ function StageCard({
                               Number(e.target.value),
                             )
                           }
-                          className="w-20 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                          className="w-20 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
                         />
                         <span className="text-[10px] text-gray-400">MDL</span>
                       </div>
@@ -165,6 +172,7 @@ function StageCard({
                           <input
                             type="text"
                             placeholder={t('company.estimateWizard.stagesStep.storePlaceholder')}
+                            disabled={isReadOnly}
                             value={
                               editingStore?.lineId === line.id
                                 ? editingStore.value
@@ -174,9 +182,9 @@ function StageCard({
                               setEditingStore({ lineId: line.id, value: e.target.value })
                             }
                             onBlur={() => handleSaveStore(line.id, stage.id)}
-                            className="w-36 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
+                            className="w-36 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
                           />
-                          {editingStore?.lineId === line.id && (
+                          {!isReadOnly && editingStore?.lineId === line.id && (
                             <button
                               type="button"
                               onMouseDown={() => handleSaveStore(line.id, stage.id)}
@@ -205,15 +213,17 @@ function StageCard({
                               >
                                 <Eye className="w-3.5 h-3.5" /> {t('company.estimateWizard.stagesStep.viewReceipt')}
                               </button>
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteReceipt(line.id, stage.id)}
-                                className="rounded-xl bg-red-50 border border-red-100 p-1 text-red-600 hover:bg-red-100 transition-colors"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
+                              {!isReadOnly && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteReceipt(line.id, stage.id)}
+                                  className="rounded-xl bg-red-50 border border-red-100 p-1 text-red-600 hover:bg-red-100 transition-colors"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              )}
                             </>
-                          ) : (
+                          ) : !isReadOnly ? (
                             <label className="relative cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-dashed border-gray-200 bg-white px-2.5 py-1 text-[10px] font-bold text-gray-500 hover:bg-gray-50 transition-colors">
                               {uploadingLineId === line.id ? (
                                 <span className="animate-pulse">{t('cabinet.common.loading')}</span>
@@ -232,20 +242,22 @@ function StageCard({
                                 }}
                               />
                             </label>
-                          )}
+                          ) : null}
                         </div>
                       )}
                     </td>
-                    <td className="py-3 text-center">
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteLine(line.id, stage.id)}
-                        title={t('cabinet.common.delete')}
-                        className="rounded-lg bg-red-50 border border-red-100 p-1.5 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </td>
+                    {!isReadOnly && (
+                      <td className="py-3 text-center">
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteLine(line.id, stage.id)}
+                          title={t('cabinet.common.delete')}
+                          className="rounded-lg bg-red-50 border border-red-100 p-1.5 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 );
               })}
@@ -256,14 +268,16 @@ function StageCard({
         <p className="text-xs text-gray-400 italic">{t('company.estimateWizard.stagesStep.noLines')}</p>
       )}
 
-      <button
-        type="button"
-        onClick={() => handleAddLine(stage.id)}
-        disabled={addLineMutation.isPending}
-        className="w-full mt-2 rounded-xl border border-dashed border-violet-200 bg-violet-50/50 py-2 text-xs font-semibold text-violet-700 hover:bg-violet-100 transition-colors inline-flex items-center justify-center gap-1.5"
-      >
-        <Plus className="w-3.5 h-3.5" /> {t('company.estimateWizard.stagesStep.addNewLine')}
-      </button>
+      {!isReadOnly && (
+        <button
+          type="button"
+          onClick={() => handleAddLine(stage.id)}
+          disabled={addLineMutation.isPending}
+          className="w-full mt-2 rounded-xl border border-dashed border-violet-200 bg-violet-50/50 py-2 text-xs font-semibold text-violet-700 hover:bg-violet-100 transition-colors inline-flex items-center justify-center gap-1.5"
+        >
+          <Plus className="w-3.5 h-3.5" /> {t('company.estimateWizard.stagesStep.addNewLine')}
+        </button>
+      )}
     </div>
   );
 }
@@ -280,6 +294,7 @@ export function StagesStep({ wizard }: Props) {
     estimateMode,
     setEstimateMode,
     previewTotals,
+    isReadOnly,
   } = wizard;
 
   const currentTotal = Number(project.grandTotal ?? 0) || previewTotals?.grandTotal || 0;
@@ -359,7 +374,7 @@ export function StagesStep({ wizard }: Props) {
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             {/* O-02: Apply pricing-only template (overrides unitPrice on matching lines). */}
-            {templates && templates.length > 0 && (
+            {!isReadOnly && templates && templates.length > 0 && (
               <label className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
                 <Tag className="w-3.5 h-3.5 text-indigo-500" />
                 <select
@@ -401,9 +416,19 @@ export function StagesStep({ wizard }: Props) {
                 </button>
               ))}
             </div>
-            <button type="button" onClick={handleCalculate} disabled={calculate.isPending} className={cabinetBtnPrimary}>
-              <Calculator className="w-4 h-4" /> {t('company.estimateWizard.stagesStep.calculate')}
-            </button>
+            {isReadOnly ? (
+              <button
+                type="button"
+                onClick={() => wizard.setStepIndex(wizard.steps.indexOf('review'))}
+                className={cabinetBtnPrimary}
+              >
+                {t('company.estimateWizard.wizard.next', { defaultValue: 'Înainte' })}
+              </button>
+            ) : (
+              <button type="button" onClick={handleCalculate} disabled={calculate.isPending} className={cabinetBtnPrimary}>
+                <Calculator className="w-4 h-4" /> {t('company.estimateWizard.stagesStep.calculate')}
+              </button>
+            )}
           </div>
         </div>
 
@@ -421,7 +446,7 @@ export function StagesStep({ wizard }: Props) {
             <p className="text-[11px] text-amber-700/80 leading-relaxed">
               {t('company.estimateWizard.stagesStep.noStagesHint', {
                 defaultValue:
-                  'Reveniți la pasul «Diagnostic» și activați modulele de care aveți nevoie — etapele se vor genera automat.',
+                  'Reveniți la pasul «Diagnostic» и activați modulele de care aveți nevoie — etapele se vor genera automat.',
               })}
             </p>
           </div>

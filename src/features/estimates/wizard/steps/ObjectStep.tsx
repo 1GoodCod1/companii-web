@@ -38,6 +38,10 @@ export function ObjectStep({ wizard }: Props) {
     setAccessDifficulty,
     urgency,
     setUrgency,
+    isServiceCategory,
+    isFurnitureCategory,
+    isElektrikaCategory,
+    isPlumbingCategory,
     customPricing,
     setCustomPricing,
     pricingUnitLabel,
@@ -118,21 +122,23 @@ export function ObjectStep({ wizard }: Props) {
       </div>
 
       <div className={`grid grid-cols-1 ${siteType === 'house' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4`}>
-        <label className={cabinetLabelClass}>
-          {t('company.estimateWizard.objectStep.buildingYear')}
-          <input
-            type="number"
-            min={1900}
-            max={new Date().getFullYear() + 1}
-            value={buildingYear ?? ''}
-            onChange={(e) =>
-              setBuildingYear(e.target.value === '' ? null : Number(e.target.value))
-            }
-            className={cabinetFieldClass}
-            placeholder="Ex: 1985"
-          />
-        </label>
-        {siteType !== 'house' && (
+        {!isServiceCategory && !isFurnitureCategory && !isElektrikaCategory && !isPlumbingCategory && (
+          <label className={cabinetLabelClass}>
+            {t('company.estimateWizard.objectStep.buildingYear')}
+            <input
+              type="number"
+              min={1900}
+              max={new Date().getFullYear() + 1}
+              value={buildingYear ?? ''}
+              onChange={(e) =>
+                setBuildingYear(e.target.value === '' ? null : Number(e.target.value))
+              }
+              className={cabinetFieldClass}
+              placeholder="Ex: 1985"
+            />
+          </label>
+        )}
+        {!isServiceCategory && !isFurnitureCategory && !isElektrikaCategory && !isPlumbingCategory && siteType !== 'house' && (
           <label className={cabinetLabelClass}>
             {t('company.estimateWizard.objectStep.siteFloor')}
             <input
@@ -162,21 +168,23 @@ export function ObjectStep({ wizard }: Props) {
         </label>
       </div>
 
-      <label className={cabinetLabelClass}>
-        {t('company.estimateWizard.objectStep.accessDifficulty')}
-        <select
-          value={accessDifficulty ?? ''}
-          onChange={(e) => setAccessDifficulty(e.target.value || null)}
-          className={cabinetSelectClass}
-        >
-          <option value="">{t('company.estimateWizard.objectStep.accessEasy')}</option>
-          <option value="medium">{t('company.estimateWizard.objectStep.accessMedium')}</option>
-          <option value="difficult">{t('company.estimateWizard.objectStep.accessDifficult')}</option>
-        </select>
-        <span className="text-[10px] text-slate-400 font-semibold mt-0.5 block">
-          {t('company.estimateWizard.objectStep.accessHint')}
-        </span>
-      </label>
+      {!isServiceCategory && !isFurnitureCategory && !isElektrikaCategory && !isPlumbingCategory && (
+        <label className={cabinetLabelClass}>
+          {t('company.estimateWizard.objectStep.accessDifficulty')}
+          <select
+            value={accessDifficulty ?? ''}
+            onChange={(e) => setAccessDifficulty(e.target.value || null)}
+            className={cabinetSelectClass}
+          >
+            <option value="">{t('company.estimateWizard.objectStep.accessEasy')}</option>
+            <option value="medium">{t('company.estimateWizard.objectStep.accessMedium')}</option>
+            <option value="difficult">{t('company.estimateWizard.objectStep.accessDifficult')}</option>
+          </select>
+          <span className="text-[10px] text-slate-400 font-semibold mt-0.5 block">
+            {t('company.estimateWizard.objectStep.accessHint')}
+          </span>
+        </label>
+      )}
 
       <CustomPricingFields values={customPricing} onChange={setCustomPricing} unitLabel={pricingUnitLabel} />
 

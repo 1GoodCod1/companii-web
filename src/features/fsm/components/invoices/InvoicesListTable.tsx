@@ -6,6 +6,18 @@ import { formatDateLocalized } from '@/utils/date';
 import { useLocale } from '@/hooks/useLocale';
 import { paymentStatusLabel } from '@/utils/i18nStatusLabels';
 
+/**
+ * Days between now and a date (positive = in the past). null if no date.
+ * Used to surface aging info for OVERDUE invoices.
+ */
+function daysSince(date: string | Date | null | undefined): number | null {
+  if (!date) return null;
+  const d = typeof date === 'string' ? new Date(date) : date;
+  if (Number.isNaN(d.getTime())) return null;
+  const ms = Date.now() - d.getTime();
+  return Math.floor(ms / (1000 * 60 * 60 * 24));
+}
+
 type Props = {
   invoices: InvoiceDto[] | undefined;
   isLoading: boolean;
@@ -70,10 +82,22 @@ export function InvoicesListTable({ invoices, isLoading, selectedId, onSelect }:
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black border ${getInvoicePaymentStatusStyle(
                       item.paymentStatus,
-                    )}`}
+                    )} ${item.paymentStatus === 'OVERDUE' ? 'animate-pulse' : ''}`}
                   >
                     {paymentStatusLabel(item.paymentStatus, t)}
                   </span>
+                  {item.paymentStatus === 'OVERDUE' && (() => {
+                    const days = daysSince(item.dueDate);
+                    if (days == null || days <= 0) return null;
+                    return (
+                      <div className="text-[9px] font-bold text-rose-600 mt-1">
+                        {t('company.fsm.invoices.list.overdueDays', {
+                          count: days,
+                          defaultValue: 'Restantă {{count}} zile',
+                        })}
+                      </div>
+                    );
+                  })()}
                 </td>
               </tr>
             ))}

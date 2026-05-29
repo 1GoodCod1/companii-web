@@ -69,19 +69,39 @@ export function isCustomFieldActive(
   field: BlueprintCustomField,
   config: EstimateBlueprintConfig | null | undefined,
   enabledModules: string[],
+  diagnostic?: Record<string, unknown> | null,
 ): boolean {
+  // Check work module enablement
   const module = findWorkModuleForField(config, field.key);
-  if (!module) return true;
-  return enabledModules.includes(module.key);
+  if (module && !enabledModules.includes(module.key)) {
+    return false;
+  }
+
+  // Check direction filtering (IT categories)
+  if (field.directionKeys?.length && diagnostic) {
+    const currentDirection = String(diagnostic.itDirection ?? '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{M}/gu, '');
+    if (currentDirection && !field.directionKeys.some(
+      (d) => d.toLowerCase() === currentDirection,
+    )) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 export function isCustomFieldRequired(
   field: BlueprintCustomField,
   config: EstimateBlueprintConfig | null | undefined,
   enabledModules: string[],
+  diagnostic?: Record<string, unknown> | null,
 ): boolean {
   if (!field.required) return false;
-  return isCustomFieldActive(field, config, enabledModules);
+  return isCustomFieldActive(field, config, enabledModules, diagnostic);
 }
 
 /**

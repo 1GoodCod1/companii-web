@@ -78,6 +78,12 @@ const CATEGORY_ROOM_TEMPLATES: Record<string, RoomTemplate[]> = {
 type PointTemplate = { type: string; count: number };
 
 const CATEGORY_POINT_TEMPLATES: Record<string, PointTemplate[]> = {
+  constructii: [
+    { type: 'foundation', count: 1 },
+    { type: 'brick_wall', count: 1 },
+    { type: 'column', count: 4 },
+    { type: 'slab', count: 1 },
+  ],
   elektrika: [
     { type: 'socket', count: 12 },
     { type: 'switch', count: 6 },

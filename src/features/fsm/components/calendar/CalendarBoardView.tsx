@@ -20,9 +20,15 @@ export function CalendarBoardView({
   schedulingId,
   scheduleAt,
   scheduleTechnicianId,
+  assignMode,
+  scheduleMemberIds,
+  scheduleCrewId,
   onScheduleIdChange,
   onScheduleAtChange,
   onScheduleTechnicianChange,
+  onAssignModeChange,
+  onScheduleMemberIdsChange,
+  onScheduleCrewIdChange,
   onSubmitSchedule,
   onCancelSchedule,
   onConvertLead,
@@ -33,9 +39,15 @@ export function CalendarBoardView({
   schedulingId: string | null;
   scheduleAt: string;
   scheduleTechnicianId: string;
+  assignMode: 'single' | 'multiple' | 'crew';
+  scheduleMemberIds: string[];
+  scheduleCrewId: string;
   onScheduleIdChange: (id: string) => void;
   onScheduleAtChange: (value: string) => void;
   onScheduleTechnicianChange: (value: string) => void;
+  onAssignModeChange: (value: 'single' | 'multiple' | 'crew') => void;
+  onScheduleMemberIdsChange: (value: string[]) => void;
+  onScheduleCrewIdChange: (value: string) => void;
   onSubmitSchedule: () => void;
   onCancelSchedule: () => void;
   onConvertLead: (leadId: string, mode: 'intervention' | 'estimate') => void;
@@ -70,8 +82,14 @@ export function CalendarBoardView({
                 scheduling={schedulingId === item.id}
                 scheduleAt={scheduleAt}
                 scheduleTechnicianId={scheduleTechnicianId}
+                assignMode={assignMode}
+                scheduleMemberIds={scheduleMemberIds}
+                scheduleCrewId={scheduleCrewId}
                 onScheduleAtChange={onScheduleAtChange}
                 onScheduleTechnicianChange={onScheduleTechnicianChange}
+                onAssignModeChange={onAssignModeChange}
+                onScheduleMemberIdsChange={onScheduleMemberIdsChange}
+                onScheduleCrewIdChange={onScheduleCrewIdChange}
                 onSubmitSchedule={onSubmitSchedule}
                 onCancelSchedule={onCancelSchedule}
                 technicians={technicians}

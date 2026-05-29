@@ -148,6 +148,14 @@ export type EstimateProjectDto = Omit<EstimateProjectListDto, 'stages'> & {
   measurements?: Array<{ key: string; label?: string; value: number; unit: string }>;
   photos?: EstimateProjectPhotoDto[];
   stages: EstimateStageDto[];
+  interventions?: Array<{
+    id: string;
+    number: string;
+    status: string;
+    type: string;
+    scheduledAt: string | null;
+    technician: { fullName: string | null } | null;
+  }>;
   sourceLead?: {
     id: string;
     serviceTitle?: string | null;

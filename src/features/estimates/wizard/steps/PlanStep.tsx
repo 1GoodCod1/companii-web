@@ -17,6 +17,7 @@ export function PlanStep({ wizard }: Props) {
     setPlan2d,
     handleSavePlan,
     setStepIndex,
+    isReadOnly,
   } = wizard;
 
   return (
@@ -27,14 +28,23 @@ export function PlanStep({ wizard }: Props) {
         categoryName={project.category.name}
         categorySlug={project.category.slug}
         onChange={setPlan2d}
+        readOnly={isReadOnly}
       />
       <div className="flex gap-3">
-        <button type="button" onClick={handleSavePlan} className={cabinetBtnPrimary}>
-          <Save className="w-4 h-4" /> {t('company.estimateWizard.planStep.saveDimensions')}
-        </button>
-        <button type="button" onClick={() => setStepIndex((i) => i + 1)} className={cabinetBtnSecondary}>
-          {t('company.estimateWizard.planStep.continueWithoutSave')}
-        </button>
+        {isReadOnly ? (
+          <button type="button" onClick={() => setStepIndex((i) => i + 1)} className={cabinetBtnPrimary}>
+            {t('company.estimateWizard.wizard.next', { defaultValue: 'Înainte' })}
+          </button>
+        ) : (
+          <>
+            <button type="button" onClick={handleSavePlan} className={cabinetBtnPrimary}>
+              <Save className="w-4 h-4" /> {t('company.estimateWizard.planStep.saveDimensions')}
+            </button>
+            <button type="button" onClick={() => setStepIndex((i) => i + 1)} className={cabinetBtnSecondary}>
+              {t('company.estimateWizard.planStep.continueWithoutSave')}
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

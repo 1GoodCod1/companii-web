@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   SoftBadge,
@@ -13,6 +14,7 @@ import { memberDisplayName, technicianDisplayName } from '@/utils/teamMembers';
 import type { CompanyMemberDto, InterventionDto } from '@/types/fsm';
 import { statusTone } from '@/utils/calendar';
 import { formatTimeLocalized } from '@/utils/date';
+import { useCrewsQuery } from '@/features/fsm/api/useCrews';
 
 export function InterventionCard({
   item,
@@ -20,8 +22,14 @@ export function InterventionCard({
   scheduling,
   scheduleAt,
   scheduleTechnicianId,
+  assignMode = 'single',
+  scheduleMemberIds = [],
+  scheduleCrewId = '',
   onScheduleAtChange,
   onScheduleTechnicianChange,
+  onAssignModeChange,
+  onScheduleMemberIdsChange,
+  onScheduleCrewIdChange,
   onSubmitSchedule,
   onCancelSchedule,
   technicians,
@@ -32,8 +40,14 @@ export function InterventionCard({
   scheduling?: boolean;
   scheduleAt?: string;
   scheduleTechnicianId?: string;
+  assignMode?: 'single' | 'multiple' | 'crew';
+  scheduleMemberIds?: string[];
+  scheduleCrewId?: string;
   onScheduleAtChange?: (value: string) => void;
   onScheduleTechnicianChange?: (value: string) => void;
+  onAssignModeChange?: (value: 'single' | 'multiple' | 'crew') => void;
+  onScheduleMemberIdsChange?: (value: string[]) => void;
+  onScheduleCrewIdChange?: (value: string) => void;
   onSubmitSchedule?: () => void;
   onCancelSchedule?: () => void;
   technicians?: CompanyMemberDto[];
@@ -42,6 +56,25 @@ export function InterventionCard({
   const { t } = useTranslation();
   const locale = useLocale();
   const ns = 'company.fsm.calendar.interventionCard';
+
+  const { data: crews } = useCrewsQuery();
+  const activeCrews = useMemo(() => crews?.filter((c) => c.isActive) ?? [], [crews]);
+
+  const techniciansSorted = useMemo(
+    () =>
+      [...(technicians ?? [])].sort((a, b) =>
+        memberDisplayName(a).localeCompare(memberDisplayName(b)),
+      ),
+    [technicians],
+  );
+
+  const toggleMember = (id: string) => {
+    if (!onScheduleMemberIdsChange) return;
+    const next = scheduleMemberIds.includes(id)
+      ? scheduleMemberIds.filter((x) => x !== id)
+      : [...scheduleMemberIds, id];
+    onScheduleMemberIdsChange(next);
+  };
 
   return (
     <article className={cn(cabinetPanelClass, 'p-4 space-y-3')}>
@@ -75,25 +108,121 @@ export function InterventionCard({
       ) : null}
       {canDispatch && onSchedule && !item.scheduledAt ? (
         scheduling ? (
-          <div className="space-y-2 border-t border-gray-100 pt-3">
+          <div className="space-y-2.5 border-t border-gray-100 pt-3">
             <input
               type="datetime-local"
               value={scheduleAt ?? ''}
               onChange={(e) => onScheduleAtChange?.(e.target.value)}
               className={cabinetFieldClass}
             />
-            <select
-              value={scheduleTechnicianId ?? ''}
-              onChange={(e) => onScheduleTechnicianChange?.(e.target.value)}
-              className={cabinetSelectClass}
-            >
-              <option value="">{t(`${ns}.noTechnician`)}</option>
-              {technicians?.map((member) => (
-                <option key={member.id} value={member.id}>
-                  {memberDisplayName(member)}
-                </option>
-              ))}
-            </select>
+
+            {/* Assignment Mode Tabs */}
+            <div className="rounded-xl border border-gray-100 bg-gray-50/40 p-2 space-y-2.5">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {(['single', 'multiple', 'crew'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => onAssignModeChange?.(mode)}
+                    className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-wider border transition-colors ${
+                      assignMode === mode
+                        ? 'bg-violet-600 text-white border-violet-600'
+                        : 'bg-white text-gray-600 border-gray-200 hover:bg-violet-50'
+                    }`}
+                  >
+                    {t(`company.fsm.interventions.createModal.assignMode.${mode}`, {
+                      defaultValue:
+                        mode === 'single' ? 'Un singur' : mode === 'multiple' ? 'Mai mulți' : 'Brigadă',
+                    })}
+                  </button>
+                ))}
+              </div>
+
+              {assignMode === 'single' && (
+                <select
+                  value={scheduleTechnicianId ?? ''}
+                  onChange={(e) => onScheduleTechnicianChange?.(e.target.value)}
+                  className={cabinetSelectClass}
+                >
+                  <option value="">{t(`${ns}.noTechnician`, { defaultValue: 'Niciun tehnician' })}</option>
+                  {techniciansSorted.map((member) => (
+                    <option key={member.id} value={member.id}>
+                      {memberDisplayName(member)}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              {assignMode === 'multiple' && (
+                <div className="space-y-1 max-h-36 overflow-y-auto rounded-lg border border-gray-200 bg-white p-2">
+                  {techniciansSorted.length === 0 ? (
+                    <p className="text-xs text-gray-400 italic p-1">
+                      {t('company.fsm.interventions.createModal.assignMode.noMembers', {
+                        defaultValue: 'Niciun membru disponibil',
+                      })}
+                    </p>
+                  ) : (
+                    techniciansSorted.map((m) => (
+                      <label
+                        key={m.id}
+                        className="flex items-center gap-2 px-1.5 py-1 rounded hover:bg-violet-50 cursor-pointer text-xs"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={scheduleMemberIds.includes(m.id)}
+                          onChange={() => toggleMember(m.id)}
+                          className="w-3.5 h-3.5 accent-violet-600 cursor-pointer"
+                        />
+                        <span className="font-semibold text-gray-800">{memberDisplayName(m)}</span>
+                        {scheduleMemberIds.indexOf(m.id) === 0 && scheduleMemberIds.length > 1 && (
+                          <span className="ml-auto text-[9px] font-black uppercase text-violet-600">
+                            Lead
+                          </span>
+                        )}
+                        {scheduleMemberIds.length === 1 && scheduleMemberIds[0] === m.id && (
+                          <span className="ml-auto text-[9px] font-black uppercase text-violet-600">
+                            Lead
+                          </span>
+                        )}
+                      </label>
+                    ))
+                  )}
+                </div>
+              )}
+
+              {assignMode === 'crew' && (
+                <div className="space-y-1">
+                  <select
+                    value={scheduleCrewId}
+                    onChange={(e) => onScheduleCrewIdChange?.(e.target.value)}
+                    className={cabinetSelectClass}
+                  >
+                    <option value="">
+                      {t('company.fsm.interventions.createModal.assignMode.crewPlaceholder', {
+                        defaultValue: 'Alege o brigadă...',
+                      })}
+                    </option>
+                    {activeCrews.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name} ({c.members.length})
+                      </option>
+                    ))}
+                  </select>
+                  {(() => {
+                    const chosen = activeCrews.find((c) => c.id === scheduleCrewId);
+                    if (!chosen) return null;
+                    return (
+                      <p className="text-[9px] text-gray-400 leading-normal pl-1">
+                        {chosen.members
+                          .map((mm) => mm.member.fullName || '—')
+                          .join(', ')}
+                      </p>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+
             <div className="flex gap-2">
               <button type="button" onClick={onSubmitSchedule} className={cabinetBtnPrimary}>
                 {t(`${ns}.save`)}

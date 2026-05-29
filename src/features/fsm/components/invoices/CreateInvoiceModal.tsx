@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/components/ui/AppModal';
 import { INTERVENTION_STATUS } from '@/constants/interventionStatus.constants';
 import { useCreateInvoiceMutation } from '@/features/fsm/api/useInvoices';
 import { useInterventionsQuery } from '@/features/fsm/api/useInterventions';
+import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
+import { useAuthStore } from '@/stores/authStore';
 import { getErrorMessage } from '@/utils/errors';
 
 type Props = {
@@ -31,11 +33,27 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
 function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
   const { t } = useTranslation();
   const { data: interventions } = useInterventionsQuery(INTERVENTION_STATUS.COMPLETED);
+  const { data: companyMe } = useCompanyMeQuery();
+  const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
   const createInvoice = useCreateInvoiceMutation();
 
+  // Default TVA rate mirrors company tax status. Non-TVA payers start at 0%
+  // (a master could still bump it manually if the contract requires it).
+  const activeCompany = useMemo(
+    () => companyMe?.owned.find((c) => c.id === activeCompanyId) ?? null,
+    [companyMe, activeCompanyId],
+  );
+  const defaultTvaRate = activeCompany?.isTvaPayer ? 20 : 0;
   const [interventionId, setInterventionId] = useState('');
-  const [tvaRate, setTvaRate] = useState(20);
+  const [tvaRate, setTvaRate] = useState(defaultTvaRate);
   const [dueDate, setDueDate] = useState('');
+
+  // Sync the default once the company info loads — but only if the user
+  // hasn't manually typed something else yet.
+  const [tvaTouched, setTvaTouched] = useState(false);
+  useEffect(() => {
+    if (!tvaTouched) setTvaRate(defaultTvaRate);
+  }, [defaultTvaRate, tvaTouched]);
 
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,13 +106,24 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
           </label>
           <select
             value={tvaRate}
-            onChange={(e) => setTvaRate(Number(e.target.value))}
+            onChange={(e) => {
+              setTvaTouched(true);
+              setTvaRate(Number(e.target.value));
+            }}
             className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white cursor-pointer font-medium"
           >
             <option value="20">{t('company.fsm.invoices.createModal.tvaOptions.standard20')}</option>
             <option value="8">{t('company.fsm.invoices.createModal.tvaOptions.reduced8')}</option>
             <option value="0">{t('company.fsm.invoices.createModal.tvaOptions.exempt0')}</option>
           </select>
+          {activeCompany && !activeCompany.isTvaPayer && (
+            <p className="text-[10px] text-gray-400 font-medium mt-1.5 leading-relaxed">
+              {t('company.fsm.invoices.createModal.tvaOptions.nonPayerHint', {
+                defaultValue:
+                  'Compania nu este înregistrată ca plătitor TVA — implicit 0%.',
+              })}
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">

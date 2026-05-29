@@ -381,7 +381,10 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                                     line.unit === 'ore' ||
                                     line.unit === 'h' ||
                                     line.description.toLowerCase().includes('manoperă') ||
-                                    line.description.toLowerCase().includes('manopera');
+                                    line.description.toLowerCase().includes('manopera') ||
+                                    line.description.toLowerCase().includes('lucrări') ||
+                                    line.description.toLowerCase().includes('lucrari') ||
+                                    line.description.toLowerCase().includes('labor');
                                   return (
                                     <li
                                       key={line.id}

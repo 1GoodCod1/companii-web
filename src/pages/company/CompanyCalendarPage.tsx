@@ -35,6 +35,9 @@ export function CompanyCalendarPage() {
   const [schedulingId, setSchedulingId] = useState<string | null>(null);
   const [scheduleAt, setScheduleAt] = useState('');
   const [scheduleTechnicianId, setScheduleTechnicianId] = useState('');
+  const [assignMode, setAssignMode] = useState<'single' | 'multiple' | 'crew'>('single');
+  const [scheduleMemberIds, setScheduleMemberIds] = useState<string[]>([]);
+  const [scheduleCrewId, setScheduleCrewId] = useState<string>('');
 
   const technicians = useMemo(() => filterAssignableTechnicians(members), [members]);
   const weekLabel = useMemo(() => formatWeekRangeLabel(from, to, locale), [from, to, locale]);
@@ -49,16 +52,37 @@ export function CompanyCalendarPage() {
       return;
     }
     try {
+      const assignFields: {
+        technicianId: string | null;
+        assigneeMemberIds: string[];
+        crewId: string | null;
+      } = {
+        technicianId: null,
+        assigneeMemberIds: [],
+        crewId: null,
+      };
+
+      if (assignMode === 'crew') {
+        assignFields.crewId = scheduleCrewId || null;
+      } else if (assignMode === 'multiple') {
+        assignFields.assigneeMemberIds = scheduleMemberIds;
+      } else {
+        assignFields.technicianId = scheduleTechnicianId || null;
+      }
+
       await updateIntervention.mutateAsync({
         id: schedulingId,
         scheduledAt: new Date(scheduleAt).toISOString(),
-        technicianId: scheduleTechnicianId || null,
+        ...assignFields,
       });
       await updateStatus.mutateAsync({ id: schedulingId, status: INTERVENTION_STATUS.SCHEDULED });
       toast.success(t('company.calendarPage.toastScheduled'));
       setSchedulingId(null);
       setScheduleAt('');
       setScheduleTechnicianId('');
+      setAssignMode('single');
+      setScheduleMemberIds([]);
+      setScheduleCrewId('');
       refreshBoard();
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('company.calendarPage.toastScheduleFailed')));
@@ -96,14 +120,23 @@ export function CompanyCalendarPage() {
           schedulingId={schedulingId}
           scheduleAt={scheduleAt}
           scheduleTechnicianId={scheduleTechnicianId}
+          assignMode={assignMode}
+          scheduleMemberIds={scheduleMemberIds}
+          scheduleCrewId={scheduleCrewId}
           onScheduleIdChange={setSchedulingId}
           onScheduleAtChange={setScheduleAt}
           onScheduleTechnicianChange={setScheduleTechnicianId}
+          onAssignModeChange={setAssignMode}
+          onScheduleMemberIdsChange={setScheduleMemberIds}
+          onScheduleCrewIdChange={setScheduleCrewId}
           onSubmitSchedule={handleSchedule}
           onCancelSchedule={() => {
             setSchedulingId(null);
             setScheduleAt('');
             setScheduleTechnicianId('');
+            setAssignMode('single');
+            setScheduleMemberIds([]);
+            setScheduleCrewId('');
           }}
           onConvertLead={handleConvertLead}
         />

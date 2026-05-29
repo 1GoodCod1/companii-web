@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { PageHero, cabinetBtnPrimary, cabinetBtnSecondary } from '@/components/cabinet/cabinet-ui';
@@ -9,10 +10,16 @@ import { InvoiceDetailPanel } from '@/features/fsm/components/invoices/InvoiceDe
 import { CreateInvoiceModal } from '@/features/fsm/components/invoices/CreateInvoiceModal';
 import { useEntityModal } from '@/hooks/useEntityModal';
 import { useEntitySelection } from '@/hooks/useEntitySelection';
+import type { InvoicePaymentStatus } from '@/types/fsm';
+
+type StatusFilter = InvoicePaymentStatus | 'ALL';
 
 export function CompanyInvoicesPage() {
   const { t } = useTranslation();
-  const { data: invoices, isLoading } = useInvoicesQuery();
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
+  const { data: invoices, isLoading } = useInvoicesQuery({
+    status: statusFilter === 'ALL' ? undefined : statusFilter,
+  });
   const createModal = useEntityModal();
   const { selectedId, select, clear } = useEntitySelection();
 
@@ -23,7 +30,25 @@ export function CompanyInvoicesPage() {
           title={t('company.invoicesPage.title')}
           description={t('company.invoicesPage.description')}
           action={
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 items-center">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+                className="px-3 py-2 text-xs font-bold rounded-xl border border-gray-200 bg-white cursor-pointer focus:border-violet-500 focus:outline-none"
+              >
+                <option value="ALL">
+                  {t('company.invoicesPage.filter.all', { defaultValue: 'Toate' })}
+                </option>
+                <option value="UNPAID">
+                  {t('company.invoicesPage.filter.unpaid', { defaultValue: 'Neplătite' })}
+                </option>
+                <option value="OVERDUE">
+                  {t('company.invoicesPage.filter.overdue', { defaultValue: 'Restante' })}
+                </option>
+                <option value="PAID">
+                  {t('company.invoicesPage.filter.paid', { defaultValue: 'Plătite' })}
+                </option>
+              </select>
               <button
                 type="button"
                 onClick={() => downloadInvoicesCsv().catch((e: Error) => toast.error(e.message))}

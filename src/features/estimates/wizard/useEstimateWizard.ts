@@ -114,16 +114,18 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     setDirty(true);
   };
 
-  const persistDiagnostic = (answers: Record<string, unknown>) =>
-    mergeEnabledWorkModulesIntoDiagnostic(
-      mergeCustomPricing(answers, customPricing),
-      config,
-    );
+  const persistDiagnostic = useCallback(
+    (answers: Record<string, unknown>) =>
+      mergeEnabledWorkModulesIntoDiagnostic(
+        mergeCustomPricing(answers, customPricing),
+        config,
+      ),
+    [customPricing, config],
+  );
 
   const validation = useMemo(
     () => validateDiagnostic(config, persistDiagnostic(diagnostic)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [config, diagnostic, customPricing],
+    [config, diagnostic, persistDiagnostic],
   );
   const validationErrors = validation.fieldErrors;
   const validationWarnings = validation.warnings;
@@ -131,8 +133,8 @@ export function useEstimateWizard(project: EstimateProjectDto) {
   const canGoNext = !hasBlockingErrors;
 
   const customFieldSections = useMemo(
-    () => groupVisibleCustomFields(config, enabledWorkModules),
-    [config, enabledWorkModules],
+    () => groupVisibleCustomFields(config, enabledWorkModules, persistDiagnostic(diagnostic)),
+    [config, enabledWorkModules, diagnostic, persistDiagnostic],
   );
 
   const visibleStages = useMemo(
@@ -161,27 +163,26 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     [project.stages],
   );
 
-  // L-01: client-side preview engine — mirrors the subset of backend
-  // pricing-engine that depends on diagnosticAnswers + customPricing.
-  // Final totals always come from backend after /calculate (L-02).
   const previewLines = useMemo(
     () =>
       computePreviewLines(
         config,
-        extractMeasurementsFromDiagnostic(persistDiagnostic(diagnostic)),
+        extractMeasurementsFromDiagnostic(
+          persistDiagnostic(diagnostic),
+          project.category?.slug ?? undefined,
+        ),
         enabledWorkModules,
         accessDifficulty,
         urgency,
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [config, diagnostic, customPricing, enabledWorkModules, accessDifficulty, urgency],
+    [config, diagnostic, enabledWorkModules, accessDifficulty, urgency, persistDiagnostic],
   );
   const previewTotals = useMemo(
     () => computePreviewTotals(previewLines, marginPct, customPricing, riskReservePct),
     [previewLines, marginPct, customPricing, riskReservePct],
   );
 
-  // L-02: divergence between local preview and authoritative backend grandTotal.
   const backendGrandTotal = Number(project.grandTotal ?? 0);
   const previewVsBackendDiff =
     backendGrandTotal > 0 && previewTotals.hasContent
@@ -211,68 +212,63 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     plan2d,
   });
 
-  // H-06: Clear siteFloor if type is house
-  useEffect(() => {
-    if (siteType === 'house' && siteFloor !== null) {
-      setSiteFloor(null);
-      setDirty(true);
-    }
-  }, [siteType, siteFloor]);
-
-  // H-05: Smart Defaults based on siteType (office / commercial)
-  useEffect(() => {
-    if (!siteType) return;
-    if (siteType === 'office' || siteType === 'commercial') {
-      if (!accessDifficulty) {
+  const handleSetSiteType = useCallback(
+    (nextType: string) => {
+      setSiteType(nextType);
+      if (nextType === 'house' && siteFloor !== null) {
+        setSiteFloor(null);
+      }
+      if ((nextType === 'office' || nextType === 'commercial') && !accessDifficulty) {
         setAccessDifficulty('medium');
-        setDirty(true);
       }
       const categorySlug = project.category.slug;
       setDiagnostic((prev) => {
         const next = { ...prev };
         let changed = false;
         if (categorySlug === 'elektrika') {
-          if (!next.wallMaterial) {
-            next.wallMaterial = 'beton';
-            changed = true;
-          }
-          if (next.voltageStabilizer === undefined) {
-            next.voltageStabilizer = true;
-            changed = true;
-          }
-          if (next.groundingRequired === undefined) {
-            next.groundingRequired = true;
-            changed = true;
-          }
+          if (!next.wallMaterial) { next.wallMaterial = 'beton'; changed = true; }
+          if (next.voltageStabilizer === undefined) { next.voltageStabilizer = true; changed = true; }
+          if (next.groundingRequired === undefined) { next.groundingRequired = true; changed = true; }
         }
         if (categorySlug === 'clima') {
-          if (next.isMultiSplit === undefined) {
-            next.isMultiSplit = true;
-            changed = true;
-          }
+          if (next.isMultiSplit === undefined) { next.isMultiSplit = true; changed = true; }
         }
         if (categorySlug === 'it-networks') {
-          if (!next.projectScope) {
-            next.projectScope = 'Mediu (6-20 pagini / 1-2 săptămâni)';
-            changed = true;
-          }
-          if (next.multilingual === undefined) {
-            next.multilingual = true;
-            changed = true;
-          }
-          if (next.customDesign === undefined) {
-            next.customDesign = true;
+          if (!next.projectScope) { next.projectScope = 'Mediu (6-20 pagini / 1-2 săptămâni)'; changed = true; }
+          if (next.multilingual === undefined) { next.multilingual = true; changed = true; }
+          if (next.customDesign === undefined) { next.customDesign = true; changed = true; }
+        }
+        if (categorySlug === 'it-hardware') {
+          if (!next.deviceType) { next.deviceType = 'Desktop / PC'; changed = true; }
+          if (next.warrantyMonths === undefined) { next.warrantyMonths = 3; changed = true; }
+          if (next.deviceCount === undefined || (typeof next.deviceCount === 'number' && next.deviceCount < 1)) {
+            next.deviceCount = 1;
             changed = true;
           }
         }
-        if (changed) {
-          setDirty(true);
-          return next;
+        if (categorySlug === 'mobila') {
+          if (!next.materialType) { next.materialType = 'pal'; changed = true; }
+          if (!next.materialThickness) { next.materialThickness = '16 mm'; changed = true; }
+          if (!next.finishType) { next.finishType = 'Mat'; changed = true; }
+          if (!next.frontMaterialType) { next.frontMaterialType = 'pal'; changed = true; }
+          if (next.softClose === undefined) { next.softClose = true; changed = true; }
         }
-        return prev;
+        if (categorySlug === 'santehnika') {
+          if (!next.pipeMaterial) { next.pipeMaterial = 'ppr'; changed = true; }
+          if (next.replacePipes === undefined) { next.replacePipes = true; changed = true; }
+          if (next.filterSystem === undefined) { next.filterSystem = false; changed = true; }
+        }
+        if (categorySlug === 'constructii') {
+          if (!next.foundationType) { next.foundationType = 'strip'; changed = true; }
+          if (!next.wallMaterial) { next.wallMaterial = 'bca'; changed = true; }
+          if (!next.slabType) { next.slabType = 'monolithic'; changed = true; }
+          if (next.projectDocumentation === undefined) { next.projectDocumentation = true; changed = true; }
+        }
+        return changed ? next : prev;
       });
-    }
-  }, [siteType, project.category.slug, accessDifficulty]);
+    },
+    [siteFloor, accessDifficulty, project.category.slug],
+  );
 
   useEffect(() => {
     snapshotRef.current = {
@@ -704,13 +700,51 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     }
   };
 
+  const clientFeedbackHistory = useMemo(() => {
+    try {
+      const raw = project.clientFeedback;
+      if (!raw) return [];
+      return Array.isArray(raw) ? raw : JSON.parse(raw as string);
+    } catch {
+      return [];
+    }
+  }, [project.clientFeedback]);
+
+  const hasRequestChanges = useMemo(() => {
+    if (!clientFeedbackHistory.length) return false;
+    const last = clientFeedbackHistory[clientFeedbackHistory.length - 1];
+    return last?.kind === 'REQUEST_CHANGES';
+  }, [clientFeedbackHistory]);
+
+  const isReadOnly = useMemo(() => {
+    if (['ACCEPTED', 'IN_EXECUTION', 'DONE', 'CANCELLED'].includes(project.status)) {
+      return true;
+    }
+    if (project.status === 'SENT' && !hasRequestChanges) {
+      return true;
+    }
+    return false;
+  }, [project.status, hasRequestChanges]);
+
   const canSendEstimate = project.status === 'CALCULATED' || project.status === 'APPROVED';
   const canConvertEstimate = project.status === ESTIMATE_STATUS.ACCEPTED;
   const activeCustomPricing = readCustomPricing(persistDiagnostic(diagnostic));
-  const isServiceCategory = ['it-networks'].includes(project.category.slug);
+  const isServiceCategory = ['it-networks', 'it-hardware'].includes(project.category.slug);
+  const isFurnitureCategory = project.category.slug === 'mobila';
+  const isElektrikaCategory = project.category.slug === 'elektrika';
+  const isPlumbingCategory = project.category.slug === 'santehnika';
+  const isConstructiiCategory = project.category.slug === 'constructii';
   const pricingUnitLabel = isServiceCategory
     ? t('company.estimateWizard.customPricing.unitPriceHour')
-    : undefined;
+    : isFurnitureCategory
+      ? t('company.estimateWizard.customPricing.unitPriceLinear')
+      : isElektrikaCategory
+        ? t('company.estimateWizard.customPricing.unitPricePoint')
+        : isPlumbingCategory
+          ? t('company.estimateWizard.customPricing.unitPricePoint')
+          : isConstructiiCategory
+            ? t('company.estimateWizard.customPricing.unitPriceSqm')
+            : undefined;
 
   return {
     project,
@@ -723,7 +757,7 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     title,
     setTitle,
     siteType,
-    setSiteType,
+    setSiteType: handleSetSiteType,
     address,
     setAddress,
     marginPct,
@@ -759,6 +793,7 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     previewTotals,
     previewVsBackendDiff,
     previewIsStale,
+    isReadOnly,
     offlineState: {
       online: offline.online,
       syncState: offline.syncState,
@@ -810,7 +845,19 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     pricingUnitLabel,
     estimateMode,
     setEstimateMode,
+    isServiceCategory,
+    isFurnitureCategory,
+    isElektrikaCategory,
+    isPlumbingCategory,
+    isConstructiiCategory,
   };
 }
 
-export type EstimateWizardApi = ReturnType<typeof useEstimateWizard>;
+export type EstimateWizardApi = ReturnType<typeof useEstimateWizard> & {
+  isServiceCategory: boolean;
+  isFurnitureCategory: boolean;
+  isElektrikaCategory: boolean;
+  isPlumbingCategory: boolean;
+  isConstructiiCategory: boolean;
+  isReadOnly: boolean;
+};

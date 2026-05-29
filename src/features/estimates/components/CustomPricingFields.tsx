@@ -14,6 +14,7 @@ type Props = {
   onChange: (values: CustomPricingValues) => void;
   compact?: boolean;
   unitLabel?: string;
+  disabled?: boolean;
 };
 
 function parseOptionalNumber(raw: string): number | undefined {
@@ -23,7 +24,7 @@ function parseOptionalNumber(raw: string): number | undefined {
   return value;
 }
 
-export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
+export function CustomPricingFields({ values, onChange, unitLabel, disabled }: Props) {
   const { t } = useTranslation();
   const [showUnitPrice, setShowUnitPrice] = useState(values.customUnitPriceSqm !== undefined ? !!values.customUnitPriceSqm : true);
   const [showLaborTotal, setShowLaborTotal] = useState(values.customLaborTotal !== undefined ? !!values.customLaborTotal : true);
@@ -31,6 +32,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
   const [showLaborHours, setShowLaborHours] = useState(!!values.customLaborHours);
 
   const toggleUnitPrice = () => {
+    if (disabled) return;
     const next = !showUnitPrice;
     setShowUnitPrice(next);
     if (!next) {
@@ -39,6 +41,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
   };
 
   const toggleLaborTotal = () => {
+    if (disabled) return;
     const next = !showLaborTotal;
     setShowLaborTotal(next);
     if (!next) {
@@ -47,6 +50,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
   };
 
   const toggleDuration = () => {
+    if (disabled) return;
     const next = !showDuration;
     setShowDuration(next);
     if (!next) {
@@ -55,6 +59,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
   };
 
   const toggleLaborHours = () => {
+    if (disabled) return;
     const next = !showLaborHours;
     setShowLaborHours(next);
     if (!next) {
@@ -90,9 +95,10 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
             <button
               type="button"
               onClick={toggleUnitPrice}
+              disabled={disabled}
               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none ${
                 showUnitPrice ? 'bg-violet-600 shadow-[0_0_8px_rgba(124,58,237,0.3)]' : 'bg-slate-200'
-              }`}
+              } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
             >
               <span
                 className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-300 ease-in-out ${
@@ -105,7 +111,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
             type="number"
             min={0}
             step={1}
-            disabled={!showUnitPrice}
+            disabled={disabled || !showUnitPrice}
             placeholder={showUnitPrice ? t('company.estimateWizard.customPricing.unitPricePlaceholder') : t('company.estimateWizard.customPricing.inactivePlaceholder')}
             value={showUnitPrice ? (values.customUnitPriceSqm ?? '') : ''}
             onChange={(e) =>
@@ -115,7 +121,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
               })
             }
             className={`w-full rounded-xl bg-slate-50/90 px-3.5 py-2.5 text-sm outline-none transition-all placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500/20 focus:shadow-sm ${
-              showUnitPrice 
+              showUnitPrice && !disabled
                 ? 'text-gray-900 border border-slate-200 focus:border-violet-500' 
                 : 'text-gray-400 border border-slate-100 bg-slate-100/30 cursor-not-allowed opacity-60'
             }`}
@@ -132,9 +138,10 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
             <button
               type="button"
               onClick={toggleLaborTotal}
+              disabled={disabled}
               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none ${
                 showLaborTotal ? 'bg-violet-600 shadow-[0_0_8px_rgba(124,58,237,0.3)]' : 'bg-slate-200'
-              }`}
+              } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
             >
               <span
                 className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-300 ease-in-out ${
@@ -147,7 +154,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
             type="number"
             min={0}
             step={1}
-            disabled={!showLaborTotal}
+            disabled={disabled || !showLaborTotal}
             placeholder={showLaborTotal ? t('company.estimateWizard.customPricing.laborPlaceholder') : t('company.estimateWizard.customPricing.inactivePlaceholder')}
             value={showLaborTotal ? (values.customLaborTotal ?? '') : ''}
             onChange={(e) =>
@@ -157,7 +164,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
               })
             }
             className={`w-full rounded-xl bg-slate-50/90 px-3.5 py-2.5 text-sm outline-none transition-all placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500/20 focus:shadow-sm ${
-              showLaborTotal 
+              showLaborTotal && !disabled
                 ? 'text-gray-900 border border-slate-200 focus:border-violet-500' 
                 : 'text-gray-400 border border-slate-100 bg-slate-100/30 cursor-not-allowed opacity-60'
             }`}
@@ -174,9 +181,10 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
             <button
               type="button"
               onClick={toggleDuration}
+              disabled={disabled}
               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none ${
                 showDuration ? 'bg-violet-600 shadow-[0_0_8px_rgba(124,58,237,0.3)]' : 'bg-slate-200'
-              }`}
+              } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
             >
               <span
                 className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-300 ease-in-out ${
@@ -189,7 +197,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
             type="number"
             min={0}
             step={1}
-            disabled={!showDuration}
+            disabled={disabled || !showDuration}
             placeholder={showDuration ? t('company.estimateWizard.customPricing.durationPlaceholder') : t('company.estimateWizard.customPricing.inactivePlaceholder')}
             value={showDuration ? (values.customDurationDays ?? '') : ''}
             onChange={(e) =>
@@ -199,7 +207,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
               })
             }
             className={`w-full rounded-xl bg-slate-50/90 px-3.5 py-2.5 text-sm outline-none transition-all placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500/20 focus:shadow-sm ${
-              showDuration 
+              showDuration && !disabled
                 ? 'text-gray-900 border border-slate-200 focus:border-violet-500' 
                 : 'text-gray-400 border border-slate-100 bg-slate-100/30 cursor-not-allowed opacity-60'
             }`}
@@ -216,9 +224,10 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
             <button
               type="button"
               onClick={toggleLaborHours}
+              disabled={disabled}
               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none ${
                 showLaborHours ? 'bg-violet-600 shadow-[0_0_8px_rgba(124,58,237,0.3)]' : 'bg-slate-200'
-              }`}
+              } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
             >
               <span
                 className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-300 ease-in-out ${
@@ -231,7 +240,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
             type="number"
             min={0}
             step={0.5}
-            disabled={!showLaborHours}
+            disabled={disabled || !showLaborHours}
             placeholder={showLaborHours ? t('company.estimateWizard.customPricing.laborHoursPlaceholder') : t('company.estimateWizard.customPricing.inactivePlaceholder')}
             value={showLaborHours ? (values.customLaborHours ?? '') : ''}
             onChange={(e) =>
@@ -241,7 +250,7 @@ export function CustomPricingFields({ values, onChange, unitLabel }: Props) {
               })
             }
             className={`w-full rounded-xl bg-slate-50/90 px-3.5 py-2.5 text-sm outline-none transition-all placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500/20 focus:shadow-sm ${
-              showLaborHours 
+              showLaborHours && !disabled
                 ? 'text-gray-900 border border-slate-200 focus:border-violet-500' 
                 : 'text-gray-400 border border-slate-100 bg-slate-100/30 cursor-not-allowed opacity-60'
             }`}

@@ -31,6 +31,7 @@ export type BlueprintWorkModule = {
   ruleKeys?: string[];
   requiresQtyKeys?: string[];
   helpText?: string;
+  section?: string;
 };
 
 export type BlueprintCustomField = {
@@ -49,6 +50,7 @@ export type BlueprintCustomField = {
   warningRules?: Array<{ when: string; message: string }>;
   section?: string;
   placeholder?: string;
+  directionKeys?: string[];
 };
 
 export type BlueprintDiagnosticQuestion = {

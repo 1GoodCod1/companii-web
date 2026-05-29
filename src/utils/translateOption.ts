@@ -25,15 +25,15 @@ export const OPTION_TRANSLATIONS: Record<string, { ro: string; ru: string }> = {
 
   // paving (pavaj)
   simple: { ro: 'Model Simplu — Standard', ru: 'Простая укладка — Стандарт' },
-  mixed: { ro: 'Model Mixt — Mediu (+15% labor)', ru: 'Смешанная укладка — Средний уровень (+15% к работе)' },
-  decorative: { ro: 'Model Decorativ / Complex (+35% labor)', ru: 'Декоративная / Сложная укладка (+35% к работе)' },
+  mixed: { ro: 'Model Mixt — Mediu (+15% la costul lucrărilor)', ru: 'Смешанная укладка — Средний уровень (+15% к работе)' },
+  decorative: { ro: 'Model Decorativ / Complex (+35% la costul lucrărilor)', ru: 'Декоративная / Сложная укладка (+35% к работе)' },
   pedestrian: { ro: 'Trafic pietonal (pavele subțiri)', ru: 'Пешеходный трафик (тонкая плитка)' },
   car: { ro: 'Trafic auto ușor — Mediu (+20% cost)', ru: 'Легковой транспорт — Средняя прочность (+20% к стоимости)' },
   heavy: { ro: 'Trafic greu / camioane — Robust (+45% cost)', ru: 'Грузовой транспорт — Усиленная прочность (+45% к стоимости)' },
 
   // solar panels (panouri-solare)
   metal: { ro: 'Acoperiș metalic — Standard', ru: 'Металлическая крыша — Стандарт' },
-  tile: { ro: 'Acoperiș din țiglă — Complex (+15% labor)', ru: 'Черепичная крыша — Сложная (+15% к работе)' },
+  tile: { ro: 'Acoperiș din țiglă — Complex (+15% la costul lucrărilor)', ru: 'Черепичная крыша — Сложная (+15% к работе)' },
   flat: { ro: 'Acoperiș plat / terasă — Cu balast', ru: 'Плоская крыша / терраса — Балластная' },
   ground: { ro: 'Montaj la sol — Structură specială', ru: 'Наземный монтаж — Спец. конструкция' },
   on_grid: { ro: 'On-Grid (Injectare rețea)', ru: 'On-Grid (Сетевая)' },
@@ -45,7 +45,7 @@ export const OPTION_TRANSLATIONS: Record<string, { ro: string; ru: string }> = {
 
   // windows & doors (okna-dveri)
   standard: { ro: 'Standard', ru: 'Стандарт' },
-  warm_installation: { ro: 'Montaj cald (ISO-BLOCO) — Premium (+35% labor)', ru: 'Тёплый монтаж (евромонтаж) — Премиум (+35% к работе)' },
+  warm_installation: { ro: 'Montaj cald (ISO-BLOCO) — Premium (+35% la costul lucrărilor)', ru: 'Тёплый монтаж (евромонтаж) — Премиум (+35% к работе)' },
   renovation: { ro: 'Renovare (fără demontare toc) — Econom', ru: 'Реновация (без демонтажа коробки) — Эконом' },
   econom: { ro: 'Clasa Econom', ru: 'Класс Эконом' },
   premium: { ro: 'Clasa Premium (+30% cost)', ru: 'Класс Премиум (+30% к стоимости)' },
@@ -63,8 +63,8 @@ export const OPTION_TRANSLATIONS: Record<string, { ro: string; ru: string }> = {
 
   // wall/finish condition & quality (lucrari-finisaj)
   new: { ro: 'Construcție nouă (gri/roșu) — Standard', ru: 'Новостройка (серый/красный вариант) — Стандарт' },
-  old: { ro: 'Clădire veche (necesită curățare) — Mediu (+20% labor)', ru: 'Вторичное жилье (требует очистки) — Средне (+20% к работе)' },
-  very_bad: { ro: 'Stare degradată / avariată — Dificil (+40% labor)', ru: 'Аварийное / сильно поврежденное — Сложно (+40% к работе)' },
+  old: { ro: 'Clădire veche (necesită curățare) — Mediu (+20% la costul lucrărilor)', ru: 'Вторичное жилье (требует очистки) — Средне (+20% к работе)' },
+  very_bad: { ro: 'Stare degradată / avariată — Dificil (+40% la costul lucrărilor)', ru: 'Аварийное / сильно поврежденное — Сложно (+40% к работе)' },
   economic: { ro: 'Pachet Economic', ru: 'Пакет Экономичный' },
 
   // IT directions (it-networks)
@@ -90,7 +90,7 @@ export const OPTION_TRANSLATIONS: Record<string, { ro: string; ru: string }> = {
   polistiren: { ro: 'Polistiren — Standard', ru: 'Пенополистирол — Стандарт' },
   vata_bazaltica: { ro: 'Vată bazaltică — Premium/Ignifug (+40% cost)', ru: 'Базальтовая вата — Премиум/Огнестойкая (+40% к стоимости)' },
   xps: { ro: 'Polistiren extrudat (XPS) — Ultra-rezistent', ru: 'Экструдированный пенополистирол (XPS) — Цоколь' },
-  damaged: { ro: 'Deteriorată (necesită reparații) — Dificil (+25% labor)', ru: 'Поврежденная (требуется ремонт) — Сложно (+25% к работе)' },
+  damaged: { ro: 'Deteriorată (necesită reparații) — Dificil (+25% la costul lucrărilor)', ru: 'Поврежденная (требуется ремонт) — Сложно (+25% к работе)' },
 
   // wall material for facade dowel density (fatade.wallMaterial)
   panel: { ro: 'Panou beton prefabricat — Dens (-15% dibluri)', ru: 'Бетонные панели — Плотный (-15% дюбелей)' },
@@ -104,15 +104,15 @@ export const OPTION_TRANSLATIONS: Record<string, { ro: string; ru: string }> = {
   // electrical wall materials (elektrika)
   gips: { ro: 'Gips-carton — Ușor (Fără ștrobire)', ru: 'Гипсокартон — Легко (без штробления)' },
   bca: { ro: 'BCA — Mediu (Ușor de frezat)', ru: 'Газобетон / пеноблок — Средне (легко режется)' },
-  caramida: { ro: 'Cărămidă — Greu (+25% labor)', ru: 'Кирпич — Сложно (+25% к работе)' },
-  beton: { ro: 'Beton armat — Extrem (+60% labor)', ru: 'Железобетон — Экстремально (+60% к работе)' },
+  caramida: { ro: 'Cărămidă — Greu (+25% la costul lucrărilor)', ru: 'Кирпич — Сложно (+25% к работе)' },
+  beton: { ro: 'Beton armat — Extrem (+60% la costul lucrărilor)', ru: 'Железобетон — Экстремально (+60% к работе)' },
 
   // structural foundation types & masonry (constructii)
   strip: { ro: 'Fundație continuă (centură) — Bază', ru: 'Ленточный фундамент — Базовый' },
   slab: { ro: 'Radier general (placă) — Robust (+30% cost)', ru: 'Плитный фундамент — Усиленный (+30% к стоимости)' },
   pile: { ro: 'Piloni — Soluție geotehnică specială', ru: 'Свайный фундамент — Спец. решение' },
   isolated: { ro: 'Fundație izolată (pahare) — Industrial', ru: 'Столбчатый фундамент — Промышленный' },
-  brick: { ro: 'Zidărie cărămidă — Clasic (+20% labor)', ru: 'Кирпичная кладка — Классика (+20% к работе)' },
+  brick: { ro: 'Zidărie cărămidă — Clasic (+20% la costul lucrărilor)', ru: 'Кирпичная кладка — Классика (+20% к работе)' },
   concrete: { ro: 'Beton monolit — Rezistență maximă', ru: 'Монолитный бетон — Макс. прочность' },
   wood_frame: { ro: 'Cadru din lemn — Eco/Rapid', ru: 'Деревянный каркас — Эко/Быстро' },
   monolithic: { ro: 'Planșeu monolit — Premium', ru: 'Монолитное перекрытие — Премиум' },
@@ -120,11 +120,15 @@ export const OPTION_TRANSLATIONS: Record<string, { ro: string; ru: string }> = {
   wood: { ro: 'Planșeu din lemn — Econom', ru: 'Деревянное перекрытие — Эконом' },
 
   // cleaning service types & floors (cleaning)
-  deep: { ro: 'Curățenie generală — Profundă (+40% cost)', ru: 'Генеральная уборка — Глубокая (+40% к стоимости)' },
-  post_construction: { ro: 'Curățenie după constructor — Complex (+100% cost)', ru: 'Уборка после ремонта — Сложная (+100% к стоимости)' },
-  move_out: { ro: 'Curățenie mutare — Detaliată (+25% cost)', ru: 'Уборка при въезде/выезде — Детальная (+25% к стоимости)' },
+  deep: { ro: 'Curățenie generală — Profundă (+35% cost)', ru: 'Генеральная уборка — Глубокая (+35% к стоимости)' },
+  post_construction: { ro: 'Curățenie după constructor — Complex (+65% cost)', ru: 'Уборка после ремонта — Сложная (+65% к стоимости)' },
+  move_out: { ro: 'Curățenie la mutare — Detaliată (+25% cost)', ru: 'Уборка при въезде/выезде — Детальная (+25% к стоимости)' },
   carpet: { ro: 'Mochetă / covoare — Aspirare profesională', ru: 'Ковролин / ковры — Проф. очистка' },
-  low: { ro: 'Grad scăzut de murdărie', ru: 'Низкая степень загрязнения' },
+
+  // cleaning afterRepairDustLevel options
+  low: { ro: 'Praf scăzut (lucrări minore)', ru: 'Низкий уровень пыли (мелкие работы)' },
+  medium: { ro: 'Praf mediu — reparații (+15% cost)', ru: 'Средний — после ремонта (+15% к стоимости)' },
+  high: { ro: 'Praf ridicat — construcție completă (+35% cost)', ru: 'Сильное запыление — после стройки (+35% к стоимости)' },
 };
 
 export function useTranslateOption() {

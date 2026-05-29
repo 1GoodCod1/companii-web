@@ -111,7 +111,7 @@ export const publicRo = {
         },
         {
           title: 'Smetă cu parametri',
-          text: 'Dimensiuni încăperi, echipamente — sistemul calculează materiale, manoperă și marjă.',
+          text: 'Dimensiuni încăperi, echipamente — sistemul calculează materiale, costul lucrărilor și marjă.',
         },
         {
           title: 'Portal client',
@@ -309,7 +309,7 @@ export const publicRo = {
         {
           title: '2. Dimensionare Inteligentă & Smetă Smart',
           description:
-            'În loc de desenat pe hârtie, completezi parametrii clădirii (înălțime pereți, arie sol, unghi acoperiș) și cantitățile de echipamente în configuratorul integrat. Platforma determină automat consumul de materiale, orele de manoperă și marja de profit dorită, generând devizul (smeta) instantaneu.',
+            'În loc de desenat pe hârtie, completezi parametrii clădirii (înălțime pereți, arie sol, unghi acoperiș) și cantitățile de echipamente în configuratorul integrat. Platforma determină automat consumul de materiale, orele de lucru și marja de profit dorită, generând devizul (smeta) instantaneu.',
         },
         {
           title: '3. Gestiune Tehnicieni & Dispecerat FSM',
@@ -341,7 +341,7 @@ export const publicRo = {
         {
           title: '3. Aprobare Live a Devizelor / Smetelor',
           description:
-            'Compania îți trimite devizul oficial direct în contul tău de portal. Îl poți deschide, vezi prețul la fiecare punct de manoperă și material, și îl poți aproba sau refuza printr-un singur click în timp real. Astfel, eviți neînțelegerile.',
+            'Compania îți trimite devizul oficial direct în contul tău de portal. Îl poți deschide, vezi prețul la fiecare lucrare de execuție și material, și îl poți aproba sau refuza printr-un singur click în timp real. Astfel, eviți neînțelegerile.',
         },
         {
           title: '4. Istoric Clar & Descărcare Facturi PDF',

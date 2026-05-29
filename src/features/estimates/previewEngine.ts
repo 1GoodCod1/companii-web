@@ -1,6 +1,12 @@
 import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
 import { isPricingRuleActive } from './workModules';
 import type { CustomPricingValues } from './customPricing';
+import { deriveItNetworksMeasurements } from './itNetworksDerivation';
+import { deriveItHardwareMeasurements } from './itHardwareDerivation';
+import { deriveMobilaMeasurements } from './mobilaDerivation';
+import { deriveElektrikaMeasurements } from './elektrikaDerivation';
+import { deriveSantehnikaMeasurements } from './santehnikaDerivation';
+import { deriveConstructiiMeasurements } from './constructiiDerivation';
 
 export type PreviewLine = {
   stageCode: string;
@@ -158,12 +164,38 @@ export function computePreviewTotals(
  * Extracts the subset of `diagnosticAnswers` that looks like measurement numbers.
  * `enabledWorkModules` is excluded (it's not a measurement). Boolean values pass
  * through as 0/1 so rules keyed by them (e.g. waterHeater) still trigger.
+ *
+ * For IT networks, runs deriveItNetworksMeasurements to compute derived
+ * measurements (analysisHours, testingHours, trainingHours, designPageCount,
+ * networkCableM, etc.) so the client preview matches the backend.
  */
 export function extractMeasurementsFromDiagnostic(
   diagnostic: Record<string, unknown> | null | undefined,
+  categorySlug?: string | null,
 ): Record<string, number> {
   const out: Record<string, number> = {};
   if (!diagnostic) return out;
+
+  // IT networks: run derivation first so derived keys are populated
+  if (categorySlug === 'it-networks') {
+    Object.assign(out, deriveItNetworksMeasurements(diagnostic));
+  }
+  if (categorySlug === 'it-hardware') {
+    Object.assign(out, deriveItHardwareMeasurements(diagnostic));
+  }
+  if (categorySlug === 'mobila') {
+    Object.assign(out, deriveMobilaMeasurements(diagnostic));
+  }
+  if (categorySlug === 'elektrika') {
+    Object.assign(out, deriveElektrikaMeasurements(diagnostic));
+  }
+  if (categorySlug === 'santehnika') {
+    Object.assign(out, deriveSantehnikaMeasurements(diagnostic));
+  }
+  if (categorySlug === 'constructii') {
+    Object.assign(out, deriveConstructiiMeasurements(diagnostic));
+  }
+
   for (const [key, raw] of Object.entries(diagnostic)) {
     if (key === 'enabledWorkModules') continue;
     if (typeof raw === 'number' && Number.isFinite(raw)) {

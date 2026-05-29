@@ -41,6 +41,7 @@ export function DiagnosticStep({ wizard }: Props) {
     validationWarnings,
     apiWarnings,
     hasBlockingErrors,
+    isReadOnly,
   } = wizard;
 
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -67,6 +68,21 @@ export function DiagnosticStep({ wizard }: Props) {
   const showRoofManualReview =
     (Number.isFinite(slopeNum) && slopeNum > 60) || shapeRaw === 'complex';
 
+  // Cleaning: surface module/type mismatch (e.g. type=post_construction but
+  // post_construction module is OFF). Without the module the matching pricing
+  // line silently never appears.
+  const cleaningTypeRaw = String(diagnostic.cleaningType ?? '');
+  const cleaningMismatch =
+    (cleaningTypeRaw === 'post_construction' &&
+      !enabledWorkModules.includes('post_construction')) ||
+    (cleaningTypeRaw === 'deep' && !enabledWorkModules.includes('deep_cleaning'));
+  const cleaningMismatchModuleLabel =
+    cleaningTypeRaw === 'post_construction'
+      ? 'Curățenie post-șantier'
+      : cleaningTypeRaw === 'deep'
+        ? 'Curățenie profundă'
+        : '';
+
   return (
     <Panel className="p-6 max-w-2xl space-y-5">
       <h3 className="font-bold text-gray-900">
@@ -78,6 +94,7 @@ export function DiagnosticStep({ wizard }: Props) {
           config={config}
           enabled={enabledWorkModules}
           onToggle={setWorkModuleEnabled}
+          disabled={isReadOnly}
         />
       ) : null}
 
@@ -88,7 +105,7 @@ export function DiagnosticStep({ wizard }: Props) {
             {t('company.estimateWizard.diagnosticStep.heightCoeffNotice', {
               defaultValue:
                 'Înălțime peste 9 m — se aplică automat un coeficient de înălțime 1.2× la manoperă.',
-            })}
+              })}
           </span>
         </div>
       )}
@@ -105,6 +122,19 @@ export function DiagnosticStep({ wizard }: Props) {
         </div>
       )}
 
+      {cleaningMismatch && (
+        <div className="flex items-start gap-2 rounded-xl bg-amber-50/70 border border-amber-200 p-3">
+          <span className="text-amber-600 font-extrabold text-sm shrink-0">⚠️</span>
+          <span className="text-xs font-semibold text-amber-950 leading-relaxed">
+            {t('company.estimateWizard.diagnosticStep.cleaningTypeMismatch', {
+              module: cleaningMismatchModuleLabel,
+              defaultValue:
+                'Ai ales tipul de curățenie corespunzător dar modulul „{{module}}” nu este activ — liniile speciale nu vor apărea. Activează modulul mai sus.',
+            })}
+          </span>
+        </div>
+      )}
+
       {basicSections.map((section) => (
         <FormSection key={section.key} title={section.label}>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -116,6 +146,7 @@ export function DiagnosticStep({ wizard }: Props) {
                 onChange={(val) => setDiagnostic({ ...diagnostic, [field.key]: val })}
                 error={validationErrors?.[field.key]}
                 warning={warningByKey.get(field.key)}
+                disabled={isReadOnly}
               />
             ))}
           </div>
@@ -152,6 +183,7 @@ export function DiagnosticStep({ wizard }: Props) {
                       onChange={(val) => setDiagnostic({ ...diagnostic, [field.key]: val })}
                       error={validationErrors?.[field.key]}
                       warning={warningByKey.get(field.key)}
+                      disabled={isReadOnly}
                     />
                   ))}
                 </div>
@@ -182,6 +214,7 @@ export function DiagnosticStep({ wizard }: Props) {
                         });
                       }}
                       className={cabinetSelectClass}
+                      disabled={isReadOnly}
                     >
                       <option value="">—</option>
                       <option value="true">{t('company.estimateWizard.diagnosticStep.yes')}</option>
@@ -195,6 +228,7 @@ export function DiagnosticStep({ wizard }: Props) {
                         setDiagnostic({ ...diagnostic, [q.key]: v === '' ? undefined : v });
                       }}
                       className={cabinetSelectClass}
+                      disabled={isReadOnly}
                     >
                       <option value="">—</option>
                       {(q.options ?? []).map((opt) => (
@@ -214,6 +248,7 @@ export function DiagnosticStep({ wizard }: Props) {
                         })
                       }
                       className={cabinetFieldClass}
+                      disabled={isReadOnly}
                     />
                   )}
                   {error && (
@@ -244,16 +279,27 @@ export function DiagnosticStep({ wizard }: Props) {
         onChange={setCustomPricing}
         compact
         unitLabel={pricingUnitLabel}
+        disabled={isReadOnly}
       />
 
-      <button
-        type="button"
-        onClick={handleSaveDiagnostic}
-        disabled={hasBlockingErrors}
-        className={cabinetBtnPrimary}
-      >
-        {t('company.estimateWizard.diagnosticStep.save')}
-      </button>
+      {isReadOnly ? (
+        <button
+          type="button"
+          onClick={() => wizard.setStepIndex((i) => Math.min(i + 1, wizard.steps.length - 1))}
+          className={cabinetBtnPrimary}
+        >
+          {t('company.estimateWizard.wizard.next', { defaultValue: 'Înainte' })}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={handleSaveDiagnostic}
+          disabled={hasBlockingErrors}
+          className={cabinetBtnPrimary}
+        >
+          {t('company.estimateWizard.diagnosticStep.save')}
+        </button>
+      )}
     </Panel>
   );
 }
