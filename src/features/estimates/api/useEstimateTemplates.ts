@@ -3,16 +3,39 @@ import { apiFetch } from '@/api/client';
 import { cabinetQueryDefaults } from '@/api/queryPolicies';
 import { queryKeys } from '@/api/queryKeys';
 import { useAuthStore } from '@/stores/authStore';
-import type { EstimateProjectDto } from '@/types/estimates';
+import type { EstimateProjectDto, EstimateStageKind } from '@/types/estimates';
 
 const base = '/estimates/templates';
+
+/** A line snapshot stored inside a template stage (see EstimateTemplatesService.create). */
+export interface EstimateTemplateStageLine {
+  description: string;
+  qty: number;
+  unit: string;
+  unitPrice: number;
+  materialStore?: string | null;
+  vatRate?: number | null;
+}
+
+/** A stage snapshot stored in a template's `stages` JSON column. */
+export interface EstimateTemplateStage {
+  name: string;
+  code: string;
+  kind: EstimateStageKind;
+  description?: string | null;
+  laborHours?: number | null;
+  laborRate?: number | null;
+  checklist?: string[] | null;
+  durationDays?: number | null;
+  lines?: EstimateTemplateStageLine[];
+}
 
 export interface EstimateTemplateDto {
   id: string;
   companyId: string;
   name: string;
   description: string | null;
-  stages: any[];
+  stages: EstimateTemplateStage[];
   createdAt: string;
   updatedAt: string;
 }
@@ -43,7 +66,7 @@ export function useCreateEstimateTemplateMutation() {
       name: string;
       description?: string;
       projectId?: string;
-      stages?: any[];
+      stages?: EstimateTemplateStage[];
     }) =>
       apiFetch<EstimateTemplateDto>(base, {
         method: 'POST',
@@ -65,7 +88,7 @@ export function useUpdateEstimateTemplateMutation() {
       id: string;
       name?: string;
       description?: string;
-      stages?: any[];
+      stages?: EstimateTemplateStage[];
     }) =>
       apiFetch<EstimateTemplateDto>(`${base}/${id}`, {
         method: 'PUT',

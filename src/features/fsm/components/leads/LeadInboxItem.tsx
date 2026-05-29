@@ -58,7 +58,6 @@ export function LeadInboxItem({
       await onNotesChange(lead, tempNotes.trim() || null);
       setIsEditingNotes(false);
     } catch {
-      // toast error handled by hook
     } finally {
       setSavingNotes(false);
     }

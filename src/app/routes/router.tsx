@@ -33,6 +33,7 @@ import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
 import { CompanyDashboardPage } from '@/pages/company/CompanyDashboardPage';
 import { CompanyProfilePage } from '@/pages/company/CompanyProfilePage';
+import { CompanyPricingModifiersPage } from '@/pages/company/CompanyPricingModifiersPage';
 import { CompanyTeamPage } from '@/pages/company/CompanyTeamPage';
 import { CompanyServicesPage } from '@/pages/company/CompanyServicesPage';
 import { CompanyCustomersPage } from '@/pages/company/CompanyCustomersPage';
@@ -62,6 +63,7 @@ import { AdminClientsPage } from '@/pages/admin/AdminClientsPage';
 import { AdminWaitlistPage } from '@/pages/admin/AdminWaitlistPage';
 import { AdminReviewsPage } from '@/pages/admin/AdminReviewsPage';
 import { AdminAuditPage } from '@/pages/admin/AdminAuditPage';
+import { AdminBlueprintsPage } from '@/pages/admin/AdminBlueprintsPage';
 import { RequireAuth, RequireCompanyRole } from '@/features/auth/guards';
 import {
   ADMIN_ROUTE,
@@ -249,6 +251,14 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: COMPANY_ROUTE.SMETE_PRICING,
+            element: (
+              <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
+                <CompanyPricingModifiersPage />
+              </RequireCompanyRole>
+            ),
+          },
+          {
             path: COMPANY_ROUTE.SMETE_NEW,
             element: (
               <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
@@ -355,6 +365,7 @@ export const router = createBrowserRouter([
           { path: ADMIN_ROUTE.CITIES, element: <AdminCitiesPage /> },
           { path: ADMIN_ROUTE.CATEGORIES, element: <AdminCategoriesPage /> },
           { path: ADMIN_ROUTE.CLIENTS, element: <AdminClientsPage /> },
+          { path: ADMIN_ROUTE.BLUEPRINTS, element: <AdminBlueprintsPage /> },
         ],
       },
       {

@@ -50,6 +50,7 @@ export const COMPANY_ROUTE = {
   LUCRARI_FISA: 'lucrari/:id/fisa',
   SMETE: 'smete',
   SMETE_TEMPLATES: 'smete/templates',
+  SMETE_PRICING: 'smete/coeficienti',
   SMETE_NEW: 'smete/new',
   SMETE_DETAIL: 'smete/:id',
   OFERTE: 'oferte',
@@ -77,6 +78,7 @@ export const COMPANY_CABINET_PATH = {
   LUCRARI_FISA: '/lucrari/fisa',
   SMETE: '/smete',
   SMETE_TEMPLATES: '/smete/templates',
+  SMETE_PRICING: '/smete/coeficienti',
   OFERTE: '/oferte',
   SERVICII: '/servicii',
   FACTURI: '/facturi',
@@ -105,6 +107,7 @@ export const ADMIN_ROUTE = {
   CITIES: 'cities',
   CATEGORIES: 'categories',
   CLIENTS: 'clients',
+  BLUEPRINTS: 'blueprints',
 } as const;
 
 /** Account kinds allowed per top-level cabinet route. */

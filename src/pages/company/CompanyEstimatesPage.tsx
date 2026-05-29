@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { Calculator, ChevronRight, Plus, Sparkles, Trash2 } from 'lucide-react';
+import { Calculator, ChevronRight, Percent, Plus, Sparkles, Trash2 } from 'lucide-react';
 import {
   PageHero,
   Panel,
@@ -32,7 +32,7 @@ export function CompanyEstimatesPage() {
     try {
       await deleteProjectMutation.mutateAsync(projectId);
       toast.success(t('company.estimatesPage.deleteSuccess'));
-    } catch (err: unknown) {
+    } catch {
       toast.error(t('company.estimatesPage.deleteError'));
     }
   };
@@ -44,10 +44,19 @@ export function CompanyEstimatesPage() {
           title={t('company.estimatesPage.title')}
           description={t('company.estimatesPage.description')}
           action={
-            <Link to="/company/smete/new" className={cabinetBtnPrimary}>
-              <Plus className="w-4 h-4" />
-              {t('company.estimatesPage.newBtn')}
-            </Link>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Link
+                to="/company/smete/coeficienti"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-violet-200 bg-white px-3 py-2 text-xs font-bold text-violet-700 hover:bg-violet-50 transition-colors"
+              >
+                <Percent className="w-4 h-4" />
+                {t('company.estimatesPage.pricingModifiersBtn', { defaultValue: 'Coeficienți de preț' })}
+              </Link>
+              <Link to="/company/smete/new" className={cabinetBtnPrimary}>
+                <Plus className="w-4 h-4" />
+                {t('company.estimatesPage.newBtn')}
+              </Link>
+            </div>
           }
         />
 

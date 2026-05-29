@@ -23,7 +23,12 @@ export function WorkModulesPicker({ config, enabled, onToggle, disabled }: Props
     const order: string[] = [];
 
     for (const module of allModules) {
-      const sec = getModuleSection(module.key);
+      // Prefer the module's own declared section (lets a blueprint group its
+      // modules without colliding in the global key→section map); fall back to
+      // the shared map for IT/elektrika/etc. that rely on it.
+      const sec = module.section
+        ? { key: module.section, label: module.section }
+        : getModuleSection(module.key);
       if (!buckets.has(sec.key)) {
         buckets.set(sec.key, []);
         order.push(sec.key);

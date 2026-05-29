@@ -38,11 +38,18 @@ import { ESTIMATE_STATUS } from '@/constants/estimateStatus.constants';
 import { DUPLICATE_DIAGNOSTIC_KEYS, EMPTY_PLAN } from '@/constants/estimatesWizard.constants';
 import { syncGlobalParamsToDiagnostic } from './syncGlobalParamsToDiagnostic';
 import { getErrorMessage } from '@/utils/errors';
+import { useAuthStore } from '@/stores/authStore';
+import { usePricingModifiersQuery } from '@/features/companies/api/useCompanies';
 
 export function useEstimateWizard(project: EstimateProjectDto) {
   const { t } = useTranslation();
   const updateProject = useUpdateEstimateProjectMutation();
   const savePlan = useSaveSitePlanMutation();
+
+  // Company-configured pricing-modifier overrides — keep the live preview in
+  // lock-step with what the backend will compute on "Calculate".
+  const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId) ?? '';
+  const pricingOverrides = usePricingModifiersQuery(activeCompanyId).data?.overrides;
   const calculate = useCalculateEstimateMutation();
   const generateQuote = useGenerateEstimateQuoteMutation();
   const convert = useConvertEstimateMutation();
@@ -170,13 +177,15 @@ export function useEstimateWizard(project: EstimateProjectDto) {
         extractMeasurementsFromDiagnostic(
           persistDiagnostic(diagnostic),
           project.category?.slug ?? undefined,
+          pricingOverrides,
         ),
         enabledWorkModules,
         accessDifficulty,
         urgency,
+        diagnostic.materialIncluded !== false,
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [config, diagnostic, enabledWorkModules, accessDifficulty, urgency, persistDiagnostic],
+    [config, diagnostic, enabledWorkModules, accessDifficulty, urgency, persistDiagnostic, pricingOverrides],
   );
   const previewTotals = useMemo(
     () => computePreviewTotals(previewLines, marginPct, customPricing, riskReservePct),

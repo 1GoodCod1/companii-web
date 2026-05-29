@@ -28,7 +28,7 @@ export function CompanyTemplatesPage() {
     try {
       await deleteTemplate.mutateAsync(id);
       toast.success(t('company.estimatesTemplatesPage.deleted'));
-    } catch (err: unknown) {
+    } catch {
       toast.error('Failed to delete template');
     }
   };
@@ -97,7 +97,7 @@ export function CompanyTemplatesPage() {
                 const stageCount = template.stages?.length ?? 0;
                 const lineCount =
                   template.stages?.reduce(
-                    (acc: number, s: any) => acc + (s.lines?.length ?? 0),
+                    (acc, s) => acc + (s.lines?.length ?? 0),
                     0,
                   ) ?? 0;
 

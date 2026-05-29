@@ -7,6 +7,15 @@ import { deriveMobilaMeasurements } from './mobilaDerivation';
 import { deriveElektrikaMeasurements } from './elektrikaDerivation';
 import { deriveSantehnikaMeasurements } from './santehnikaDerivation';
 import { deriveConstructiiMeasurements } from './constructiiDerivation';
+import { deriveFinisajMeasurements } from './finishingDerivation';
+import { deriveFatadeMeasurements } from './facadeDerivation';
+import { deriveAcoperisMeasurements } from './roofingDerivation';
+import { deriveFlatRoofMeasurements } from './flatRoofingDerivation';
+import { deriveClimaMeasurements } from './climaDerivation';
+import { deriveOknaDveriMeasurements } from './windowsDoorsDerivation';
+import { derivePanouriSolareMeasurements } from './solarDerivation';
+import { derivePavajMeasurements } from './pavajDerivation';
+import { deriveCleaningMeasurements } from './cleaningDerivation';
 
 export type PreviewLine = {
   stageCode: string;
@@ -83,6 +92,7 @@ export function computePreviewLines(
   enabledModules: string[],
   accessDifficulty?: unknown,
   urgency?: unknown,
+  includeMaterials = true,
 ): PreviewLine[] {
   if (!config?.pricingRules?.length) return [];
 
@@ -93,6 +103,9 @@ export function computePreviewLines(
 
   const out: PreviewLine[] = [];
   for (const rule of config.pricingRules) {
+    if (!includeMaterials && (rule.kind ?? 'material') === 'material') {
+      continue;
+    }
     if (config.workModules?.length) {
       if (!isPricingRuleActive(rule, enabledModules, measurements, config)) {
         continue;
@@ -172,11 +185,26 @@ export function computePreviewTotals(
 export function extractMeasurementsFromDiagnostic(
   diagnostic: Record<string, unknown> | null | undefined,
   categorySlug?: string | null,
+  pricingOverrides?: Record<string, number> | null,
 ): Record<string, number> {
   const out: Record<string, number> = {};
   if (!diagnostic) return out;
 
-  // IT networks: run derivation first so derived keys are populated
+  // Seed with the raw diagnostic numbers first; the category derivation below
+  // then refines/overwrites them (matches the backend, where derivation receives
+  // the raw values as `base` and has the final say — e.g. auto paint area must
+  // win over the field's literal 0 default).
+  for (const [key, raw] of Object.entries(diagnostic)) {
+    if (key === 'enabledWorkModules') continue;
+    if (typeof raw === 'number' && Number.isFinite(raw)) {
+      out[key] = raw;
+    } else if (raw === true) {
+      out[key] = 1;
+    } else if (raw === false) {
+      out[key] = 0;
+    }
+  }
+
   if (categorySlug === 'it-networks') {
     Object.assign(out, deriveItNetworksMeasurements(diagnostic));
   }
@@ -195,16 +223,33 @@ export function extractMeasurementsFromDiagnostic(
   if (categorySlug === 'constructii') {
     Object.assign(out, deriveConstructiiMeasurements(diagnostic));
   }
-
-  for (const [key, raw] of Object.entries(diagnostic)) {
-    if (key === 'enabledWorkModules') continue;
-    if (typeof raw === 'number' && Number.isFinite(raw)) {
-      out[key] = raw;
-    } else if (raw === true) {
-      out[key] = 1;
-    } else if (raw === false) {
-      out[key] = 0;
-    }
+  if (categorySlug === 'lucrari-finisaj') {
+    Object.assign(out, deriveFinisajMeasurements(diagnostic, pricingOverrides));
   }
+  if (categorySlug === 'fatade') {
+    Object.assign(out, deriveFatadeMeasurements(diagnostic));
+  }
+  if (categorySlug === 'acoperis') {
+    Object.assign(out, deriveAcoperisMeasurements(diagnostic));
+  }
+  if (categorySlug === 'acoperis-plat') {
+    Object.assign(out, deriveFlatRoofMeasurements(diagnostic));
+  }
+  if (categorySlug === 'clima') {
+    Object.assign(out, deriveClimaMeasurements(diagnostic));
+  }
+  if (categorySlug === 'okna-dveri') {
+    Object.assign(out, deriveOknaDveriMeasurements(diagnostic));
+  }
+  if (categorySlug === 'panouri-solare') {
+    Object.assign(out, derivePanouriSolareMeasurements(diagnostic));
+  }
+  if (categorySlug === 'pavaj') {
+    Object.assign(out, derivePavajMeasurements(diagnostic));
+  }
+  if (categorySlug === 'cleaning') {
+    Object.assign(out, deriveCleaningMeasurements(diagnostic));
+  }
+
   return out;
 }

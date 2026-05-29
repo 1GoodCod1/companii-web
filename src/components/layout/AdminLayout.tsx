@@ -10,6 +10,7 @@ import {
   Tags,
   Users,
   UserPlus,
+  Sliders,
 } from 'lucide-react';
 import { CabinetShell } from './CabinetShell';
 import type { CabinetNavSection } from '@/components/layout/cabinet-nav';
@@ -45,6 +46,7 @@ const sections: CabinetNavSection[] = [
       { key: 'cities', to: '/cities', labelKey: 'admin.cities', icon: <MapPin /> },
       { key: 'categories', to: '/categories', labelKey: 'admin.categories', icon: <Tags /> },
       { key: 'clients', to: '/clients', labelKey: 'admin.clients', icon: <Users /> },
+      { key: 'blueprints', to: '/blueprints', labelKey: 'admin.blueprints', icon: <Sliders /> },
     ],
   },
 ];
