@@ -61,7 +61,6 @@ describe('syncGlobalParamsToDiagnostic — context-aware baseArea (I-01, I-02)',
     expect(result.facadeArea).toBe(240);
     expect(result.scaffoldingArea).toBe(240);
     expect(result.baseArea).toBe(100);
-    // baseArea must NOT propagate to interior area keys for facade work
     expect(result.finishArea).toBeUndefined();
     expect(result.cleanArea).toBeUndefined();
     expect(result.roofArea).toBeUndefined();
@@ -106,11 +105,10 @@ describe('syncGlobalParamsToDiagnostic — context-aware baseArea (I-01, I-02)',
       }),
       {},
     );
-    expect(result.totalFloorArea).toBe(32); // 20 + 12
+    expect(result.totalFloorArea).toBe(32);
     expect(result.roomCount).toBe(2);
     expect(result.finishArea).toBe(32);
     expect(result.cleanArea).toBe(32);
-    // not relevant for indoor
     expect(result.roofArea).toBeUndefined();
     expect(result.builtArea).toBeUndefined();
   });
@@ -121,11 +119,11 @@ describe('syncGlobalParamsToDiagnostic — context-aware baseArea (I-01, I-02)',
         rooms: [{ id: 'r1', name: 'A', width: 10, height: 10 }],
         globalParameters: { workContext: 'general' },
       }),
-      { builtArea: 999 }, // pre-existing value
+      { builtArea: 999 },
     );
     expect(result.totalFloorArea).toBe(100);
-    expect(result.builtArea).toBe(999); // not overwritten
-    expect(result.pavementArea).toBe(100); // missing → fallback applied
+    expect(result.builtArea).toBe(999);
+    expect(result.pavementArea).toBe(100); 
   });
 
   it('storyCount no longer hijacks roomCount (was bug pre-I-01)', () => {
@@ -134,7 +132,6 @@ describe('syncGlobalParamsToDiagnostic — context-aware baseArea (I-01, I-02)',
       {},
     );
     expect(result.storyCount).toBe(3);
-    // roomCount should not be conflated with floors
     expect(result.roomCount).toBeUndefined();
   });
 });
@@ -188,7 +185,7 @@ describe('syncGlobalParamsToDiagnostic — plan does NOT auto-enable work module
         ],
         globalParameters: { workContext: 'indoor', baseArea: 50 },
       }),
-      {}, // no enabledWorkModules
+      {},
     );
     expect(result[ENABLED_WORK_MODULES_KEY]).toBeUndefined();
   });
@@ -199,15 +196,12 @@ describe('syncGlobalParamsToDiagnostic — plan does NOT auto-enable work module
         points: [{ id: '1', type: 'tile' }],
         globalParameters: { workContext: 'indoor', baseArea: 50 },
       }),
-      { [ENABLED_WORK_MODULES_KEY]: ['paint'] }, // user only enabled paint
+      { [ENABLED_WORK_MODULES_KEY]: ['paint'] },
     );
     expect(result[ENABLED_WORK_MODULES_KEY]).toEqual(['paint']);
   });
 
   it('paint-only smetă with tile points in plan → tile qty written but tile module stays off', () => {
-    // Plan with tile points (qty hint), but user enabled only paint module.
-    // sync should write tileArea-equivalent counts (none here, but indoor points)
-    // and MUST NOT toggle 'tile' into enabledWorkModules.
     const result = syncGlobalParamsToDiagnostic(
       plan({
         rooms: [{ id: 'r1', name: 'A', width: 4, height: 4 }],

@@ -1,4 +1,3 @@
-/** React Query key roots — top-level domain segment. */
 export const QUERY_KEY_ROOT = {
   AUTH: 'auth',
   COMPANIES: 'companies',
@@ -77,9 +76,9 @@ export const QUERY_KEY_ADMIN = {
   CITIES: 'cities',
   CATEGORIES: 'categories',
   CLIENTS: 'clients',
+  BLUEPRINTS: 'blueprints',
 } as const;
 
-/** Low-churn public catalog queries persisted to localStorage. */
 export const PERSISTED_QUERY_KEY_PREFIXES = [
   [QUERY_KEY_ROOT.SUBSCRIPTIONS, QUERY_KEY_SUBSCRIPTIONS.PLANS],
   [QUERY_KEY_ROOT.COMPANIES, QUERY_KEY_COMPANIES.LIST],

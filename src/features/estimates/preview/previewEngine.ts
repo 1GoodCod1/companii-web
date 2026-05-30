@@ -1,8 +1,10 @@
 import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
+import type { Plan2dData } from '@/types/estimate-plan2d.types';
 import { isPricingRuleActive } from '../diagnostic/workModules';
 import type { CustomPricingValues } from '../utils/customPricing';
 import { deriveItNetworksMeasurements } from '../derivations/itNetworksDerivation';
 import { deriveItHardwareMeasurements } from '../derivations/itHardwareDerivation';
+import { deriveItWebMeasurements } from '../derivations/itWebDerivation';
 import { deriveMobilaMeasurements } from '../derivations/mobilaDerivation';
 import { deriveElektrikaMeasurements } from '../derivations/elektrikaDerivation';
 import { deriveSantehnikaMeasurements } from '../derivations/santehnikaDerivation';
@@ -16,6 +18,7 @@ import { deriveOknaDveriMeasurements } from '../derivations/windowsDoorsDerivati
 import { derivePanouriSolareMeasurements } from '../derivations/solarDerivation';
 import { derivePavajMeasurements } from '../derivations/pavajDerivation';
 import { deriveCleaningMeasurements } from '../derivations/cleaningDerivation';
+import { appendStageDefaultPreviewLines } from './stageDefaultPreview';
 
 export type PreviewLine = {
   stageCode: string;
@@ -93,6 +96,7 @@ export function computePreviewLines(
   accessDifficulty?: unknown,
   urgency?: unknown,
   includeMaterials = true,
+  diagnostic?: Record<string, unknown> | null,
 ): PreviewLine[] {
   if (!config?.pricingRules?.length) return [];
 
@@ -117,12 +121,38 @@ export function computePreviewLines(
     const waste = rule.wastePct ? 1 + rule.wastePct / 100 : 1;
     const qty = round2(rawQty * waste);
     const kind = rule.kind ?? 'material';
-    const accessMult = kind === 'labor' ? laborMult : materialMult;
+    const ruleLaborMult =
+      kind === 'labor' && rule.laborUnitPriceMultiplierKey
+        ? (measurements[rule.laborUnitPriceMultiplierKey] ?? 1)
+        : 1;
+    const accessMult = kind === 'labor' ? laborMult * ruleLaborMult : materialMult;
     const unitPrice = round2(rule.unitPrice * accessMult);
     const lineTotal = round2(qty * unitPrice);
+
+    let description = rule.description;
+    if (rule.qtyKey === 'scaffoldingRentalArea') {
+      const scaffoldingArea = measurements.scaffoldingArea ?? measurements.facadeArea ?? 0;
+      const duration = Number(diagnostic?.scaffoldingRentalDuration ?? 1);
+      const period = String(diagnostic?.scaffoldingRentalPeriod ?? 'months').toLowerCase();
+      
+      let durationInMonths = duration;
+      let label = 'luni';
+      if (period === 'days') {
+        durationInMonths = duration / 30;
+        label = `zile (${round2(durationInMonths)} luni)`;
+      } else if (period === 'weeks') {
+        durationInMonths = (duration * 7) / 30;
+        label = `săpt. (${round2(durationInMonths)} luni)`;
+      } else {
+        label = duration === 1 ? 'lună' : 'luni';
+      }
+      const formattedDuration = duration === 1 && period === 'months' ? '1 lună' : `${duration} ${label}`;
+      description = `Închiriere schelă (${scaffoldingArea} m² × ${formattedDuration})`;
+    }
+
     out.push({
       stageCode: rule.stageCode,
-      description: rule.description,
+      description,
       qty,
       unit: rule.unit,
       unitPrice,
@@ -131,6 +161,30 @@ export function computePreviewLines(
     });
   }
   return out;
+}
+
+export function computePreviewLinesWithStageDefaults(
+  config: EstimateBlueprintConfig | null | undefined,
+  measurements: Record<string, number>,
+  enabledModules: string[],
+  accessDifficulty?: unknown,
+  urgency?: unknown,
+  includeMaterials = true,
+  diagnostic?: Record<string, unknown> | null,
+): PreviewLine[] {
+  const access = resolveAccessMultipliers(config, normalizeAccessLevel(accessDifficulty));
+  const urg = resolveUrgencyMultipliers(config, normalizeUrgencyLevel(urgency));
+  const laborMult = round2v(access.labor * urg.labor);
+  const ruleLines = computePreviewLines(
+    config,
+    measurements,
+    enabledModules,
+    accessDifficulty,
+    urgency,
+    includeMaterials,
+    diagnostic,
+  );
+  return appendStageDefaultPreviewLines(config, ruleLines, enabledModules, measurements, laborMult);
 }
 
 export function computePreviewTotals(
@@ -176,6 +230,7 @@ export function extractMeasurementsFromDiagnostic(
   diagnostic: Record<string, unknown> | null | undefined,
   categorySlug?: string | null,
   pricingOverrides?: Record<string, number> | null,
+  plan2d?: Plan2dData | null,
 ): Record<string, number> {
   const out: Record<string, number> = {};
   if (!diagnostic) return out;
@@ -196,14 +251,17 @@ export function extractMeasurementsFromDiagnostic(
   if (categorySlug === 'it-hardware') {
     Object.assign(out, deriveItHardwareMeasurements(diagnostic));
   }
+  if (categorySlug === 'it-web') {
+    Object.assign(out, deriveItWebMeasurements(diagnostic));
+  }
   if (categorySlug === 'mobila') {
-    Object.assign(out, deriveMobilaMeasurements(diagnostic));
+    Object.assign(out, deriveMobilaMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'elektrika') {
-    Object.assign(out, deriveElektrikaMeasurements(diagnostic));
+    Object.assign(out, deriveElektrikaMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'santehnika') {
-    Object.assign(out, deriveSantehnikaMeasurements(diagnostic));
+    Object.assign(out, deriveSantehnikaMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'constructii') {
     Object.assign(out, deriveConstructiiMeasurements(diagnostic));
@@ -212,28 +270,28 @@ export function extractMeasurementsFromDiagnostic(
     Object.assign(out, deriveFinisajMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'fatade') {
-    Object.assign(out, deriveFatadeMeasurements(diagnostic));
+    Object.assign(out, deriveFatadeMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'acoperis') {
-    Object.assign(out, deriveAcoperisMeasurements(diagnostic));
+    Object.assign(out, deriveAcoperisMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'acoperis-plat') {
     Object.assign(out, deriveFlatRoofMeasurements(diagnostic));
   }
   if (categorySlug === 'clima') {
-    Object.assign(out, deriveClimaMeasurements(diagnostic));
+    Object.assign(out, deriveClimaMeasurements(diagnostic, plan2d, pricingOverrides));
   }
   if (categorySlug === 'okna-dveri') {
-    Object.assign(out, deriveOknaDveriMeasurements(diagnostic));
+    Object.assign(out, deriveOknaDveriMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'panouri-solare') {
-    Object.assign(out, derivePanouriSolareMeasurements(diagnostic));
+    Object.assign(out, derivePanouriSolareMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'pavaj') {
-    Object.assign(out, derivePavajMeasurements(diagnostic));
+    Object.assign(out, derivePavajMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'cleaning') {
-    Object.assign(out, deriveCleaningMeasurements(diagnostic));
+    Object.assign(out, deriveCleaningMeasurements(diagnostic, pricingOverrides));
   }
 
   return out;

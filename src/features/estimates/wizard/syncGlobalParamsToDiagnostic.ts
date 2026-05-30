@@ -1,21 +1,6 @@
 import type { Plan2dData, Plan2dGlobalParameters, Plan2dWorkContext } from '@/types/estimate-plan2d.types';
 import { ENABLED_WORK_MODULES_KEY } from '@/features/estimates/diagnostic/workModules';
 
-/**
- * Синхронизирует plan2d.globalParameters → diagnosticAnswers.
- * Логика зеркалит backend: utils/sync-global-params-to-diagnostic.util.ts (A-03).
- *
- * **I-01/I-02 (context-aware mapping):**
- * `baseArea` теперь маппится по `workContext`, а не во все 5 area-ключей сразу:
- *  - roof → roofArea
- *  - facade → не мапит в floor-ключи (facadeArea отдельно)
- *  - indoor → finishArea, cleanArea
- *  - general → builtArea, pavementArea
- *
- * **I-03 (plan не auto-enables modules):**
- * Sync **никогда** не трогает `enabledWorkModules` — модули включаются только
- * явным toggle в DiagnosticStep. Plan лишь заполняет qty-hints.
- */
 export function syncGlobalParamsToDiagnostic(
   plan: Plan2dData,
   currentDiag: Record<string, unknown>,

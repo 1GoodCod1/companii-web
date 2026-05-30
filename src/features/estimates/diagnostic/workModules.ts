@@ -27,10 +27,9 @@ export function readEnabledWorkModules(
   const raw = diagnostic?.[ENABLED_WORK_MODULES_KEY];
 
   if (Array.isArray(raw)) {
-    const selected = raw.filter(
+    return raw.filter(
       (key): key is string => typeof key === 'string' && validKeys.has(key),
     );
-    if (selected.length) return selected;
   }
 
   return getDefaultEnabledWorkModules(config);
@@ -85,6 +84,17 @@ export function isCustomFieldActive(
     if (currentDirection && !field.directionKeys.some(
       (d) => d.toLowerCase() === currentDirection,
     )) {
+      return false;
+    }
+  }
+
+  if (field.dependentOnKey && diagnostic) {
+    const val = diagnostic[field.dependentOnKey];
+    if (field.dependentOnValues?.length) {
+      if (!field.dependentOnValues.includes(String(val ?? ''))) {
+        return false;
+      }
+    } else if (!val) {
       return false;
     }
   }

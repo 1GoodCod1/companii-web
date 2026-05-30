@@ -35,18 +35,26 @@ export function deriveFatadeMeasurements(
   const buildingHeightM = readNumber(diagnostic, 'buildingHeightM') ?? 0;
   m.buildingHeightM = buildingHeightM;
   m.heightMultiplier = resolveFacadeHeightMultiplier(buildingHeightM, overrides);
-  m.facadeAreaLabor = round2(facadeArea * m.heightMultiplier);
-  m.meshAreaLabor = round2(m.meshArea * m.heightMultiplier);
+
+  const facadeCondition = String(diagnostic.facadeCondition ?? 'good').toLowerCase();
+  const conditionMultiplier =
+    facadeCondition === 'old' ? 1.15 :
+    facadeCondition === 'damaged' ? 1.30 :
+    1.00;
+  m.conditionMultiplier = conditionMultiplier;
+
+  m.facadeAreaLabor = round2(facadeArea * m.heightMultiplier * conditionMultiplier);
+  m.meshAreaLabor = round2(m.meshArea * m.heightMultiplier * conditionMultiplier);
   m.preparationArea = facadeArea;
   m.preparationAreaLabor = m.facadeAreaLabor;
 
   m.windowSlopeLengthM = readNumber(diagnostic, 'windowSlopeLengthM') ?? 0;
   m.decorativePlasterArea = readNumber(diagnostic, 'decorativePlasterArea') ?? 0;
-  m.decorativePlasterAreaLabor = round2(m.decorativePlasterArea * m.heightMultiplier);
+  m.decorativePlasterAreaLabor = round2(m.decorativePlasterArea * m.heightMultiplier * conditionMultiplier);
   m.basePlinthArea = readNumber(diagnostic, 'basePlinthArea') ?? 0;
-  m.basePlinthAreaLabor = round2(m.basePlinthArea * m.heightMultiplier);
+  m.basePlinthAreaLabor = round2(m.basePlinthArea * m.heightMultiplier * conditionMultiplier);
   m.paintingArea = m.decorativePlasterArea > 0 ? m.decorativePlasterArea : facadeArea;
-  m.paintingAreaLabor = round2(m.paintingArea * m.heightMultiplier);
+  m.paintingAreaLabor = round2(m.paintingArea * m.heightMultiplier * conditionMultiplier);
 
   return m;
 }

@@ -1,7 +1,3 @@
-/**
- * Slug-и категорий со сметами (13 активных blueprint-ов).
- * Спецификация полей/modules по каждой категории — implementation_plan.md §4.1–4.13.
- */
 export const ESTIMATE_BLUEPRINT_CATEGORY_SLUGS = [
   'santehnika',
   'elektrika',
@@ -15,6 +11,7 @@ export const ESTIMATE_BLUEPRINT_CATEGORY_SLUGS = [
   'cleaning',
   'it-networks',
   'it-hardware',
+  'it-web',
   'panouri-solare',
   'constructii',
   'pavaj',
@@ -22,10 +19,6 @@ export const ESTIMATE_BLUEPRINT_CATEGORY_SLUGS = [
 
 export type EstimateBlueprintCategorySlug = (typeof ESTIMATE_BLUEPRINT_CATEGORY_SLUGS)[number];
 
-/**
- * Категории без смет — wizard показывает альтернативный сценарий (заявка, прайс и т.д.).
- * implementation_plan.md §3.
- */
 export const ESTIMATE_EXCLUDED_CATEGORY_SLUGS = [
   'smm-marketing',
   'design-grafic',
@@ -299,37 +292,29 @@ export const ESTIMATE_CATEGORY_BLUEPRINT_SPEC: Record<
   },
   'it-networks': {
     customFieldKeys: [
-      'itDirection',
-      'projectScope',
-      'pagesCount',
-      'designPagesCount',
-      'frontendPagesCount',
-      'backendComplexity',
-      'hasCMS',
-      'hasEcommerce',
       'cameraCount',
       'networkPoints',
       'avgCableLengthPerPort',
       'apCount',
-      'serverCount',
-      'workstationCount',
+      'serversToConfigure',
+      'serversToAssemble',
+      'workstationsToConfigure',
+      'workstationsToAssemble',
       'rackUnits',
+      'siteSurveyRequired',
+      'commissioningRequired',
       'slaRequired',
       'documentationRequired',
       'migrationRequired',
     ],
     workModuleKeys: [
-      'audit',
-      'web_design',
-      'frontend',
-      'backend',
-      'cms',
-      'ecommerce',
+      'site_survey',
       'network_cabling',
       'cameras',
       'servers',
       'security',
       'hardware_components',
+      'commissioning',
       'migration',
       'sla',
     ],
@@ -338,15 +323,17 @@ export const ESTIMATE_CATEGORY_BLUEPRINT_SPEC: Record<
     customFieldKeys: [
       'deviceCount',
       'deviceType',
-      'repairCount',
-      'repairComplexity',
+      'simpleRepairCount',
+      'mediumRepairCount',
+      'complexRepairCount',
       'assemblyCount',
       'upgradeCount',
       'cleaningHwCount',
       'osInstallCount',
       'osType',
-      'dataRecoveryCount',
-      'recoverySeverity',
+      'logicRecoveryCount',
+      'physicalRecoveryCount',
+      'severeRecoveryCount',
       'peripheralCount',
       'peripheralType',
       'warrantyMonths',
@@ -360,6 +347,31 @@ export const ESTIMATE_CATEGORY_BLUEPRINT_SPEC: Record<
       'os_install',
       'data_recovery',
       'peripheral',
+    ],
+  },
+  'it-web': {
+    customFieldKeys: [
+      'projectScope',
+      'pagesCount',
+      'designPagesCount',
+      'frontendPagesCount',
+      'backendComplexity',
+      'hasCMS',
+      'hasEcommerce',
+      'documentationRequired',
+      'migrationRequired',
+      'slaRequired',
+    ],
+    workModuleKeys: [
+      'audit',
+      'web_design',
+      'frontend',
+      'backend',
+      'cms',
+      'ecommerce',
+      'security',
+      'migration',
+      'sla',
     ],
   },
   'panouri-solare': {

@@ -15,8 +15,10 @@ type ModuleSection = {
   modules: BlueprintWorkModule[];
 };
 
+const EMPTY_MODULES: BlueprintWorkModule[] = [];
+
 export function WorkModulesPicker({ config, enabled, onToggle, disabled }: Props) {
-  const allModules = config?.workModules ?? [];
+  const allModules = config?.workModules ?? EMPTY_MODULES;
 
   const sections = useMemo<ModuleSection[]>(() => {
     const buckets = new Map<string, BlueprintWorkModule[]>();

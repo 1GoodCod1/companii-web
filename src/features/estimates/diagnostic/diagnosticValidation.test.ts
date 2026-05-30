@@ -99,6 +99,9 @@ describe('readEnabledWorkModules (G-02)', () => {
   it('reads explicit list from diagnostic', () => {
     expect(readEnabledWorkModules({ enabledWorkModules: ['tile'] }, config)).toEqual(['tile']);
   });
+  it('preserves empty enabledWorkModules array when explicitly empty', () => {
+    expect(readEnabledWorkModules({ enabledWorkModules: [] }, config)).toEqual([]);
+  });
 });
 
 describe('validateDiagnostic (G-01)', () => {

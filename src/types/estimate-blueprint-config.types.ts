@@ -42,6 +42,8 @@ export type BlueprintCustomField = {
   section?: string;
   placeholder?: string;
   directionKeys?: string[];
+  dependentOnKey?: string;
+  dependentOnValues?: string[];
 };
 
 export type BlueprintDiagnosticQuestion = {
@@ -82,6 +84,8 @@ export type BlueprintPricingRule = {
   kind?: 'labor' | 'material';
   moduleKey?: string;
   enabledWhen?: BlueprintPricingRuleEnabledWhen;
+  /** When set, labor unitPrice is multiplied by measurements[this key] (e.g. heightMultiplier). */
+  laborUnitPriceMultiplierKey?: string;
 };
 
 export type BlueprintAccessDifficultyImpact = {

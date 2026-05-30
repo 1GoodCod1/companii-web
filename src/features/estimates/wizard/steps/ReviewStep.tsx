@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CheckCircle2, Check, CircleDashed, Eye, FileText, Hammer, Paperclip, Plus, PlusCircle, Send, Trash2, Download, Copy } from 'lucide-react';
+import { Copy, Download, FileText, Hammer, Send } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -9,68 +9,18 @@ import {
   cabinetBtnPrimary,
   cabinetBtnSecondary,
 } from '@/components/cabinet/cabinet-ui';
-import { downloadFile } from '@/api/files';
-import { EstimateLineSourceBadge } from '@/features/estimates/components/EstimateLineSourceBadge';
 import { LeadBudgetGauge } from '@/features/estimates/components/LeadBudgetGauge';
 import { useDownloadEstimatePdf } from '@/features/estimates/api/useEstimates';
 import { EstimateVersionHistory } from '@/features/estimates/components/EstimateVersionHistory';
 import { EstimateCommentThread } from '@/features/estimates/components/EstimateCommentThread';
-import type { EstimateStageDto } from '@/types/estimates';
 import type { EstimateWizardApi } from '../useEstimateWizard';
+import { ReviewInterventions } from './review/ReviewInterventions';
+import { ReviewScopeSummary } from './review/ReviewScopeSummary';
+import { ReviewMaterialStages } from './review/ReviewMaterialStages';
 
 type Props = {
   wizard: EstimateWizardApi;
 };
-
-type ScopeEntry = {
-  key: string;
-  label: string;
-  hint: string;
-  tone: 'emerald' | 'amber' | 'slate';
-};
-
-const SCOPE_TONE: Record<ScopeEntry['tone'], string> = {
-  emerald: 'border-emerald-100 bg-emerald-50/40 text-emerald-900',
-  amber: 'border-amber-100 bg-amber-50/40 text-amber-900',
-  slate: 'border-slate-100 bg-slate-50/60 text-slate-700',
-};
-
-function ScopeColumn({
-  icon,
-  title,
-  entries,
-  emptyMessage,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  entries: ScopeEntry[];
-  emptyMessage?: string;
-}) {
-  return (
-    <div className="rounded-2xl bg-white/60 p-4 space-y-2">
-      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-gray-700">
-        {icon} {title}
-      </div>
-      {entries.length === 0 ? (
-        emptyMessage ? (
-          <p className="text-[11px] text-gray-400 italic">{emptyMessage}</p>
-        ) : null
-      ) : (
-        <ul className="space-y-1.5">
-          {entries.map((e) => (
-            <li
-              key={e.key}
-              className={`rounded-xl border px-3 py-2 text-xs ${SCOPE_TONE[e.tone]}`}
-            >
-              <p className="font-semibold">{e.label}</p>
-              <p className="text-[11px] opacity-80 mt-0.5">{e.hint}</p>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
 
 export function ReviewStep({ wizard }: Props) {
   const { t } = useTranslation();
@@ -85,13 +35,6 @@ export function ReviewStep({ wizard }: Props) {
     handleSendEstimate,
     handleGenerateQuote,
     handleConvert,
-    editingStore,
-    setEditingStore,
-    uploadingLineId,
-    handleUpdateLineQtyOrPrice,
-    handleSaveStore,
-    handleUploadReceipt,
-    handleDeleteReceipt,
     scopeSummary,
     previewTotals,
     previewVsBackendDiff,
@@ -112,11 +55,6 @@ export function ReviewStep({ wizard }: Props) {
   const handleDownloadPdf = () => {
     downloadPdf.download(project.id, `${project.number}.pdf`, pdfLang);
   };
-
-  const showScope =
-    scopeSummary.included.length > 0 ||
-    scopeSummary.enabledWithoutLines.length > 0 ||
-    scopeSummary.available.length > 0;
 
   const showPreview = previewTotals.hasContent;
   const backendCalculated = Number(project.grandTotal ?? 0) > 0;
@@ -153,72 +91,7 @@ export function ReviewStep({ wizard }: Props) {
         </Panel>
       )}
 
-      {/* FSM Interventions / Executie Card when IN_EXECUTION */}
-      {project.status === 'IN_EXECUTION' && project.interventions && project.interventions.length > 0 && (
-        <Panel className="p-6 border border-emerald-100 bg-gradient-to-br from-emerald-50/40 to-teal-50/40 space-y-4">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 animate-pulse" />
-            <h3 className="font-extrabold text-slate-900 text-sm uppercase tracking-wider">
-              {t('company.estimateWizard.reviewStep.executionTitle', { defaultValue: 'Deviz în Execuție (FSM)' })}
-            </h3>
-          </div>
-          <p className="text-xs text-slate-500">
-            {t('company.estimateWizard.reviewStep.executionDescription', {
-              defaultValue: 'Lucrările pentru acest deviz au fost planificate și sunt în proces de execuție. Mai jos găsiți fișele de execuție active:',
-            })}
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {project.interventions.map((intervention) => (
-              <div key={intervention.id} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-2xs space-y-3 flex flex-col justify-between hover:shadow-xs transition-shadow">
-                <div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-black text-slate-900">#{intervention.number}</span>
-                    <span className={cn(
-                      "text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-lg border",
-                      intervention.status === 'DONE'
-                        ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
-                        : intervention.status === 'CANCELLED'
-                          ? 'bg-rose-50 border-rose-100 text-rose-700'
-                          : 'bg-indigo-50 border-indigo-100 text-indigo-700'
-                    )}>
-                      {intervention.status}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-600 font-bold mt-1.5 capitalize">
-                    {intervention.type}
-                  </p>
-                  {intervention.technician?.fullName && (
-                    <p className="text-[11px] text-slate-400 mt-1">
-                      {t('company.calendar.technician', { defaultValue: 'Master' })}: <span className="text-slate-700 font-extrabold">{intervention.technician.fullName}</span>
-                    </p>
-                  )}
-                  {intervention.scheduledAt && (
-                    <p className="text-[11px] text-slate-400 mt-0.5">
-                      {t('company.calendar.scheduledAt', { defaultValue: 'Planificat' })}: <span className="text-slate-700 font-extrabold">{new Date(intervention.scheduledAt).toLocaleDateString('ro-MD')}</span>
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 pt-2 border-t border-slate-50 mt-2">
-                  <Link
-                    to={`/company/lucrari/${intervention.id}/fisa`}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-violet-700 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-xl border border-violet-100 transition-colors"
-                  >
-                    <FileText className="w-3.5 h-3.5" />
-                    {t('company.estimateWizard.reviewStep.worksheetLink', { defaultValue: 'Fișă de execuție' })}
-                  </Link>
-                  <Link
-                    to={`/company/lucrari?selectedId=${intervention.id}`}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 transition-colors"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    {t('company.estimateWizard.reviewStep.detailsLink', { defaultValue: 'Detalii' })}
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Panel>
-      )}
+      <ReviewInterventions project={project} />
 
       {showPreview && (
         <Panel className="p-5 border border-amber-100 bg-amber-50/40">
@@ -249,55 +122,7 @@ export function ReviewStep({ wizard }: Props) {
         </Panel>
       )}
 
-      {showScope && (
-        <Panel className="p-6">
-          <h3 className="font-bold text-gray-900 mb-3">
-            {t('company.estimateWizard.scopeSummary.title')}
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-            <ScopeColumn
-              icon={<CheckCircle2 className="w-4 h-4 text-emerald-600" />}
-              title={t('company.estimateWizard.scopeSummary.included')}
-              entries={scopeSummary.included.map((m) => ({
-                key: m.key,
-                label: m.label,
-                hint: t('company.estimateWizard.scopeSummary.moduleLineCount', {
-                  count: m.lineCount,
-                  amount: m.amount.toLocaleString('ro-MD'),
-                }),
-                tone: 'emerald',
-              }))}
-              emptyMessage={t('company.estimateWizard.scopeSummary.emptyIncluded')}
-            />
-            <ScopeColumn
-              icon={<CircleDashed className="w-4 h-4 text-amber-600" />}
-              title={t('company.estimateWizard.scopeSummary.enabledWithoutLines')}
-              entries={scopeSummary.enabledWithoutLines.map((m) => ({
-                key: m.key,
-                label: m.label,
-                hint:
-                  m.missingFieldLabels && m.missingFieldLabels.length > 0
-                    ? t('company.estimateWizard.scopeSummary.moduleMissingFields', {
-                        fields: m.missingFieldLabels.join(', '),
-                        defaultValue: 'Completați: {{fields}}',
-                      })
-                    : t('company.estimateWizard.scopeSummary.moduleEnabledNoLines'),
-                tone: 'amber',
-              }))}
-            />
-            <ScopeColumn
-              icon={<PlusCircle className="w-4 h-4 text-slate-500" />}
-              title={t('company.estimateWizard.scopeSummary.available')}
-              entries={scopeSummary.available.map((m) => ({
-                key: m.key,
-                label: m.label,
-                hint: t('company.estimateWizard.scopeSummary.moduleAvailableHint'),
-                tone: 'slate',
-              }))}
-            />
-          </div>
-        </Panel>
-      )}
+      <ReviewScopeSummary scopeSummary={scopeSummary} />
 
       <Panel className="p-6">
         <h3 className="font-bold text-gray-900 mb-4">{t('company.estimateWizard.reviewStep.summaryTitle')}</h3>
@@ -376,7 +201,6 @@ export function ReviewStep({ wizard }: Props) {
           </>
         )}
         <div className="flex flex-wrap items-center gap-3">
-          {/* Primary actions */}
           <div className="flex flex-wrap gap-2 w-full sm:w-auto">
             {!isReadOnly && canSendEstimate ? (
               <button
@@ -406,7 +230,6 @@ export function ReviewStep({ wizard }: Props) {
             )}
           </div>
 
-          {/* Secondary actions */}
           <div className="flex flex-wrap gap-2 w-full sm:w-auto">
             {project.status !== 'IN_EXECUTION' && (
               <>
@@ -443,7 +266,6 @@ export function ReviewStep({ wizard }: Props) {
             </button>
           </div>
 
-          {/* PDF download with language toggle — full width on mobile */}
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto mt-1 sm:mt-0">
             <div className="inline-flex items-center rounded-lg border border-gray-200 bg-gray-50/80 p-0.5 gap-0.5 flex-shrink-0">
               {(['ro', 'ru'] as const).map((lang) => (
@@ -476,204 +298,12 @@ export function ReviewStep({ wizard }: Props) {
         </div>
       </Panel>
 
-      <Panel className="p-6">
-        <h3 className="font-extrabold text-gray-900 text-base flex items-center gap-2 mb-1">
-          <Paperclip className="w-5 h-5 text-violet-600 animate-pulse" /> {t('company.estimateWizard.reviewStep.materialsTitle')}
-        </h3>
-        <p className="text-xs text-gray-500 mb-6 leading-relaxed">
-          {t('company.estimateWizard.reviewStep.materialsDescription')}
-        </p>
+      <ReviewMaterialStages wizard={wizard} />
 
-        <div className="space-y-6">
-          {(project.stages as EstimateStageDto[]).map((stage) => {
-            const materialLines = (stage.lines ?? []).filter((l) => l.source !== 'stage-default');
-            if (materialLines.length === 0) return null;
-
-            return (
-              <div key={stage.id} className="rounded-2xl border border-gray-100 bg-gray-50/50 p-4 space-y-3 shadow-xs">
-                <div className="font-extrabold text-sm text-gray-800 border-b border-gray-100/80 pb-2 flex items-center justify-between">
-                  <span className="text-gray-900 font-bold text-sm">
-                    {t('company.estimateWizard.reviewStep.stageLabel', { name: stage.name })}
-                  </span>
-                  <span className="text-xs font-semibold text-violet-600">
-                    {t('company.estimateWizard.reviewStep.stageTotal', {
-                      total: Number(stage.stageTotal).toLocaleString('ro-MD'),
-                    })}
-                  </span>
-                </div>
-
-                <div className="overflow-x-auto -mx-2 sm:mx-0">
-                  <table className="min-w-full text-left text-xs">
-                    <thead>
-                      <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider">
-                        <th className="py-2 pr-2">{t('company.estimateWizard.reviewStep.colDescription')}</th>
-                        <th className="py-2 w-16 sm:w-20">{t('company.estimateWizard.reviewStep.colQty')}</th>
-                        <th className="py-2 hidden sm:table-cell w-16 sm:w-20">{t('company.estimateWizard.reviewStep.colUnit')}</th>
-                        <th className="py-2 hidden sm:table-cell w-24 sm:w-28">{t('company.estimateWizard.reviewStep.colUnitPrice')}</th>
-                        <th className="py-2 w-24 sm:w-28">{t('company.estimateWizard.reviewStep.colTotal')}</th>
-                        <th className="py-2 pr-2">{t('company.estimateWizard.reviewStep.colStore')}</th>
-                        <th className="py-2 text-right">{t('company.estimateWizard.reviewStep.colReceipt')}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100/50">
-                      {materialLines.map((line) => {
-                        const isLabor =
-                          line.unit === 'ore' ||
-                          line.unit === 'h' ||
-                          line.description.toLowerCase().includes('manoperă') ||
-                          line.description.toLowerCase().includes('manopera') ||
-                          line.description.toLowerCase().includes('lucrări') ||
-                          line.description.toLowerCase().includes('lucrari') ||
-                          line.description.toLowerCase().includes('labor');
-                        return (
-                          <tr key={line.id} className="hover:bg-violet-50/20 transition-colors">
-                            <td className="py-3 font-semibold text-gray-700">
-                              <span className="inline-flex items-center gap-1.5">
-                                {line.description}
-                                <EstimateLineSourceBadge source={line.source} />
-                              </span>
-                            </td>
-                            <td className="py-3">
-                              <input
-                                type="number"
-                                defaultValue={Number(line.qty)}
-                                disabled={isReadOnly}
-                                onBlur={(e) =>
-                                  handleUpdateLineQtyOrPrice(
-                                    line.id,
-                                    stage.id,
-                                    'qty',
-                                    Number(e.target.value),
-                                  )
-                                }
-                                className="w-14 sm:w-16 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
-                              />
-                            </td>
-                            <td className="py-3 text-gray-500 font-medium hidden sm:table-cell">{line.unit}</td>
-                            <td className="py-3 hidden sm:table-cell">
-                              <div className="flex items-center gap-1">
-                                <input
-                                  type="number"
-                                  defaultValue={Number(line.unitPrice)}
-                                  disabled={isReadOnly}
-                                  onBlur={(e) =>
-                                    handleUpdateLineQtyOrPrice(
-                                      line.id,
-                                      stage.id,
-                                      'unitPrice',
-                                      Number(e.target.value),
-                                    )
-                                  }
-                                  className="w-20 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
-                                />
-                                <span className="text-[10px] text-gray-400">MDL</span>
-                              </div>
-                            </td>
-                            <td className="py-3 font-extrabold text-gray-900">
-                              {Number(line.lineTotal).toLocaleString('ro-MD')} MDL
-                            </td>
-                            <td className="py-3">
-                              {isLabor ? (
-                                <span className="text-[10px] text-gray-400 italic">
-                                  {t('company.estimateWizard.reviewStep.laborService')}
-                                </span>
-                              ) : (
-                                <div className="flex items-center gap-1.5">
-                                  <input
-                                    type="text"
-                                    placeholder={t('company.estimateWizard.reviewStep.storePlaceholder')}
-                                    disabled={isReadOnly}
-                                    value={
-                                      editingStore?.lineId === line.id
-                                        ? editingStore.value
-                                        : line.materialStore || ''
-                                    }
-                                    onChange={(e) =>
-                                      setEditingStore({ lineId: line.id, value: e.target.value })
-                                    }
-                                    onBlur={() => handleSaveStore(line.id, stage.id)}
-                                    className="w-36 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
-                                  />
-                                  {!isReadOnly && editingStore?.lineId === line.id && (
-                                    <button
-                                      type="button"
-                                      onMouseDown={() => handleSaveStore(line.id, stage.id)}
-                                      className="rounded-md bg-emerald-100 p-1 text-emerald-700 hover:bg-emerald-200 transition-colors"
-                                    >
-                                      <Check className="w-3 h-3" />
-                                    </button>
-                                  )}
-                                </div>
-                              )}
-                            </td>
-                            <td className="py-3 text-right">
-                              {isLabor ? null : (
-                                <div className="inline-flex items-center gap-2">
-                                  {line.receiptFileKey ? (
-                                    <>
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          downloadFile(
-                                            line.receiptFileKey!,
-                                            `Bon-${line.description.replace(/\s+/g, '_')}.pdf`,
-                                          )
-                                        }
-                                        className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100 px-2 py-1 text-[10px] font-bold text-violet-700 hover:bg-violet-100 transition-colors"
-                                      >
-                                        <Eye className="w-3.5 h-3.5" /> {t('company.estimateWizard.reviewStep.viewReceipt')}
-                                      </button>
-                                      {!isReadOnly && (
-                                        <button
-                                          type="button"
-                                          onClick={() => handleDeleteReceipt(line.id, stage.id)}
-                                          className="rounded-xl bg-red-50 border border-red-100 p-1 text-red-600 hover:bg-red-100 transition-colors"
-                                        >
-                                          <Trash2 className="w-3.5 h-3.5" />
-                                        </button>
-                                      )}
-                                    </>
-                                  ) : !isReadOnly ? (
-                                    <label className="relative cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-dashed border-gray-200 bg-white px-2.5 py-1 text-[10px] font-bold text-gray-500 hover:bg-gray-50 transition-colors">
-                                      {uploadingLineId === line.id ? (
-                                        <span className="animate-pulse">{t('cabinet.common.loading')}</span>
-                                      ) : (
-                                        <>
-                                          <Plus className="w-3 h-3" /> {t('company.estimateWizard.reviewStep.attachReceipt')}
-                                        </>
-                                      )}
-                                      <input
-                                        type="file"
-                                        className="sr-only"
-                                        accept="image/*,application/pdf"
-                                        onChange={(e) => {
-                                          const file = e.target.files?.[0];
-                                          if (file) handleUploadReceipt(line.id, stage.id, file);
-                                        }}
-                                      />
-                                    </label>
-                                  ) : null}
-                                </div>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Panel>
-
-      {/* V-05: Version History */}
       <div className="mt-6">
         <EstimateVersionHistory projectId={project.id} />
       </div>
 
-      {/* V-06: Comment Thread */}
       <div className="mt-6">
         <EstimateCommentThread projectId={project.id} isPortal={false} />
       </div>

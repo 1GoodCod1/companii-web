@@ -14,11 +14,11 @@ describe('finishingDerivation (frontend mirror of backend)', () => {
       wallHeight: 2.7,
       enabledWorkModules: ['surface_preparation', 'putty', 'paint'],
     });
-    expect(m.wallArea).toBe(75);
-    expect(m.puttyArea).toBe(105);
-    expect(m.preparationArea).toBe(105);
-    expect(m.paintArea).toBe(105);
-    expect(m.paintAreaLabor).toBe(105); 
+    expect(m.wallArea).toBe(59.16);
+    expect(m.puttyArea).toBe(59.16);
+    expect(m.preparationArea).toBe(59.16);
+    expect(m.paintArea).toBe(59.16);
+    expect(m.paintAreaLabor).toBe(59.16); 
   });
 
   it('applies complexity multiplier to labor keys', () => {
@@ -29,7 +29,7 @@ describe('finishingDerivation (frontend mirror of backend)', () => {
       enabledWorkModules: ['paint'],
     });
     expect(m.complexityMultiplier).toBe(1.3);
-    expect(m.paintAreaLabor).toBe(round2(105 * 1.3));
+    expect(m.paintAreaLabor).toBe(round2(59.16 * 1.3));
   });
 
   it('honors company pricing-modifier overrides in the preview', () => {
@@ -45,20 +45,20 @@ describe('finishingDerivation (frontend mirror of backend)', () => {
     });
 
     expect(overridden.complexityMultiplier).toBe(round2(1.25 + 0.3));
-    expect(overridden.paintAreaLabor).toBe(round2(105 * 1.55));
+    expect(overridden.paintAreaLabor).toBe(round2(59.16 * 1.55));
   });
 });
 
 describe('extractMeasurementsFromDiagnostic — lucrari-finisaj parity (bug B)', () => {
-  it('computes derived labor keys + auto paint area even when the raw field is 0', () => {
+  it('honors explicit 0 quantity for paintArea and derives putty/preparation automatically', () => {
     const out = extractMeasurementsFromDiagnostic(
       { finishArea: 30, paintArea: 0, enabledWorkModules: ['surface_preparation', 'putty', 'paint'] },
       'lucrari-finisaj',
     );
-    expect(out.paintArea).toBe(105);
-    expect(out.paintAreaLabor).toBe(105);
-    expect(out.puttyAreaLabor).toBe(105);
-    expect(out.preparationAreaLabor).toBe(105);
+    expect(out.paintArea).toBe(0);
+    expect(out.paintAreaLabor).toBe(0);
+    expect(out.puttyAreaLabor).toBe(59.16);
+    expect(out.preparationAreaLabor).toBe(59.16);
   });
 });
 

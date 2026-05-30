@@ -33,11 +33,20 @@ describe('extractMeasurementsFromDiagnostic — derived-key parity', () => {
     expect(m.timberVolumeM3).toBeGreaterThan(0);
   });
 
-  it('clima: derives height-adjusted unit labor and route split', () => {
-    const m = extractMeasurementsFromDiagnostic({ acUnits: 2, heightWork: true }, 'clima');
-    expect(m.acUnitsLabor).toBe(2.5); 
+  it('clima: derives height multiplier and route split with real unit counts', () => {
+    const m = extractMeasurementsFromDiagnostic(
+      {
+        acUnits: 2,
+        routeLengthM: 10,
+        heightWork: true,
+        enabledWorkModules: ['route', 'indoor_outdoor_units', 'height_work'],
+      },
+      'clima',
+    );
+    expect(m.acUnits).toBe(2);
+    expect(m.heightMultiplier).toBe(1.25);
     expect(m.routeStandardLengthM).toBe(5);
-    expect(m.routeExtraLengthM).toBe(5); 
+    expect(m.routeExtraLengthM).toBe(5);
     expect(m.freonRechargeQty).toBe(1);
   });
 
@@ -98,5 +107,122 @@ describe('extractMeasurementsFromDiagnostic — derived-key parity', () => {
     expect(m.totalCleaningMultiplier).toBe(Math.round(1.65 * 1.35 * 100) / 100);
     expect(m.postConstructionAreaLabor).toBeGreaterThan(0);
     expect(m.standardCleanAreaLabor).toBe(0);
+  });
+});
+
+describe('extractMeasurementsFromDiagnostic — company pricing-modifier overrides', () => {
+  it('solar: override roofType.tile changes structure/panel labor', () => {
+    const base = extractMeasurementsFromDiagnostic({ panelCount: 10, roofType: 'tile' }, 'panouri-solare');
+    expect(base.panelLaborQty).toBe(11.5);
+    const over = extractMeasurementsFromDiagnostic(
+      { panelCount: 10, roofType: 'tile' },
+      'panouri-solare',
+      { 'solar.roofType.tile': 30 },
+    );
+    expect(over.panelLaborQty).toBe(13); 
+  });
+
+  it('pavaj: override vehicleLoad.heavy + patternComplexity.decorative changes labor qty', () => {
+    const over = extractMeasurementsFromDiagnostic(
+      { pavementArea: 50, vehicleLoad: 'heavy', patternComplexity: 'decorative' },
+      'pavaj',
+      { 'pavaj.vehicleLoad.heavy': 50, 'pavaj.patternComplexity.decorative': 40 },
+    );
+    expect(over.pavementLaborQty).toBe(Math.round(50 * 1.4 * 1.5 * 100) / 100);
+  });
+
+  it('okna-dveri: override installationType.warm_installation changes window labor', () => {
+    const over = extractMeasurementsFromDiagnostic(
+      { windowCount: 4, installationType: 'warm_installation' },
+      'okna-dveri',
+      { 'okna.installationType.warm_installation': 50 },
+    );
+    expect(over.windowCountLabor).toBe(6); 
+  });
+
+  it('cleaning: override cleaningType.post_construction changes total multiplier', () => {
+    const over = extractMeasurementsFromDiagnostic(
+      { cleanArea: 100, cleaningType: 'post_construction', afterRepairDustLevel: 'high' },
+      'cleaning',
+      { 'cleaning.cleaningType.post_construction': 80 },
+    );
+    expect(over.totalCleaningMultiplier).toBe(Math.round(1.8 * 1.35 * 100) / 100);
+  });
+
+  it('empty overrides keep registry defaults', () => {
+    const a = extractMeasurementsFromDiagnostic({ panelCount: 10, roofType: 'tile' }, 'panouri-solare');
+    const b = extractMeasurementsFromDiagnostic({ panelCount: 10, roofType: 'tile' }, 'panouri-solare', {});
+    expect(a.panelLaborQty).toBe(b.panelLaborQty);
+  });
+});
+
+describe('extractMeasurementsFromDiagnostic — IT categories', () => {
+  it('it-web: derives pagesCount, design/front page counts, and software hours baseline', () => {
+    const m = extractMeasurementsFromDiagnostic(
+      {
+        pagesCount: 8,
+        projectScope: 'Mediu (6-20 pagini / 1-2 săptămâni)',
+        documentationRequired: true,
+        slaRequired: true,
+      },
+      'it-web',
+    );
+    expect(m.pagesCount).toBe(8);
+    expect(m.analysisHours).toBe(16);
+    expect(m.testingHours).toBe(8);
+    expect(m.trainingHours).toBe(6);
+    expect(m.slaUnits).toBe(1);
+    expect(m.designPageCount).toBe(8);
+    expect(m.frontendPageCount).toBe(8);
+  });
+
+  it('it-networks: derives cabling quantities, separates workstation/servers, and defaults hours to 0', () => {
+    const m = extractMeasurementsFromDiagnostic(
+      {
+        networkPoints: 12,
+        avgCableLengthPerPort: 25,
+        serversToConfigure: 2,
+        serversToAssemble: 1,
+        workstationsToConfigure: 5,
+        workstationsToAssemble: 5,
+        siteSurveyRequired: true,
+        commissioningRequired: false,
+      },
+      'it-networks',
+    );
+    expect(m.networkCableM).toBe(300);
+    expect(m.serversToConfigure).toBe(2);
+    expect(m.serversToAssemble).toBe(1);
+    expect(m.workstationsToConfigure).toBe(5);
+    expect(m.workstationsToAssemble).toBe(5);
+    expect(m.analysisHours).toBe(8); 
+    expect(m.testingHours).toBe(0);
+    expect(m.trainingHours).toBe(0);
+  });
+
+  it('it-hardware: aggregates split repair/recovery counts and sets conditional OS licensing', () => {
+    const mWindows = extractMeasurementsFromDiagnostic(
+      {
+        deviceCount: 3,
+        simpleRepairCount: 2,
+        mediumRepairCount: 2,
+        complexRepairCount: 1,
+        osInstallCount: 2,
+        osType: 'Windows 10/11',
+      },
+      'it-hardware',
+    );
+    expect(mWindows.repairCount).toBe(5);
+    expect(mWindows.osLicenseCount).toBe(2);
+
+    const mLinux = extractMeasurementsFromDiagnostic(
+      {
+        deviceCount: 1,
+        osInstallCount: 3,
+        osType: 'Linux (Ubuntu/Debian)',
+      },
+      'it-hardware',
+    );
+    expect(mLinux.osLicenseCount).toBe(0);
   });
 });

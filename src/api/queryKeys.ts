@@ -100,6 +100,6 @@ export const queryKeys = {
     cities: [QUERY_KEY_ROOT.ADMIN, QUERY_KEY_ADMIN.CITIES] as const,
     categories: [QUERY_KEY_ROOT.ADMIN, QUERY_KEY_ADMIN.CATEGORIES] as const,
     clients: [QUERY_KEY_ROOT.ADMIN, QUERY_KEY_ADMIN.CLIENTS] as const,
-    blueprints: [QUERY_KEY_ROOT.ADMIN, 'blueprints'] as const,
+    blueprints: [QUERY_KEY_ROOT.ADMIN, QUERY_KEY_ADMIN.BLUEPRINTS] as const,
   },
 };

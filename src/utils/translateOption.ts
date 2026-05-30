@@ -91,6 +91,25 @@ export const OPTION_TRANSLATIONS: Record<string, { ro: string; ru: string }> = {
   vata_bazaltica: { ro: 'Vată bazaltică — Premium/Ignifug (+40% cost)', ru: 'Базальтовая вата — Премиум/Огнестойкая (+40% к стоимости)' },
   xps: { ro: 'Polistiren extrudat (XPS) — Ultra-rezistent', ru: 'Экструдированный пенополистирол (XPS) — Цоколь' },
   damaged: { ro: 'Deteriorată (necesită reparații) — Dificil (+25% la costul lucrărilor)', ru: 'Поврежденная (требуется ремонт) — Сложно (+25% к работе)' },
+  good: { ro: 'Bună (fără degradări)', ru: 'Хорошая (без повреждений)' },
+
+  // Building Types
+  house: { ro: 'Casă', ru: 'Дом' },
+  villa: { ro: 'Vilă', ru: 'Вилла' },
+  apartment: { ro: 'Apartament', ru: 'Квартира' },
+  commercial: { ro: 'Spațiu comercial', ru: 'Коммерческое здание' },
+  industrial: { ro: 'Spațiu industrial', ru: 'Промышленное здание' },
+
+  // Scaffolding types (fatade)
+  proprie: { ro: 'Schelă proprie (doar montaj/demontaj)', ru: 'Собственные леса (только монтаж/демонтаж)' },
+  inchiriata: { ro: 'Schelă închiriată (montaj + chirie)', ru: 'Арендованные леса (монтаж + аренда)' },
+  fara: { ro: 'Fără schelă (nu este necesară)', ru: 'Без лесов (не требуются)' },
+
+  // Scaffolding rental periods
+  days: { ro: 'Zile', ru: 'Дни' },
+  weeks: { ro: 'Săptămâni', ru: 'Недели' },
+  months: { ro: 'Luni', ru: 'Месяцы' },
+  custom: { ro: 'Personalizat (introducere manuală)', ru: 'Индивидуально (ввод вручную)' },
 
   // wall material for facade dowel density (fatade.wallMaterial)
   panel: { ro: 'Panou beton prefabricat — Dens (-15% dibluri)', ru: 'Бетонные панели — Плотный (-15% дюбелей)' },
