@@ -8,6 +8,7 @@ import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 import { LandingHeroMock } from '@/components/landing/LandingHeroMock';
 import { LandingFinanceMock } from '@/components/landing/LandingFinanceMock';
+import { LandingStats } from '@/components/landing/LandingStats';
 import { LandingTimeline } from '@/components/landing/LandingTimeline';
 import { LandingFeatures } from '@/components/landing/LandingFeatures';
 import { LandingSecurity } from '@/components/landing/LandingSecurity';
@@ -33,11 +34,6 @@ export function LandingPage() {
     return true;
   });
 
-  const stats = t('landing.stats', { returnObjects: true }) as Array<{
-    value: string;
-    label: string;
-  }>;
-
   return (
     <>
       {showSplash && (
@@ -56,9 +52,7 @@ export function LandingPage() {
         className="relative min-h-[92vh] flex flex-col justify-center overflow-hidden pt-8 pb-16 sm:pb-24"
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-[500px] w-[900px] rounded-full bg-gradient-to-br from-violet-400/20 via-indigo-300/10 to-fuchsia-400/15 blur-3xl landing-glow" />
-          <div className="absolute top-1/3 -left-32 h-72 w-72 rounded-full bg-indigo-400/10 blur-3xl" />
-          <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-violet-500/10 blur-3xl" />
+          <div className="absolute top-[8%] right-[-8%] h-[520px] w-[520px] rounded-full bg-violet-400/[0.09] blur-[100px] lg:top-[12%] lg:right-[2%]" />
         </div>
 
         <div className="relative max-w-6xl mx-auto px-6 w-full">
@@ -114,7 +108,7 @@ export function LandingPage() {
 
             <motion.div
               style={{ y: dashboardY, opacity: dashboardOpacity }}
-              className="lg:mt-0 mt-4"
+              className="landing-perspective lg:mt-0 mt-4"
             >
               <LandingHeroMock />
             </motion.div>
@@ -122,28 +116,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Stats strip */}
-      <section className="border-y border-gray-100/80 bg-white/60 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-6 py-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: 0.5 }}
-                className="text-center lg:text-left"
-              >
-                <p className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-                  {stat.value}
-                </p>
-                <p className="text-xs sm:text-sm text-gray-500 mt-1 font-medium">{stat.label}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <LandingStats />
 
       {/* Product preview section */}
       <section className="py-24 sm:py-32">
@@ -165,7 +138,9 @@ export function LandingPage() {
             </p>
           </motion.div>
 
-          <LandingFinanceMock />
+          <div className="landing-perspective">
+            <LandingFinanceMock />
+          </div>
         </div>
       </section>
 

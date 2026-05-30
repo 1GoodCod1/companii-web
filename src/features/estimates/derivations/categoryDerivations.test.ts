@@ -105,8 +105,34 @@ describe('extractMeasurementsFromDiagnostic — derived-key parity', () => {
       'cleaning',
     );
     expect(m.totalCleaningMultiplier).toBe(Math.round(1.65 * 1.35 * 100) / 100);
-    expect(m.postConstructionAreaLabor).toBeGreaterThan(0);
+    expect(m.postConstructionAreaLabor).toBe(100);
     expect(m.standardCleanAreaLabor).toBe(0);
+    expect(m.deepCleanAreaLabor).toBe(0);
+  });
+
+  it('cleaning: deep type uses deepCleanAreaLabor only', () => {
+    const m = extractMeasurementsFromDiagnostic(
+      { cleanArea: 40, cleaningType: 'deep' },
+      'cleaning',
+    );
+    expect(m.standardCleanAreaLabor).toBe(0);
+    expect(m.deepCleanAreaLabor).toBe(40);
+  });
+
+  it('constructii: splits foundation vs structural concrete and always flags manual review', () => {
+    const m = extractMeasurementsFromDiagnostic(
+      { builtArea: 50, storyCount: 1, foundationType: 'strip' },
+      'constructii',
+    );
+    expect(m.foundationConcreteM3).toBe(7);
+    expect(m.structuralConcreteM3).toBe(2);
+    expect(m.foundationRebarKg).toBe(630);
+    expect(m.rebarKg).toBe(810);
+    expect(m.requiresManualReview).toBe(1);
+    expect(m.preliminaryEstimate).toBe(1);
+    for (const value of Object.values(m)) {
+      expect(Number.isNaN(value)).toBe(false);
+    }
   });
 });
 

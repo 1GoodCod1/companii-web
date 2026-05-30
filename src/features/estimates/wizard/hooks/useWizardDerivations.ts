@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/stores/authStore';
 import { usePricingModifiersQuery } from '@/features/companies/api/useCompanies';
 import { getCustomFieldKeys, groupVisibleCustomFields } from '@/features/estimates/diagnostic/groupCustomFields';
-import { readEnabledWorkModules, mergeEnabledWorkModulesIntoDiagnostic } from '@/features/estimates/diagnostic/workModules';
+import { readEnabledWorkModulesForCategory, mergeEnabledWorkModulesIntoDiagnostic } from '@/features/estimates/diagnostic/workModules';
 import { mergeCustomPricing } from '@/features/estimates/utils/customPricing';
 import { validateDiagnostic } from '@/features/estimates/diagnostic/diagnosticValidation';
 import { getVisibleStages } from '@/features/estimates/stages/stageVisibility';
@@ -44,8 +44,8 @@ export function useWizardDerivations(project: EstimateProjectDto, formState: Wiz
   }, [config, diagnosticQuestions]);
 
   const enabledWorkModules = useMemo(
-    () => (config ? readEnabledWorkModules(formState.diagnostic, config) : []),
-    [formState.diagnostic, config],
+    () => (config ? readEnabledWorkModulesForCategory(project.category.slug, formState.diagnostic, config) : []),
+    [formState.diagnostic, config, project.category.slug],
   );
 
   const persistDiagnostic = useCallback(

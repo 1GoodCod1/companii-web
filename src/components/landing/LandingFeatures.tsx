@@ -2,8 +2,8 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   CalendarRange,
-  CreditCard,
-  ShieldCheck,
+  Calculator,
+  Globe2,
   Smartphone,
   Sparkles,
   UsersRound,
@@ -12,9 +12,9 @@ import {
 const FEATURE_ICONS = [
   UsersRound,
   CalendarRange,
-  CreditCard,
+  Calculator,
   Smartphone,
-  ShieldCheck,
+  Globe2,
   Sparkles,
 ] as const;
 
@@ -26,7 +26,7 @@ export function LandingFeatures() {
   }>;
 
   return (
-    <section className="py-24 sm:py-28 bg-gradient-to-b from-transparent via-violet-50/30 to-transparent">
+    <section className="py-24 sm:py-28 border-y border-gray-100/60 bg-slate-50/40">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

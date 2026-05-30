@@ -1,9 +1,12 @@
 import { type PricingModifierOverrides, modifierFactor } from '../utils/pricingModifierOverrides';
 import { readNumber, readBoolean, round2 } from '../utils/diagnosticReader';
 
+export function normalizeCleaningType(cleaningType: unknown): string {
+  return String(cleaningType ?? 'standard').trim().toLowerCase().replace(/-/g, '_');
+}
 
 export function resolveCleaningTypeMultiplier(cleaningType: unknown, overrides?: PricingModifierOverrides): number {
-  const n = String(cleaningType ?? 'standard').trim().toLowerCase().replace(/-/g, '_');
+  const n = normalizeCleaningType(cleaningType);
   if (n === 'post_construction') return modifierFactor('cleaning.cleaningType.post_construction', overrides, 65);
   if (n === 'deep') return modifierFactor('cleaning.cleaningType.deep', overrides, 35);
   if (n === 'move_out') return modifierFactor('cleaning.cleaningType.move_out', overrides, 25);
@@ -44,7 +47,11 @@ export function deriveCleaningMeasurements(
   m.kitchenDeepCleanUnits = readBoolean(diagnostic, 'kitchenDeepClean') ? 1 : 0;
 
   const cleaningType = diagnostic.cleaningType ?? 'standard';
+  const normalizedType = normalizeCleaningType(cleaningType);
+  const isPostConstruction = normalizedType === 'post_construction';
+  const isDeep = normalizedType === 'deep';
   const furniturePresent = readBoolean(diagnostic, 'furniturePresent');
+
   m.complexityMultiplier = resolveCleaningTypeMultiplier(cleaningType, overrides);
   m.dustMultiplier = resolveDustMultiplier(diagnostic.afterRepairDustLevel, overrides);
   m.totalCleaningMultiplier = resolveCombinedCleaningMultiplier(
@@ -54,18 +61,15 @@ export function deriveCleaningMeasurements(
     overrides,
   );
 
-  m.cleanAreaLabor = round2(cleanArea * m.totalCleaningMultiplier);
-  const isPostConstruction = String(cleaningType).toLowerCase().replace(/-/g, '_') === 'post_construction';
-  m.standardCleanAreaLabor = isPostConstruction ? 0 : m.cleanAreaLabor;
-  m.postConstructionAreaLabor = isPostConstruction ? m.cleanAreaLabor : 0;
+  m.standardCleanAreaLabor = !isPostConstruction && !isDeep ? cleanArea : 0;
+  m.deepCleanAreaLabor = isDeep ? cleanArea : 0;
+  m.postConstructionAreaLabor = isPostConstruction ? cleanArea : 0;
+  m.dryCleanAreaLabor = round2(cleanArea * 0.4);
 
   m.chemistryUnits = Math.ceil(cleanArea / 40);
   m.trashRemovalUnits = readBoolean(diagnostic, 'trashRemoval') ? Math.ceil(cleanArea / 50) : 0;
   m.inspectionHours = Math.max(1, Math.ceil(cleanArea / 80));
-  m.dryCleanAreaLabor = round2(cleanArea * 0.4 * m.totalCleaningMultiplier);
-  m.wetCleanAreaLabor = m.cleanAreaLabor;
   m.bathroomCleanUnits = m.bathroomCount;
-  m.specialCleanAreaLabor = m.postConstructionAreaLabor > 0 ? m.postConstructionAreaLabor : 0;
 
   return m;
 }

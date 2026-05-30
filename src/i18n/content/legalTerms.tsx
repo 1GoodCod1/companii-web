@@ -79,7 +79,7 @@ function renderTermsContentRo(privacyPath: string): ReactNode {
               text: 'Gestionarea clienților, lucrărilor, ofertelor, programărilor și facturilor.',
             },
             {
-              text: 'Conturi pentru membrii echipei (administratori, dispeceri, tehnicieni).',
+              text: 'Conturi pentru membrii echipei (administratori, dispeceri, angajați).',
             },
             {
               text: 'Portal securizat pentru clienții finali, cu acces la solicitări, oferte și documente.',
@@ -349,7 +349,7 @@ function renderTermsContentRu(privacyPath: string): ReactNode {
               text: 'Управление клиентами, работами, предложениями, записями и счетами.',
             },
             {
-              text: 'Аккаунты для членов команды (администраторы, диспетчеры, техники).',
+              text: 'Аккаунты для членов команды (администраторы, диспетчеры, сотрудники).',
             },
             {
               text: 'Защищённый портал для конечных клиентов с доступом к заявкам, предложениям и документам.',

@@ -33,6 +33,34 @@ describe('stageDefaultPreview', () => {
     ).toBe(false);
   });
 
+  it('blocks non-optional stage-default when requiresQtyKeys are all zero', () => {
+    const chasingConfig: EstimateBlueprintConfig = {
+      ...config,
+      workModules: [
+        {
+          key: 'chasing',
+          label: 'Chasing',
+          defaultEnabled: true,
+          stageCodes: ['trasee'],
+          fieldKeys: [],
+          requiresQtyKeys: ['wallChasingM'],
+        },
+      ],
+      defaultStages: [
+        { code: 'trasee', name: 'Trasee', kind: 'LABOR', defaultLaborHours: 5, moduleKey: 'chasing' },
+      ],
+    };
+
+    expect(
+      isStageDefaultLaborChargeable(
+        chasingConfig.defaultStages[0],
+        ['chasing'],
+        chasingConfig,
+        { wallChasingM: 0 },
+      ),
+    ).toBe(false);
+  });
+
   it('adds stage-default lines only for stages without rule lines', () => {
     const lines = appendStageDefaultPreviewLines(
       config,

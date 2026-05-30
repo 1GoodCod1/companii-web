@@ -282,11 +282,9 @@ export const ESTIMATE_CATEGORY_BLUEPRINT_SPEC: Record<
     ],
     workModuleKeys: [
       'standard_cleaning',
-      'deep_cleaning',
       'windows',
       'kitchen',
       'bathrooms',
-      'post_construction',
       'trash_removal',
     ],
   },

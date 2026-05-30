@@ -17,7 +17,7 @@ export function AuthLayout() {
     {
       badge: 'FSM & CRM Экосистема',
       title: 'Вся операционная деятельность — на одном экране',
-      description: 'Координируйте работу диспетчеров, техников на выезде и клиентов. Faber Companii заменяет десятки разрозненных чатов в мессенджерах и Excel-таблиц единым профессиональным решением.',
+      description: 'Координируйте работу диспетчеров, сотрудников на выезде и клиентов. Faber Companii заменяет десятки разрозненных чатов в мессенджерах и Excel-таблиц единым профессиональным решением.',
     },
     {
       badge: 'Smart Deviz',
@@ -113,7 +113,7 @@ export function AuthLayout() {
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-450/70" />
               </div>
               <div className="px-4 py-1 rounded-lg bg-slate-100 border border-slate-200/50 text-[10px] font-medium text-slate-400 w-64 text-center truncate">
-                app.fabercompanii.md/company/dashboard
+                companii.faber.md/company
               </div>
               <div className="w-10" />
             </div>

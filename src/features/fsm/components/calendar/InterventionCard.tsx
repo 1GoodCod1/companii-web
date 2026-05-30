@@ -144,7 +144,7 @@ export function InterventionCard({
                   onChange={(e) => onScheduleTechnicianChange?.(e.target.value)}
                   className={cabinetSelectClass}
                 >
-                  <option value="">{t(`${ns}.noTechnician`, { defaultValue: 'Niciun tehnician' })}</option>
+                  <option value="">{t(`${ns}.noTechnician`, { defaultValue: 'Niciun angajat' })}</option>
                   {techniciansSorted.map((member) => (
                     <option key={member.id} value={member.id}>
                       {memberDisplayName(member)}

@@ -13,9 +13,7 @@ export function isStageDefaultLaborChargeable(
     return false;
   }
 
-  if (!def?.optional) return true;
-
-  const requiresQtyKeys = def.moduleKey
+  const requiresQtyKeys = def?.moduleKey
     ? config.workModules?.find((m) => m.key === def.moduleKey)?.requiresQtyKeys
     : undefined;
   if (requiresQtyKeys?.length && requiresQtyKeys.every((key) => (measurements[key] ?? 0) <= 0)) {

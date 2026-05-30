@@ -19,15 +19,15 @@ export const FAQ_SECTIONS: FaqSection[] = [
       },
       {
         q: 'Cui i se potrivește?',
-        a: 'Firmelor cu 1–50+ tehnicieni care vor clienți, lucrări, oferte și facturi într-un singur loc — fără Excel, WhatsApp și hârtie.',
+        a: 'Firmelor cu 1–50+ angajați care vor clienți, lucrări, smete, oferte și facturi într-un singur loc — fără Excel, WhatsApp și hârtie.',
       },
       {
         q: 'Trebuie instalat ceva?',
-        a: 'Nu. Totul funcționează în browser — Chrome, Safari, Edge. Tehnicienii și clienții intră de pe telefon, tabletă sau laptop.',
+        a: 'Nu. Totul funcționează în browser — Chrome, Safari, Edge. Angajații și clienții intră de pe telefon, tabletă sau laptop.',
       },
       {
         q: 'Merge pe mobil?',
-        a: 'Da. Interfața e adaptată pentru telefon. Tehnicienii văd sarcinile și schimbă statusul din mers. Clienții folosesc portalul fără aplicație.',
+        a: 'Da. Interfața e adaptată pentru telefon. Angajații văd sarcinile și schimbă statusul din mers. Clienții folosesc portalul fără aplicație.',
       },
       {
         q: 'În ce limbi e disponibilă?',
@@ -54,11 +54,11 @@ export const FAQ_SECTIONS: FaqSection[] = [
       },
       {
         q: 'Care e diferența între planuri?',
-        a: 'Free: profil public, catalog servicii, până la 20 lucrări/lună, calendar, 1 tehnician. Pro: +CRM clienți, cereri, portal, până la 10 tehnicieni și 150 lucrări/lună. Business: +smete inteligente, facturi cu TVA, export — fără limite.',
+        a: 'Free: profil public, catalog servicii, până la 20 lucrări/lună, calendar, 3 angajați. Pro: +CRM clienți, cereri, portal, până la 10 angajați și 150 lucrări/lună. Business: +smete inteligente, oferte comerciale, facturi cu TVA, export CSV — fără limite.',
       },
       {
         q: 'Cum adaug colegi în echipă?',
-        a: 'La „Echipă” trimiteți invitație pe email. Roluri: Tehnician sau Manager. Proprietarul vede tot, managerul — operaționalul.',
+        a: 'La „Echipă” trimiteți invitație pe email. Roluri: Angajat sau Manager. Proprietarul vede tot, managerul — operaționalul.',
       },
       {
         q: 'Contactele se completează automat?',
@@ -104,11 +104,11 @@ export const FAQ_SECTIONS: FaqSection[] = [
     items: [
       {
         q: 'Ce este o lucrare?',
-        a: 'O comandă de serviciu: client, adresă, tip, status, tehnician alocat și istoric. Elementul central al cabinetului.',
+        a: 'O comandă de serviciu: client, adresă, tip, status, angajat alocat și istoric. Elementul central al cabinetului.',
       },
       {
         q: 'Cum funcționează calendarul?',
-        a: 'Lucrările cu dată apar în calendar. Planificați vizitele și evitați suprapunerile — mai ales cu mai mulți tehnicieni.',
+        a: 'Lucrările cu dată apar în calendar. Planificați vizitele și evitați suprapunerile — mai ales cu mai mulți angajați.',
       },
       {
         q: 'Ce sunt pachetele de servicii?',

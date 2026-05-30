@@ -46,6 +46,8 @@ export function mergeEnabledWorkModulesIntoDiagnostic(
   };
 }
 
+export { readEnabledWorkModulesForCategory, readCleaningEnabledWorkModules } from './cleaningWorkModules';
+
 export function toggleWorkModule(
   enabledModules: string[],
   moduleKey: string,

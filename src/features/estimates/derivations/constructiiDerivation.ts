@@ -55,6 +55,15 @@ function resolveFoundationConcreteM3(
   return round2(builtArea * 0.14);
 }
 
+function resolveStructuralConcreteM3(
+  builtAreaTotal: number,
+  foundationConcreteM3: number,
+  manual?: number,
+): number {
+  if (manual != null && manual > 0) return round2(manual);
+  return round2(Math.max(0, builtAreaTotal * 0.18 - foundationConcreteM3));
+}
+
 export type DerivedMeasurements = Record<string, number>;
 
 export function deriveConstructiiMeasurements(diagnostic: Record<string, unknown> | null | undefined): DerivedMeasurements {
@@ -75,27 +84,30 @@ export function deriveConstructiiMeasurements(diagnostic: Record<string, unknown
       ? manualExcavation
       : round2(builtArea * 0.45);
 
-  const manualConcrete = readNumber(diagnostic, 'concreteVolumeM3');
-  measurements.concreteVolumeM3 =
-    manualConcrete != null && manualConcrete > 0
-      ? manualConcrete
-      : round2(builtArea * 0.18);
-
   measurements.foundationConcreteM3 = resolveFoundationConcreteM3(
     diagnostic.foundationType,
     builtArea,
     readNumber(diagnostic, 'foundationConcreteM3'),
   );
 
-  const foundationMultiplier = resolveFoundationMultiplier(diagnostic.foundationType);
-  measurements.foundationMultiplier = foundationMultiplier;
-  measurements.foundationConcreteCostM3 = round2(measurements.foundationConcreteM3 * foundationMultiplier);
+  measurements.foundationMultiplier = resolveFoundationMultiplier(diagnostic.foundationType);
+
+  const manualStructural = readNumber(diagnostic, 'concreteVolumeM3');
+  measurements.structuralConcreteM3 = resolveStructuralConcreteM3(
+    measurements.builtAreaTotal,
+    measurements.foundationConcreteM3,
+    manualStructural,
+  );
+  measurements.concreteVolumeM3 = measurements.structuralConcreteM3;
+
+  measurements.foundationRebarKg = round2(measurements.foundationConcreteM3 * 90);
+  measurements.structuralRebarKg = round2(measurements.structuralConcreteM3 * 90);
 
   const manualRebar = readNumber(diagnostic, 'rebarKg');
   measurements.rebarKg =
     manualRebar != null && manualRebar > 0
       ? manualRebar
-      : round2(measurements.concreteVolumeM3 * 90);
+      : round2(measurements.foundationRebarKg + measurements.structuralRebarKg);
 
   const manualMasonry = readNumber(diagnostic, 'masonryVolumeM3');
   measurements.masonryVolumeM3 =
@@ -103,16 +115,12 @@ export function deriveConstructiiMeasurements(diagnostic: Record<string, unknown
       ? manualMasonry
       : round2(measurements.builtAreaTotal * 0.22);
 
-  const wallMaterialMultiplier = resolveWallMaterialMultiplier(diagnostic.wallMaterial);
-  measurements.wallMaterialMultiplier = wallMaterialMultiplier;
-  measurements.masonryMaterialM3 = round2(measurements.masonryVolumeM3 * wallMaterialMultiplier);
+  measurements.wallMaterialMultiplier = resolveWallMaterialMultiplier(diagnostic.wallMaterial);
 
-  const slabTypeMultiplier = resolveSlabTypeMultiplier(diagnostic.slabType);
-  measurements.slabTypeMultiplier = slabTypeMultiplier;
-  measurements.slabAreaCost = round2(measurements.builtAreaTotal * slabTypeMultiplier);
+  measurements.slabTypeMultiplier = resolveSlabTypeMultiplier(diagnostic.slabType);
+  measurements.slabAreaTotal = measurements.builtAreaTotal;
 
   measurements.waterproofingArea = round2(builtArea * 1.1);
-  measurements.slabAreaTotal = measurements.builtAreaTotal;
   measurements.stairFlightCount = storyCount > 1 ? storyCount - 1 : 0;
 
   const roofIncluded = readBoolean(diagnostic, 'roofIncluded');
@@ -122,6 +130,8 @@ export function deriveConstructiiMeasurements(diagnostic: Record<string, unknown
   measurements.projectDocumentationUnits = readBoolean(diagnostic, 'projectDocumentation') ? 1 : 0;
   measurements.projectHours = 16;
   measurements.handoverUnits = 1;
+  measurements.requiresManualReview = 1;
+  measurements.preliminaryEstimate = 1;
 
   return measurements;
 }

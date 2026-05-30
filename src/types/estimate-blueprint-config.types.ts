@@ -84,8 +84,8 @@ export type BlueprintPricingRule = {
   kind?: 'labor' | 'material';
   moduleKey?: string;
   enabledWhen?: BlueprintPricingRuleEnabledWhen;
-  /** When set, labor unitPrice is multiplied by measurements[this key] (e.g. heightMultiplier). */
   laborUnitPriceMultiplierKey?: string;
+  materialUnitPriceMultiplierKey?: string;
 };
 
 export type BlueprintAccessDifficultyImpact = {

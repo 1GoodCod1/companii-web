@@ -125,7 +125,11 @@ export function computePreviewLines(
       kind === 'labor' && rule.laborUnitPriceMultiplierKey
         ? (measurements[rule.laborUnitPriceMultiplierKey] ?? 1)
         : 1;
-    const accessMult = kind === 'labor' ? laborMult * ruleLaborMult : materialMult;
+    const ruleMaterialMult =
+      kind === 'material' && rule.materialUnitPriceMultiplierKey
+        ? (measurements[rule.materialUnitPriceMultiplierKey] ?? 1)
+        : 1;
+    const accessMult = kind === 'labor' ? laborMult * ruleLaborMult : materialMult * ruleMaterialMult;
     const unitPrice = round2(rule.unitPrice * accessMult);
     const lineTotal = round2(qty * unitPrice);
 
@@ -258,7 +262,7 @@ export function extractMeasurementsFromDiagnostic(
     Object.assign(out, deriveMobilaMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'elektrika') {
-    Object.assign(out, deriveElektrikaMeasurements(diagnostic, pricingOverrides));
+    Object.assign(out, deriveElektrikaMeasurements(diagnostic, plan2d, pricingOverrides));
   }
   if (categorySlug === 'santehnika') {
     Object.assign(out, deriveSantehnikaMeasurements(diagnostic, pricingOverrides));

@@ -5,7 +5,7 @@ type DiagnosticWarningsProps = {
   enabledWorkModules: string[];
 };
 
-export function DiagnosticWarnings({ diagnostic, enabledWorkModules }: DiagnosticWarningsProps) {
+export function DiagnosticWarnings({ diagnostic }: DiagnosticWarningsProps) {
   const { t } = useTranslation();
 
   const heightRaw = diagnostic.buildingHeightM;
@@ -17,19 +17,6 @@ export function DiagnosticWarnings({ diagnostic, enabledWorkModules }: Diagnosti
   const shapeRaw = diagnostic.roofShape;
   const showRoofManualReview =
     (Number.isFinite(slopeNum) && slopeNum > 60) || shapeRaw === 'complex';
-
-  const cleaningTypeRaw = String(diagnostic.cleaningType ?? '');
-  const cleaningMismatch =
-    (cleaningTypeRaw === 'post_construction' &&
-      !enabledWorkModules.includes('post_construction')) ||
-    (cleaningTypeRaw === 'deep' && !enabledWorkModules.includes('deep_cleaning'));
-
-  const cleaningMismatchModuleLabel =
-    cleaningTypeRaw === 'post_construction'
-      ? 'Curățenie post-șantier'
-      : cleaningTypeRaw === 'deep'
-        ? 'Curățenie profundă'
-        : '';
 
   return (
     <>
@@ -52,19 +39,6 @@ export function DiagnosticWarnings({ diagnostic, enabledWorkModules }: Diagnosti
             {t('company.estimateWizard.diagnosticStep.roofManualReviewNotice', {
               defaultValue:
                 'Pantă abruptă sau formă complexă — devizul este orientativ și necesită verificare la fața locului de către maistru.',
-            })}
-          </span>
-        </div>
-      )}
-
-      {cleaningMismatch && (
-        <div className="flex items-start gap-2 rounded-xl bg-amber-50/70 border border-amber-200 p-3">
-          <span className="text-amber-600 font-extrabold text-sm shrink-0">⚠️</span>
-          <span className="text-xs font-semibold text-amber-950 leading-relaxed">
-            {t('company.estimateWizard.diagnosticStep.cleaningTypeMismatch', {
-              module: cleaningMismatchModuleLabel,
-              defaultValue:
-                'Ai ales tipul de curățenie corespunzător dar modulul „{{module}}” nu este activ — liniile speciale nu vor apărea. Activează modulul mai sus.',
             })}
           </span>
         </div>

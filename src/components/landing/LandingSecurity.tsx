@@ -11,7 +11,7 @@ export function LandingSecurity() {
   const items = t('landing.security.items', { returnObjects: true }) as SecurityItem[];
 
   return (
-    <section className="py-24 sm:py-28 bg-gradient-to-b from-transparent via-violet-50/30 to-transparent">
+    <section className="py-24 sm:py-28 border-y border-gray-100/60 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

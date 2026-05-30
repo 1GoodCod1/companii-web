@@ -3,13 +3,13 @@ import { COMPANY_ROLE } from '@/constants/roles.constants';
 export const COMPANY_ROLE_LABELS: Record<string, string> = {
   [COMPANY_ROLE.OWNER]: 'Proprietar',
   [COMPANY_ROLE.MANAGER]: 'Manager',
-  [COMPANY_ROLE.MEMBER]: 'Tehnician',
+  [COMPANY_ROLE.MEMBER]: 'Angajat',
   Administrator: 'Administrator',
 };
 
 export const TEAM_INVITE_ROLE_LABELS: Record<string, string> = {
   [COMPANY_ROLE.MANAGER]: 'Manager',
-  [COMPANY_ROLE.MEMBER]: 'Tehnician',
+  [COMPANY_ROLE.MEMBER]: 'Angajat',
 };
 
 export const TEAM_ERROR_MESSAGES: Record<string, string> = {
@@ -25,7 +25,9 @@ export const TEAM_ERROR_MESSAGES: Record<string, string> = {
   'This user already owns another company and cannot join as a team member':
     'Utilizatorul deține deja o altă companie și nu poate fi adăugat ca membru.',
   'Account is disabled': 'Contul este dezactivat.',
+  'Employee limit reached for the current subscription plan':
+    'Limita de angajați pentru planul curent a fost atinsă. Upgradați abonamentul sau eliminați un membru activ.',
   'Technician limit reached for the current subscription plan':
-    'Limita de tehnicieni pentru planul curent a fost atinsă. Upgradați abonamentul sau eliminați un membru activ.',
+    'Limita de angajați pentru planul curent a fost atinsă. Upgradați abonamentul sau eliminați un membru activ.',
 };
-
+
