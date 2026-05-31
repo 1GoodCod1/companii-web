@@ -80,6 +80,55 @@ describe('syncGlobalParamsToDiagnostic — context-aware baseArea (I-01, I-02)',
     expect(facade.roofSlope).toBeUndefined();
   });
 
+  it('roof context syncs detailed roof geometry quantities for recalculation', () => {
+    const result = syncGlobalParamsToDiagnostic(
+      plan({
+        rooms: [
+          { id: 'r1', name: 'Plan principal', width: 10, height: 8, shapeType: 'rectangle', roofType: 'gable' },
+          { id: 'r2', name: 'Extensie', width: 5, height: 4, shapeType: 'rectangle' },
+        ],
+        points: [
+          { id: 'g1', type: 'gutter' },
+          { id: 'g2', type: 'gutter' },
+          { id: 'c1', type: 'chimney' },
+          { id: 's1', type: 'skylight' },
+        ],
+        globalParameters: {
+          workContext: 'roof',
+          baseArea: 100,
+          roofSlope: 30,
+          roofOverhangM: 0.4,
+          coveringType: 'ceramic_tile',
+          membraneType: 'premium',
+          insulationThicknessMm: 200,
+          buildingHeightM: 7,
+          scaffoldingRequired: true,
+          snowGuardRows: 2,
+        },
+      }),
+      { chimneyCount: 5, skylightCount: 3 },
+    );
+
+    expect(result.baseArea).toBe(100);
+    expect(result.roofArea).toBe(100);
+    expect(result.roofSlope).toBe(30);
+    expect(result.roofOverhangM).toBe(0.4);
+    expect(result.coveringType).toBe('ceramic_tile');
+    expect(result.membraneType).toBe('premium');
+    expect(result.insulationThicknessMm).toBe(200);
+    expect(result.buildingHeightM).toBe(7);
+    expect(result.scaffoldingRequired).toBe(true);
+    expect(result.snowGuardRows).toBe(2);
+    expect(result.roofShape).toBe('complex');
+    expect(result.ridgeLengthM).toBe(10.8);
+    expect(result.gutterLengthM).toBe(39.2);
+    expect(result.roofDripEdgeLengthM).toBe(39.2);
+    expect(result.valleyLengthM).toBe(24);
+    expect(result.wallIntersectionLengthM).toBe(8);
+    expect(result.chimneyCount).toBe(1);
+    expect(result.skylightCount).toBe(1);
+  });
+
   it('facadeArea written only when context = facade', () => {
     const facade = syncGlobalParamsToDiagnostic(
       plan({ globalParameters: { workContext: 'facade', facadeArea: 240 } }),

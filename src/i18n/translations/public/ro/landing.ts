@@ -16,6 +16,40 @@ export const publicRoLanding = {
       description:
         'Faber Companii — platforma FSM pentru instalatori, electricieni, firme de curățenie și orice companie cu angajați mobili din Moldova.',
       howItWorksLink: 'Vezi cum funcționează',
+      browseCatalogLink: 'Caută o companie',
+    },
+    catalog: {
+      eyebrow: 'Pentru clienți',
+      title: 'Ai nevoie de o echipă? Găsește compania potrivită',
+      description:
+        'Catalogul public Faber reunește companii verificate din Moldova — cu profil, servicii, recenzii și posibilitatea de a trimite o cerere direct din platformă.',
+      highlights: [
+        'Filtrează după oraș și domeniu de activitate',
+        'Vezi profil complet, galerie foto și pachete de servicii',
+        'Trimite cerere de serviciu sau proiect fără telefoane pierdute',
+      ],
+      cta: 'Deschide catalogul companiilor',
+      previewHint: 'Exemple din catalogul public',
+      previewCards: [
+        {
+          name: 'Voltex Instal SRL',
+          category: 'Instalații sanitare & termice',
+          city: 'Chișinău',
+          rating: '4.9',
+        },
+        {
+          name: 'ElectroPro Service',
+          category: 'Electricitate & automatizări',
+          city: 'Bălți',
+          rating: '4.8',
+        },
+        {
+          name: 'CleanOffice MD',
+          category: 'Curățenie profesională',
+          city: 'Chișinău',
+          rating: '4.7',
+        },
+      ],
     },
     stats: [
       {

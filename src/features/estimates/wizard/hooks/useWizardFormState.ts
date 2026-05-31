@@ -15,7 +15,6 @@ export function useWizardFormState(project: EstimateProjectDto) {
   const [address, setAddress] = useState(project.address ?? '');
   const [marginPct, setMarginPct] = useState(Number(project.marginPct));
   const [riskReservePct, setRiskReservePct] = useState(Number(project.riskReservePct ?? 0));
-  const [buildingYear, setBuildingYear] = useState<number | null>(project.buildingYear ?? null);
   const [siteFloor, setSiteFloor] = useState<number | null>(project.siteFloor ?? null);
   const [accessDifficulty, setAccessDifficulty] = useState<string | null>(
     project.accessDifficulty ?? null,
@@ -111,8 +110,6 @@ export function useWizardFormState(project: EstimateProjectDto) {
     setMarginPct,
     riskReservePct,
     setRiskReservePct,
-    buildingYear,
-    setBuildingYear,
     siteFloor,
     setSiteFloor,
     accessDifficulty,

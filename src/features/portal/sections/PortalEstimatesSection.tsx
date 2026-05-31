@@ -28,6 +28,10 @@ import { getErrorMessage } from '@/utils/errors';
 import { getTranslatedCategoryName } from '@/utils/translateCityCategory';
 import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
 import { buildScopeSummary } from '@/features/estimates/stages/scopeSummary';
+import {
+  findPricingRuleForLine,
+  formatPricingRuleExplanation,
+} from '@/features/estimates/utils/pricingRuleExplanation';
 
 export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();
@@ -377,6 +381,16 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                               </div>
                               <ul className="text-xs text-gray-600 space-y-1.5 mt-2">
                                 {(stage.lines ?? []).map((line) => {
+                                  const pricingRule = findPricingRuleForLine(
+                                    estimateDetail.blueprint?.config,
+                                    stage,
+                                    line,
+                                  );
+                                  const lineExplanation = formatPricingRuleExplanation(
+                                    pricingRule,
+                                    line,
+                                    estimateDetail.measurements,
+                                  );
                                   const isLabor =
                                     line.unit === 'ore' ||
                                     line.unit === 'h' ||
@@ -396,6 +410,11 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                                           {Number(line.qty)} {line.unit} ·{' '}
                                           {Number(line.lineTotal ?? 0).toLocaleString('ro-MD')} MDL
                                         </p>
+                                        {lineExplanation && (
+                                          <p className="text-[10px] text-slate-500 font-medium mt-1 max-w-xl">
+                                            {lineExplanation}
+                                          </p>
+                                        )}
                                       </div>
                                       <div className="flex items-center gap-2">
                                         {!isLabor && line.materialStore && (

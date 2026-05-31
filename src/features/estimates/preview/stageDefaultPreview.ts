@@ -52,6 +52,7 @@ export function appendStageDefaultPreviewLines(
       unitPrice,
       lineTotal: round2(hours * unitPrice),
       kind: 'labor',
+      source: 'stage-default',
     });
   }
 

@@ -109,13 +109,13 @@ export const CATEGORY_TEMPLATES: Record<string, PointTemplate[]> = {
       key: 'bucatarie',
       labelRo: 'Bucătărie',
       labelRu: 'Кухня',
-      counts: { cabinet: 5, wardrobe: 0 },
+      counts: { kitchen_cabinet: 5, table: 1 },
     },
     {
       key: 'dormitor',
       labelRo: 'Dormitor',
       labelRu: 'Спальня',
-      counts: { wardrobe: 2, cabinet: 1 },
+      counts: { wardrobe: 2, bed: 1 },
     },
   ],
   cleaning: [

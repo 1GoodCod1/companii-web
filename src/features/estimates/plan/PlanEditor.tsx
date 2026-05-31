@@ -12,6 +12,7 @@ import { uid, defaultContextFromSlug } from './utils';
 import { PlanGlobalParameters } from './PlanGlobalParameters';
 import { PlanRoomsTable } from './PlanRoomsTable';
 import { PlanWorkItemsPanel } from './PlanWorkItemsPanel';
+import { PlanRoofGeometryPanel } from './PlanRoofGeometryPanel';
 
 type PlanEditorTab = 'rooms' | 'items' | 'global' | 'preview';
 
@@ -35,12 +36,17 @@ export function PlanEditor({
 
   const workContext = defaultContextFromSlug(categorySlug);
   const isFacade = workContext === 'facade';
+  const isRoof = workContext === 'roof';
   const tabs = useMemo(
-    () => (isFacade ? ALL_TABS.filter((tab) => tab.key !== 'rooms') : ALL_TABS),
-    [isFacade],
+    () => {
+      if (isRoof) return ALL_TABS.filter((tab) => tab.key === 'global' || tab.key === 'preview');
+      if (isFacade) return ALL_TABS.filter((tab) => tab.key !== 'rooms');
+      return ALL_TABS;
+    },
+    [isFacade, isRoof],
   );
-  const [mobileTab, setMobileTab] = useState<PlanEditorTab>(isFacade ? 'global' : 'rooms');
-  const globalParams = value.globalParameters ?? {
+  const [mobileTab, setMobileTab] = useState<PlanEditorTab>(isFacade || isRoof ? 'global' : 'rooms');
+  const globalParams: NonNullable<Plan2dData['globalParameters']> = value.globalParameters ?? {
     workContext,
   };
 
@@ -210,17 +216,29 @@ export function PlanEditor({
       </div>
 
       {/* Desktop: all sections visible. Mobile: only active tab section. */}
-      <div className={mobileTab === 'global' ? 'block' : 'hidden md:block'}>
-        <PlanGlobalParameters
-          globalParams={globalParams}
-          setGlobalParams={setGlobalParams}
-          readOnly={readOnly}
-          categoryName={categoryName}
-          categorySlug={categorySlug}
-        />
-      </div>
+      {isRoof ? (
+        <div className={mobileTab === 'global' ? 'block' : 'hidden md:block'}>
+          <PlanRoofGeometryPanel
+            value={value}
+            globalParams={globalParams}
+            setGlobalParams={setGlobalParams}
+            onChange={onChange}
+            readOnly={readOnly}
+          />
+        </div>
+      ) : (
+        <div className={mobileTab === 'global' ? 'block' : 'hidden md:block'}>
+          <PlanGlobalParameters
+            globalParams={globalParams}
+            setGlobalParams={setGlobalParams}
+            readOnly={readOnly}
+            categoryName={categoryName}
+            categorySlug={categorySlug}
+          />
+        </div>
+      )}
 
-      {!isFacade && (
+      {!isFacade && !isRoof && (
         <div className={mobileTab === 'rooms' ? 'block' : 'hidden md:block'}>
           <PlanRoomsTable
             value={value}
@@ -234,7 +252,8 @@ export function PlanEditor({
         </div>
       )}
 
-      <div className={mobileTab === 'items' ? 'block' : 'hidden md:block'}>
+      {!isRoof && (
+        <div className={mobileTab === 'items' ? 'block' : 'hidden md:block'}>
         <PlanWorkItemsPanel
           config={config}
           readOnly={readOnly}
@@ -245,7 +264,8 @@ export function PlanEditor({
           customCounters={customCounters}
           onAdjustCustomCount={adjustCustomCount}
         />
-      </div>
+        </div>
+      )}
 
       {mobileTab === 'preview' && (
         <div className="md:hidden rounded-3xl border border-slate-100 bg-white p-6 space-y-4">

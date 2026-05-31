@@ -14,6 +14,7 @@ import { ContactsPage } from '@/pages/public/ContactsPage';
 import { PrivacyPage } from '@/pages/public/PrivacyPage';
 import { TermsPage } from '@/pages/public/TermsPage';
 import { SubscriptionsPage } from '@/pages/public/SubscriptionsPage';
+import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 
 export const localizedPublicRoutes = [
   { index: true, element: <LandingPage /> },
@@ -26,6 +27,7 @@ export const localizedPublicRoutes = [
   { path: PUBLIC_ROUTE.SUBSCRIPTIONS, element: <SubscriptionsPage /> },
   { path: PUBLIC_ROUTE.COMPANIES, element: <CompaniesListPage /> },
   { path: PUBLIC_ROUTE.COMPANY_DETAIL, element: <CompanyDetailPage /> },
+  { path: '*', element: <NotFoundPage /> },
 ];
 
 export const legacyLocalizedRedirects = [

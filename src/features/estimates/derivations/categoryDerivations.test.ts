@@ -33,6 +33,33 @@ describe('extractMeasurementsFromDiagnostic — derived-key parity', () => {
     expect(m.timberVolumeM3).toBeGreaterThan(0);
   });
 
+  it('acoperis: mirrors backend plan-derived roof quantities', () => {
+    const m = extractMeasurementsFromDiagnostic(
+      { baseArea: 100, roofSlope: 30 },
+      'acoperis',
+      null,
+      {
+        rooms: [
+          { id: '1', name: 'Corp A', width: 10, height: 8, unit: 'm', roofType: 'gable' },
+          { id: '2', name: 'Corp B', width: 4, height: 6, unit: 'm', roofType: 'gable' },
+        ],
+        points: [
+          { id: 'g1', type: 'gutter' },
+          { id: 'g2', type: 'gutter' },
+          { id: 'c1', type: 'chimney' },
+          { id: 's1', type: 'skylight' },
+        ],
+      },
+    );
+
+    expect(m.wallIntersectionLengthM).toBe(8);
+    expect(m.gutterLengthM).toBe(39.2);
+    expect(m.ridgeLengthM).toBe(10.8);
+    expect(m.chimneyCount).toBe(1);
+    expect(m.skylightCount).toBe(1);
+    expect(m.requiresInteractiveDrawing).toBe(1);
+  });
+
   it('clima: derives height multiplier and route split with real unit counts', () => {
     const m = extractMeasurementsFromDiagnostic(
       {
@@ -117,6 +144,55 @@ describe('extractMeasurementsFromDiagnostic — derived-key parity', () => {
     );
     expect(m.standardCleanAreaLabor).toBe(0);
     expect(m.deepCleanAreaLabor).toBe(40);
+  });
+
+  it('mobila: derives premium material line and plan counts like backend', () => {
+    const m = extractMeasurementsFromDiagnostic(
+      { materialType: 'mdf', hardwareTier: 'premium', deliveryRequired: true, installationRequired: true },
+      'mobila',
+      null,
+      {
+        rooms: [],
+        points: [
+          { id: 'c1', type: 'kitchen_cabinet' },
+          { id: 'c2', type: 'kitchen_cabinet' },
+          { id: 'w1', type: 'wardrobe' },
+        ],
+      },
+    );
+
+    expect(m.cabinetCount).toBe(2);
+    expect(m.wardrobeCount).toBe(1);
+    expect(m.linearMeters).toBe(Math.round((2 * 0.8 + 1 * 1.5) * 100) / 100);
+    expect(m.cuttingMaterialPremiumM).toBe(Math.round(m.cuttingLinearM * 0.3 * 100) / 100);
+    expect(m.hardwareCostMultiplier).toBe(1.7);
+    expect(m.deliveryQty).toBe(1);
+    expect(m.installationQty).toBe(3);
+  });
+
+  it('mobila: prices furniture-specific material, hardware and assembly fields', () => {
+    const m = extractMeasurementsFromDiagnostic(
+      {
+        cabinetCount: 4,
+        wardrobeCount: 1,
+        materialType: 'pal',
+        frontMaterialType: 'mdf',
+        materialThickness: '18 mm',
+        finishType: 'Lucios',
+        hardwareTier: 'standard',
+        softClose: true,
+        hasApplianceCutouts: true,
+        assemblyComplexity: 'Mediu (sertare multiple)',
+      },
+      'mobila',
+    );
+
+    expect(m.materialMultiplier).toBe(Math.round(1.3 * 1.05 * 1.1 * 100) / 100);
+    expect(m.cuttingMaterialPremiumM).toBeGreaterThan(0);
+    expect(m.hardwareCostMultiplier).toBe(Math.round(1.25 * 1.1 * 100) / 100);
+    expect(m.applianceCutoutUnits).toBe(2);
+    expect(m.assemblyCabinetQty).toBe(Math.round(4 * 1.2 * 100) / 100);
+    expect(m.assemblyWardrobeQty).toBe(Math.round(1 * 1.2 * 100) / 100);
   });
 
   it('constructii: splits foundation vs structural concrete and always flags manual review', () => {

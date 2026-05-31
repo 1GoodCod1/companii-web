@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, PlayCircle } from 'lucide-react';
+import { ArrowRight, Building2, PlayCircle } from 'lucide-react';
 import { SEOHead } from '@/components/seo/SEOHead';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
@@ -13,6 +13,7 @@ import { LandingTimeline } from '@/components/landing/LandingTimeline';
 import { LandingFeatures } from '@/components/landing/LandingFeatures';
 import { LandingSecurity } from '@/components/landing/LandingSecurity';
 import { LandingCta } from '@/components/landing/LandingCta';
+import { LandingCompaniesCatalog } from '@/components/landing/LandingCompaniesCatalog';
 import { FaberSplashScreen } from '@/components/brand/FaberSplashScreen';
 
 export function LandingPage() {
@@ -97,6 +98,13 @@ export function LandingPage() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
+                  to={lp('/companies')}
+                  className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-7 py-3.5 text-sm font-black text-violet-800 transition-colors hover:bg-violet-100"
+                >
+                  <Building2 className="h-4 w-4" />
+                  {t('landing.hero.browseCatalogLink')}
+                </Link>
+                <Link
                   to={lp('/how-it-works')}
                   className="inline-flex items-center gap-2 rounded-xl glass-panel px-7 py-3.5 text-sm font-semibold text-gray-700 hover:bg-white transition-colors"
                 >
@@ -117,6 +125,7 @@ export function LandingPage() {
       </section>
 
       <LandingStats />
+      <LandingCompaniesCatalog />
 
       {/* Product preview section */}
       <section className="py-24 sm:py-32">

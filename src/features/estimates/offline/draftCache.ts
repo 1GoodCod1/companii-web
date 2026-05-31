@@ -9,7 +9,6 @@ export type EstimateDraft = {
   address?: string;
   marginPct?: number;
   riskReservePct?: number;
-  buildingYear?: number | null;
   siteFloor?: number | null;
   accessDifficulty?: string | null;
   urgency?: string | null;

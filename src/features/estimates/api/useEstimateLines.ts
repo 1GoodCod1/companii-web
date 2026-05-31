@@ -40,9 +40,16 @@ export function useUpdateEstimateLineMutation() {
             s.id === stageId
               ? {
                   ...s,
-                  lines: s.lines?.map((l) =>
-                    l.id === lineId ? { ...l, ...body } : l,
-                  ),
+                  lines: s.lines?.map((l) => {
+                    if (l.id !== lineId) return l;
+                    const next = { ...l, ...body };
+                    if (body.qty !== undefined || body.unitPrice !== undefined) {
+                      const qty = body.qty ?? Number(l.qty);
+                      const unitPrice = body.unitPrice ?? Number(l.unitPrice);
+                      next.lineTotal = Math.round(qty * unitPrice * 100) / 100;
+                    }
+                    return next;
+                  }),
                 }
               : s,
           ),

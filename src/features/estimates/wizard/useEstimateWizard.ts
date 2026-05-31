@@ -25,8 +25,6 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     setMarginPct: formState.setMarginPct,
     riskReservePct: formState.riskReservePct,
     setRiskReservePct: formState.setRiskReservePct,
-    buildingYear: formState.buildingYear,
-    setBuildingYear: formState.setBuildingYear,
     siteFloor: formState.siteFloor,
     setSiteFloor: formState.setSiteFloor,
     accessDifficulty: formState.accessDifficulty,
@@ -104,6 +102,7 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     handleDeleteReceipt: lineActions.handleDeleteReceipt,
     handleSaveStore: lineActions.handleSaveStore,
     handleUpdateLineQtyOrPrice: lineActions.handleUpdateLineQtyOrPrice,
+    handleUpdateLineUnit: lineActions.handleUpdateLineUnit,
     handleAddLine: lineActions.handleAddLine,
     handleDeleteLine: lineActions.handleDeleteLine,
 

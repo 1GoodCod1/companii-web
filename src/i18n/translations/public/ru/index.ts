@@ -3,6 +3,7 @@ import { publicRuLanding } from './landing';
 import { publicRuCompanies } from './companies';
 import { publicRuMarketing } from './marketing';
 import { publicRuSubscriptions } from './subscriptions';
+import { publicRuErrors } from './errors';
 
 export const publicRu = {
   ...publicRuShared,
@@ -10,4 +11,5 @@ export const publicRu = {
   ...publicRuCompanies,
   ...publicRuMarketing,
   ...publicRuSubscriptions,
+  ...publicRuErrors,
 };

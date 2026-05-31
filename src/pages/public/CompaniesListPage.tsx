@@ -13,7 +13,7 @@ import {
 import type { CatalogOptionDto } from '@/types/companies';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
-import { cabinetFieldClass } from '@/components/cabinet/cabinet-ui';
+import { AppSelect, cabinetFieldClass } from '@/components/cabinet/cabinet-ui';
 import {
   getCatalogSearchText,
   getTranslatedCategoryName,
@@ -53,6 +53,28 @@ export function CompaniesListPage() {
     );
   });
 
+  const cityOptions = useMemo(
+    () => [
+      { value: '', label: t('companies.allCities') },
+      ...(cities?.map((city: CatalogOptionDto) => ({
+        value: city.id,
+        label: getTranslatedCityName(t, city),
+      })) ?? []),
+    ],
+    [cities, t],
+  );
+
+  const categoryOptions = useMemo(
+    () => [
+      { value: '', label: t('companies.allCategories') },
+      ...(categories?.map((cat: CatalogOptionDto) => ({
+        value: cat.id,
+        label: getTranslatedCategoryName(t, cat),
+      })) ?? []),
+    ],
+    [categories, t],
+  );
+
   return (
     <>
       <SEOHead
@@ -86,30 +108,20 @@ export function CompaniesListPage() {
                 className={`${cabinetFieldClass} pl-10`}
               />
             </div>
-            <select
+            <AppSelect
               value={cityId}
-              onChange={(e) => setCityId(e.target.value)}
-              className={cabinetFieldClass}
-            >
-              <option value="">{t('companies.allCities')}</option>
-              {cities?.map((city: CatalogOptionDto) => (
-                <option key={city.id} value={city.id}>
-                  {getTranslatedCityName(t, city)}
-                </option>
-              ))}
-            </select>
-            <select
+              onChange={setCityId}
+              options={cityOptions}
+              aria-label={t('companies.allCities')}
+              maxVisibleItems={5}
+            />
+            <AppSelect
               value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              className={cabinetFieldClass}
-            >
-              <option value="">{t('companies.allCategories')}</option>
-              {categories?.map((cat: CatalogOptionDto) => (
-                <option key={cat.id} value={cat.id}>
-                  {getTranslatedCategoryName(t, cat)}
-                </option>
-              ))}
-            </select>
+              onChange={setCategoryId}
+              options={categoryOptions}
+              aria-label={t('companies.allCategories')}
+              maxVisibleItems={5}
+            />
           </div>
         </section>
 

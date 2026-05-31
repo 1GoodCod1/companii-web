@@ -3,6 +3,7 @@ import { publicRoLanding } from './landing';
 import { publicRoCompanies } from './companies';
 import { publicRoMarketing } from './marketing';
 import { publicRoSubscriptions } from './subscriptions';
+import { publicRoErrors } from './errors';
 
 export const publicRo = {
   ...publicRoShared,
@@ -10,4 +11,5 @@ export const publicRo = {
   ...publicRoCompanies,
   ...publicRoMarketing,
   ...publicRoSubscriptions,
+  ...publicRoErrors,
 };

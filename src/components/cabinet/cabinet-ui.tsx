@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
+export { AppSelect, type AppSelectOption } from '@/components/ui/AppSelect';
+
 export const cabinetLabelClass = 'text-xs font-medium text-gray-600 block mb-1.5';
 export const cabinetFieldClass =
   'w-full rounded-none bg-slate-50/90 px-3.5 py-2.5 text-sm text-gray-900 border border-transparent outline-none placeholder:text-gray-400 focus:bg-white focus:border-slate-300';

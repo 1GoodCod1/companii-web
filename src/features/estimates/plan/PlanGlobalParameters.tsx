@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Plan2dData } from '@/types/estimates';
+import { computeRoofAreaFromSlope } from '@/features/estimates/derivations/roofGeometry';
 
 type GlobalParams = NonNullable<Plan2dData['globalParameters']>;
 
@@ -128,17 +129,6 @@ function FacadeAreaCalculator({
   );
 }
 
-/**
- * Live computation: roofArea = baseArea / cos(slope) × 1.12 (matches backend
- * roofing-measurements.util.ts). Slope > 70° or cos <= 0.1 → baseArea × 1.15.
- */
-function computeRoofAreaPreview(baseArea: number, slopeDeg: number): number {
-  const slope = Math.min(75, Math.max(0, slopeDeg));
-  const cosVal = Math.cos((slope * Math.PI) / 180);
-  if (slope >= 70 || cosVal <= 0.1) return baseArea * 1.15;
-  return (baseArea / cosVal) * 1.12;
-}
-
 export function PlanGlobalParameters({
   globalParams,
   setGlobalParams,
@@ -156,7 +146,7 @@ export function PlanGlobalParameters({
   const baseAreaNum = Number(globalParams.baseArea) || 0;
   const slopeNum = Number(globalParams.roofSlope) || 30;
   const roofAreaPreview =
-    isRoof && baseAreaNum > 0 ? computeRoofAreaPreview(baseAreaNum, slopeNum) : 0;
+    isRoof && baseAreaNum > 0 ? computeRoofAreaFromSlope(baseAreaNum, slopeNum) : 0;
 
   return (
     <div className="rounded-3xl border border-indigo-100/80 bg-gradient-to-br from-white via-slate-50/50 to-indigo-50/30 p-6 glass-panel space-y-6 relative overflow-hidden">

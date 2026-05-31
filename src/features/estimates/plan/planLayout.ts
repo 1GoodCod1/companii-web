@@ -105,6 +105,10 @@ const CATEGORY_POINT_TEMPLATES: Record<string, PointTemplate[]> = {
     { type: 'door', count: 2 },
   ],
   'panouri-solare': [{ type: 'solar_panel', count: 10 }],
+  mobila: [
+    { type: 'kitchen_cabinet', count: 5 },
+    { type: 'table', count: 1 },
+  ],
   acoperis: [{ type: 'gutter', count: 4 }],
   pavaj: [{ type: 'border', count: 4 }],
 };

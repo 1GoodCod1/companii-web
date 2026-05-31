@@ -2,9 +2,22 @@ import { Check, Eye, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { downloadFile } from '@/api/files';
 import { EstimateLineSourceBadge } from '@/features/estimates/components/EstimateLineSourceBadge';
+import { EstimateLineUnitSelect } from '@/features/estimates/components/EstimateLineUnitSelect';
 import type { EstimateStageDto } from '@/types/estimates';
 import type { EstimateWizardApi } from '../../useEstimateWizard';
 import { getLineExplanation } from '@/features/estimates/utils/calculationExplanation';
+import {
+  estimateLineColPrice,
+  estimateLineColQty,
+  estimateLineColTotal,
+  estimateLineColUnit,
+  estimateLineInputBase,
+  estimateLineNumericCellCenter,
+  estimateLineNumericCellEnd,
+  estimateLinePriceInput,
+  estimateLinePriceWrap,
+  estimateLineQtyInput,
+} from '@/features/estimates/components/estimateLineTableStyles';
 
 type StageCardProps = {
   stage: EstimateStageDto;
@@ -21,6 +34,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
     setEditingStore,
     uploadingLineId,
     handleUpdateLineQtyOrPrice,
+    handleUpdateLineUnit,
     handleSaveStore,
     handleUploadReceipt,
     handleDeleteReceipt,
@@ -61,10 +75,10 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
             <thead>
               <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider">
                 <th className="py-2">{t('company.estimateWizard.stagesStep.colDescription')}</th>
-                <th className="py-2 w-20">{t('company.estimateWizard.stagesStep.colQty')}</th>
-                <th className="py-2 w-20">{t('company.estimateWizard.stagesStep.colUnit')}</th>
-                <th className="py-2 w-28">{t('company.estimateWizard.stagesStep.colUnitPrice')}</th>
-                <th className="py-2 w-28">{t('company.estimateWizard.stagesStep.colTotal')}</th>
+                <th className={`py-2 ${estimateLineColQty} text-center`}>{t('company.estimateWizard.stagesStep.colQty')}</th>
+                <th className={`py-2 ${estimateLineColUnit} text-center`}>{t('company.estimateWizard.stagesStep.colUnit')}</th>
+                <th className={`py-2 ${estimateLineColPrice} text-right`}>{t('company.estimateWizard.stagesStep.colUnitPrice')}</th>
+                <th className={`py-2 ${estimateLineColTotal} text-right`}>{t('company.estimateWizard.stagesStep.colTotal')}</th>
                 <th className="py-2">{t('company.estimateWizard.stagesStep.colStore')}</th>
                 <th className="py-2 text-right">{t('company.estimateWizard.stagesStep.colReceipt')}</th>
                 {!isReadOnly && <th className="py-2 w-10"></th>}
@@ -100,7 +114,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                                 });
                               }
                             }}
-                            className="w-full rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
+                            className={`${estimateLineInputBase} w-full px-2 text-left`}
                           />
                           {(() => {
                             const diagnostic = (project?.diagnosticAnswers ?? {}) as Record<string, unknown>;
@@ -118,7 +132,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                         <EstimateLineSourceBadge source={line.source} />
                       </div>
                     </td>
-                    <td className="py-3">
+                    <td className={estimateLineNumericCellCenter}>
                       <input
                         type="number"
                         defaultValue={Number(line.qty)}
@@ -131,12 +145,18 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                             Number(e.target.value),
                           )
                         }
-                        className="w-16 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
+                        className={estimateLineQtyInput}
                       />
                     </td>
-                    <td className="py-3 text-gray-500 font-medium">{line.unit}</td>
-                    <td className="py-3">
-                      <div className="flex items-center gap-1">
+                    <td className={estimateLineNumericCellCenter}>
+                      <EstimateLineUnitSelect
+                        value={line.unit}
+                        disabled={isReadOnly}
+                        onChange={(unit) => handleUpdateLineUnit(line.id, stage.id, unit)}
+                      />
+                    </td>
+                    <td className={estimateLineNumericCellEnd}>
+                      <div className={estimateLinePriceWrap}>
                         <input
                           type="number"
                           defaultValue={Number(line.unitPrice)}
@@ -149,12 +169,12 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                               Number(e.target.value),
                             )
                           }
-                          className="w-20 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
+                          className={estimateLinePriceInput}
                         />
-                        <span className="text-[10px] text-gray-400">MDL</span>
+                        <span className="w-7 shrink-0 text-[10px] font-semibold text-gray-400 text-right">MDL</span>
                       </div>
                     </td>
-                    <td className="py-3 font-extrabold text-gray-900">
+                    <td className={`${estimateLineNumericCellEnd} font-extrabold text-gray-900 tabular-nums whitespace-nowrap`}>
                       {Number(line.lineTotal).toLocaleString('ro-MD')} MDL
                     </td>
                     <td className="py-3">

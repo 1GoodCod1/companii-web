@@ -86,6 +86,19 @@ export function useWizardLineActions(projectId: string) {
     }
   };
 
+  const handleUpdateLineUnit = async (lineId: string, stageId: string, unit: string) => {
+    try {
+      await updateLine.mutateAsync({
+        projectId,
+        stageId,
+        lineId,
+        unit,
+      });
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.updateFailed')));
+    }
+  };
+
   const handleAddLine = async (stageId: string) => {
     try {
       await addLineMutation.mutateAsync({
@@ -127,6 +140,7 @@ export function useWizardLineActions(projectId: string) {
     handleDeleteReceipt,
     handleSaveStore,
     handleUpdateLineQtyOrPrice,
+    handleUpdateLineUnit,
     handleAddLine,
     handleDeleteLine,
   };

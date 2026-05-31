@@ -14,6 +14,7 @@ import {
 import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
 import { resolveSubscriptionPlanCode } from '@/utils/subscriptionPlan';
 import { PlanUpgradePanel } from '@/features/subscriptions/components/PlanUpgradePanel';
+import { ForbiddenPage } from '@/pages/errors/ForbiddenPage';
 
 export function RequireAuth({
   children,
@@ -26,7 +27,7 @@ export function RequireAuth({
   const accessToken = useAuthStore((s) => s.accessToken);
   if (!user || !accessToken) return <Navigate to="/login" replace />;
   if (kinds && (!user.accountKind || !kinds.includes(user.accountKind))) {
-    return <Navigate to="/" replace />;
+    return <ForbiddenPage compact />;
   }
   return children;
 }

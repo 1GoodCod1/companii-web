@@ -128,7 +128,6 @@ export type EstimateProjectPhotoDto = {
 export type EstimateProjectDto = Omit<EstimateProjectListDto, 'stages'> & {
   siteType?: string | null;
   address?: string | null;
-  buildingYear?: number | null;
   siteFloor?: number | null;
   accessDifficulty?: EstimateAccessDifficulty | null;
   urgency?: EstimateUrgency | null;

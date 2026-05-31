@@ -159,6 +159,52 @@ select:focus-visible {
   background: rgba(99, 102, 241, 0.3);
 }
 
+/* Dashboard: invisible scrollbar until hover/scroll */
+.custom-scrollbar,
+.cabinet-content {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.custom-scrollbar:hover,
+.cabinet-content:hover {
+  scrollbar-color: rgba(15, 23, 42, 0.14) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar,
+.cabinet-content::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button,
+.cabinet-content::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track,
+.cabinet-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb,
+.cabinet-content::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb,
+.cabinet-content:hover::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.12);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover,
+.cabinet-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.22);
+}
+
 .public-site-header {
   position: fixed;
   top: 0;
@@ -219,6 +265,15 @@ select:focus-visible {
 
 .animate-fade-in {
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.error-blueprint-grid {
+  background-image:
+    linear-gradient(rgba(124, 58, 237, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 58, 237, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, black 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, black 20%, transparent 100%);
 }
 
 @keyframes modalIn {

@@ -30,8 +30,6 @@ export function ObjectStep({ wizard }: Props) {
     setMarginPct,
     riskReservePct,
     setRiskReservePct,
-    buildingYear,
-    setBuildingYear,
     siteFloor,
     setSiteFloor,
     accessDifficulty,
@@ -44,6 +42,9 @@ export function ObjectStep({ wizard }: Props) {
     isPlumbingCategory,
     handleSaveObject,
   } = wizard;
+
+  const showPhysicalSiteFields =
+    !isServiceCategory && !isFurnitureCategory && !isElektrikaCategory && !isPlumbingCategory;
 
   return (
     <Panel className="p-6 max-w-2xl space-y-4">
@@ -87,54 +88,40 @@ export function ObjectStep({ wizard }: Props) {
         </label>
       </div>
 
-      <div className={`grid grid-cols-1 ${siteType === 'house' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4`}>
-        {!isServiceCategory && !isFurnitureCategory && !isElektrikaCategory && !isPlumbingCategory && (
+      {showPhysicalSiteFields && (
+        <div className={`grid grid-cols-1 ${siteType === 'house' ? '' : 'md:grid-cols-2'} gap-4`}>
+          {siteType !== 'house' && (
+            <label className={cabinetLabelClass}>
+              {t('company.estimateWizard.objectStep.siteFloor')}
+              <input
+                type="number"
+                min={0}
+                max={50}
+                value={siteFloor ?? ''}
+                onChange={(e) =>
+                  setSiteFloor(e.target.value === '' ? null : Number(e.target.value))
+                }
+                className={cabinetFieldClass}
+                placeholder="Ex: 4"
+              />
+            </label>
+          )}
           <label className={cabinetLabelClass}>
-            {t('company.estimateWizard.objectStep.buildingYear')}
-            <input
-              type="number"
-              min={1900}
-              max={new Date().getFullYear() + 1}
-              value={buildingYear ?? ''}
-              onChange={(e) =>
-                setBuildingYear(e.target.value === '' ? null : Number(e.target.value))
-              }
-              className={cabinetFieldClass}
-              placeholder="Ex: 1985"
-            />
+            {t('company.estimateWizard.objectStep.urgency')}
+            <select
+              value={urgency ?? ''}
+              onChange={(e) => setUrgency(e.target.value || null)}
+              className={cabinetSelectClass}
+            >
+              <option value="">{t('company.estimateWizard.objectStep.urgencyNormal')}</option>
+              <option value="urgent">{t('company.estimateWizard.objectStep.urgencyUrgent')}</option>
+              <option value="emergency">{t('company.estimateWizard.objectStep.urgencyEmergency')}</option>
+            </select>
           </label>
-        )}
-        {!isServiceCategory && !isFurnitureCategory && !isElektrikaCategory && !isPlumbingCategory && siteType !== 'house' && (
-          <label className={cabinetLabelClass}>
-            {t('company.estimateWizard.objectStep.siteFloor')}
-            <input
-              type="number"
-              min={0}
-              max={50}
-              value={siteFloor ?? ''}
-              onChange={(e) =>
-                setSiteFloor(e.target.value === '' ? null : Number(e.target.value))
-              }
-              className={cabinetFieldClass}
-              placeholder="Ex: 4"
-            />
-          </label>
-        )}
-        <label className={cabinetLabelClass}>
-          {t('company.estimateWizard.objectStep.urgency')}
-          <select
-            value={urgency ?? ''}
-            onChange={(e) => setUrgency(e.target.value || null)}
-            className={cabinetSelectClass}
-          >
-            <option value="">{t('company.estimateWizard.objectStep.urgencyNormal')}</option>
-            <option value="urgent">{t('company.estimateWizard.objectStep.urgencyUrgent')}</option>
-            <option value="emergency">{t('company.estimateWizard.objectStep.urgencyEmergency')}</option>
-          </select>
-        </label>
-      </div>
+        </div>
+      )}
 
-      {!isServiceCategory && !isFurnitureCategory && !isElektrikaCategory && !isPlumbingCategory && (
+      {showPhysicalSiteFields && (
         <label className={cabinetLabelClass}>
           {t('company.estimateWizard.objectStep.accessDifficulty')}
           <select
@@ -152,7 +139,9 @@ export function ObjectStep({ wizard }: Props) {
         </label>
       )}
 
-      <SitePhotoGallery projectId={project.id} photos={project.photos ?? []} />
+      {project.category.slug !== 'it-web' && (
+        <SitePhotoGallery projectId={project.id} photos={project.photos ?? []} />
+      )}
 
       <button type="button" onClick={handleSaveObject} className={cabinetBtnPrimary}>
         <Save className="w-4 h-4" /> {t('company.estimateWizard.objectStep.saveAndContinue')}

@@ -23,6 +23,7 @@ import { CompanyReviewsPage } from '@/pages/company/CompanyReviewsPage';
 import { CompanyAuditPage } from '@/pages/company/CompanyAuditPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 import { CompanySubscriptionPage } from '@/pages/company/CompanySubscriptionPage';
+import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import {
   ROUTE_ROOT,
   ROUTE_ACCESS,
@@ -214,5 +215,6 @@ export const companyRoutesSection = {
         </RequireCompanyRole>
       ),
     },
+    { path: '*', element: <NotFoundPage compact /> },
   ],
 };

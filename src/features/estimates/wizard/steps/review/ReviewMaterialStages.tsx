@@ -3,9 +3,21 @@ import { useTranslation } from 'react-i18next';
 import { Panel } from '@/components/cabinet/cabinet-ui';
 import { downloadFile } from '@/api/files';
 import { EstimateLineSourceBadge } from '@/features/estimates/components/EstimateLineSourceBadge';
+import { EstimateLineUnitSelect } from '@/features/estimates/components/EstimateLineUnitSelect';
 import type { EstimateStageDto } from '@/types/estimates';
 import { getLineExplanation } from '@/features/estimates/utils/calculationExplanation';
 import type { EstimateWizardApi } from '../../useEstimateWizard';
+import {
+  estimateLineColPrice,
+  estimateLineColQty,
+  estimateLineColTotal,
+  estimateLineColUnit,
+  estimateLineNumericCellCenter,
+  estimateLineNumericCellEnd,
+  estimateLinePriceInput,
+  estimateLinePriceWrap,
+  estimateLineQtyInput,
+} from '@/features/estimates/components/estimateLineTableStyles';
 
 type ReviewMaterialStagesProps = {
   wizard: EstimateWizardApi;
@@ -19,6 +31,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
     setEditingStore,
     uploadingLineId,
     handleUpdateLineQtyOrPrice,
+    handleUpdateLineUnit,
     handleSaveStore,
     handleUploadReceipt,
     handleDeleteReceipt,
@@ -63,10 +76,10 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                   <thead>
                     <tr className="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider">
                       <th className="py-2 pr-2">{t('company.estimateWizard.reviewStep.colDescription')}</th>
-                      <th className="py-2 w-16 sm:w-20">{t('company.estimateWizard.reviewStep.colQty')}</th>
-                      <th className="py-2 hidden sm:table-cell w-16 sm:w-20">{t('company.estimateWizard.reviewStep.colUnit')}</th>
-                      <th className="py-2 hidden sm:table-cell w-24 sm:w-28">{t('company.estimateWizard.reviewStep.colUnitPrice')}</th>
-                      <th className="py-2 w-24 sm:w-28">{t('company.estimateWizard.reviewStep.colTotal')}</th>
+                      <th className={`py-2 ${estimateLineColQty} text-center`}>{t('company.estimateWizard.reviewStep.colQty')}</th>
+                      <th className={`py-2 hidden sm:table-cell ${estimateLineColUnit} text-center`}>{t('company.estimateWizard.reviewStep.colUnit')}</th>
+                      <th className={`py-2 hidden sm:table-cell ${estimateLineColPrice} text-right`}>{t('company.estimateWizard.reviewStep.colUnitPrice')}</th>
+                      <th className={`py-2 ${estimateLineColTotal} text-right`}>{t('company.estimateWizard.reviewStep.colTotal')}</th>
                       <th className="py-2 pr-2">{t('company.estimateWizard.reviewStep.colStore')}</th>
                       <th className="py-2 text-right">{t('company.estimateWizard.reviewStep.colReceipt')}</th>
                     </tr>
@@ -103,7 +116,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                               })()}
                             </div>
                           </td>
-                          <td className="py-3">
+                          <td className={estimateLineNumericCellCenter}>
                             <input
                               type="number"
                               defaultValue={Number(line.qty)}
@@ -116,12 +129,18 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                                   Number(e.target.value),
                                 )
                               }
-                              className="w-14 sm:w-16 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
+                              className={estimateLineQtyInput}
                             />
                           </td>
-                          <td className="py-3 text-gray-500 font-medium hidden sm:table-cell">{line.unit}</td>
-                          <td className="py-3 hidden sm:table-cell">
-                            <div className="flex items-center gap-1">
+                          <td className={`${estimateLineNumericCellCenter} hidden sm:table-cell`}>
+                            <EstimateLineUnitSelect
+                              value={line.unit}
+                              disabled={isReadOnly}
+                              onChange={(unit) => handleUpdateLineUnit(line.id, stage.id, unit)}
+                            />
+                          </td>
+                          <td className={`${estimateLineNumericCellEnd} hidden sm:table-cell`}>
+                            <div className={estimateLinePriceWrap}>
                               <input
                                 type="number"
                                 defaultValue={Number(line.unitPrice)}
@@ -134,12 +153,12 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                                     Number(e.target.value),
                                   )
                                 }
-                                className="w-20 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
+                                className={estimateLinePriceInput}
                               />
-                              <span className="text-[10px] text-gray-400">MDL</span>
+                              <span className="w-7 shrink-0 text-[10px] font-semibold text-gray-400 text-right">MDL</span>
                             </div>
                           </td>
-                          <td className="py-3 font-extrabold text-gray-900">
+                          <td className={`${estimateLineNumericCellEnd} font-extrabold text-gray-900 tabular-nums whitespace-nowrap`}>
                             {Number(line.lineTotal).toLocaleString('ro-MD')} MDL
                           </td>
                           <td className="py-3">

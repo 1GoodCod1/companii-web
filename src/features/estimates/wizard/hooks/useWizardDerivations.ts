@@ -11,6 +11,7 @@ import { groupStagesByWorkModule } from '@/features/estimates/stages/stageGroupi
 import { buildScopeSummary, hasManualLines } from '@/features/estimates/stages/scopeSummary';
 import { computePreviewLinesWithStageDefaults, computePreviewTotals, extractMeasurementsFromDiagnostic } from '@/features/estimates/preview/previewEngine';
 import { DUPLICATE_DIAGNOSTIC_KEYS } from '@/constants/estimatesWizard.constants';
+import { isEstimateServiceCategorySlug } from '@/constants/estimateCategorySlugs.constants';
 import type { EstimateProjectDto } from '@/types/estimates';
 import type { WizardFormState } from './useWizardFormState';
 
@@ -162,7 +163,7 @@ export function useWizardDerivations(project: EstimateProjectDto, formState: Wiz
     [formState.customPricing],
   );
 
-  const isServiceCategory = ['it-networks', 'it-hardware'].includes(project.category.slug);
+  const isServiceCategory = isEstimateServiceCategorySlug(project.category.slug);
   const isFurnitureCategory = project.category.slug === 'mobila';
   const isElektrikaCategory = project.category.slug === 'elektrika';
   const isPlumbingCategory = project.category.slug === 'santehnika';

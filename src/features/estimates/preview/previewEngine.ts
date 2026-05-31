@@ -28,6 +28,7 @@ export type PreviewLine = {
   unitPrice: number;
   lineTotal: number;
   kind: 'labor' | 'material';
+  source?: string;
 };
 
 export type PreviewTotals = {
@@ -162,6 +163,7 @@ export function computePreviewLines(
       unitPrice,
       lineTotal,
       kind,
+      source: 'rule',
     });
   }
   return out;
@@ -259,7 +261,7 @@ export function extractMeasurementsFromDiagnostic(
     Object.assign(out, deriveItWebMeasurements(diagnostic));
   }
   if (categorySlug === 'mobila') {
-    Object.assign(out, deriveMobilaMeasurements(diagnostic, pricingOverrides));
+    Object.assign(out, deriveMobilaMeasurements(diagnostic, pricingOverrides, plan2d));
   }
   if (categorySlug === 'elektrika') {
     Object.assign(out, deriveElektrikaMeasurements(diagnostic, plan2d, pricingOverrides));
@@ -277,7 +279,7 @@ export function extractMeasurementsFromDiagnostic(
     Object.assign(out, deriveFatadeMeasurements(diagnostic, pricingOverrides));
   }
   if (categorySlug === 'acoperis') {
-    Object.assign(out, deriveAcoperisMeasurements(diagnostic, pricingOverrides));
+    Object.assign(out, deriveAcoperisMeasurements(diagnostic, pricingOverrides, plan2d));
   }
   if (categorySlug === 'acoperis-plat') {
     Object.assign(out, deriveFlatRoofMeasurements(diagnostic));

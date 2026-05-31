@@ -38,6 +38,15 @@ export function isEstimateExcludedCategorySlug(slug: string): slug is EstimateEx
   return (ESTIMATE_EXCLUDED_CATEGORY_SLUGS as readonly string[]).includes(slug);
 }
 
+/** IT / service categories: hourly pricing, no physical-site object fields on step 1. */
+export const ESTIMATE_SERVICE_CATEGORY_SLUGS = ['it-networks', 'it-hardware', 'it-web'] as const;
+
+export type EstimateServiceCategorySlug = (typeof ESTIMATE_SERVICE_CATEGORY_SLUGS)[number];
+
+export function isEstimateServiceCategorySlug(slug: string): slug is EstimateServiceCategorySlug {
+  return (ESTIMATE_SERVICE_CATEGORY_SLUGS as readonly string[]).includes(slug);
+}
+
 /**
  * Справочник: какие customField keys и workModule keys ожидаются по категории
  * (источник: implementation_tasks.md C-01–C-13). Blueprint config с API — runtime source of truth.
@@ -260,9 +269,15 @@ export const ESTIMATE_CATEGORY_BLUEPRINT_SPEC: Record<
       'wardrobeCount',
       'linearMeters',
       'materialType',
+      'frontMaterialType',
+      'materialThickness',
+      'finishType',
+      'hasApplianceCutouts',
+      'assemblyComplexity',
       'hardwareTier',
       'drawerCount',
       'hingeCount',
+      'softClose',
       'countertopLengthM',
       'deliveryRequired',
       'installationRequired',

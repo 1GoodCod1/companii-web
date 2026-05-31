@@ -92,15 +92,15 @@ function SidebarContent({
                       'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] transition-all duration-200',
                       '[&_svg]:size-[1.125rem] [&_svg]:shrink-0 [&_svg]:stroke-[1.75]',
                       selected
-                        ? 'bg-violet-50 font-semibold text-violet-700 shadow-xs border-l-4 border-violet-600 pl-2'
-                        : 'font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700 border-l-4 border-transparent',
+                        ? 'bg-gray-900 font-semibold text-white shadow-sm shadow-gray-900/10'
+                        : 'font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900',
                     )}
                   >
                     <span
                       className={cn(
                         'flex shrink-0 items-center justify-center transition-colors',
                         selected
-                          ? 'text-violet-600'
+                          ? 'text-white/90'
                           : 'text-gray-400 group-hover:text-gray-600',
                       )}
                     >
@@ -108,7 +108,14 @@ function SidebarContent({
                     </span>
                     <span className="truncate">{t(item.labelKey)}</span>
                     {item.badge != null && Number(item.badge) !== 0 ? (
-                      <span className="ml-auto inline-flex min-w-5 items-center justify-center rounded-full bg-violet-600 px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
+                      <span
+                        className={cn(
+                          'ml-auto inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none',
+                          selected
+                            ? 'bg-white/15 text-white ring-1 ring-white/20'
+                            : 'bg-violet-600 text-white',
+                        )}
+                      >
                         {item.badge}
                       </span>
                     ) : null}

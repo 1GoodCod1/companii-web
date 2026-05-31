@@ -86,6 +86,10 @@ export type BlueprintPricingRule = {
   enabledWhen?: BlueprintPricingRuleEnabledWhen;
   laborUnitPriceMultiplierKey?: string;
   materialUnitPriceMultiplierKey?: string;
+  explanation?: {
+    template: string;
+    variables: string[];
+  };
 };
 
 export type BlueprintAccessDifficultyImpact = {
