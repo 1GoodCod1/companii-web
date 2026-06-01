@@ -8,7 +8,6 @@ import {
   isHttpOnlyGuestHint,
   markHttpOnlySessionHint,
   persistRememberMe,
-  loadAccessSession,
   setLogoutFlag,
   takeLogoutFlag,
 } from '@/features/auth/persist';
@@ -156,20 +155,6 @@ async function bootstrapAuthSessionInternal(): Promise<void> {
   if (env.useHttpOnly && isHttpOnlyGuestHint()) {
     clear();
     return;
-  }
-
-  const saved = loadAccessSession();
-  if (saved) {
-    setTokens(saved.accessToken, saved.user);
-    try {
-      await apiFetch<AuthMeResponse>('/auth/me');
-      return;
-    } catch (err) {
-      if (err instanceof ApiError && err.status !== 401 && err.status !== 403) {
-        return;
-      }
-      clear();
-    }
   }
 
   setLoading();

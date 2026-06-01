@@ -44,12 +44,6 @@ export function persistAccessSession(
     /* ignore */
   }
 }
-export function loadAccessSession(): {
-  accessToken: string;
-  user: AuthUserSnapshot;
-} | null {
-  return null;
-}
 
 export function clearAccessSession(): void {
   try {

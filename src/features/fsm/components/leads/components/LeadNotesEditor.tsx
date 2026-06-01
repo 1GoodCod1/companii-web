@@ -69,7 +69,7 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
               📌 {t('company.fsm.leads.inbox.notesLabel', 'Note / Link rezervare / Master')}
             </span>
             {lead.notes ? (
-              lead.notes.includes('http') ? (
+              /^https?:\/\//i.test(lead.notes) ? (
                 <a
                   href={lead.notes}
                   target="_blank"
