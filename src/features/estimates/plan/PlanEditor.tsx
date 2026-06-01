@@ -13,6 +13,7 @@ import { PlanGlobalParameters } from './PlanGlobalParameters';
 import { PlanRoomsTable } from './PlanRoomsTable';
 import { PlanWorkItemsPanel } from './PlanWorkItemsPanel';
 import { PlanRoofGeometryPanel } from './PlanRoofGeometryPanel';
+import { globalParamsHasValues } from './planWorksheetContent';
 
 type PlanEditorTab = 'rooms' | 'items' | 'global' | 'preview';
 
@@ -30,25 +31,42 @@ export function PlanEditor({
   categorySlug,
   onChange,
   readOnly,
+  variant = 'wizard',
 }: PlanEditorProps) {
   const { t } = useTranslation();
   const summary = useMemo(() => summarizePlan(value, config), [value, config]);
+  const isWorksheet = variant === 'worksheet';
 
   const workContext = defaultContextFromSlug(categorySlug);
   const isFacade = workContext === 'facade';
   const isRoof = workContext === 'roof';
-  const tabs = useMemo(
-    () => {
-      if (isRoof) return ALL_TABS.filter((tab) => tab.key === 'global' || tab.key === 'preview');
-      if (isFacade) return ALL_TABS.filter((tab) => tab.key !== 'rooms');
-      return ALL_TABS;
-    },
-    [isFacade, isRoof],
-  );
-  const [mobileTab, setMobileTab] = useState<PlanEditorTab>(isFacade || isRoof ? 'global' : 'rooms');
   const globalParams: NonNullable<Plan2dData['globalParameters']> = value.globalParameters ?? {
     workContext,
   };
+  const showGlobalSection = !isWorksheet || globalParamsHasValues(globalParams);
+  const showRoomsSection = !isWorksheet || value.rooms.length > 0;
+  const showItemsSection = !isWorksheet || value.points.length > 0;
+
+  const tabs = useMemo(
+    () => {
+      const base = isRoof
+        ? ALL_TABS.filter((tab) => tab.key === 'global' || tab.key === 'preview')
+        : isFacade
+          ? ALL_TABS.filter((tab) => tab.key !== 'rooms')
+          : ALL_TABS;
+      if (!isWorksheet) return base;
+      return base.filter((tab) => {
+        if (tab.key === 'global') return showGlobalSection;
+        if (tab.key === 'rooms') return showRoomsSection;
+        if (tab.key === 'items') return showItemsSection;
+        return false;
+      });
+    },
+    [isFacade, isRoof, isWorksheet, showGlobalSection, showRoomsSection, showItemsSection],
+  );
+  const [mobileTab, setMobileTab] = useState<PlanEditorTab>(
+    isFacade || isRoof ? 'global' : 'rooms',
+  );
 
   const setGlobalParams = (patch: Partial<typeof globalParams>) => {
     onChange({
@@ -217,6 +235,7 @@ export function PlanEditor({
 
       {/* Desktop: all sections visible. Mobile: only active tab section. */}
       {isRoof ? (
+        showGlobalSection ? (
         <div className={mobileTab === 'global' ? 'block' : 'hidden md:block'}>
           <PlanRoofGeometryPanel
             value={value}
@@ -226,7 +245,9 @@ export function PlanEditor({
             readOnly={readOnly}
           />
         </div>
+        ) : null
       ) : (
+        showGlobalSection ? (
         <div className={mobileTab === 'global' ? 'block' : 'hidden md:block'}>
           <PlanGlobalParameters
             globalParams={globalParams}
@@ -236,9 +257,10 @@ export function PlanEditor({
             categorySlug={categorySlug}
           />
         </div>
+        ) : null
       )}
 
-      {!isFacade && !isRoof && (
+      {!isFacade && !isRoof && showRoomsSection && (
         <div className={mobileTab === 'rooms' ? 'block' : 'hidden md:block'}>
           <PlanRoomsTable
             value={value}
@@ -252,7 +274,7 @@ export function PlanEditor({
         </div>
       )}
 
-      {!isRoof && (
+      {!isRoof && showItemsSection && (
         <div className={mobileTab === 'items' ? 'block' : 'hidden md:block'}>
         <PlanWorkItemsPanel
           config={config}

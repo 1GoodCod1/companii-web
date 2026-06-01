@@ -13,7 +13,7 @@ function renderTermsContentRo(privacyPath: string): ReactNode {
     <>
       <LegalSection id="general" number={1} title="Informații generale">
         <LegalParagraph>
-          Platforma <strong>Faber Companii</strong> este operată de entitatea administratoare a
+          Platforma <strong>Faber</strong> este operată de entitatea administratoare a
           serviciului, cu sediul în Republica Moldova. Acești Termeni și Condiții constituie un
           acord legal între operator și orice persoană fizică sau juridică care accesează site-ul,
           creează un cont sau utilizează funcționalitățile platformei.
@@ -30,7 +30,7 @@ function renderTermsContentRo(privacyPath: string): ReactNode {
           items={[
             {
               label: 'Platformă:',
-              text: 'ecosistemul software Faber Companii, inclusiv site-ul public, panourile de administrare, API-urile și portalul clienților.',
+              text: 'ecosistemul software Faber, inclusiv site-ul public, panourile de administrare, API-urile și portalul clienților.',
             },
             {
               label: 'Utilizator:',
@@ -67,13 +67,13 @@ function renderTermsContentRo(privacyPath: string): ReactNode {
 
       <LegalSection id="serviciu" number={4} title="Descrierea serviciului">
         <LegalParagraph>
-          Faber Companii oferă o platformă SaaS destinată digitalizării proceselor companiilor de
+          Faber oferă o platformă SaaS destinată digitalizării proceselor companiilor de
           servicii. Funcționalitățile pot include, fără a se limita la:
         </LegalParagraph>
         <LegalList
           items={[
             {
-              text: 'Profil public al companiei în catalogul Faber Companii, cu logo, galerie foto și pachete de servicii.',
+              text: 'Profil public al companiei în catalogul Faber, cu logo, galerie foto și pachete de servicii.',
             },
             {
               text: 'Gestionarea clienților, lucrărilor, ofertelor, programărilor și facturilor.',
@@ -126,7 +126,7 @@ function renderTermsContentRo(privacyPath: string): ReactNode {
         <LegalParagraph>
           Accesul la funcționalități poate depinde de planul de abonament selectat. Planurile,
           prețurile, limitele de utilizatori și caracteristicile incluse sunt publicate pe pagina de
-          abonamente și pot fi actualizate periodic.
+          prețuri și pot fi actualizate periodic.
         </LegalParagraph>
         <LegalList
           items={[
@@ -283,7 +283,7 @@ function renderTermsContentRu(privacyPath: string): ReactNode {
     <>
       <LegalSection id="general" number={1} title="Общая информация">
         <LegalParagraph>
-          Платформой <strong>Faber Companii</strong> управляет юридическое лицо, администрирующее
+          Платформой <strong>Faber</strong> управляет юридическое лицо, администрирующее
           сервис и зарегистрированное в Республике Молдова. Настоящие Условия использования
           представляют собой юридическое соглашение между оператором и любым физическим или
           юридическим лицом, которое посещает сайт, создаёт аккаунт или использует функции платформы.
@@ -300,7 +300,7 @@ function renderTermsContentRu(privacyPath: string): ReactNode {
           items={[
             {
               label: 'Платформа:',
-              text: 'программная экосистема Faber Companii, включая публичный сайт, панели администрирования, API и клиентский портал.',
+              text: 'программная экосистема Faber, включая публичный сайт, панели администрирования, API и клиентский портал.',
             },
             {
               label: 'Пользователь:',
@@ -337,13 +337,13 @@ function renderTermsContentRu(privacyPath: string): ReactNode {
 
       <LegalSection id="serviciu" number={4} title="Описание сервиса">
         <LegalParagraph>
-          Faber Companii предоставляет SaaS-платформу для цифровизации процессов сервисных компаний.
+          Faber предоставляет SaaS-платформу для цифровизации процессов сервисных компаний.
           Функции могут включать, но не ограничиваются:
         </LegalParagraph>
         <LegalList
           items={[
             {
-              text: 'Публичный профиль компании в каталоге Faber Companii с логотипом, фотогалереей и пакетами услуг.',
+              text: 'Публичный профиль компании в каталоге Faber с логотипом, фотогалереей и пакетами услуг.',
             },
             {
               text: 'Управление клиентами, работами, предложениями, записями и счетами.',

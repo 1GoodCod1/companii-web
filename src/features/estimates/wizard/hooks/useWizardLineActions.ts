@@ -7,8 +7,9 @@ import {
   useDeleteEstimateLineMutation,
 } from '@/features/estimates/api/useEstimates';
 import { getErrorMessage } from '@/utils/errors';
+import type { AskCabinetConfirm } from '@/hooks/useCabinetConfirmDialog';
 
-export function useWizardLineActions(projectId: string) {
+export function useWizardLineActions(projectId: string, askConfirm: AskCabinetConfirm) {
   const { t } = useTranslation();
   const updateLine = useUpdateEstimateLineMutation();
   const addLineMutation = useAddEstimateLineMutation();
@@ -36,19 +37,24 @@ export function useWizardLineActions(projectId: string) {
     }
   };
 
-  const handleDeleteReceipt = async (lineId: string, stageId: string) => {
-    if (!confirm(t('company.estimateWizard.wizard.toasts.confirmDeleteReceipt'))) return;
-    try {
-      await updateLine.mutateAsync({
-        projectId,
-        stageId,
-        lineId,
-        receiptFileKey: null,
-      });
-      toast.success(t('company.estimateWizard.wizard.toasts.receiptDeleted'));
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.deleteFailed')));
-    }
+  const handleDeleteReceipt = (lineId: string, stageId: string) => {
+    askConfirm({
+      title: t('cabinet.common.delete'),
+      message: t('company.estimateWizard.wizard.toasts.confirmDeleteReceipt'),
+      onConfirm: async () => {
+        try {
+          await updateLine.mutateAsync({
+            projectId,
+            stageId,
+            lineId,
+            receiptFileKey: null,
+          });
+          toast.success(t('company.estimateWizard.wizard.toasts.receiptDeleted'));
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.deleteFailed')));
+        }
+      },
+    });
   };
 
   const handleSaveStore = async (lineId: string, stageId: string) => {
@@ -115,18 +121,23 @@ export function useWizardLineActions(projectId: string) {
     }
   };
 
-  const handleDeleteLine = async (lineId: string, stageId: string) => {
-    if (!confirm(t('company.estimateWizard.wizard.toasts.confirmDeleteLine'))) return;
-    try {
-      await deleteLineMutation.mutateAsync({
-        projectId,
-        stageId,
-        lineId,
-      });
-      toast.success(t('company.estimateWizard.wizard.toasts.lineDeleted'));
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.lineDeleteFailed')));
-    }
+  const handleDeleteLine = (lineId: string, stageId: string) => {
+    askConfirm({
+      title: t('cabinet.common.delete'),
+      message: t('company.estimateWizard.wizard.toasts.confirmDeleteLine'),
+      onConfirm: async () => {
+        try {
+          await deleteLineMutation.mutateAsync({
+            projectId,
+            stageId,
+            lineId,
+          });
+          toast.success(t('company.estimateWizard.wizard.toasts.lineDeleted'));
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.lineDeleteFailed')));
+        }
+      },
+    });
   };
 
   return {

@@ -22,6 +22,7 @@ import { formatAuditActorName, formatPersonNameOrDash } from '@/utils/person';
 import { formatDateTimeLocalized } from '@/utils/date';
 import { getErrorMessage } from '@/utils/errors';
 import { useLocale } from '@/hooks/useLocale';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -45,6 +46,7 @@ function CompanyModerationContent({
 }) {
   const { t } = useTranslation();
   const locale = useLocale();
+  const { ask, dialog: confirmDialog } = useCabinetConfirmDialog();
   const verifyCompany = useVerifyCompanyMutation();
   const rejectCompany = useRejectCompanyMutation();
   const unpublishCompany = useUnpublishCompanyMutation();
@@ -65,25 +67,38 @@ function CompanyModerationContent({
     }
   };
 
-  const handleReject = async () => {
-    if (!confirm(t('admin.moderation.confirmReject'))) return;
-    try {
-      await rejectCompany.mutateAsync({ companyId: company.id, note: note || undefined });
-      toast.success(t('admin.moderation.toastRejected', { name: company.name }));
-      onClose();
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('admin.moderation.toastRejectFailed')));
-    }
+  const handleReject = () => {
+    ask({
+      title: t('cabinet.common.confirmAction'),
+      confirmLabel: t('cabinet.common.confirmAction'),
+      message: t('admin.moderation.confirmReject'),
+      onConfirm: async () => {
+        try {
+          await rejectCompany.mutateAsync({ companyId: company.id, note: note || undefined });
+          toast.success(t('admin.moderation.toastRejected', { name: company.name }));
+          onClose();
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('admin.moderation.toastRejectFailed')));
+        }
+      },
+    });
   };
 
-  const handleUnpublish = async () => {
-    if (!confirm(t('admin.moderation.confirmUnpublish'))) return;
-    try {
-      await unpublishCompany.mutateAsync({ companyId: company.id, note: note || undefined });
-      toast.success(t('admin.moderation.toastUnpublished', { name: company.name }));
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('admin.moderation.toastUnpublishFailed')));
-    }
+  const handleUnpublish = () => {
+    ask({
+      title: t('cabinet.common.confirmAction'),
+      confirmLabel: t('cabinet.common.confirmAction'),
+      message: t('admin.moderation.confirmUnpublish'),
+      onConfirm: async () => {
+        try {
+          await unpublishCompany.mutateAsync({ companyId: company.id, note: note || undefined });
+          toast.success(t('admin.moderation.toastUnpublished', { name: company.name }));
+          onClose();
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('admin.moderation.toastUnpublishFailed')));
+        }
+      },
+    });
   };
 
   return (
@@ -289,6 +304,7 @@ function CompanyModerationContent({
           </button>
         ) : null}
       </div>
+      {confirmDialog}
     </div>
   );
 }

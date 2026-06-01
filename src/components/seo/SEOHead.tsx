@@ -15,7 +15,7 @@ import {
 } from '@/lib/i18n/localeRoutes';
 
 export const SITE_URL = PROD_SITE_URL;
-const BASE_TITLE = 'Faber Companii';
+const BASE_TITLE = 'Faber';
 const DEFAULT_OG_IMAGE = '/og-image.png';
 
 export interface SEOHeadProps {

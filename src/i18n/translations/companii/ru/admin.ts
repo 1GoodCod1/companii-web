@@ -15,10 +15,10 @@ export const companiiRuAdmin = {
       platform: 'Платформа',
       catalog: 'Каталог',
     },
-    documentTitle: 'Admin · Faber Companii',
+    documentTitle: 'Admin · Faber',
     homePage: {
       title: 'Панель администратора',
-      subtitle: 'Мониторинг платформы Faber Companii и управление верификацией компаний.',
+      subtitle: 'Мониторинг платформы Faber и управление верификацией компаний.',
       statsCompanies: 'Компании',
       statsUsers: 'Пользователи',
       statsInterventions: 'Работы',

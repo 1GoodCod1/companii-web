@@ -59,7 +59,7 @@ export default defineConfig(({ mode }) => {
           gzipSize: true,
           brotliSize: true,
           open: process.env.CI !== 'true',
-          title: 'Faber Companii — bundle',
+          title: 'Faber — bundle',
         }),
       precompressEnabled &&
         viteCompression({

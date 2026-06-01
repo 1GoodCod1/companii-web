@@ -43,7 +43,7 @@ export const INVOICE_PAYMENT_TRANSITIONS: Record<
     INVOICE_PAYMENT_STATUS.PAID,
     INVOICE_PAYMENT_STATUS.CANCELLED,
   ],
-  // PAID is reversible (rare — bounced payment / clerical error). Mirrors backend.
+  [INVOICE_PAYMENT_STATUS.PENDING_CONFIRMATION]: [],
   [INVOICE_PAYMENT_STATUS.PAID]: [INVOICE_PAYMENT_STATUS.UNPAID],
   [INVOICE_PAYMENT_STATUS.CANCELLED]: [],
 };
@@ -61,4 +61,6 @@ export const INTERVENTION_STATUS_HINTS: Partial<Record<InterventionStatus, strin
 export const PAYMENT_STATUS_HINTS: Partial<Record<InvoicePaymentStatus, string>> = {
   [INVOICE_PAYMENT_STATUS.PAID]:
     'Factura este plătită. Status final — nu poate fi modificat.',
+  [INVOICE_PAYMENT_STATUS.PENDING_CONFIRMATION]:
+    'Clientul a încărcat dovada plății — confirmați sau respingeți.',
 };

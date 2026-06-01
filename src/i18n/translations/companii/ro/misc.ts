@@ -1,4 +1,11 @@
 export const companiiRoMisc = {
+  validation: {
+    required: 'Acest câmp este obligatoriu.',
+    email: 'Introduceți un email valid.',
+    minLength: 'Minim {{min}} caractere.',
+    passwordMismatch: 'Parolele nu coincid.',
+  },
+
   versions: {
     title: 'Istoric versiuni',
     select: 'Select...',

@@ -1,5 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, downloadApiBlob } from '@/api/client';
 import { queryKeys } from '@/api/queryKeys';
 
@@ -70,7 +69,7 @@ export function useConfirmCustomerImportMutation() {
         body: JSON.stringify({ rows }),
       }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customers });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customersRoot });
     },
   });
 }

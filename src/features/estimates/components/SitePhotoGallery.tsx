@@ -11,6 +11,7 @@ import {
 } from '@/features/estimates/api/useEstimates';
 import type { EstimateProjectPhotoDto } from '@/types/estimates';
 import { getErrorMessage } from '@/utils/errors';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 type Props = {
   projectId: string;
@@ -27,6 +28,7 @@ export function SitePhotoGallery({ projectId, photos, readOnly }: Props) {
   const addPhotos = useAddEstimateProjectPhotosMutation();
   const updateCaption = useUpdateEstimateProjectPhotoCaptionMutation();
   const deletePhoto = useDeleteEstimateProjectPhotoMutation();
+  const { ask, dialog } = useCabinetConfirmDialog();
 
   const handlePick = () => fileInputRef.current?.click();
 
@@ -46,13 +48,18 @@ export function SitePhotoGallery({ projectId, photos, readOnly }: Props) {
     }
   };
 
-  const handleDelete = async (photoId: string) => {
-    if (!confirm(t('company.estimateWizard.sitePhotos.confirmDelete'))) return;
-    try {
-      await deletePhoto.mutateAsync({ projectId, photoId });
-    } catch (err) {
-      toast.error(getErrorMessage(err, t('company.estimateWizard.sitePhotos.deleteFailed')));
-    }
+  const handleDelete = (photoId: string) => {
+    ask({
+      title: t('cabinet.common.delete'),
+      message: t('company.estimateWizard.sitePhotos.confirmDelete'),
+      onConfirm: async () => {
+        try {
+          await deletePhoto.mutateAsync({ projectId, photoId });
+        } catch (err) {
+          toast.error(getErrorMessage(err, t('company.estimateWizard.sitePhotos.deleteFailed')));
+        }
+      },
+    });
   };
 
   const handleCaptionSave = async () => {
@@ -170,6 +177,7 @@ export function SitePhotoGallery({ projectId, photos, readOnly }: Props) {
           ))}
         </div>
       )}
+      {dialog}
     </div>
   );
 }

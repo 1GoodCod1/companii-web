@@ -9,6 +9,7 @@ export const companiiRuCabinet = {
       create: 'Создать',
       edit: 'Редактировать',
       delete: 'Удалить',
+      confirmAction: 'Подтвердить',
       open: 'Открыть',
       viewAll: 'Смотреть все',
       back: 'Назад',
@@ -48,7 +49,7 @@ export const companiiRuCabinet = {
         description:
           'Ваш текущий план не включает {{feature}}. Перейдите на {{plan}}, чтобы продолжить.',
         defaultFeature: 'функцию {{plan}}',
-        viewSubscriptions: 'Смотреть подписки',
+        viewSubscriptions: 'Смотреть цены',
       },
       activeCompany: 'Активная компания',
       companySwitched: 'Активная компания изменена.',

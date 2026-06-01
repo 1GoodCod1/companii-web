@@ -16,28 +16,37 @@ import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
 import type { QuoteDto } from '@/types/fsm';
 import { getErrorMessage } from '@/utils/errors';
 import { quoteStatusLabel } from '@/utils/i18nStatusLabels';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();
   const updateQuote = useUpdatePortalQuoteMutation();
+  const { ask, dialog } = useCabinetConfirmDialog();
   const { quotes } = data;
 
-  const handleQuoteStatus = async (quoteId: string, status: PortalQuoteActionStatus) => {
+  const handleQuoteStatus = (quoteId: string, status: PortalQuoteActionStatus) => {
     const confirmKey =
       status === QUOTE_STATUS.ACCEPTED
         ? 'portal.quotesSection.confirmAccept'
         : 'portal.quotesSection.confirmReject';
-    if (!confirm(t(confirmKey))) return;
-    try {
-      await updateQuote.mutateAsync({ id: quoteId, status });
-      toast.success(
-        status === QUOTE_STATUS.ACCEPTED
-          ? t('portal.quotesSection.toastAccepted')
-          : t('portal.quotesSection.toastRejected'),
-      );
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('portal.quotesSection.toastError')));
-    }
+    ask({
+      title: t('cabinet.common.confirmAction'),
+      confirmLabel: t('cabinet.common.confirmAction'),
+      variant: status === QUOTE_STATUS.ACCEPTED ? 'primary' : 'danger',
+      message: t(confirmKey),
+      onConfirm: async () => {
+        try {
+          await updateQuote.mutateAsync({ id: quoteId, status });
+          toast.success(
+            status === QUOTE_STATUS.ACCEPTED
+              ? t('portal.quotesSection.toastAccepted')
+              : t('portal.quotesSection.toastRejected'),
+          );
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('portal.quotesSection.toastError')));
+        }
+      },
+    });
   };
 
   return (
@@ -95,6 +104,7 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
           ))}
         </ul>
       )}
+      {dialog}
     </Panel>
   );
 }

@@ -14,6 +14,7 @@ import {
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 import { SEOHead } from '@/components/seo/SEOHead';
+import { PublicPageHeader } from '@/components/public/PublicPageHeader';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 
@@ -66,36 +67,34 @@ export function SubscriptionsPage() {
         hreflang
       />
 
-      <div className="max-w-5xl mx-auto space-y-12 py-10 animate-fade-in">
-        <section className="text-center space-y-4">
-          <span className="inline-block text-xs font-black uppercase tracking-widest text-violet-700 bg-violet-50 border border-violet-100 px-3.5 py-1.5 rounded-full shadow-xs">
-            {t('subscriptions.badge')}
-          </span>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-none text-gray-900">
-            {t('subscriptions.title')}{' '}
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-              {t('subscriptions.titleHighlight')}
-            </span>
-          </h1>
-          <p className="text-lg text-gray-500 font-medium max-w-2xl mx-auto leading-relaxed">
-            {t('subscriptions.description')}
-          </p>
-          {isAuthed && (
+      <div className="max-w-5xl mx-auto space-y-12 py-10">
+        <PublicPageHeader
+          badge={t('subscriptions.badge')}
+          title={
+            <>
+              {t('subscriptions.title')}{' '}
+              <span className="text-violet-600">{t('subscriptions.titleHighlight')}</span>
+            </>
+          }
+          description={t('subscriptions.description')}
+        />
+        {isAuthed ? (
+          <p className="text-center -mt-8">
             <Link
               to={subscriptionLinkRoute}
-              className="inline-block mt-2 text-xs font-black uppercase tracking-wider text-violet-600 hover:text-violet-700"
+              className="text-sm font-medium text-violet-600 hover:text-violet-700"
             >
               {t('subscriptions.activeSubscriptionLink')}
             </Link>
-          )}
-        </section>
+          </p>
+        ) : null}
 
         {isLoading && (
           <p className="text-center text-sm text-gray-400 font-medium">{t('subscriptions.loading')}</p>
         )}
 
         {isError && (
-          <div className="text-center bg-red-50 border border-red-100 rounded-2xl p-6 text-sm text-red-600 font-semibold">
+          <div className="text-center bg-red-50 border border-red-100 p-6 text-sm text-red-600 font-semibold">
             {t('subscriptions.loadError')}
           </div>
         )}
@@ -119,7 +118,7 @@ export function SubscriptionsPage() {
           </div>
         )}
 
-        <section className="border border-gray-100 rounded-3xl p-8 glass-panel text-center space-y-3">
+        <section className="border border-gray-100 p-8 glass-panel text-center space-y-3">
           <h2 className="text-lg font-black text-gray-900 tracking-tight">
             {t('subscriptions.customPlan.title')}
           </h2>
@@ -128,7 +127,7 @@ export function SubscriptionsPage() {
           </p>
           <Link
             to={lp('/contacts')}
-            className="inline-block mt-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl transition-all"
+            className="inline-block mt-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold px-6 py-3"
           >
             {t('subscriptions.customPlan.cta')}
           </Link>

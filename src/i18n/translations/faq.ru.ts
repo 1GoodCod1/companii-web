@@ -4,10 +4,10 @@ export const FAQ_SECTIONS_RU: FaqSection[] = [
   {
     id: 'platforma',
     title: 'О платформе',
-    description: 'Что такое Faber Companii, для кого и как начать.',
+    description: 'Что такое Faber, для кого и как начать.',
     items: [
       {
-        q: 'Что такое Faber Companii?',
+        q: 'Что такое Faber?',
         a: 'Облачная платформа для полевых сервисов и CRM. Создана для компаний с выездными бригадами — монтаж, ремонт, обслуживание, клининг.',
       },
       {

@@ -1,27 +1,42 @@
 import { useTranslation } from 'react-i18next';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { CustomerDto } from '@/types/fsm';
 import { EntityListPanel } from '@/components/cabinet/EntityListPanel';
+import { cabinetBtnSecondary } from '@/components/cabinet/cabinet-ui';
 import { entityListRowClass } from '@/components/cabinet/rowStyles';
+
+export const CUSTOMERS_LIST_PAGE_SIZE = 20;
 
 type Props = {
   customers: CustomerDto[];
   isLoading: boolean;
+  isEmpty: boolean;
   selectedId: string | null;
   onSelect: (customer: CustomerDto) => void;
+  page: number;
+  totalCount: number;
+  onPageChange: (page: number) => void;
 };
 
 export function CustomersListTable({
   customers,
   isLoading,
+  isEmpty,
   selectedId,
   onSelect,
+  page,
+  totalCount,
+  onPageChange,
 }: Props) {
   const { t } = useTranslation();
+  const pageCount = Math.max(1, Math.ceil(totalCount / CUSTOMERS_LIST_PAGE_SIZE));
+  const from = totalCount === 0 ? 0 : (page - 1) * CUSTOMERS_LIST_PAGE_SIZE + 1;
+  const to = Math.min(page * CUSTOMERS_LIST_PAGE_SIZE, totalCount);
 
   return (
     <EntityListPanel
       isLoading={isLoading}
-      isEmpty={customers.length === 0}
+      isEmpty={isEmpty}
       loadingMessage={t('company.fsm.customers.list.loading')}
       emptyMessage={t('company.fsm.customers.list.empty')}
     >
@@ -60,6 +75,37 @@ export function CustomersListTable({
           </tbody>
         </table>
       </div>
+
+      {totalCount > CUSTOMERS_LIST_PAGE_SIZE ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 px-4 py-3">
+          <p className="text-xs text-gray-500">
+            {t('company.customersPage.paginationRange', { from, to, total: totalCount })}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onPageChange(page - 1)}
+              disabled={page <= 1}
+              className={`${cabinetBtnSecondary} inline-flex items-center gap-1 px-3 py-1.5 text-xs disabled:opacity-40`}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              {t('company.customersPage.paginationPrev')}
+            </button>
+            <span className="text-xs font-medium text-gray-500 tabular-nums">
+              {page} / {pageCount}
+            </span>
+            <button
+              type="button"
+              onClick={() => onPageChange(page + 1)}
+              disabled={page >= pageCount}
+              className={`${cabinetBtnSecondary} inline-flex items-center gap-1 px-3 py-1.5 text-xs disabled:opacity-40`}
+            >
+              {t('company.customersPage.paginationNext')}
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      ) : null}
     </EntityListPanel>
   );
 }

@@ -24,6 +24,7 @@ import {
   useDeleteAdminCategoryMutation,
   type AdminCategoryDto,
 } from '@/features/admin/api/useAdmin';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 export function AdminCategoriesPage() {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ export function AdminCategoriesPage() {
   const createCategory = useCreateAdminCategoryMutation();
   const updateCategory = useUpdateAdminCategoryMutation();
   const deleteCategory = useDeleteAdminCategoryMutation();
+  const { ask, dialog } = useCabinetConfirmDialog();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<AdminCategoryDto | null>(null);
@@ -85,14 +87,19 @@ export function AdminCategoriesPage() {
     }
   };
 
-  const handleDelete = async (category: AdminCategoryDto) => {
-    if (!confirm(t('admin.categoriesPage.confirmDelete', { name: category.name }))) return;
-    try {
-      await deleteCategory.mutateAsync(category.id);
-      toast.success(t('admin.categoriesPage.toastDeleted'));
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
-    }
+  const handleDelete = (category: AdminCategoryDto) => {
+    ask({
+      title: t('cabinet.common.delete'),
+      message: t('admin.categoriesPage.confirmDelete', { name: category.name }),
+      onConfirm: async () => {
+        try {
+          await deleteCategory.mutateAsync(category.id);
+          toast.success(t('admin.categoriesPage.toastDeleted'));
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
+        }
+      },
+    });
   };
 
   const inUseCount = (category: AdminCategoryDto) =>
@@ -220,6 +227,7 @@ export function AdminCategoriesPage() {
           </div>
         </form>
       </AppModal>
+      {dialog}
     </div>
   );
 }

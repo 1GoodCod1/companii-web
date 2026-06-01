@@ -30,6 +30,7 @@ export function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps)
     handleDiscardLocalChanges,
     handleKeepLocalChanges,
     acknowledgeConflict,
+    confirmDialog,
   } = wizard;
 
   return (
@@ -89,6 +90,7 @@ export function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps)
       {currentStep === 'diagnostic' && <DiagnosticStep wizard={wizard} />}
       {currentStep === 'stages' && <StagesStep wizard={wizard} />}
       {currentStep === 'review' && <ReviewStep wizard={wizard} />}
+      {confirmDialog}
     </>
   );
 }

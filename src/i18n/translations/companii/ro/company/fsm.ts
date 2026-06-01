@@ -67,18 +67,20 @@ export const companiiRoCompanyFsm = {
           fields: {
             client: 'CLIENT',
             address: 'ADRESĂ DE DESFĂȘURARE',
-            description: 'DESCRIERE DEFECT',
+            description: 'DESCRIERE',
             schedule: 'PROGRES / DATA',
             unscheduled: 'Neasociată',
             technician: 'ANGAJAT ALOCAT',
             estimatedPrice: 'PREȚ ESTIMAT',
             finalPrice: 'PREȚ FINAL',
             internalNotes: 'Observații interne importante',
+            executionSheetHint:
+              'Planul, materialele și checklist-ul sunt în Fișă execuție — fără prețuri.',
           },
           photos: { title: 'FOTO ȘANTIER', empty: 'Nicio fotografie încă.', add: '+ Adaugă fotografii' },
           edit: {
             management: '✏️ Editează detalii fișă',
-            technician: '✏️ Actualizează adresă / descriere / preț',
+            technician: '✏️ Actualizează adresa',
           },
           editForm: {
             titleManagement: 'Editează fișă',
@@ -223,6 +225,28 @@ export const companiiRoCompanyFsm = {
             title: 'Modifică status plată',
             noActions: 'Nu există acțiuni disponibile pentru acest status.',
           },
+          payment: {
+            clientUploadHint:
+              'Clientul poate încărca dovada din portal. Pentru numerar sau transfer fără upload, marcați manual.',
+            cashBtn: 'Plătită (numerar)',
+            cashSuccess: 'Factura marcată ca plătită (numerar / fără upload client)',
+          },
+          paymentProof: {
+            pendingHint:
+              'Clientul a încărcat dovada plății. Verificați fișierul și confirmați sau respingeți.',
+            submittedAt: 'Trimisă la: {{date}}',
+            viewFile: 'Vezi dovada plății',
+            confirmBtn: 'Confirmă plata',
+            rejectBtn: 'Respinge',
+            confirmSuccess: 'Plata confirmată — factura este plătită',
+            confirmError: 'Confirmare eșuată',
+            rejectPrompt: 'Motiv respingere (clientul va putea reîncărca dovada):',
+            rejectReasonRequired: 'Motivul este obligatoriu',
+            rejectSuccess: 'Dovada respinsă — clientul poate reîncărca',
+            rejectError: 'Respingere eșuată',
+            downloadError: 'Nu s-a putut descărca dovada',
+            lastRejection: 'Ultima respingere',
+          },
           fields: {
             customer: 'CLIENT BENEFICIAR',
             packageCustomer: 'Client pachet',
@@ -326,24 +350,25 @@ export const companiiRoCompanyFsm = {
             failed: 'Importul a eșuat.',
           },
           step1: {
-            title: 'Pasul 1 — Descarcă șablonul Faber',
+            title: 'Descarcă șablonul Faber',
             description:
               'Șablonul Excel include foaie de instrucțiuni. Coloane obligatorii: Nume complet, Telefon, Adresă.',
             downloadXlsx: 'Șablon Excel (.xlsx)',
             downloadCsv: 'Șablon CSV',
           },
+          or: 'sau',
           step2: {
-            title: 'Pasul 2 — Încarcă fișierul completat',
+            title: 'Încarcă fișierul completat',
             fileLabel: 'Fișier .xlsx sau .csv',
             analyzing: 'Se analizează…',
             selectFile: 'Selectează fișier',
           },
           summary: {
             total: '{{count}} total',
-            create: '{{create}} noi',
-            update: '{{update}} actualizări',
-            skip: '{{skip}} omise',
-            error: '{{error}} erori',
+            create: '{{count}} noi',
+            update: '{{count}} actualizări',
+            skip: '{{count}} omise',
+            error: '{{count}} erori',
           },
           preview: {
             empty: 'Încarcă un fișier pentru previzualizare înainte de import.',

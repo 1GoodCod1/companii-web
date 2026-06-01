@@ -21,6 +21,7 @@ import { getQuoteStatusStyle } from '@/utils/quoteStatusStyles';
 import { formatDateLocalized } from '@/utils/date';
 import { quoteStatusLabel } from '@/utils/i18nStatusLabels';
 import { getErrorMessage } from '@/utils/errors';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 type Props = {
   selectedId: string | null;
@@ -36,6 +37,7 @@ export function QuoteDetailPanel({ selectedId, onClearSelection }: Props) {
   const deleteQuote = useDeleteQuoteMutation();
   const convertQuote = useConvertQuoteMutation();
   const sendQuote = useSendQuoteMutation();
+  const { ask, dialog } = useCabinetConfirmDialog();
 
   const [downloadingPdf, setDownloadingPdf] = useState(false);
 
@@ -86,19 +88,29 @@ export function QuoteDetailPanel({ selectedId, onClearSelection }: Props) {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!selectedId) return;
-    if (!confirm(t('company.fsm.quotes.detail.confirm.delete'))) return;
-    try {
-      await deleteQuote.mutateAsync(selectedId);
-      toast.success(t('company.fsm.quotes.detail.toast.deleted'));
-      onClearSelection();
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.fsm.quotes.detail.toast.deleteError')));
-    }
+    ask({
+      title: t('cabinet.common.delete'),
+      message: (
+        <p className="text-sm text-gray-600 leading-relaxed">
+          {t('company.fsm.quotes.detail.confirm.delete')}
+        </p>
+      ),
+      onConfirm: async () => {
+        try {
+          await deleteQuote.mutateAsync(selectedId);
+          toast.success(t('company.fsm.quotes.detail.toast.deleted'));
+          onClearSelection();
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('company.fsm.quotes.detail.toast.deleteError')));
+        }
+      },
+    });
   };
 
   return (
+    <>
     <EntityDetailPanel
       title={t('company.fsm.quotes.detail.title')}
       selectedId={selectedId}
@@ -247,5 +259,7 @@ export function QuoteDetailPanel({ selectedId, onClearSelection }: Props) {
           </div>
       ) : null}
     </EntityDetailPanel>
+    {dialog}
+    </>
   );
 }

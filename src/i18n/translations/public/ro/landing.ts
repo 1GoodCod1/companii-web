@@ -1,9 +1,9 @@
 export const publicRoLanding = {
   landing: {
     seo: {
-      title: 'CRM & FSM pentru companii de servicii din Moldova',
+      title: 'Faber — CRM & FSM pentru companii de servicii',
       description:
-        'Echipă, clienți, lucrări, smete, oferte și facturi într-un singur loc. CRM complet pentru field service — fără haos în WhatsApp.',
+        'Faber — echipă, clienți, lucrări, smete, oferte și facturi într-un singur loc. CRM complet pentru field service din Moldova.',
       keywords:
         'CRM Moldova, FSM, field service, gestionare companie, facturare, oferte, lucrări',
     },
@@ -14,7 +14,7 @@ export const publicRoLanding = {
       subtitle:
         'Smete, clienți, calendar teren, dimensionare, oferte și facturi PDF cu diacritice — fără Excel și grupuri WhatsApp.',
       description:
-        'Faber Companii — platforma FSM pentru instalatori, electricieni, firme de curățenie și orice companie cu angajați mobili din Moldova.',
+        'Faber — platforma FSM pentru instalatori, electricieni, firme de curățenie și orice companie cu angajați mobili din Moldova.',
       howItWorksLink: 'Vezi cum funcționează',
       browseCatalogLink: 'Caută o companie',
     },
@@ -84,7 +84,7 @@ export const publicRoLanding = {
       title: 'De la primul apel la factura plătită —',
       titleHighlight: 'un singur sistem',
       description:
-        'Faber Companii înlocuiește haosul din WhatsApp, Excel și carnețele. Iată cum arată o zi de lucru cu platforma.',
+        'Faber înlocuiește haosul din WhatsApp, Excel și carnețele. Iată cum arată o zi de lucru cu platforma.',
       steps: [
         {
           step: '01',
@@ -158,13 +158,13 @@ export const publicRoLanding = {
       descriptionGuest:
         'Creează contul, înregistrează compania și lansează primul flux: client → smetă → lucrare → factură. Fără demo, fără așteptare.',
       descriptionAuthed:
-        'Clienți, lucrări, smete, oferte și facturi — totul din panoul Faber Companii.',
+        'Clienți, lucrări, smete, oferte și facturi — totul din panoul Faber.',
       perks: [
         'Free — fără card bancar',
         'Pro și Business — 30 zile gratuit',
         'Setup în sub 10 minute',
       ],
-      viewPlansLink: 'Vezi planurile',
+      viewPlansLink: 'Vezi prețurile',
     },
     security: {
       eyebrow: 'Securitate',

@@ -126,6 +126,35 @@ export function useSendInvoiceEmailMutation() {
   });
 }
 
+export function useConfirmInvoicePaymentMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) =>
+      apiFetch<InvoiceDto>(`${FSM_BASE}/invoices/${id}/confirm-payment`, { method: 'POST' }),
+    onSuccess: (_, id) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoice(id) });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+    },
+  });
+}
+
+export function useRejectInvoicePaymentMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
+      apiFetch<InvoiceDto>(`${FSM_BASE}/invoices/${id}/reject-payment`, {
+        method: 'POST',
+        body: JSON.stringify({ reason }),
+      }),
+    onSuccess: (_, { id }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoice(id) });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+    },
+  });
+}
+
 export async function downloadCompanyInvoicePdf(invoiceId: string, filename: string) {
   return downloadApiBlob(`${FSM_BASE}/invoices/${invoiceId}/pdf`, filename);
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
@@ -10,18 +10,21 @@ import {
   useSendEstimateMutation,
 } from '@/features/estimates/api/useEstimates';
 import { syncGlobalParamsToDiagnostic } from '../syncGlobalParamsToDiagnostic';
+import { resolveEstimateWizardStepIndex } from '../resolveEstimateWizardStep';
 import { getErrorMessage } from '@/utils/errors';
 import type { EstimateProjectDto } from '@/types/estimates';
 import type { WizardFormState } from './useWizardFormState';
 import type { WizardDerivations } from './useWizardDerivations';
+import type { AskCabinetConfirm } from '@/hooks/useCabinetConfirmDialog';
 
 type SubHookProps = {
   project: EstimateProjectDto;
   formState: WizardFormState;
   derivations: WizardDerivations;
+  askConfirm: AskCabinetConfirm;
 };
 
-export function useWizardStepActions({ project, formState, derivations }: SubHookProps) {
+export function useWizardStepActions({ project, formState, derivations, askConfirm }: SubHookProps) {
   const { t } = useTranslation();
 
   const updateProject = useUpdateEstimateProjectMutation();
@@ -31,11 +34,28 @@ export function useWizardStepActions({ project, formState, derivations }: SubHoo
   const convert = useConvertEstimateMutation();
   const sendEstimate = useSendEstimateMutation();
 
-  const [stepIndex, setStepIndex] = useState(0);
   const [apiWarnings, setApiWarnings] = useState<Array<{ key: string; message: string }>>([]);
   const [sanityWarnings, setSanityWarnings] = useState<
     Array<{ key: string; severity: 'info' | 'warning'; message: string }>
   >([]);
+
+  const resolvedStepIndex = useMemo(
+    () => resolveEstimateWizardStepIndex(project, derivations.steps, derivations.config),
+    [project, derivations.steps, derivations.config],
+  );
+
+  const [userStepIndex, setUserStepIndex] = useState<number | null>(null);
+  const stepIndex = userStepIndex ?? resolvedStepIndex;
+
+  const setStepIndex = useCallback(
+    (value: number | ((prev: number) => number)) => {
+      setUserStepIndex((prev) => {
+        const current = prev ?? resolvedStepIndex;
+        return typeof value === 'function' ? value(current) : value;
+      });
+    },
+    [resolvedStepIndex],
+  );
 
   const currentStep = derivations.steps[stepIndex] ?? 'object';
 
@@ -125,7 +145,7 @@ export function useWizardStepActions({ project, formState, derivations }: SubHoo
       return;
     }
     const targetStep = derivations.steps[targetIndex];
-    if (currentStep === 'plan') {
+    if (currentStep === 'plan' && formState.dirty) {
       try {
         const nextDiag = syncGlobalParamsToDiagnostic(formState.plan2d, formState.diagnostic);
         await savePlan.mutateAsync({ id: project.id, plan2d: formState.plan2d });
@@ -152,7 +172,7 @@ export function useWizardStepActions({ project, formState, derivations }: SubHoo
         console.error('Autosave plan failed:', err);
       }
     }
-    if (currentStep === 'diagnostic') {
+    if (currentStep === 'diagnostic' && formState.dirty) {
       try {
         const nextDiagnostic = derivations.persistDiagnostic(formState.diagnostic);
         await updateProject.mutateAsync({ id: project.id, diagnosticAnswers: nextDiagnostic });
@@ -178,17 +198,7 @@ export function useWizardStepActions({ project, formState, derivations }: SubHoo
     setStepIndex(targetIndex);
   };
 
-  const handleCalculate = async () => {
-    if (derivations.hasBlockingErrors) {
-      toast.error(t('company.estimateWizard.wizard.toasts.validationFailed'));
-      return;
-    }
-    if (derivations.projectHasManualLines) {
-      const confirmed = window.confirm(
-        t('company.estimateWizard.wizard.toasts.recalculateConfirm'),
-      );
-      if (!confirmed) return;
-    }
+  const runCalculate = async () => {
     try {
       const nextDiag = syncGlobalParamsToDiagnostic(formState.plan2d, formState.diagnostic);
       const nextDiagnostic = derivations.persistDiagnostic(nextDiag);
@@ -207,6 +217,24 @@ export function useWizardStepActions({ project, formState, derivations }: SubHoo
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.calculateFailed')));
     }
+  };
+
+  const handleCalculate = async () => {
+    if (derivations.hasBlockingErrors) {
+      toast.error(t('company.estimateWizard.wizard.toasts.validationFailed'));
+      return;
+    }
+    if (derivations.projectHasManualLines) {
+      askConfirm({
+        title: t('cabinet.common.confirmAction'),
+        confirmLabel: t('cabinet.common.confirmAction'),
+        variant: 'primary',
+        message: t('company.estimateWizard.wizard.toasts.recalculateConfirm'),
+        onConfirm: runCalculate,
+      });
+      return;
+    }
+    await runCalculate();
   };
 
   const handleGenerateQuote = async () => {

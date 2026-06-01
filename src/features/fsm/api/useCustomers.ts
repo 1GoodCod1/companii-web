@@ -1,40 +1,106 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
 import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
+import { cabinetCustomersQueryOptions } from '@/api/queryPolicies';
 import { queryKeys } from '@/api/queryKeys';
 import { useAuthStore } from '@/stores/authStore';
 import type { CustomerDto, CustomerTimelineDto } from '@/types/fsm';
 import { FSM_BASE } from './fsmBase';
 
+const CUSTOMERS_PAGE_SIZE = 100;
+
+type CustomersPage = {
+  items: CustomerDto[];
+  nextCursor: string | null;
+};
+
+async function fetchAllCustomers(): Promise<CustomerDto[]> {
+  const firstPage = await apiFetch<CustomerDto[]>(
+    `${FSM_BASE}/customers?limit=${CUSTOMERS_PAGE_SIZE}`,
+  );
+  const all = [...firstPage];
+
+  if (firstPage.length < CUSTOMERS_PAGE_SIZE) {
+    return all;
+  }
+
+  let cursor: string | undefined = firstPage[firstPage.length - 1]?.id;
+  while (cursor) {
+    const page: CustomersPage = await apiFetch<CustomersPage>(
+      `${FSM_BASE}/customers?cursor=${encodeURIComponent(cursor)}&limit=${CUSTOMERS_PAGE_SIZE}`,
+    );
+    all.push(...page.items);
+    cursor = page.nextCursor ?? undefined;
+  }
+
+  return all;
+}
+
 export function useCustomersQuery(options?: { enabled?: boolean }): UseQueryResult<CustomerDto[], Error> {
   const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
+  const qc = useQueryClient();
   const enabled = options?.enabled ?? true;
+
   return useQuery<CustomerDto[], Error>({
-    queryKey: queryKeys.fsm.customers,
-    queryFn: () => apiFetch<CustomerDto[]>(`${FSM_BASE}/customers`),
-    ...cabinetQueryDefaults,
+    queryKey: queryKeys.fsm.customers(activeCompanyId),
+    queryFn: async () => {
+      const all = await fetchAllCustomers();
+      qc.setQueryData(queryKeys.fsm.customersCount(activeCompanyId), all.length);
+      return all;
+    },
+    ...cabinetCustomersQueryOptions,
+    enabled: !!activeCompanyId && enabled,
+  });
+}
+
+export function useCustomersCountQuery(options?: { enabled?: boolean }): UseQueryResult<number, Error> {
+  const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
+  const enabled = options?.enabled ?? true;
+
+  return useQuery<number, Error>({
+    queryKey: queryKeys.fsm.customersCount(activeCompanyId),
+    queryFn: async () => {
+      const result = await apiFetch<{ total: number }>(`${FSM_BASE}/customers/count`);
+      return result.total;
+    },
+    ...cabinetCustomersQueryOptions,
+    placeholderData: (previous: number | undefined) => previous,
     enabled: !!activeCompanyId && enabled,
   });
 }
 
 export function useCreateCustomerMutation() {
   const qc = useQueryClient();
+  const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
+
   return useMutation({
     mutationFn: (body: { fullName: string; phone: string; email?: string; address: string; notes?: string }) =>
       apiFetch<CustomerDto>(`${FSM_BASE}/customers`, { method: 'POST', body: JSON.stringify(body) }),
-    onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customers });
+    onSuccess: (created) => {
+      qc.setQueryData<number | undefined>(
+        queryKeys.fsm.customersCount(activeCompanyId),
+        (current: number | undefined) => (current ?? 0) + 1,
+      );
+      qc.setQueryData<CustomerDto[] | undefined>(
+        queryKeys.fsm.customers(activeCompanyId),
+        (current: CustomerDto[] | undefined) => (current ? [created, ...current] : [created]),
+      );
     },
   });
 }
 
 export function useUpdateCustomerMutation() {
   const qc = useQueryClient();
+  const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
+
   return useMutation({
     mutationFn: ({ id, ...body }: { id: string; fullName?: string; phone?: string; email?: string; address?: string; notes?: string }) =>
       apiFetch<CustomerDto>(`${FSM_BASE}/customers/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
-    onSuccess: (_, { id }) => {
-      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customers });
+    onSuccess: (updated, { id }) => {
+      qc.setQueryData<CustomerDto[] | undefined>(
+        queryKeys.fsm.customers(activeCompanyId),
+        (current: CustomerDto[] | undefined) =>
+          current?.map((customer) => (customer.id === id ? updated : customer)),
+      );
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.customer(id) });
     },
   });
@@ -42,11 +108,20 @@ export function useUpdateCustomerMutation() {
 
 export function useDeleteCustomerMutation() {
   const qc = useQueryClient();
+  const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
+
   return useMutation({
     mutationFn: (id: string) =>
       apiFetch<{ success: boolean }>(`${FSM_BASE}/customers/${id}`, { method: 'DELETE' }),
     onSuccess: (_, id) => {
-      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customers });
+      qc.setQueryData<number | undefined>(
+        queryKeys.fsm.customersCount(activeCompanyId),
+        (current: number | undefined) => Math.max(0, (current ?? 1) - 1),
+      );
+      qc.setQueryData<CustomerDto[] | undefined>(
+        queryKeys.fsm.customers(activeCompanyId),
+        (current: CustomerDto[] | undefined) => current?.filter((customer) => customer.id !== id),
+      );
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.customer(id) });
     },
   });
@@ -56,7 +131,7 @@ export function useCustomerTimelineQuery(id: string, enabled = true) {
   return useQuery({
     queryKey: queryKeys.fsm.customerTimeline(id),
     queryFn: () => apiFetch<CustomerTimelineDto>(`${FSM_BASE}/customers/${id}/timeline`),
-    ...cabinetQueryDefaults,
+    ...cabinetCustomersQueryOptions,
     enabled: !!id && enabled,
   });
 }

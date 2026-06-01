@@ -17,16 +17,25 @@ type Props = {
   onChange: (unit: EstimateMeasurementUnit) => void;
   disabled?: boolean;
   className?: string;
+  allowedUnits?: readonly EstimateMeasurementUnit[];
   'aria-label'?: string;
 };
 
-export function EstimateLineUnitSelect({ value, onChange, disabled, className, 'aria-label': ariaLabel }: Props) {
+export function EstimateLineUnitSelect({
+  value,
+  onChange,
+  disabled,
+  className,
+  allowedUnits,
+  'aria-label': ariaLabel,
+}: Props) {
   const { t } = useTranslation();
 
   const normalizedValue = normalizeEstimateUnit(value) ?? value;
 
   const options = useMemo(() => {
-    const units = [...ESTIMATE_MEASUREMENT_UNITS];
+    const baseUnits = allowedUnits?.length ? [...allowedUnits] : [...ESTIMATE_MEASUREMENT_UNITS];
+    const units = [...baseUnits];
     if (normalizedValue && !units.includes(normalizedValue as EstimateMeasurementUnit)) {
       units.unshift(normalizedValue as EstimateMeasurementUnit);
     }
@@ -34,7 +43,7 @@ export function EstimateLineUnitSelect({ value, onChange, disabled, className, '
       value: unit,
       title: t(`company.estimateWizard.unitsTitle.${unitKey(unit)}`, { defaultValue: unit }),
     }));
-  }, [normalizedValue, t]);
+  }, [allowedUnits, normalizedValue, t]);
 
   const selectedTitle =
     options.find((option) => option.value === normalizedValue)?.title ?? normalizedValue;

@@ -4,8 +4,10 @@ import { Panel } from '@/components/cabinet/cabinet-ui';
 import { downloadFile } from '@/api/files';
 import { EstimateLineSourceBadge } from '@/features/estimates/components/EstimateLineSourceBadge';
 import { EstimateLineUnitSelect } from '@/features/estimates/components/EstimateLineUnitSelect';
+import type { EstimateMeasurementUnit } from '@/constants/estimateMeasurementUnits.constants';
 import type { EstimateStageDto } from '@/types/estimates';
 import { getLineExplanation } from '@/features/estimates/utils/calculationExplanation';
+import { isEstimateLaborLine } from '@/features/estimates/utils/estimateLaborLine';
 import type { EstimateWizardApi } from '../../useEstimateWizard';
 import {
   estimateLineColPrice,
@@ -36,6 +38,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
     handleUploadReceipt,
     handleDeleteReceipt,
     isReadOnly,
+    laborUnits,
   } = wizard;
 
   const showMaterialsSection = (project.stages as EstimateStageDto[]).some(
@@ -86,14 +89,13 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                   </thead>
                   <tbody className="divide-y divide-gray-100/50">
                     {materialLines.map((line) => {
-                      const isLabor =
-                        line.unit === 'ore' ||
-                        line.unit === 'h' ||
-                        line.description.toLowerCase().includes('manoperă') ||
-                        line.description.toLowerCase().includes('manopera') ||
-                        line.description.toLowerCase().includes('lucrări') ||
-                        line.description.toLowerCase().includes('lucrari') ||
-                        line.description.toLowerCase().includes('labor');
+                      const isLabor = isEstimateLaborLine({
+                        unit: line.unit,
+                        description: line.description,
+                      });
+                      const unitOptions: readonly EstimateMeasurementUnit[] | undefined = isLabor
+                        ? laborUnits
+                        : undefined;
                       return (
                         <tr key={line.id} className="hover:bg-violet-50/20 transition-colors">
                           <td className="py-3 font-semibold text-gray-700">
@@ -136,6 +138,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                             <EstimateLineUnitSelect
                               value={line.unit}
                               disabled={isReadOnly}
+                              allowedUnits={unitOptions}
                               onChange={(unit) => handleUpdateLineUnit(line.id, stage.id, unit)}
                             />
                           </td>

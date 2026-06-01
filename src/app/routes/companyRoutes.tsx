@@ -128,7 +128,7 @@ export const companyRoutesSection = {
     {
       path: COMPANY_ROUTE.SMETE_TEMPLATES,
       element: (
-        <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
+        <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE_TEMPLATES}>
           <Suspense fallback={null}>
             <CompanyTemplatesPage />
           </Suspense>

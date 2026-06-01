@@ -76,6 +76,7 @@ export function CompanyProfileEditor({
     handleSubmit,
     handlePublish,
     handleLeaveTeam,
+    confirmDialog,
   } = useCompanyProfileForm({
     ownedCompany,
     isLegalOwner,
@@ -216,6 +217,7 @@ export function CompanyProfileEditor({
         leaveCompanyPending={leaveCompanyPending}
         handleLeaveTeam={handleLeaveTeam}
       />
+      {confirmDialog}
     </div>
   );
 }

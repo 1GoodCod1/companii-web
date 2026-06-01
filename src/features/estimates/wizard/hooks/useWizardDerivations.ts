@@ -11,6 +11,7 @@ import { groupStagesByWorkModule } from '@/features/estimates/stages/stageGroupi
 import { buildScopeSummary, hasManualLines } from '@/features/estimates/stages/scopeSummary';
 import { computePreviewLinesWithStageDefaults, computePreviewTotals, extractMeasurementsFromDiagnostic } from '@/features/estimates/preview/previewEngine';
 import { DUPLICATE_DIAGNOSTIC_KEYS } from '@/constants/estimatesWizard.constants';
+import { resolveLaborUnits } from '@/constants/estimateMeasurementUnits.constants';
 import { isEstimateServiceCategorySlug } from '@/constants/estimateCategorySlugs.constants';
 import type { EstimateProjectDto } from '@/types/estimates';
 import type { WizardFormState } from './useWizardFormState';
@@ -181,8 +182,11 @@ export function useWizardDerivations(project: EstimateProjectDto, formState: Wiz
             ? t('company.estimateWizard.customPricing.unitPriceSqm')
             : undefined;
 
+  const laborUnits = useMemo(() => resolveLaborUnits(config), [config]);
+
   return {
     config,
+    laborUnits,
     diagnosticQuestions,
     steps,
     enabledWorkModules,

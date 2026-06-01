@@ -4,7 +4,7 @@ export const publicRoErrors = {
     badge: 'Eroare de navigare',
     title: 'Traseul nu există pe hartă',
     description:
-      'Adresa pe care ai accesat-o nu corespunde niciunui ecran din Faber Companii. Poate a fost mutată, redenumită sau nu a trecut încă inspecția QA.',
+      'Adresa pe care ai accesat-o nu corespunde niciunui ecran din Faber. Poate a fost mutată, redenumită sau nu a trecut încă inspecția QA.',
     hint: 'Verifică linkul sau revino la punctele sigure de mai jos.',
     goHome: 'Pagina principală',
     browseCompanies: 'Catalog companii',

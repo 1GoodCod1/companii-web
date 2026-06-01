@@ -6,6 +6,13 @@ export const cabinetQueryDefaults = {
   refetchOnWindowFocus: true,
 } as const;
 
+export const cabinetCustomersQueryOptions = {
+  staleTime: 5 * 60_000,
+  gcTime: 30 * 60_000,
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: true,
+} as const;
+
 export const publicListQueryOptions = {
   staleTime: publicCachePolicy.listStaleTimeMs,
   gcTime: publicCachePolicy.listGcTimeMs,

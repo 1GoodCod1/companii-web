@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { SEOHead } from '@/components/seo/SEOHead';
+import { PublicPageHeader } from '@/components/public/PublicPageHeader';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { useFaqSections } from '@/hooks/useFaqSections';
 
@@ -25,18 +26,12 @@ export function FaqPage() {
         hreflang
       />
 
-      <div className="max-w-4xl mx-auto py-10 space-y-10 animate-fade-in">
-        <div className="text-center space-y-3">
-          <span className="inline-block text-xs font-black uppercase tracking-widest text-violet-700 bg-violet-50 border border-violet-100 px-3.5 py-1.5 shadow-xs">
-            {t('faqPage.badge')}
-          </span>
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
-            {t('faqPage.title')}
-          </h1>
-          <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-2xl mx-auto">
-            {t('faqPage.subtitle')}
-          </p>
-        </div>
+      <div className="max-w-4xl mx-auto py-10 space-y-10">
+        <PublicPageHeader
+          badge={t('faqPage.badge')}
+          title={t('faqPage.title')}
+          description={t('faqPage.subtitle')}
+        />
 
         <nav
           aria-label={t('faqPage.navLabel')}

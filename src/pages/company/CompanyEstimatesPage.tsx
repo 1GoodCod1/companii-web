@@ -19,22 +19,32 @@ import {
   ESTIMATE_STATUS_TONES,
 } from '@/constants/estimates.constants';
 import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 export function CompanyEstimatesPage() {
   const { t } = useTranslation();
   const { data: projects, isLoading } = useEstimateProjectsQuery();
   const deleteProjectMutation = useDeleteEstimateProjectMutation();
+  const { ask, dialog } = useCabinetConfirmDialog();
 
-  const handleDelete = async (projectId: string, projectNumber: string) => {
-    if (!confirm(t('company.estimatesPage.confirmDelete', { number: projectNumber }))) {
-      return;
-    }
-    try {
-      await deleteProjectMutation.mutateAsync(projectId);
-      toast.success(t('company.estimatesPage.deleteSuccess'));
-    } catch {
-      toast.error(t('company.estimatesPage.deleteError'));
-    }
+  const handleDeleteClick = (id: string, number: string) => {
+    ask({
+      title: t('company.estimatesPage.deleteModalTitle'),
+      confirmLabel: t('company.estimatesPage.confirmDeleteBtn'),
+      message: (
+        <p className="text-sm text-gray-600 leading-relaxed">
+          {t('company.estimatesPage.confirmDelete', { number })}
+        </p>
+      ),
+      onConfirm: async () => {
+        try {
+          await deleteProjectMutation.mutateAsync(id);
+          toast.success(t('company.estimatesPage.deleteSuccess'));
+        } catch {
+          toast.error(t('company.estimatesPage.deleteError'));
+        }
+      },
+    });
   };
 
   return (
@@ -135,9 +145,10 @@ export function CompanyEstimatesPage() {
                           </Link>
                           {project.status !== 'IN_EXECUTION' && (
                             <button
-                              onClick={() => handleDelete(project.id, project.number)}
+                              type="button"
+                              onClick={() => handleDeleteClick(project.id, project.number)}
                               className="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-all cursor-pointer"
-                              title={t('common.actions.delete') || 'Șterge'}
+                              title={t('company.estimatesPage.confirmDeleteBtn')}
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -151,6 +162,8 @@ export function CompanyEstimatesPage() {
             </div>
           )}
         </Panel>
+
+        {dialog}
       </div>
     </CompanyManagementGate>
   );

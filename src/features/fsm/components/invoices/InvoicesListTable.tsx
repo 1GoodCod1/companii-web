@@ -71,7 +71,7 @@ export function InvoicesListTable({ invoices, isLoading, selectedId, onSelect }:
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black border ${getInvoicePaymentStatusStyle(
                       item.paymentStatus,
-                    )} ${item.paymentStatus === 'OVERDUE' ? 'animate-pulse' : ''}`}
+                    )} ${item.paymentStatus === 'OVERDUE' || item.paymentStatus === 'PENDING_CONFIRMATION' ? 'animate-pulse' : ''}`}
                   >
                     {paymentStatusLabel(item.paymentStatus, t)}
                   </span>

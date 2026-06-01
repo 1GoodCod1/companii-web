@@ -1,7 +1,6 @@
 import { ACCOUNT_KIND } from '@/constants/roles.constants';
 import type { AccountKind } from '@/types/roles';
 
-/** Top-level route segments mounted under RootLayout. */
 export const ROUTE_ROOT = {
   COMPANY: 'company',
   PORTAL: 'portal',
@@ -15,7 +14,6 @@ export const ROUTE_ABS = {
   ADMIN: '/admin',
 } as const;
 
-/** Public pages — path segments under PublicLayout. */
 export const PUBLIC_ROUTE = {
   COMPANII: 'companii',
   HOW_IT_WORKS: 'how-it-works',
@@ -23,7 +21,7 @@ export const PUBLIC_ROUTE = {
   CONTACTS: 'contacts',
   PRIVACY: 'privacy',
   TERMS: 'terms',
-  SUBSCRIPTIONS: 'subscriptions',
+  SUBSCRIPTIONS: 'preturi',
   LOGIN: 'login',
   REGISTER: 'register',
   FORGOT_PASSWORD: 'forgot-password',
@@ -37,7 +35,6 @@ export const INVITE_ROUTE = {
   TEAM: 'team/invite',
 } as const;
 
-/** Company cabinet segments — React Router `path` under /company. */
 export const COMPANY_ROUTE = {
   DASHBOARD: '',
   PROFILE: 'profile',
@@ -62,10 +59,6 @@ export const COMPANY_ROUTE = {
   AUDIT: 'audit',
 } as const;
 
-/**
- * Relative paths for guards, nav, plan entitlements.
- * Leading slash, no dynamic params.
- */
 export const COMPANY_CABINET_PATH = {
   DASHBOARD: '',
   PROFILE: '/profile',
@@ -110,7 +103,6 @@ export const ADMIN_ROUTE = {
   BLUEPRINTS: 'blueprints',
 } as const;
 
-/** Account kinds allowed per top-level cabinet route. */
 export const ROUTE_ACCESS = {
   COMPANY_CABINET: [ACCOUNT_KIND.COMPANY_STAFF, ACCOUNT_KIND.PLATFORM_ADMIN] as const satisfies readonly AccountKind[],
   END_CLIENT: [ACCOUNT_KIND.END_CLIENT] as const satisfies readonly AccountKind[],

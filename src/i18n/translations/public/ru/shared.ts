@@ -1,7 +1,7 @@
 export const publicRuShared = {
   seo: {
     defaultDescription:
-      'CRM и FSM для сервисных компаний Молдовы — команда, клиенты, работы, сметы, предложения и счета в одном месте.',
+      'Faber — CRM и FSM для сервисных компаний Молдовы. Команда, клиенты, работы, сметы, предложения и счета в одном месте.',
   },
 
   footer: {
@@ -12,7 +12,7 @@ export const publicRuShared = {
       title: 'Платформа',
       howItWorks: 'Как это работает',
       companies: 'Зарегистрированные компании',
-      subscriptions: 'Подписки',
+      subscriptions: 'Цены',
       faq: 'Частые вопросы',
     },
     legal: {

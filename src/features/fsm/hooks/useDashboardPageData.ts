@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import toast from 'react-hot-toast';
 import i18n from '@/i18n';
 import {
-  useCustomersQuery,
+  useCustomersCountQuery,
   useInterventionsQuery,
   useInvoicesQuery,
   useLeadsQuery,
@@ -24,7 +24,7 @@ export function useDashboardPageData() {
   const { isManagement, activeCompanyId } = useCompanyPermissions();
   const { data: meData } = useCompanyMeQuery();
   const { data: subData } = useMySubscriptionQuery();
-  const { data: customers } = useCustomersQuery({ enabled: isManagement });
+  const { data: customersTotal } = useCustomersCountQuery({ enabled: isManagement });
   const { data: interventions } = useInterventionsQuery();
   const { data: invoices } = useInvoicesQuery({ enabled: isManagement });
   const { data: newLeads } = useLeadsQuery(LEAD_STATUS.NEW, { enabled: isManagement });
@@ -70,7 +70,7 @@ export function useDashboardPageData() {
       return [
         {
           label: i18n.t('company.dashboard.kpi.totalCustomers.label'),
-          value: String(customers?.length ?? 0),
+          value: String(customersTotal ?? 0),
           hint: i18n.t('company.dashboard.kpi.totalCustomers.hint'),
           hintClass: 'text-emerald-600',
           accent: KPI_ACCENTS[0],
@@ -152,7 +152,7 @@ export function useDashboardPageData() {
     /* eslint-disable react-hooks/exhaustive-deps */
     [
       isManagement,
-      customers?.length,
+      customersTotal,
       activeInterventions.length,
       totalInvoiced,
       totalPaid,

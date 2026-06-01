@@ -18,6 +18,7 @@ import { uploadFile, uploadFiles } from '@/api/files';
 import { MAX_VIDEO_COUNT, MAX_VIDEO_DURATION } from '@/constants/fileMedia.constants';
 import { validateMediaFile, isVideoFile, getVideoDuration } from '@/utils/validateFile';
 import { getErrorMessage } from '@/utils/errors';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 import { MANAGER_PROFILE_FIELDS } from '@/features/companies/resolveActiveCompany';
 import type { PendingGalleryItem } from '@/components/company/CompanyBrandingSection';
 
@@ -38,6 +39,7 @@ export function useCompanyProfileForm({
   userDefaults,
 }: UseCompanyProfileFormOptions) {
   const { t } = useTranslation();
+  const { ask, dialog: confirmDialog } = useCabinetConfirmDialog();
   const navigate = useNavigate();
   const { isOwner: isTeamOwner } = useCompanyPermissions();
   const leaveCompany = useLeaveCompanyMutation();
@@ -58,9 +60,18 @@ export function useCompanyProfileForm({
   const [categoryId, setCategoryId] = useState(initial.categoryId);
   const [isTvaPayer, setIsTvaPayer] = useState(initial.isTvaPayer);
   const [tvaCode, setTvaCode] = useState(initial.tvaCode);
-  const [contactPhone, setContactPhone] = useState(initial.contactPhone);
-  const [contactEmail, setContactEmail] = useState(initial.contactEmail);
+  const [contactPhoneInput, setContactPhoneInput] = useState(initial.contactPhone);
+  const [contactEmailInput, setContactEmailInput] = useState(initial.contactEmail);
   const [showPublicPhone, setShowPublicPhone] = useState(initial.showPublicPhone);
+
+  const contactPhoneFallback =
+    ownedCompany?.contactPhone?.trim() || userDefaults?.phone?.trim() || '';
+  const contactEmailFallback =
+    ownedCompany?.contactEmail?.trim() || userDefaults?.email?.trim() || '';
+  const contactPhone = contactPhoneInput.trim() || contactPhoneFallback;
+  const contactEmail = contactEmailInput.trim() || contactEmailFallback;
+  const setContactPhone = setContactPhoneInput;
+  const setContactEmail = setContactEmailInput;
   const [showPublicEmail, setShowPublicEmail] = useState(initial.showPublicEmail);
   const [description, setDescription] = useState(initial.description);
 
@@ -306,15 +317,22 @@ export function useCompanyProfileForm({
     }
   };
 
-  const handleLeaveTeam = async () => {
-    if (!window.confirm(t('company.profileEditor.form.confirmLeave'))) return;
-    try {
-      await leaveCompany.mutateAsync();
-      toast.success(t('company.profileEditor.toastLeft'));
-      navigate('/company/lucrari', { replace: true });
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.profileEditor.form.leaveFailed')));
-    }
+  const handleLeaveTeam = () => {
+    ask({
+      title: t('cabinet.common.confirmAction'),
+      confirmLabel: t('cabinet.common.confirmAction'),
+      variant: 'danger',
+      message: t('company.profileEditor.form.confirmLeave'),
+      onConfirm: async () => {
+        try {
+          await leaveCompany.mutateAsync();
+          toast.success(t('company.profileEditor.toastLeft'));
+          navigate('/company/lucrari', { replace: true });
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('company.profileEditor.form.leaveFailed')));
+        }
+      },
+    });
   };
 
   const isSaving = createCompany.isPending || updateCompany.isPending || isSavingMedia;
@@ -363,5 +381,6 @@ export function useCompanyProfileForm({
     handleSubmit,
     handlePublish,
     handleLeaveTeam,
+    confirmDialog,
   };
 }

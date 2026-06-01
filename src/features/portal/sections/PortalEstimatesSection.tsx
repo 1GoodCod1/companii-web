@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, CheckCircle2, CircleDashed, PlusCircle } from 'lucide-react';
+import { Eye, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { downloadFile } from '@/api/files';
@@ -28,6 +28,9 @@ import { getErrorMessage } from '@/utils/errors';
 import { getTranslatedCategoryName } from '@/utils/translateCityCategory';
 import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
 import { buildScopeSummary } from '@/features/estimates/stages/scopeSummary';
+import { filterStagesForClientDisplay } from '@/features/estimates/stages/stageVisibility';
+import { isEstimateLaborLine } from '@/features/estimates/utils/estimateLaborLine';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 import {
   findPricingRuleForLine,
   formatPricingRuleExplanation,
@@ -37,6 +40,7 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();
   const updateEstimate = useUpdatePortalEstimateMutation();
   const requestChanges = useRequestPortalEstimateChangesMutation();
+  const { ask, dialog } = useCabinetConfirmDialog();
   const { estimates } = data;
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -48,22 +52,29 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
     !!expandedId,
   );
 
-  const handleEstimateStatus = async (estimateId: string, status: PortalEstimateActionStatus) => {
+  const handleEstimateStatus = (estimateId: string, status: PortalEstimateActionStatus) => {
     const confirmKey =
       status === PORTAL_ESTIMATE_ACTION.ACCEPT
         ? 'portal.estimatesSection.confirmAccept'
         : 'portal.estimatesSection.confirmReject';
-    if (!confirm(t(confirmKey))) return;
-    try {
-      await updateEstimate.mutateAsync({ id: estimateId, status });
-      toast.success(
-        status === PORTAL_ESTIMATE_ACTION.ACCEPT
-          ? t('portal.estimatesSection.toastAccepted')
-          : t('portal.estimatesSection.toastRejected'),
-      );
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('portal.estimatesSection.toastError')));
-    }
+    ask({
+      title: t('cabinet.common.confirmAction'),
+      confirmLabel: t('cabinet.common.confirmAction'),
+      variant: status === PORTAL_ESTIMATE_ACTION.ACCEPT ? 'primary' : 'danger',
+      message: t(confirmKey),
+      onConfirm: async () => {
+        try {
+          await updateEstimate.mutateAsync({ id: estimateId, status });
+          toast.success(
+            status === PORTAL_ESTIMATE_ACTION.ACCEPT
+              ? t('portal.estimatesSection.toastAccepted')
+              : t('portal.estimatesSection.toastRejected'),
+          );
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('portal.estimatesSection.toastError')));
+        }
+      },
+    });
   };
 
   const handleRequestChanges = async (estimateId: string) => {
@@ -292,84 +303,41 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                             estimateDetail.diagnosticAnswers?.enabledWorkModules ?? [],
                             estimateDetail.stages,
                           );
-                          const hasScope =
-                            scope.included.length > 0 ||
-                            scope.enabledWithoutLines.length > 0 ||
-                            scope.available.length > 0;
-                          if (!hasScope) return null;
+                          if (scope.included.length === 0) return null;
                           return (
                             <div className="space-y-2">
                               <p className="text-xs font-bold text-slate-800 uppercase tracking-wider">
                                 {t('company.estimateWizard.scopeSummary.title', 'Scope-ul smetei')}
                               </p>
-                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                {/* Included */}
-                                <div className="bg-emerald-50/40 border border-emerald-100 rounded-xl p-3 space-y-1.5 shadow-xs">
-                                  <p className="text-[10px] font-bold uppercase text-emerald-800 flex items-center gap-1">
-                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                                    {t('company.estimateWizard.scopeSummary.included', 'Inclus')}
-                                  </p>
-                                  {scope.included.length === 0 ? (
-                                    <p className="text-[11px] text-emerald-600 italic">
-                                      {t('company.estimateWizard.scopeSummary.emptyIncluded', 'Nu sunt module incluse încă.')}
-                                    </p>
-                                  ) : (
-                                    <ul className="space-y-1 text-xs text-emerald-950 font-medium">
-                                      {scope.included.map((m) => (
-                                        <li key={m.key}>
-                                          • {m.label} ({m.lineCount} {t('company.estimateWizard.preview.lines', 'linii')})
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  )}
-                                </div>
-
-                                {/* Enabled without lines */}
-                                <div className="bg-amber-50/40 border border-amber-100 rounded-xl p-3 space-y-1.5 shadow-xs">
-                                  <p className="text-[10px] font-bold uppercase text-amber-800 flex items-center gap-1">
-                                    <CircleDashed className="w-3.5 h-3.5 text-amber-600" />
-                                    {t('company.estimateWizard.scopeSummary.enabledWithoutLines', 'Fără linii')}
-                                  </p>
-                                  {scope.enabledWithoutLines.length === 0 ? (
-                                    <p className="text-[11px] text-amber-500/80 italic">-</p>
-                                  ) : (
-                                    <ul className="space-y-1 text-xs text-amber-950 font-medium">
-                                      {scope.enabledWithoutLines.map((m) => (
-                                        <li key={m.key}>• {m.label}</li>
-                                      ))}
-                                    </ul>
-                                  )}
-                                </div>
-
-                                {/* Available */}
-                                <div className="bg-slate-100/50 border border-slate-200 rounded-xl p-3 space-y-1.5 shadow-xs">
-                                  <p className="text-[10px] font-bold uppercase text-slate-700 flex items-center gap-1">
-                                    <PlusCircle className="w-3.5 h-3.5 text-slate-500" />
-                                    {t('company.estimateWizard.scopeSummary.available', 'Disponibil')}
-                                  </p>
-                                  {scope.available.length === 0 ? (
-                                    <p className="text-[11px] text-slate-500 italic">-</p>
-                                  ) : (
-                                    <ul className="space-y-1 text-xs text-slate-600 font-medium">
-                                      {scope.available.map((m) => (
-                                        <li key={m.key} className="opacity-70">
-                                          • {m.label}
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  )}
-                                </div>
+                              <div className="bg-emerald-50/40 border border-emerald-100 rounded-xl p-3 space-y-1.5 shadow-xs">
+                                <p className="text-[10px] font-bold uppercase text-emerald-800 flex items-center gap-1">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                  {t('company.estimateWizard.scopeSummary.included', 'Inclus')}
+                                </p>
+                                <ul className="space-y-1 text-xs text-emerald-950 font-medium">
+                                  {scope.included.map((m) => (
+                                    <li key={m.key}>
+                                      • {m.label} (
+                                      {t('company.estimateWizard.scopeSummary.moduleLineCount', {
+                                        count: m.lineCount,
+                                        amount: m.amount.toLocaleString('ro-MD'),
+                                      })}
+                                      )
+                                    </li>
+                                  ))}
+                                </ul>
                               </div>
                             </div>
                           );
                         })()}
 
-                        {/* 3. Detailed stages list */}
+                        {/* 3. Detailed stages list — billable stages only */}
                         <div className="space-y-2.5">
                           <p className="text-xs font-bold text-slate-800 uppercase tracking-wider">
                             {t('portal.estimatesSection.breakdown', 'Detaliere etape')}
                           </p>
-                          {(estimateDetail.stages as EstimateStageDto[]).map((stage) => (
+                          {filterStagesForClientDisplay(estimateDetail.stages as EstimateStageDto[]).map(
+                            (stage) => (
                             <div key={stage.id} className="space-y-1.5 bg-white/50 border border-slate-100 rounded-xl p-3 shadow-xs">
                               <div className="flex justify-between items-center">
                                 <p className="text-xs font-bold text-slate-800">{stage.name}</p>
@@ -391,14 +359,10 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                                     line,
                                     estimateDetail.measurements,
                                   );
-                                  const isLabor =
-                                    line.unit === 'ore' ||
-                                    line.unit === 'h' ||
-                                    line.description.toLowerCase().includes('manoperă') ||
-                                    line.description.toLowerCase().includes('manopera') ||
-                                    line.description.toLowerCase().includes('lucrări') ||
-                                    line.description.toLowerCase().includes('lucrari') ||
-                                    line.description.toLowerCase().includes('labor');
+                                  const isLabor = isEstimateLaborLine({
+                                    unit: line.unit,
+                                    description: line.description,
+                                  });
                                   return (
                                     <li
                                       key={line.id}
@@ -443,27 +407,9 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                                   );
                                 })}
                               </ul>
-                              {Array.isArray(stage.checklist) && stage.checklist.length > 0 && (
-                                <div className="mt-3 pt-3 border-t border-slate-100/60 space-y-2">
-                                  <p className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">
-                                    {t('portal.estimatesSection.checklistTitle', 'Planul lucrărilor / План работ этапа')}
-                                  </p>
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    {stage.checklist.map((item: string, idx: number) => (
-                                      <div key={idx} className="flex items-center gap-2 rounded-lg bg-emerald-50/30 border border-emerald-100/50 p-2 shadow-2xs">
-                                        <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-                                          <CheckCircle2 className="h-3 w-3" />
-                                        </div>
-                                        <span className="text-[11px] font-medium text-slate-700 leading-tight">
-                                          {item}
-                                        </span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
                             </div>
-                          ))}
+                          ),
+                          )}
                         </div>
                       </>
                     ) : (
@@ -483,6 +429,7 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
           <EstimateCommentThread projectId={expandedId} isPortal={true} />
         </div>
       )}
+      {dialog}
     </>
   );
 }

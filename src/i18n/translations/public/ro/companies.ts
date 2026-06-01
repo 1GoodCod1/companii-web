@@ -7,23 +7,19 @@ export const publicRoCompanies = {
       keywords: 'companii Moldova, servicii, instalatori, electricieni, curățenie',
     },
     hero: {
-      eyebrow: 'Catalog public',
+      badge: 'Catalog',
       title: 'Companii de servicii',
-      description:
-        'Găsește echipe verificate din Moldova — cu profil, logo, galerie foto și pachete de servicii publicate.',
     },
     searchPlaceholder: 'Caută companie, oraș, domeniu...',
     allCities: 'Toate orașele',
     allCategories: 'Toate domeniile',
     loadError: 'Nu am putut încărca companiile. Verificați conexiunea la API.',
-    emptyNone: 'Nicio companie publicată încă. Companiile verificate apar aici automat.',
+    emptyNone: 'Nicio companie publicată încă.',
     emptyFiltered: 'Niciun rezultat pentru filtrele selectate.',
     countOne: 'companie găsită',
     countMany: 'companii găsite',
-    emptyHintAuthedPrefix: 'Publică profilul companiei din',
-    emptyHintGuestPrefix: 'Ai o companie?',
-    emptyHintGuestLink: 'Înregistrează-te',
-    emptyHintGuestSuffix: 'și publică profilul din cabinet.',
+    emptyCtaGuest: 'Înregistrează compania',
+    emptyCtaAuthed: 'Publică profilul din cabinet',
   },
 
   companyCard: {
@@ -33,7 +29,7 @@ export const publicRoCompanies = {
   },
 
   companyDetail: {
-    seoDescriptionFallback: 'Profil public {{name}} pe Faber Companii.',
+    seoDescriptionFallback: 'Profil public {{name}} pe Faber.',
     notFound: 'Compania nu a fost găsită sau profilul nu este public.',
     backToCatalog: '← Înapoi la catalog',
     backLink: 'Toate companiile',

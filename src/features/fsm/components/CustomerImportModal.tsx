@@ -125,7 +125,7 @@ export function CustomerImportModal({ open, onClose }: Props) {
       size="xl"
       backgroundIndex={1}
     >
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-4 space-y-3">
           <p className="text-sm font-semibold text-violet-900">{t('company.fsm.customers.import.step1.title')}</p>
           <p className="text-xs text-violet-800/80 leading-relaxed">
@@ -150,6 +150,10 @@ export function CustomerImportModal({ open, onClose }: Props) {
             </button>
           </div>
         </div>
+
+        <p className="text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+          {t('company.fsm.customers.import.or')}
+        </p>
 
         <div className="space-y-3">
           <p className="text-sm font-semibold text-gray-900">{t('company.fsm.customers.import.step2.title')}</p>

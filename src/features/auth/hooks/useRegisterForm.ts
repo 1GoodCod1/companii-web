@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import { useRegisterMutation } from '@/features/auth/api/useAuth';
 import { usePortalInvitePreviewQuery } from '@/features/portal/api/usePortal';
@@ -20,6 +22,11 @@ import {
 import type { AccountKind } from '@/stores/authStore';
 import { useAuthStore } from '@/stores/authStore';
 import { resolveCompanyHomeRoute } from '@/features/companies/companyHomeRoute';
+import {
+  createRegisterSchema,
+  type RegisterFormValues,
+} from '@/lib/forms/schemas/authSchemas';
+import { showFirstFormError } from '@/lib/forms/showFirstFormError';
 
 export function useRegisterForm() {
   const { t } = useTranslation();
@@ -47,15 +54,49 @@ export function useRegisterForm() {
   const [accountKind, setAccountKind] = useState<AccountKind>(
     portalInviteToken ? ACCOUNT_KIND.END_CLIENT : teamInviteToken ? ACCOUNT_KIND.COMPANY_STAFF : initialKind,
   );
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [acceptTerms, setAcceptTerms] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [conflictType, setConflictType] = useState<'email' | 'phone' | 'general' | null>(null);
-  const submittingRef = useRef(false);
+
+  const needsInviteEmail = isPortalInviteFlow && !invitePreview?.customerEmail;
+  const inviteLoading = portalInviteLoading || teamInviteLoading;
+  const requireEndClientPhone =
+    !isPortalInviteFlow && !isTeamInviteFlow && isEndClientAccount(accountKind);
+
+  const schema = useMemo(
+    () =>
+      createRegisterSchema(t, {
+        isPortalInviteFlow,
+        isTeamInviteFlow,
+        needsInviteEmail,
+        requireEndClientPhone,
+      }),
+    [t, isPortalInviteFlow, isTeamInviteFlow, needsInviteEmail, requireEndClientPhone],
+  );
+
+  const schemaRef = useRef(schema);
+
+  useEffect(() => {
+    schemaRef.current = schema;
+  }, [schema]);
+
+  const form = useForm<RegisterFormValues>({
+    resolver: (values, context, options) =>
+      zodResolver(schemaRef.current)(values, context, options),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      password: '',
+      acceptTerms: false,
+    },
+  });
+
+  useEffect(() => {
+    if (isTeamInviteFlow && teamPreview?.invitedEmail) {
+      form.setValue('email', teamPreview.invitedEmail);
+    }
+  }, [form, isTeamInviteFlow, teamPreview?.invitedEmail]);
 
   useEffect(() => {
     if (user && accessToken) {
@@ -65,10 +106,13 @@ export function useRegisterForm() {
     }
   }, [user, accessToken, nav]);
 
-  const needsInviteEmail = isPortalInviteFlow && !invitePreview?.customerEmail;
-  const inviteLoading = portalInviteLoading || teamInviteLoading;
+  const emailValue = useWatch({ control: form.control, name: 'email' }) ?? '';
+  const phoneValue = useWatch({ control: form.control, name: 'phone' }) ?? '';
+
   const loginPrefill =
-    conflictType === 'phone' && phone.trim() ? phone.trim() : email.trim();
+    conflictType === 'phone' && phoneValue.trim()
+      ? phoneValue.trim()
+      : emailValue.trim();
   const loginLinkTo = teamInviteToken
     ? `/login?teamInvite=${encodeURIComponent(teamInviteToken)}&login=${encodeURIComponent(loginPrefill)}`
     : portalInviteToken
@@ -76,83 +120,61 @@ export function useRegisterForm() {
       : `/login?login=${encodeURIComponent(loginPrefill)}`;
   const showConflictBanner = conflictType === 'email' || conflictType === 'phone';
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (submittingRef.current || register.isPending) return;
+  const onSubmit = form.handleSubmit(
+    async (values) => {
+      if (register.isPending) return;
 
-    setFormError(null);
-    setConflictType(null);
+      setFormError(null);
+      setConflictType(null);
 
-    if (!acceptTerms) {
-      const message = t('auth.termsRequired');
-      setFormError(message);
-      toast.error(message);
-      return;
-    }
+      try {
+        const registrationEmail =
+          isPortalInviteFlow && invitePreview?.customerEmail
+            ? invitePreview.customerEmail
+            : isTeamInviteFlow && teamPreview?.invitedEmail
+              ? teamPreview.invitedEmail
+              : values.email;
 
-    if (!isPortalInviteFlow && !isTeamInviteFlow && isEndClientAccount(accountKind) && !phone.trim()) {
-      const message = t('auth.phoneRequired');
-      setFormError(message);
-      toast.error(message);
-      return;
-    }
-
-    if (isPortalInviteFlow && needsInviteEmail && !email.trim()) {
-      const message = t('auth.inviteEmailRequired');
-      setFormError(message);
-      toast.error(message);
-      return;
-    }
-
-    submittingRef.current = true;
-    try {
-      const registrationEmail =
-        isPortalInviteFlow && invitePreview?.customerEmail
-          ? invitePreview.customerEmail
-          : isTeamInviteFlow && teamPreview?.invitedEmail
-            ? teamPreview.invitedEmail
-            : email;
-
-      await register.mutateAsync({
-        email: registrationEmail,
-        password,
-        accountKind: accountKind as typeof ACCOUNT_KIND.COMPANY_STAFF | typeof ACCOUNT_KIND.END_CLIENT,
-        firstName: firstName || undefined,
-        lastName: lastName || undefined,
-        phone: isPortalInviteFlow || isTeamInviteFlow ? undefined : phone.trim() || undefined,
-        acceptTerms: true,
-        portalInviteToken: portalInviteToken,
-        teamInviteToken: teamInviteToken,
-      });
-      toast.success(t('auth.registerPage.accountActivated'));
-      if (isTeamInviteFlow) nav('/company/team', { replace: true });
-      else if (isPortalInviteFlow) nav('/portal', { replace: true });
-      else if (isEndClientAccount(accountKind)) nav(ROUTE_ABS.PORTAL, { replace: true });
-      else {
-        const sessionUser = useAuthStore.getState().user;
-        nav(
-          resolveCompanyHomeRoute({
-            companyRole: sessionUser?.companyRole,
-            activeCompanyId: sessionUser?.activeCompanyId,
-          }),
-          { replace: true },
-        );
+        await register.mutateAsync({
+          email: registrationEmail,
+          password: values.password,
+          accountKind: accountKind as typeof ACCOUNT_KIND.COMPANY_STAFF | typeof ACCOUNT_KIND.END_CLIENT,
+          firstName: values.firstName || undefined,
+          lastName: values.lastName || undefined,
+          phone: isPortalInviteFlow || isTeamInviteFlow ? undefined : values.phone.trim() || undefined,
+          acceptTerms: true,
+          portalInviteToken: portalInviteToken,
+          teamInviteToken: teamInviteToken,
+        });
+        toast.success(t('auth.registerPage.accountActivated'));
+        if (isTeamInviteFlow) nav('/company/team', { replace: true });
+        else if (isPortalInviteFlow) nav('/portal', { replace: true });
+        else if (isEndClientAccount(accountKind)) nav(ROUTE_ABS.PORTAL, { replace: true });
+        else {
+          const sessionUser = useAuthStore.getState().user;
+          nav(
+            resolveCompanyHomeRoute({
+              companyRole: sessionUser?.companyRole,
+              activeCompanyId: sessionUser?.activeCompanyId,
+            }),
+            { replace: true },
+          );
+        }
+      } catch (err) {
+        const message = getAuthErrorMessage(err);
+        setFormError(message);
+        if (isAuthPhoneTakenError(err)) {
+          setConflictType('phone');
+        } else if (isAuthEmailTakenError(err)) {
+          setConflictType('email');
+        } else if (isAuthRegistrationConflictError(err)) {
+          setConflictType('general');
+        }
+        toast.error(message);
       }
-    } catch (err) {
-      const message = getAuthErrorMessage(err);
-      setFormError(message);
-      if (isAuthPhoneTakenError(err)) {
-        setConflictType('phone');
-      } else if (isAuthEmailTakenError(err)) {
-        setConflictType('email');
-      } else if (isAuthRegistrationConflictError(err)) {
-        setConflictType('general');
-      }
-      toast.error(message);
-    } finally {
-      submittingRef.current = false;
-    }
-  };
+    },
+    (errors) => showFirstFormError(errors),
+  );
 
   return {
     t,
@@ -164,25 +186,14 @@ export function useRegisterForm() {
     isTeamInviteFlow,
     accountKind,
     setAccountKind,
-    firstName,
-    setFirstName,
-    lastName,
-    setLastName,
-    email,
-    setEmail,
-    phone,
-    setPhone,
-    password,
-    setPassword,
-    acceptTerms,
-    setAcceptTerms,
+    form,
     formError,
     conflictType,
     needsInviteEmail,
     inviteLoading,
     loginLinkTo,
     showConflictBanner,
-    handleSubmit,
+    onSubmit,
     isPending: register.isPending,
   };
 }

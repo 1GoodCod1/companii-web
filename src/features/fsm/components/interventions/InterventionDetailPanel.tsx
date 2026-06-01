@@ -70,6 +70,7 @@ export function InterventionDetailPanel({
     handleGenerateInvoice,
     handlePhotoUpload,
     isStatusUpdating,
+    confirmDialog,
   } = useInterventionDetail({
     selectedId,
     onClearSelection,
@@ -87,7 +88,7 @@ export function InterventionDetailPanel({
           isManagement && selectedId && !isLoadingDetail && detail ? (
             <button
               type="button"
-              onClick={() => void handleDelete(selectedId)}
+              onClick={() => handleDelete(selectedId)}
               className="text-xs font-semibold text-red-500 hover:text-red-700 transition-colors cursor-pointer"
             >
               {t('cabinet.common.delete')}
@@ -172,6 +173,7 @@ export function InterventionDetailPanel({
       ) : (
         <EmptyState message={t('company.fsm.interventions.detail.empty')} />
       )}
+      {confirmDialog}
     </Panel>
   );
 }

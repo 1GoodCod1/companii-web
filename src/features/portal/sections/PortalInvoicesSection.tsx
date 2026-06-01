@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
@@ -8,18 +8,26 @@ import {
   SoftBadge,
 } from '@/components/cabinet/cabinet-ui';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
+import { useSubmitPortalInvoicePaymentProofMutation } from '@/features/portal/api/usePortal';
 import { invoiceStatusTone } from '@/features/portal/portalStatus';
 import type { InvoiceDto } from '@/types/fsm';
-import { downloadPortalInvoicePdf } from '@/features/fsm/api/useFsm';
+import { INVOICE_PAYMENT_STATUS } from '@/constants/invoicePaymentStatus.constants';
+import { downloadPortalInvoicePdf } from '@/features/fsm/api/useInvoices';
+import { uploadFile } from '@/api/files';
 import { formatDateLocalized } from '@/utils/date';
 import { useLocale } from '@/hooks/useLocale';
 import { paymentStatusLabel } from '@/utils/i18nStatusLabels';
+import { getErrorMessage } from '@/utils/errors';
 
 export function PortalInvoicesSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();
   const locale = useLocale();
   const { invoices } = data;
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const pendingUploadInvoiceId = useRef<string | null>(null);
+  const submitProof = useSubmitPortalInvoicePaymentProofMutation();
 
   const handleDownload = async (inv: InvoiceDto) => {
     setDownloadingId(inv.id);
@@ -27,15 +35,49 @@ export function PortalInvoicesSection({ data }: { data: PortalDashboardDto }) {
       await downloadPortalInvoicePdf(inv.id, `${inv.number}.pdf`);
       toast.success(t('portal.invoicesSection.toastDownloaded'));
     } catch (err: unknown) {
-      const error = err as Error;
-      toast.error(error.message || t('portal.invoicesSection.toastError'));
+      toast.error(getErrorMessage(err, t('portal.invoicesSection.toastError')));
     } finally {
       setDownloadingId(null);
     }
   };
 
+  const startUpload = (inv: InvoiceDto) => {
+    pendingUploadInvoiceId.current = inv.id;
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const invoiceId = pendingUploadInvoiceId.current;
+    e.target.value = '';
+    pendingUploadInvoiceId.current = null;
+    if (!file || !invoiceId) return;
+
+    setUploadingId(invoiceId);
+    try {
+      const uploaded = await uploadFile(file);
+      await submitProof.mutateAsync({ invoiceId, fileId: uploaded.id });
+      toast.success(t('portal.invoicesSection.toastProofSubmitted'));
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, t('portal.invoicesSection.toastProofError')));
+    } finally {
+      setUploadingId(null);
+    }
+  };
+
+  const canUploadProof = (inv: InvoiceDto) =>
+    inv.paymentStatus === INVOICE_PAYMENT_STATUS.UNPAID ||
+    inv.paymentStatus === INVOICE_PAYMENT_STATUS.OVERDUE;
+
   return (
     <Panel>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*,application/pdf"
+        className="hidden"
+        onChange={handleFileSelected}
+      />
       <PanelHeader
         title={t('portal.invoicesSection.title')}
         description={t('portal.invoicesSection.description')}
@@ -86,8 +128,22 @@ export function PortalInvoicesSection({ data }: { data: PortalDashboardDto }) {
                     <SoftBadge tone={invoiceStatusTone(inv.paymentStatus)}>
                       {paymentStatusLabel(inv.paymentStatus, t)}
                     </SoftBadge>
+                    {inv.paymentStatus === INVOICE_PAYMENT_STATUS.PENDING_CONFIRMATION && (
+                      <p className="text-[10px] text-blue-600 font-medium mt-1 max-w-[140px]">
+                        {t('portal.invoicesSection.pendingHint')}
+                      </p>
+                    )}
+                    {inv.paymentProofRejectedReason &&
+                      (inv.paymentStatus === INVOICE_PAYMENT_STATUS.UNPAID ||
+                        inv.paymentStatus === INVOICE_PAYMENT_STATUS.OVERDUE) && (
+                        <p className="text-[10px] text-amber-700 font-medium mt-1 max-w-[160px]">
+                          {t('portal.invoicesSection.rejectedHint', {
+                            reason: inv.paymentProofRejectedReason,
+                          })}
+                        </p>
+                      )}
                   </td>
-                  <td className="p-3 text-right">
+                  <td className="p-3 text-right space-x-1.5 whitespace-nowrap">
                     <button
                       type="button"
                       onClick={() => handleDownload(inv)}
@@ -98,6 +154,18 @@ export function PortalInvoicesSection({ data }: { data: PortalDashboardDto }) {
                         ? t('portal.invoicesSection.generating')
                         : t('portal.invoicesSection.pdf')}
                     </button>
+                    {canUploadProof(inv) && (
+                      <button
+                        type="button"
+                        onClick={() => startUpload(inv)}
+                        disabled={uploadingId === inv.id}
+                        className="px-3 py-1.5 rounded-xl bg-white border border-emerald-300 text-emerald-800 hover:bg-emerald-50 text-xs font-bold transition-colors disabled:opacity-50 cursor-pointer"
+                      >
+                        {uploadingId === inv.id
+                          ? t('portal.invoicesSection.uploading')
+                          : t('portal.invoicesSection.uploadProof')}
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

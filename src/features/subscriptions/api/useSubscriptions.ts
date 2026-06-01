@@ -41,7 +41,7 @@ export function useClaimFreePlanMutation() {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: queryKeys.subscriptions.me });
       void qc.invalidateQueries({ queryKey: queryKeys.subscriptions.plans });
-      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customers });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customersRoot });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.quotes });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });

@@ -25,10 +25,12 @@ import {
   buildServicePayload,
   serviceToForm,
 } from '@/utils/serviceForm';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 export function CompanyServicesPage() {
   const { t } = useTranslation();
   const { data: services, isLoading } = useCompanyServicesQuery();
+  const { ask, dialog } = useCabinetConfirmDialog();
   const { data: categories } = useCategoriesQuery();
   const { data: subscription } = useMySubscriptionQuery();
   const { activeCompanyId, companyMe } = useCompanyPermissions();
@@ -96,14 +98,23 @@ export function CompanyServicesPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('company.servicesPage.confirmDelete'))) return;
-    try {
-      await deleteService.mutateAsync(id);
-      toast.success(t('company.servicesPage.toastDeleted'));
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
-    }
+  const handleDelete = (id: string) => {
+    ask({
+      title: t('cabinet.common.delete'),
+      message: (
+        <p className="text-sm text-gray-600 leading-relaxed">
+          {t('company.servicesPage.confirmDelete')}
+        </p>
+      ),
+      onConfirm: async () => {
+        try {
+          await deleteService.mutateAsync(id);
+          toast.success(t('company.servicesPage.toastDeleted'));
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
+        }
+      },
+    });
   };
 
   return (
@@ -141,6 +152,7 @@ export function CompanyServicesPage() {
         onSubmit={handleSubmit}
         onFormChange={setForm}
       />
+      {dialog}
     </CompanyManagementGate>
   );
 }

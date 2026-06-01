@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { PUBLIC_ROUTE } from '@/constants/routes.constants';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 
@@ -49,7 +50,7 @@ export function LandingCta() {
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              to={lp('/subscriptions')}
+              to={lp(`/${PUBLIC_ROUTE.SUBSCRIPTIONS}`)}
               className="inline-flex items-center gap-2 border border-gray-200 bg-white text-gray-700 text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-xl hover:border-gray-300 transition-all"
             >
               {t('landing.cta.viewPlansLink')}

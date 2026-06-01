@@ -17,5 +17,8 @@ export const companiiRuCompanyCrm = {
       toastDeleted: 'Клиент успешно удалён!',
       toastDeleteFailed:
         'Не удалось удалить клиента. Проверьте, есть ли активные работы или предложения.',
+      paginationRange: '{{from}}–{{to}} из {{total}}',
+      paginationPrev: 'Назад',
+      paginationNext: 'Далее',
     },
 };

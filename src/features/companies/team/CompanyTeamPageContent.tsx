@@ -41,6 +41,7 @@ import { TeamRoleSection } from '@/features/companies/team/teamMemberViews';
 import { formatDateTimeLocalized } from '@/utils/date';
 import { getCompanyRoleLabel } from '@/utils/companyRoleLabel';
 import { getErrorMessage } from '@/utils/errors';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 import { useLocale } from '@/hooks/useLocale';
 
 type InviteMode = 'link' | 'direct';
@@ -60,6 +61,7 @@ export function CompanyTeamPage() {
   const deactivateMember = useDeactivateMemberMutation();
   const revokeInvitation = useRevokeInvitationMutation();
   const transferOwnership = useTransferOwnershipMutation();
+  const { ask, dialog } = useCabinetConfirmDialog();
 
   const [showInvite, setShowInvite] = useState(false);
   const [inviteMode, setInviteMode] = useState<InviteMode>('link');
@@ -168,14 +170,23 @@ export function CompanyTeamPage() {
     }
   };
 
-  const handleDeactivate = async (memberId: string) => {
-    if (!confirm(t('company.teamPage.confirmRemoveMember'))) return;
-    try {
-      await deactivateMember.mutateAsync(memberId);
-      toast.success(t('company.teamPage.toastMemberRemoved'));
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.teamPage.toastMemberRemoveFailed')));
-    }
+  const handleDeactivate = (memberId: string) => {
+    ask({
+      title: t('cabinet.common.delete'),
+      message: (
+        <p className="text-sm text-gray-600 leading-relaxed">
+          {t('company.teamPage.confirmRemoveMember')}
+        </p>
+      ),
+      onConfirm: async () => {
+        try {
+          await deactivateMember.mutateAsync(memberId);
+          toast.success(t('company.teamPage.toastMemberRemoved'));
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('company.teamPage.toastMemberRemoveFailed')));
+        }
+      },
+    });
   };
 
   const handleRevokeInvitation = async (invitationId: string) => {
@@ -187,20 +198,31 @@ export function CompanyTeamPage() {
     }
   };
 
-  const handleTransferOwnership = async (event: React.FormEvent) => {
+  const handleTransferOwnership = (event: React.FormEvent) => {
     event.preventDefault();
     if (!activeCompanyId || !transferTargetUserId) return;
-    if (!confirm(t('company.teamPage.confirmTransferOwnership'))) return;
-    try {
-      await transferOwnership.mutateAsync({
-        companyId: activeCompanyId,
-        newOwnerUserId: transferTargetUserId,
-      });
-      toast.success(t('company.teamPage.toastOwnershipTransferred'));
-      setTransferTargetUserId('');
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.teamPage.toastOwnershipTransferFailed')));
-    }
+    ask({
+      title: t('cabinet.common.confirmAction'),
+      confirmLabel: t('cabinet.common.confirmAction'),
+      variant: 'primary',
+      message: (
+        <p className="text-sm text-gray-600 leading-relaxed">
+          {t('company.teamPage.confirmTransferOwnership')}
+        </p>
+      ),
+      onConfirm: async () => {
+        try {
+          await transferOwnership.mutateAsync({
+            companyId: activeCompanyId,
+            newOwnerUserId: transferTargetUserId,
+          });
+          toast.success(t('company.teamPage.toastOwnershipTransferred'));
+          setTransferTargetUserId('');
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('company.teamPage.toastOwnershipTransferFailed')));
+        }
+      },
+    });
   };
 
   const roleGroups = members ? groupMembersByRole(members) : [];
@@ -512,6 +534,7 @@ export function CompanyTeamPage() {
           </form>
         </Panel>
       ) : null}
+      {dialog}
     </div>
   );
 }

@@ -7,6 +7,8 @@ export type PlanEditorProps = {
   categorySlug?: string;
   onChange: (plan: Plan2dData) => void;
   readOnly?: boolean;
+  /** Worksheet: hide empty plan sections (no blank rooms/global/inventory). */
+  variant?: 'wizard' | 'worksheet';
 };
 
 export type WorkContext = 'general' | 'indoor' | 'roof' | 'facade';

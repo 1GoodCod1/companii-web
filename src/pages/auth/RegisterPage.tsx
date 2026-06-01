@@ -7,9 +7,9 @@ import {
 import { RegisterTeamInviteBanner } from '@/features/auth/components/RegisterTeamInviteBanner';
 import { RegisterPortalInviteBanner } from '@/features/auth/components/RegisterPortalInviteBanner';
 import { RegisterAccountKindSelector } from '@/features/auth/components/RegisterAccountKindSelector';
-
-const fieldClass =
-  'w-full border border-slate-200 focus:border-slate-400 focus:ring-4 focus:ring-slate-100 rounded-xl px-3 py-2 text-sm outline-none transition-all bg-slate-50/50 hover:bg-slate-50/80 focus:bg-white text-slate-855 font-medium placeholder-slate-400';
+import { authFieldClass, authLabelClass } from '@/features/auth/authFormStyles';
+import { FormFieldError } from '@/components/ui/FormFieldError';
+import { fieldClassName } from '@/lib/forms/fieldClassName';
 
 export function RegisterPage() {
   const {
@@ -22,27 +22,21 @@ export function RegisterPage() {
     isTeamInviteFlow,
     accountKind,
     setAccountKind,
-    firstName,
-    setFirstName,
-    lastName,
-    setLastName,
-    email,
-    setEmail,
-    phone,
-    setPhone,
-    password,
-    setPassword,
-    acceptTerms,
-    setAcceptTerms,
+    form,
     formError,
     conflictType,
     needsInviteEmail,
     inviteLoading,
     loginLinkTo,
     showConflictBanner,
-    handleSubmit,
+    onSubmit,
     isPending,
   } = useRegisterForm();
+
+  const {
+    register,
+    formState: { errors },
+  } = form;
 
   if (portalInviteToken && invitePreview?.alreadyLinked) {
     return (
@@ -52,7 +46,7 @@ export function RegisterPage() {
         </p>
         <Link
           to={`/login?invite=${encodeURIComponent(portalInviteToken)}`}
-          className="inline-flex rounded-xl bg-gray-900 hover:bg-gray-800 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors"
+          className="inline-flex rounded-lg bg-slate-900 hover:bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white transition-colors"
         >
           {t('auth.registerPage.goToLogin')}
         </Link>
@@ -68,7 +62,7 @@ export function RegisterPage() {
         </p>
         <Link
           to={`/login?teamInvite=${encodeURIComponent(teamInviteToken)}`}
-          className="inline-flex rounded-xl bg-gray-900 hover:bg-gray-800 px-5 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors"
+          className="inline-flex rounded-lg bg-slate-900 hover:bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white transition-colors"
         >
           {t('auth.registerPage.goToLogin')}
         </Link>
@@ -78,23 +72,21 @@ export function RegisterPage() {
 
   return (
     <div className="w-full animate-fade-in">
-      <div className="space-y-1 mb-4 text-center lg:text-left">
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+      <div className="mb-5 text-center lg:text-left">
+        <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">
           {isPortalInviteFlow
             ? t('auth.portalActivateTitle')
             : isTeamInviteFlow
               ? t('auth.teamJoinTitle')
               : t('auth.register')}
         </h1>
-        <p className="text-[11px] text-slate-400 font-medium">
-          {isPortalInviteFlow || isTeamInviteFlow
-            ? t('auth.registerPage.inviteSubtitle', 'Finalizați configurarea profilului dvs.')
-            : t('auth.registerPage.subtitle', 'Creați un cont nou în sistem')}
-        </p>
+        {isPortalInviteFlow || isTeamInviteFlow ? (
+          <p className="text-sm text-slate-500 mt-1">{t('auth.registerPage.inviteSubtitle')}</p>
+        ) : null}
       </div>
 
       {inviteLoading && (portalInviteToken || teamInviteToken) ? (
-        <p className="mb-3 text-center text-xs text-slate-400 font-medium">
+        <p className="mb-3 text-center text-sm text-slate-500">
           {t('auth.registerPage.loadingInvite')}
         </p>
       ) : null}
@@ -109,17 +101,17 @@ export function RegisterPage() {
         onAccountKindChange={setAccountKind}
       />
 
-      <form className="space-y-3" onSubmit={(e) => void handleSubmit(e)}>
+      <form className="space-y-3" onSubmit={(e) => void onSubmit(e)}>
         {formError ? (
           <div
-            className={`rounded-xl border px-3.5 py-2.5 text-xs font-semibold leading-relaxed ${
+            className={`rounded-lg border px-3.5 py-2.5 text-sm leading-relaxed ${
               showConflictBanner
                 ? 'bg-amber-50 border-amber-200 text-amber-900'
                 : 'bg-red-50 border-red-200 text-red-700'
             }`}
           >
             {conflictType === 'phone' ? (
-              <p className="font-black uppercase tracking-widest text-[8px] text-amber-800 mb-1">
+              <p className="text-xs font-medium text-amber-800 mb-1">
                 {t('auth.phone')}
               </p>
             ) : null}
@@ -131,7 +123,7 @@ export function RegisterPage() {
               <p className="mt-1.5">
                 <Link
                   to={loginLinkTo}
-                  className="text-violet-700 font-black uppercase tracking-widest text-[8px] hover:underline"
+                  className="text-violet-700 text-sm font-medium hover:underline"
                 >
                   {conflictType === 'phone'
                     ? t('auth.registerPage.phoneTakenLoginHint')
@@ -146,155 +138,144 @@ export function RegisterPage() {
           <>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block leading-none">
+                <label className={authLabelClass}>
                   {t('auth.firstName')}
                 </label>
                 <input
                   type="text"
-                  required
-                  className={fieldClass}
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  className={fieldClassName(authFieldClass, !!errors.firstName)}
+                  {...register('firstName')}
                 />
+                <FormFieldError message={errors.firstName?.message} />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block leading-none">
+                <label className={authLabelClass}>
                   {t('auth.lastName')}
                 </label>
                 <input
                   type="text"
-                  required
-                  className={fieldClass}
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  className={fieldClassName(authFieldClass, !!errors.lastName)}
+                  {...register('lastName')}
                 />
+                <FormFieldError message={errors.lastName?.message} />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block leading-none">
+              <label className={authLabelClass}>
                 {t('auth.email')}
               </label>
               <input
                 type="email"
-                required
                 placeholder={t('auth.registerPage.emailPlaceholder')}
-                className={`${fieldClass} ${
-                  conflictType === 'email' ? 'border-amber-450 ring-2 ring-amber-250/20' : ''
-                }`}
-                value={isTeamInviteFlow && teamPreview?.invitedEmail ? teamPreview.invitedEmail : email}
+                className={fieldClassName(
+                  authFieldClass,
+                  !!errors.email || conflictType === 'email',
+                )}
                 readOnly={!!(isTeamInviteFlow && teamPreview?.invitedEmail)}
-                onChange={(e) => {
-                  if (isTeamInviteFlow && teamPreview?.invitedEmail) return;
-                  setEmail(e.target.value);
-                }}
+                {...register('email')}
               />
+              <FormFieldError message={errors.email?.message} />
             </div>
           </>
         ) : needsInviteEmail ? (
           <div className="space-y-1">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block leading-none">
+            <label className={authLabelClass}>
               {t('auth.email')} *
             </label>
             <input
               type="email"
-              required
               placeholder={t('auth.registerPage.emailPlaceholder')}
-              className={fieldClass}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              className={fieldClassName(authFieldClass, !!errors.email)}
+              {...register('email')}
             />
-            <p className="text-[10px] text-slate-400 mt-0.5">{t('auth.registerPage.emailFallbackHint')}</p>
+            <FormFieldError message={errors.email?.message} />
+            <p className="text-xs text-slate-500 mt-0.5">{t('auth.registerPage.emailFallbackHint')}</p>
           </div>
         ) : null}
 
         {!isPortalInviteFlow && !isTeamInviteFlow && isEndClientAccount(accountKind) ? (
           <div className="space-y-1">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block leading-none">
+            <label className={authLabelClass}>
               {t('auth.phone')} *
             </label>
             <input
               type="tel"
-              required
               placeholder="+37369123456"
-              className={`${fieldClass} ${
-                conflictType === 'phone' ? 'border-amber-450 ring-2 ring-amber-200/60' : ''
-              }`}
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              className={fieldClassName(
+                authFieldClass,
+                !!errors.phone || conflictType === 'phone',
+              )}
+              {...register('phone')}
             />
+            <FormFieldError message={errors.phone?.message} />
             {conflictType === 'phone' ? (
-              <p className="text-[10px] font-semibold text-amber-800 leading-snug mt-0.5">
+              <p className="text-xs text-amber-800 leading-snug mt-0.5">
                 {t('auth.registerPage.phoneTakenFieldHint')}
               </p>
-            ) : !portalInviteToken && !teamInviteToken ? (
-              <p className="text-[10px] text-slate-400 leading-snug mt-0.5">{t('auth.phoneLinkHint')}</p>
             ) : null}
           </div>
         ) : null}
 
         {!isPortalInviteFlow && !isTeamInviteFlow && isCompanyStaffAccount(accountKind) ? (
           <div className="space-y-1">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block leading-none">
+            <label className={authLabelClass}>
               {t('auth.phone')} ({t('auth.optional')})
             </label>
             <input
               type="tel"
               placeholder="+37369123456"
-              className={`${fieldClass} ${
-                conflictType === 'phone' ? 'border-amber-450 ring-2 ring-amber-200/60' : ''
-              }`}
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              className={fieldClassName(
+                authFieldClass,
+                conflictType === 'phone',
+              )}
+              {...register('phone')}
             />
             {conflictType === 'phone' ? (
-              <p className="text-[10px] font-semibold text-amber-800 leading-snug mt-0.5">
+              <p className="text-xs text-amber-800 leading-snug mt-0.5">
                 {t('auth.registerPage.phoneTakenFieldHint')}
               </p>
-            ) : (
-              <p className="text-[10px] text-slate-400 leading-snug mt-0.5">
-                {t('auth.registerPage.companyPhoneHint')}
-              </p>
-            )}
+            ) : null}
           </div>
         ) : null}
 
         <div className="space-y-1">
-          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block leading-none">
+          <label className={authLabelClass}>
             {t('auth.password')} {isPortalInviteFlow || isTeamInviteFlow ? '*' : ''}
           </label>
           <input
             type="password"
-            required
             placeholder="••••••••"
-            className={fieldClass}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            className={fieldClassName(authFieldClass, !!errors.password)}
+            {...register('password')}
           />
+          <FormFieldError message={errors.password?.message} />
         </div>
 
-        <label className="flex items-start gap-2.5 text-[11px] text-slate-500 leading-snug cursor-pointer select-none py-0.5">
-          <input
-            type="checkbox"
-            className="mt-0.5 rounded text-violet-600 focus:ring-violet-500/20 border-slate-200 w-3.5 h-3.5 cursor-pointer"
-            checked={acceptTerms}
-            onChange={(e) => setAcceptTerms(e.target.checked)}
-          />
-          <span>
-            {t('auth.acceptTermsPrefix')}{' '}
-            <Link to="/terms" className="font-extrabold text-violet-600 hover:text-violet-700">
-              {t('auth.termsLink')}
-            </Link>{' '}
-            {t('auth.and')}{' '}
-            <Link to="/privacy" className="font-extrabold text-violet-600 hover:text-violet-700">
-              {t('auth.privacyLink')}
-            </Link>
-          </span>
-        </label>
+        <div>
+          <label className="flex items-start gap-2.5 text-sm text-slate-600 leading-snug cursor-pointer select-none py-0.5">
+            <input
+              type="checkbox"
+              className="mt-0.5 rounded text-violet-600 focus:ring-violet-500/20 border-slate-200 w-3.5 h-3.5 cursor-pointer"
+              {...register('acceptTerms')}
+            />
+            <span>
+              {t('auth.acceptTermsPrefix')}{' '}
+              <Link to="/terms" className="font-medium text-violet-600 hover:text-violet-700">
+                {t('auth.termsLink')}
+              </Link>{' '}
+              {t('auth.and')}{' '}
+              <Link to="/privacy" className="font-medium text-violet-600 hover:text-violet-700">
+                {t('auth.privacyLink')}
+              </Link>
+            </span>
+          </label>
+          <FormFieldError message={errors.acceptTerms?.message} />
+        </div>
 
         <button
           type="submit"
-          className="w-full bg-gray-900 hover:bg-gray-800 active:scale-[0.99] text-white py-2.5 rounded-xl font-black transition-all cursor-pointer text-xs uppercase tracking-wider mt-2 disabled:opacity-60"
+          className="w-full bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white py-2.5 rounded-lg font-semibold transition-all cursor-pointer text-sm mt-2 disabled:opacity-60"
           disabled={isPending || ((!!portalInviteToken || !!teamInviteToken) && inviteLoading)}
         >
           {isPending
@@ -305,7 +286,7 @@ export function RegisterPage() {
         </button>
       </form>
 
-      <p className="mt-5 text-xs font-bold text-center lg:text-left text-slate-400 uppercase tracking-wider">
+      <p className="mt-6 text-sm text-center lg:text-left text-slate-500">
         {t('auth.registerPage.hasAccount')}{' '}
         <Link
           to={
@@ -315,7 +296,7 @@ export function RegisterPage() {
                 ? `/login?invite=${encodeURIComponent(portalInviteToken)}`
                 : '/login'
           }
-          className="text-violet-650 hover:text-violet-750 font-extrabold transition-colors border-b-2 border-transparent hover:border-violet-650"
+          className="text-violet-600 hover:text-violet-700 font-medium transition-colors"
         >
           {t('auth.login')}
         </Link>

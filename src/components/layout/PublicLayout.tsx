@@ -7,6 +7,7 @@ import { MobileSheet } from '@/components/layout/MobileSheet';
 import { useLocalizedPath } from '@/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
 import { FaberLogo } from '@/components/brand/FaberLogo';
+import { PUBLIC_ROUTE } from '@/constants/routes.constants';
 import { stripLocalePrefix } from '@/lib/i18n/localeRoutes';
 import { cn } from '@/lib/utils';
 
@@ -19,7 +20,7 @@ const NAV_CTA_CLASS =
 const PUBLIC_NAV_ITEMS = [
   { path: '/how-it-works', labelKey: 'nav.howItWorks' },
   { path: '/companies', labelKey: 'nav.companies' },
-  { path: '/subscriptions', labelKey: 'nav.subscriptions', hideForEndClient: true },
+  { path: `/${PUBLIC_ROUTE.SUBSCRIPTIONS}`, labelKey: 'nav.subscriptions', hideForEndClient: true },
   { path: '/faq', labelKey: 'nav.faq' },
   { path: '/contacts', labelKey: 'nav.contacts' },
 ] as const;
@@ -209,7 +210,7 @@ export function PublicLayout() {
               </li>
               {user?.accountKind !== 'END_CLIENT' && (
                 <li>
-                  <Link to={lp('/subscriptions')} className="hover:text-violet-600 transition-colors">
+                  <Link to={lp(`/${PUBLIC_ROUTE.SUBSCRIPTIONS}`)} className="hover:text-violet-600 transition-colors">
                     {t('footer.platform.subscriptions')}
                   </Link>
                 </li>

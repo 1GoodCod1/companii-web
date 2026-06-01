@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tan
 import { apiFetch } from '@/api/client';
 import { cabinetQueryDefaults } from '@/api/queryPolicies';
 import { queryKeys } from '@/api/queryKeys';
+import { QUERY_KEY_FSM, QUERY_KEY_ROOT } from '@/constants/queryKeys.constants';
 import { useAuthStore } from '@/stores/authStore';
 import type { InterventionDto, InterventionNoteDto, InterventionStatus } from '@/types/fsm';
 import { FSM_BASE } from './fsmBase';
@@ -87,6 +88,7 @@ export function useUpdateInterventionMutation() {
     onSuccess: (_, { id }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(id) });
+      void qc.invalidateQueries({ queryKey: [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.CALENDAR_BOARD] });
     },
   });
 }
@@ -102,6 +104,7 @@ export function useUpdateInterventionStatusMutation() {
     onSuccess: (_, { id }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(id) });
+      void qc.invalidateQueries({ queryKey: [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.CALENDAR_BOARD] });
     },
   });
 }

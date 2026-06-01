@@ -126,7 +126,6 @@ export interface InterventionDto {
   updatedAt: string;
   customer?: CustomerDto;
   technician?: CompanyMemberDto;
-  /** Multi-assignee list (Phase A). */
   assignments?: InterventionAssignmentDto[];
   crew?: InterventionCrewDto | null;
   notes?: InterventionNoteDto[];
@@ -255,13 +254,16 @@ export interface InvoiceDto {
   tvaAmount: number;
   tvaRate: number;
   paymentStatus: InvoicePaymentStatus;
-  /** P2.#16 — accumulator for partial payments (0 if none yet). */
   paidAmount?: number;
   dueDate?: string | null;
   pdfFileKey?: string | null;
-  /** P2.#3 — populated when invoice was cancelled. */
   cancellationReason?: string | null;
   cancelledAt?: string | null;
   issuedAt: string;
+  paymentProofFileKey?: string | null;
+  paymentProofSubmittedAt?: string | null;
+  paymentProofConfirmedAt?: string | null;
+  paymentProofRejectedReason?: string | null;
+  paymentProofRejectedAt?: string | null;
   intervention?: InterventionDto;
 }

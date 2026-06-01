@@ -60,6 +60,25 @@ describe('groupVisibleCustomFields (H-02, H-04)', () => {
     expect(allKeys).not.toContain('tileArea');
   });
 
+  it('shows fields linked to multiple modules when any linked module is enabled', () => {
+    const sharedConfig: EstimateBlueprintConfig = {
+      ...config,
+      workModules: [
+        { key: 'devices', label: 'Aparataj', defaultEnabled: true, stageCodes: [], fieldKeys: ['socketCount'] },
+        { key: 'testing', label: 'Testare', defaultEnabled: true, stageCodes: [], fieldKeys: ['socketCount'] },
+      ],
+      customFields: [
+        { key: 'socketCount', label: 'Număr prize', type: 'number', required: false, section: 'Aparataj' },
+      ],
+    };
+
+    const withTestingOnly = groupVisibleCustomFields(sharedConfig, ['testing']);
+    expect(withTestingOnly.flatMap((s) => s.fields.map((f) => f.key))).toContain('socketCount');
+
+    const withNeither = groupVisibleCustomFields(sharedConfig, ['demolition']);
+    expect(withNeither.flatMap((s) => s.fields.map((f) => f.key))).not.toContain('socketCount');
+  });
+
   it('keeps fields without a module (insulationThicknessCm has no module) always visible', () => {
     const sections = groupVisibleCustomFields(config, []); // nothing enabled
     const allKeys = sections.flatMap((s) => s.fields.map((f) => f.key));

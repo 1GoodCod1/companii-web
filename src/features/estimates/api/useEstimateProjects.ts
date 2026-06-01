@@ -21,6 +21,7 @@ export function useEstimateProjectQuery(id: string): UseQueryResult<EstimateProj
     queryKey: queryKeys.estimates.project(id),
     queryFn: () => apiFetch<EstimateProjectDto>(`${ESTIMATES_API_BASE}/projects/${id}`),
     ...cabinetQueryDefaults,
+    refetchOnMount: 'always',
     enabled: !!id,
   });
 }

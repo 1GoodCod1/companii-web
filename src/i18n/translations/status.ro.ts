@@ -59,9 +59,12 @@ export const statusRo = {
     },
     payment: {
       UNPAID: 'Neplătită',
+      PENDING_CONFIRMATION: 'În așteptare confirmare',
       PAID: 'Plătită',
       OVERDUE: 'Restantă',
+      CANCELLED: 'Anulată',
       hintPaid: 'Factura este plătită. Status final — nu poate fi modificat.',
+      hintPendingConfirmation: 'Clientul a încărcat dovada plății — confirmați sau respingeți.',
       dueImmediate: 'Imediat',
       dueLabel: 'Scadent: {{date}}',
       packageClient: 'Client pachet',

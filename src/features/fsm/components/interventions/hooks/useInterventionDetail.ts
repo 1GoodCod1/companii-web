@@ -15,6 +15,7 @@ import {
 import { useCreateInvoiceMutation } from '@/features/fsm/api/useInvoices';
 import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
 import { getErrorMessage } from '@/utils/errors';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 interface UseInterventionDetailProps {
   selectedId: string | null;
@@ -34,6 +35,7 @@ export function useInterventionDetail({
   canDeleteOwnNotes,
 }: UseInterventionDetailProps) {
   const { t } = useTranslation();
+  const { ask, dialog: confirmDialog } = useCabinetConfirmDialog();
   const { data: detail, isLoading: isLoadingDetail } = useInterventionQuery(selectedId || '');
 
   const updateIntervention = useUpdateInterventionMutation();
@@ -89,9 +91,7 @@ export function useInterventionDetail({
       } else {
         await updateIntervention.mutateAsync({
           id: selectedId,
-          description: editDescription,
           address: editAddress,
-          finalPrice: editFinalPrice ? Number(editFinalPrice) : null,
         });
       }
       toast.success(t('company.fsm.interventions.detail.toast.saved'));
@@ -119,15 +119,20 @@ export function useInterventionDetail({
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('company.fsm.interventions.detail.confirm.delete'))) return;
-    try {
-      await deleteIntervention.mutateAsync(id);
-      toast.success(t('company.fsm.interventions.detail.toast.deleted'));
-      onClearSelection();
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.deleteError')));
-    }
+  const handleDelete = (id: string) => {
+    ask({
+      title: t('cabinet.common.delete'),
+      message: t('company.fsm.interventions.detail.confirm.delete'),
+      onConfirm: async () => {
+        try {
+          await deleteIntervention.mutateAsync(id);
+          toast.success(t('company.fsm.interventions.detail.toast.deleted'));
+          onClearSelection();
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.deleteError')));
+        }
+      },
+    });
   };
 
   const handleAddNote = async (e: React.FormEvent) => {
@@ -142,14 +147,19 @@ export function useInterventionDetail({
     }
   };
 
-  const handleDeleteNote = async (noteId: string) => {
-    if (!confirm(t('company.fsm.interventions.detail.confirm.deleteNote'))) return;
-    try {
-      await deleteNote.mutateAsync(noteId);
-      toast.success(t('company.fsm.interventions.detail.toast.noteDeleted'));
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.fsm.common.error')));
-    }
+  const handleDeleteNote = (noteId: string) => {
+    ask({
+      title: t('cabinet.common.delete'),
+      message: t('company.fsm.interventions.detail.confirm.deleteNote'),
+      onConfirm: async () => {
+        try {
+          await deleteNote.mutateAsync(noteId);
+          toast.success(t('company.fsm.interventions.detail.toast.noteDeleted'));
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('company.fsm.common.error')));
+        }
+      },
+    });
   };
 
   const handleGenerateInvoice = async () => {
@@ -208,5 +218,6 @@ export function useInterventionDetail({
     handleGenerateInvoice,
     handlePhotoUpload,
     isStatusUpdating: updateStatus.isPending,
+    confirmDialog,
   };
 }

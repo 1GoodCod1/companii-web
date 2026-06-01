@@ -24,10 +24,12 @@ import {
   useDeleteAdminCityMutation,
   type AdminCityDto,
 } from '@/features/admin/api/useAdmin';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 export function AdminCitiesPage() {
   const { t } = useTranslation();
   const { data: cities, isLoading } = useAdminCitiesQuery();
+  const { ask, dialog } = useCabinetConfirmDialog();
   const createCity = useCreateAdminCityMutation();
   const updateCity = useUpdateAdminCityMutation();
   const deleteCity = useDeleteAdminCityMutation();
@@ -85,14 +87,19 @@ export function AdminCitiesPage() {
     }
   };
 
-  const handleDelete = async (city: AdminCityDto) => {
-    if (!confirm(t('admin.citiesPage.confirmDelete', { name: city.name }))) return;
-    try {
-      await deleteCity.mutateAsync(city.id);
-      toast.success(t('admin.citiesPage.toastDeleted'));
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
-    }
+  const handleDelete = (city: AdminCityDto) => {
+    ask({
+      title: t('cabinet.common.delete'),
+      message: t('admin.citiesPage.confirmDelete', { name: city.name }),
+      onConfirm: async () => {
+        try {
+          await deleteCity.mutateAsync(city.id);
+          toast.success(t('admin.citiesPage.toastDeleted'));
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
+        }
+      },
+    });
   };
 
   return (
@@ -214,6 +221,7 @@ export function AdminCitiesPage() {
           </div>
         </form>
       </AppModal>
+      {dialog}
     </div>
   );
 }

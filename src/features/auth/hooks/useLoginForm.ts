@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import { useLoginMutation } from '@/features/auth/api/useAuth';
 import {
@@ -22,6 +24,8 @@ import {
 import { resolveCompanyHomeRoute } from '@/features/companies/companyHomeRoute';
 import { companyAbsolutePath } from '@/utils/routes';
 import { COMPANY_ROUTE } from '@/constants/routes.constants';
+import { createLoginSchema, type LoginFormValues } from '@/lib/forms/schemas/authSchemas';
+import { showFirstFormError } from '@/lib/forms/showFirstFormError';
 
 export function useLoginForm() {
   const { t } = useTranslation();
@@ -43,12 +47,30 @@ export function useLoginForm() {
   const { data: teamPreview } = useTeamInvitePreviewQuery(teamInviteToken ?? '');
 
   const { user, accessToken } = useAuthStore();
-
-  const [loginValue, setLoginValue] = useState('');
-  const [loginPresetApplied, setLoginPresetApplied] = useState(false);
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  const schema = useMemo(() => createLoginSchema(t), [t]);
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      login: queryLogin,
+      password: '',
+      rememberMe: false,
+    },
+  });
+
+  const presetLogin =
+    invitePreview?.customerEmail ||
+    invitePreview?.customerPhone ||
+    teamPreview?.invitedEmail ||
+    queryLogin ||
+    '';
+
+  useEffect(() => {
+    if (presetLogin) {
+      form.setValue('login', presetLogin);
+    }
+  }, [form, presetLogin]);
 
   useEffect(() => {
     if (user && accessToken) {
@@ -70,50 +92,44 @@ export function useLoginForm() {
     }
   }, [user, accessToken, nav, safeReturnUrl]);
 
-  const presetLogin =
-    invitePreview?.customerEmail ||
-    invitePreview?.customerPhone ||
-    teamPreview?.invitedEmail ||
-    queryLogin ||
-    '';
-  const effectiveLogin = loginPresetApplied || !presetLogin ? loginValue : presetLogin;
+  const onSubmit = form.handleSubmit(
+    async (values) => {
+      setFormError(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(null);
-
-    try {
-      const res = await login.mutateAsync({
-        login: effectiveLogin.trim(),
-        password,
-        rememberMe,
-      });
-      if (inviteToken && isEndClientAccount(res.user.accountKind)) {
-        await acceptInvite.mutateAsync(inviteToken);
-        toast.success(t('auth.inviteAccepted'));
+      try {
+        const res = await login.mutateAsync({
+          login: values.login.trim(),
+          password: values.password,
+          rememberMe: values.rememberMe,
+        });
+        if (inviteToken && isEndClientAccount(res.user.accountKind)) {
+          await acceptInvite.mutateAsync(inviteToken);
+          toast.success(t('auth.inviteAccepted'));
+        }
+        if (teamInviteToken && isCompanyStaffAccount(res.user.accountKind)) {
+          await acceptTeamInvite.mutateAsync(teamInviteToken);
+          toast.success(t('auth.teamJoined'));
+        }
+        if (isEndClientAccount(res.user.accountKind)) {
+          nav(safeReturnUrl ?? ROUTE_ABS.PORTAL);
+        } else if (isPlatformAdminAccount(res.user.accountKind)) nav(ROUTE_ABS.ADMIN);
+        else if (teamInviteToken) nav(companyAbsolutePath(COMPANY_ROUTE.TEAM));
+        else {
+          nav(
+            resolveCompanyHomeRoute({
+              companyRole: res.user.companyRole,
+              activeCompanyId: res.user.activeCompanyId,
+            }),
+          );
+        }
+      } catch (err) {
+        const message = getAuthErrorMessage(err);
+        setFormError(message);
+        toast.error(message);
       }
-      if (teamInviteToken && isCompanyStaffAccount(res.user.accountKind)) {
-        await acceptTeamInvite.mutateAsync(teamInviteToken);
-        toast.success(t('auth.teamJoined'));
-      }
-      if (isEndClientAccount(res.user.accountKind)) {
-        nav(safeReturnUrl ?? ROUTE_ABS.PORTAL);
-      } else if (isPlatformAdminAccount(res.user.accountKind)) nav(ROUTE_ABS.ADMIN);
-      else if (teamInviteToken) nav(companyAbsolutePath(COMPANY_ROUTE.TEAM));
-      else {
-        nav(
-          resolveCompanyHomeRoute({
-            companyRole: res.user.companyRole,
-            activeCompanyId: res.user.activeCompanyId,
-          }),
-        );
-      }
-    } catch (err) {
-      const message = getAuthErrorMessage(err);
-      setFormError(message);
-      toast.error(message);
-    }
-  };
+    },
+    (errors) => showFirstFormError(errors),
+  );
 
   return {
     t,
@@ -121,16 +137,9 @@ export function useLoginForm() {
     teamInviteToken,
     invitePreview,
     teamPreview,
-    loginValue,
-    setLoginValue,
-    setLoginPresetApplied,
-    password,
-    setPassword,
-    rememberMe,
-    setRememberMe,
+    form,
     formError,
-    effectiveLogin,
-    handleSubmit,
+    onSubmit,
     isPending: login.isPending || acceptInvite.isPending || acceptTeamInvite.isPending,
   };
 }

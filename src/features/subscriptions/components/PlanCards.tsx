@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ClaimableSubscriptionPlanCode, CompanyPlanDto, CompanySubscriptionPlanCode } from '@/types/subscriptions';
 import type { PublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
@@ -16,16 +17,65 @@ import {
   SUBSCRIPTION_PLAN,
 } from '@/constants/subscriptions.constants';
 
-function planPriceLabelI18n(
-  t: (key: string, options?: Record<string, unknown>) => string,
-  plan: CompanyPlanDto,
-): string {
+function PlanPricing({
+  plan,
+  showPromo,
+  t,
+}: {
+  plan: CompanyPlanDto;
+  showPromo: boolean;
+  t: (key: string, options?: Record<string, unknown>) => string;
+}) {
   const amount = Number(plan.price);
-  if (amount === 0) return t('subscriptions.planCards.priceFree');
-  return t('subscriptions.planCards.pricePerMonth', {
-    amount,
-    currency: plan.currency || 'MDL',
-  });
+  const currency = plan.currency || 'MDL';
+
+  if (amount === 0) {
+    return (
+      <p className="text-3xl font-semibold text-slate-900 tracking-tight">
+        {t('subscriptions.planCards.priceFree')}
+      </p>
+    );
+  }
+
+  if (showPromo) {
+    return (
+      <div className="space-y-2">
+        <span className="inline-flex items-center bg-violet-100 px-2.5 py-0.5 text-xs font-semibold text-violet-700">
+          {t('subscriptions.planCards.firstMonthFree')}
+        </span>
+        <div className="flex items-end gap-2.5 flex-wrap">
+          <p className="text-3xl font-semibold text-slate-900 tracking-tight leading-none">
+            0 {currency}
+          </p>
+          <p className="text-base text-slate-400 line-through decoration-slate-300 pb-0.5">
+            {amount} {currency}
+          </p>
+        </div>
+        <p className="text-sm text-slate-500">
+          {t('subscriptions.planCards.thenPricePerMonth', { amount, currency })}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <p className="text-3xl font-semibold text-slate-900 tracking-tight">
+      {t('subscriptions.planCards.pricePerMonth', { amount, currency })}
+    </p>
+  );
+}
+
+function technicianCaption(
+  plan: CompanyPlanDto,
+  t: (key: string, options?: Record<string, unknown>) => string,
+): string | null {
+  if (plan.maxTechnicians != null) {
+    return t('subscriptions.planCards.upToTechnicians', { count: plan.maxTechnicians });
+  }
+  if (isBusinessPlan(plan.code)) {
+    return t('subscriptions.planCards.unlimitedTechnicians');
+  }
+  return null;
 }
 
 export function PlanCards({
@@ -50,8 +100,8 @@ export function PlanCards({
   return (
     <div
       className={cn(
-        'grid gap-6',
-        singlePlan ? 'grid-cols-1 max-w-lg mx-auto' : 'grid-cols-1 md:grid-cols-3',
+        'grid gap-5',
+        singlePlan ? 'grid-cols-1 max-w-md mx-auto' : 'grid-cols-1 md:grid-cols-3',
       )}
     >
       {visiblePlans.map((plan) => {
@@ -64,63 +114,57 @@ export function PlanCards({
           canActivatePlan(currentPlanCode, plan.code) &&
           !isCurrent;
         const isClaiming = claimingPlanCode === plan.code;
-
+        const showPromo = !isCurrent && !isFreePlan(plan.code);
         const claimableTarget = isClaimablePlanCode(plan.code) ? plan.code : null;
+        const teamCaption = technicianCaption(plan, t);
 
         return (
           <article
             key={plan.id}
             className={cn(
-              'relative rounded-3xl border p-6 glass-panel flex flex-col',
-              accent.ring,
+              'relative border bg-white p-6 flex flex-col',
+              isPopular ? 'border-violet-200 ring-1 ring-violet-100' : 'border-slate-200',
               isCurrent && 'ring-2 ring-emerald-200 border-emerald-200',
             )}
           >
-            {isCurrent && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-widest bg-emerald-600 text-white px-3 py-1 rounded-full shadow-xs">
+            {isCurrent ? (
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold bg-emerald-600 text-white px-3 py-1">
                 {t('subscriptions.planCards.activePlan')}
               </span>
-            )}
+            ) : null}
 
-            {isPopular && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-widest bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-3 py-1 rounded-full shadow-xs">
+            {isPopular ? (
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold bg-violet-600 text-white px-3 py-1">
                 {t('subscriptions.planCards.recommended')}
               </span>
-            )}
+            ) : null}
 
-            <div className="mb-4">
-              <span
-                className={`inline-block text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md ${accent.badge}`}
-              >
+            <div className="mb-5">
+              <span className={cn('inline-block text-xs font-semibold px-2.5 py-1', accent.badge)}>
                 {plan.name}
               </span>
-              <p className="mt-4 text-3xl font-black text-gray-900 tracking-tight">
-                {planPriceLabelI18n(t, plan)}
-              </p>
-              {plan.maxTechnicians != null && (
-                <p className="text-xs text-gray-400 font-semibold mt-1">
-                  {t('subscriptions.planCards.upToTechnicians', { count: plan.maxTechnicians })}
-                </p>
-              )}
-              {plan.maxTechnicians == null && isBusinessPlan(plan.code) && (
-                <p className="text-xs text-gray-400 font-semibold mt-1">
-                  {t('subscriptions.planCards.unlimitedTechnicians')}
-                </p>
-              )}
+
+              <div className="mt-4">
+                <PlanPricing plan={plan} showPromo={showPromo} t={t} />
+              </div>
+
+              {teamCaption ? (
+                <p className="text-sm text-slate-500 mt-2">{teamCaption}</p>
+              ) : null}
             </div>
 
-            <ul className="space-y-2.5 flex-1 mb-6">
+            <ul className="space-y-2.5 flex-1 mb-6 border-t border-slate-100 pt-5">
               {planFeatures(plan, t).map((feature) => (
-                <li key={feature} className="flex items-start gap-2 text-xs font-medium text-gray-600">
-                  <span className="text-emerald-500 mt-0.5 shrink-0">✓</span>
+                <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-600">
+                  <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" strokeWidth={2.5} />
                   <span>{feature}</span>
                 </li>
               ))}
             </ul>
 
             {isCurrent ? (
-              <div className="space-y-3">
-                <div className="text-center text-xs font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-xl py-3">
+              <div className="space-y-2.5">
+                <div className="text-center text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 py-2.5">
                   {t('subscriptions.planCards.currentPlan')}
                 </div>
                 {isProPlan(currentPlanCode) && onClaimFree ? (
@@ -128,7 +172,10 @@ export function PlanCards({
                     type="button"
                     disabled={!!claimingPlanCode}
                     onClick={() => onClaimFree(SUBSCRIPTION_PLAN.BUSINESS)}
-                    className={`w-full text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm disabled:opacity-50 ${PLAN_ACCENTS[SUBSCRIPTION_PLAN.BUSINESS].btn}`}
+                    className={cn(
+                      'w-full text-center text-sm font-semibold py-2.5 disabled:opacity-50',
+                      PLAN_ACCENTS[SUBSCRIPTION_PLAN.BUSINESS].btn,
+                    )}
                   >
                     {claimingPlanCode === SUBSCRIPTION_PLAN.BUSINESS
                       ? t('subscriptions.planCards.upgradingBusiness')
@@ -141,7 +188,10 @@ export function PlanCards({
                 type="button"
                 disabled={!!claimingPlanCode}
                 onClick={() => onClaimFree!(claimableTarget)}
-                className={`w-full text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm disabled:opacity-50 ${accent.btn}`}
+                className={cn(
+                  'w-full text-center text-sm font-semibold py-2.5 disabled:opacity-50',
+                  accent.btn,
+                )}
               >
                 {isClaiming
                   ? t('subscriptions.planCards.activating')
@@ -150,25 +200,38 @@ export function PlanCards({
             ) : ctaMode === 'public' && authCta ? (
               <Link
                 to={authCta.to}
-                className={`block text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm ${accent.btn}`}
+                className={cn(
+                  'block text-center text-sm font-semibold py-2.5',
+                  accent.btn,
+                )}
               >
-                {authCta.label}
+                {showPromo
+                  ? t('subscriptions.planCards.startFreeMonth')
+                  : authCta.label}
               </Link>
             ) : ctaMode === 'public' ? (
               <Link
                 to="/register"
-                className={`block text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm ${accent.btn}`}
+                className={cn(
+                  'block text-center text-sm font-semibold py-2.5',
+                  accent.btn,
+                )}
               >
-                {t('subscriptions.planCards.startNow')}
+                {showPromo
+                  ? t('subscriptions.planCards.startFreeMonth')
+                  : t('subscriptions.planCards.startNow')}
               </Link>
             ) : isFreePlan(plan.code) ? (
-              <div className="text-center text-xs font-semibold text-gray-400 bg-gray-50 border border-gray-100 rounded-xl py-3">
+              <div className="text-center text-sm text-slate-500 bg-slate-50 border border-slate-100 py-2.5">
                 {t('subscriptions.planCards.basePlanIncluded')}
               </div>
             ) : (
               <Link
                 to="/contacts"
-                className={`block text-center text-xs font-black uppercase tracking-wider rounded-xl py-3 transition-all shadow-xs hover:shadow-sm ${accent.btn}`}
+                className={cn(
+                  'block text-center text-sm font-semibold py-2.5',
+                  accent.btn,
+                )}
               >
                 {t('subscriptions.planCards.contactUs')}
               </Link>

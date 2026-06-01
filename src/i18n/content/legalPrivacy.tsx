@@ -14,7 +14,7 @@ function renderPrivacyContentRo(termsPath: string): ReactNode {
       <LegalSection id="introducere" number={1} title="Introducere și operator de date">
         <LegalParagraph>
           Operatorul de date responsabil pentru procesarea datelor personale în cadrul platformei{' '}
-          <strong>Faber Companii</strong> este entitatea care administrează serviciul, cu sediul în
+          <strong>Faber</strong> este entitatea care administrează serviciul, cu sediul în
           Republica Moldova. Pentru orice solicitări privind protecția datelor ne puteți contacta la{' '}
           <a href="mailto:privacy@faber.md">privacy@faber.md</a>.
         </LegalParagraph>
@@ -108,7 +108,7 @@ function renderPrivacyContentRo(termsPath: string): ReactNode {
               text: 'Autentificarea securizată, administrarea sesiunilor și controlul accesului pe roluri (administrator platformă, personal companie, client final).',
             },
             {
-              text: 'Publicarea profilurilor verificate ale companiilor în catalogul public Faber Companii.',
+              text: 'Publicarea profilurilor verificate ale companiilor în catalogul public Faber.',
             },
             {
               text: 'Suport tehnic, notificări operaționale și comunicări legate de cont sau abonament.',
@@ -263,7 +263,7 @@ function renderPrivacyContentRo(termsPath: string): ReactNode {
 
       <LegalSection id="minori" number={11} title="Protecția minorilor">
         <LegalParagraph>
-          Faber Companii este destinat utilizării de către persoane fizice cu vârsta de minimum 18
+          Faber este destinat utilizării de către persoane fizice cu vârsta de minimum 18
           ani sau reprezentanți legali ai companiilor. Nu colectăm în mod intenționat date de la
           minori. Dacă aflăm că am prelucrat astfel de date fără consimțământul părinților sau
           tutorilor legali, le vom șterge prompt.
@@ -301,7 +301,7 @@ function renderPrivacyContentRu(termsPath: string): ReactNode {
       <LegalSection id="introducere" number={1} title="Введение и оператор данных">
         <LegalParagraph>
           Оператором данных, ответственным за обработку персональных данных на платформе{' '}
-          <strong>Faber Companii</strong>, является юридическое лицо, управляющее сервисом и
+          <strong>Faber</strong>, является юридическое лицо, управляющее сервисом и
           зарегистрированное в Республике Молдова. По всем вопросам защиты данных вы можете
           связаться с нами по адресу <a href="mailto:privacy@faber.md">privacy@faber.md</a>.
         </LegalParagraph>
@@ -397,7 +397,7 @@ function renderPrivacyContentRu(termsPath: string): ReactNode {
               text: 'Безопасная аутентификация, управление сессиями и контроль доступа по ролям (администратор платформы, сотрудник компании, конечный клиент).',
             },
             {
-              text: 'Публикация проверенных профилей компаний в публичном каталоге Faber Companii.',
+              text: 'Публикация проверенных профилей компаний в публичном каталоге Faber.',
             },
             {
               text: 'Техническая поддержка, операционные уведомления и коммуникации, связанные с аккаунтом или подпиской.',
@@ -551,7 +551,7 @@ function renderPrivacyContentRu(termsPath: string): ReactNode {
 
       <LegalSection id="minori" number={11} title="Защита несовершеннолетних">
         <LegalParagraph>
-          Faber Companii предназначен для использования физическими лицами не моложе 18 лет или
+          Faber предназначен для использования физическими лицами не моложе 18 лет или
           законными представителями компаний. Мы намеренно не собираем данные несовершеннолетних.
           Если мы узнаем, что обработали такие данные без согласия родителей или законных опекунов, мы
           незамедлительно удалим их.

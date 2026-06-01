@@ -58,6 +58,7 @@ export function AdminBlueprintsPage() {
     handleSubmit,
     handleDelete,
     isPending,
+    confirmDialog,
   } = useAdminBlueprintForm();
 
   const availableCategories = useMemo(() => {
@@ -174,6 +175,7 @@ export function AdminBlueprintsPage() {
         onBeautify={handleBeautify}
         isPending={isPending}
       />
+      {confirmDialog}
     </div>
   );
 }

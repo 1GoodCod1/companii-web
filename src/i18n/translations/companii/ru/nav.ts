@@ -5,7 +5,7 @@ export const companiiRuNav = {
     companies: 'Компании',
     language: 'Язык',
     howItWorks: 'Гид',
-    subscriptions: 'Подписки',
+    subscriptions: 'Цены',
     contacts: 'Контакты',
     faq: 'FAQ',
   },

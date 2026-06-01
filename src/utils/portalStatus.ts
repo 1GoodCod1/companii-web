@@ -33,5 +33,6 @@ export function quoteStatusTone(status: string): PortalBadgeTone {
 export function invoiceStatusTone(status: string): PortalBadgeTone {
   if (status === INVOICE_PAYMENT_STATUS.PAID) return 'emerald';
   if (status === INVOICE_PAYMENT_STATUS.OVERDUE) return 'amber';
-  return 'blue';
+  if (status === INVOICE_PAYMENT_STATUS.PENDING_CONFIRMATION) return 'blue';
+  return 'violet';
 }

@@ -1,7 +1,7 @@
 export const publicRoSubscriptions = {
   subscriptions: {
-    badge: 'Abonamente SaaS',
-    title: 'Planuri pentru',
+    badge: 'Prețuri',
+    title: 'Prețuri pentru',
     titleHighlight: 'companii de servicii',
     description:
       'Alege planul potrivit pentru echipa ta. Poți începe gratuit și trece la Pro sau Business când afacerea crește.',
@@ -21,6 +21,9 @@ export const publicRoSubscriptions = {
       activateError: 'Nu s-a putut activa planul.',
     },
     planCards: {
+      firstMonthFree: 'Prima lună gratuită',
+      thenPricePerMonth: 'Apoi {{amount}} {{currency}} / lună',
+      startFreeMonth: 'Începe — prima lună gratuită',
       activePlan: 'Plan activ',
       recommended: 'Recomandat',
       upToTechnicians: 'Până la {{count}} angajați',
@@ -40,7 +43,6 @@ export const publicRoSubscriptions = {
           'Profil companie public verificat',
           'Catalog servicii & prețuri public',
           'Cereri online de la clienți',
-          '3 angajați activi',
           'Până la 20 lucrări / lună',
           'Calendar lucrări',
           'Gestionare recenzii',
@@ -51,7 +53,6 @@ export const publicRoSubscriptions = {
           'Portal clienți securizat',
           'Catalog intern servicii pentru ofertare',
           'Fișă de execuție (plan & etape pe teren)',
-          'Până la 10 angajați',
           'Până la 150 lucrări / lună',
           'Istoric status intervenții',
         ],
@@ -60,7 +61,6 @@ export const publicRoSubscriptions = {
           'Smete inteligente (blueprints)',
           'Oferte comerciale + PDF',
           'Facturi fiscale TVA + export CSV',
-          'Angajați nelimitați',
           'Lucrări nelimitate',
           'Suport prioritar',
         ],

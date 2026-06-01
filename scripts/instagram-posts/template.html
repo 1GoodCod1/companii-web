@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- Faber logo SVG snippet reused via JS or inline -->
+<template id="faber-logo-svg">
+  <svg width="56" height="56" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#8b5cf6" />
+        <stop offset="100%" stop-color="#4f46e5" />
+      </linearGradient>
+      <linearGradient id="gRight" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4f46e5" />
+        <stop offset="100%" stop-color="#ec4899" />
+      </linearGradient>
+      <linearGradient id="gTop" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#a78bfa" />
+        <stop offset="100%" stop-color="#8b5cf6" />
+      </linearGradient>
+    </defs>
+    <path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="url(#gLeft)" opacity="0.95" />
+    <path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="url(#gRight)" opacity="0.95" />
+    <path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="url(#gTop)" opacity="0.85" />
+    <path d="M 32 41.5 L 50 32 M 50 32 L 68 41.5 M 50 52 L 50 72.5" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+    <circle cx="50" cy="32" r="2.5" fill="white" />
+    <circle cx="32" cy="41.5" r="2.5" fill="white" />
+    <circle cx="68" cy="41.5" r="2.5" fill="white" />
+    <circle cx="50" cy="72.5" r="2.5" fill="white" />
+  </svg>
+</template>
+
+<!-- POST 1: Hero Dashboard -->
+<div class="post" id="post-01">
+  <div class="header">
+    <div class="logo">
+      <svg width="56" height="56" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="g1L" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#4f46e5"/></linearGradient><linearGradient id="g1R" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#ec4899"/></linearGradient><linearGradient id="g1T" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="url(#g1L)" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="url(#g1R)" opacity="0.95"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="url(#g1T)" opacity="0.85"/><path d="M 32 41.5 L 50 32 M 50 32 L 68 41.5 M 50 52 L 50 72.5" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/><circle cx="50" cy="32" r="2.5" fill="white"/><circle cx="32" cy="41.5" r="2.5" fill="white"/><circle cx="68" cy="41.5" r="2.5" fill="white"/><circle cx="50" cy="72.5" r="2.5" fill="white"/></svg>
+      <div class="logo-text"><span class="logo-name">Faber</span><span class="logo-tag">Field Service CRM</span></div>
+    </div>
+    <span class="domain">faber.md</span>
+  </div>
+  <div class="content">
+    <div class="left">
+      <span class="eyebrow">CRM &amp; FSM</span>
+      <h1 class="title">Tot business-ul într-un singur loc</h1>
+      <div class="features">
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><span class="feature-text">Clienți și echipă</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><span class="feature-text">Lucrări pe teren</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div><span class="feature-text">Smete și facturi PDF</span></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="mock-window">
+        <div class="mock-titlebar"><span class="dot dot-red"></span><span class="dot dot-amber"></span><span class="dot dot-green"></span><span class="mock-url">faber.md/company</span></div>
+        <div class="mock-body">
+          <div class="kpi-grid">
+            <div class="kpi"><div class="kpi-label">Clienți activi</div><div class="kpi-value">48</div><div class="kpi-hint">+3 luna aceasta</div></div>
+            <div class="kpi"><div class="kpi-label">Lucrări active</div><div class="kpi-value">6</div><div class="kpi-hint">Pe teren azi</div></div>
+            <div class="kpi"><div class="kpi-label">Facturat</div><div class="kpi-value">84.2k</div><div class="kpi-hint">MDL luna curentă</div></div>
+            <div class="kpi"><div class="kpi-label">Încasat</div><div class="kpi-value">62.4k</div><div class="kpi-hint">MDL confirmat</div></div>
+          </div>
+          <div class="list-card">
+            <div class="list-title">Lucrări active</div>
+            <div class="list-row"><div class="row-main"><div class="row-id">LUC-1042</div><div class="row-title">Reparație urgentă</div><div class="row-sub">Ion Popescu</div></div><span class="badge badge-blue">În lucru</span></div>
+            <div class="list-row"><div class="row-main"><div class="row-id">LUC-1044</div><div class="row-title">Revizie electrică</div><div class="row-sub">Ap. 12, Botanica</div></div><span class="badge badge-violet">Programat</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><svg width="28" height="28" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="f1L" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fff" stop-opacity="0.9"/><stop offset="100%" stop-color="#fff" stop-opacity="0.7"/></linearGradient></defs><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="white" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="white" opacity="0.85"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="white" opacity="0.75"/></svg><span class="footer-text">Panou de control</span><span class="footer-dot">·</span><span class="footer-text">Faber</span></div>
+</div>
+
+<!-- POST 2: CRM FSM -->
+<div class="post" id="post-02">
+  <div class="header">
+    <div class="logo">
+      <svg width="56" height="56" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="g2L" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#4f46e5"/></linearGradient><linearGradient id="g2R" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#ec4899"/></linearGradient><linearGradient id="g2T" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="url(#g2L)" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="url(#g2R)" opacity="0.95"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="url(#g2T)" opacity="0.85"/><path d="M 32 41.5 L 50 32 M 50 32 L 68 41.5 M 50 52 L 50 72.5" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/><circle cx="50" cy="32" r="2.5" fill="white"/><circle cx="32" cy="41.5" r="2.5" fill="white"/><circle cx="68" cy="41.5" r="2.5" fill="white"/><circle cx="50" cy="72.5" r="2.5" fill="white"/></svg>
+      <div class="logo-text"><span class="logo-name">Faber</span><span class="logo-tag">Field Service CRM</span></div>
+    </div>
+    <span class="domain">faber.md</span>
+  </div>
+  <div class="content">
+    <div class="left">
+      <span class="eyebrow">De ce Faber</span>
+      <h1 class="title">CRM și FSM integrate</h1>
+      <div class="features">
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="feature-text">Nu mai sari între aplicații</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><span class="feature-text">Calendar și dispecerat</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><span class="feature-text">Finanțe sub control</span></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="mock-window">
+        <div class="mock-titlebar"><span class="dot dot-red"></span><span class="dot dot-amber"></span><span class="dot dot-green"></span><span class="mock-url">faber.md/company</span></div>
+        <div class="module-grid">
+          <div class="module"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="module-label">Clienți</div></div>
+          <div class="module"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="module-label">Echipă</div></div>
+          <div class="module"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><div class="module-label">Lucrări</div></div>
+          <div class="module"><div class="module-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div><div class="module-label">Facturi</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><svg width="28" height="28" viewBox="0 0 100 100" fill="none"><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="white" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="white" opacity="0.85"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="white" opacity="0.75"/></svg><span class="footer-text">Un singur sistem</span><span class="footer-dot">·</span><span class="footer-text">Faber</span></div>
+</div>
+
+<!-- POST 3: Calendar -->
+<div class="post" id="post-03">
+  <div class="header">
+    <div class="logo">
+      <svg width="56" height="56" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="g3L" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#4f46e5"/></linearGradient><linearGradient id="g3R" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#ec4899"/></linearGradient><linearGradient id="g3T" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="url(#g3L)" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="url(#g3R)" opacity="0.95"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="url(#g3T)" opacity="0.85"/><path d="M 32 41.5 L 50 32 M 50 32 L 68 41.5 M 50 52 L 50 72.5" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/><circle cx="50" cy="32" r="2.5" fill="white"/><circle cx="32" cy="41.5" r="2.5" fill="white"/><circle cx="68" cy="41.5" r="2.5" fill="white"/><circle cx="50" cy="72.5" r="2.5" fill="white"/></svg>
+      <div class="logo-text"><span class="logo-name">Faber</span><span class="logo-tag">Field Service CRM</span></div>
+    </div>
+    <span class="domain">faber.md</span>
+  </div>
+  <div class="content">
+    <div class="left">
+      <span class="eyebrow">Dispecerat FSM</span>
+      <h1 class="title">Calendar pentru echipa ta</h1>
+      <div class="features">
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><span class="feature-text">Programări pe angajat</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><span class="feature-text">Status live pe teren</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg></div><span class="feature-text">Zero suprapuneri</span></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="mock-window">
+        <div class="mock-titlebar"><span class="dot dot-red"></span><span class="dot dot-amber"></span><span class="dot dot-green"></span><span class="mock-url">faber.md/company/calendar</span></div>
+        <div class="calendar">
+          <div class="cal-header"><span class="cal-month">Luni, 1 iunie</span><span class="badge badge-violet">6 vizite</span></div>
+          <div class="cal-slot"><span class="cal-time">10:00</span><div class="cal-info"><div class="cal-name">Instalare boiler</div><div class="cal-meta">Ion Popescu · Chișinău</div></div><span class="badge badge-blue">În lucru</span></div>
+          <div class="cal-slot"><span class="cal-time">14:30</span><div class="cal-info"><div class="cal-name">Revizie electrică</div><div class="cal-meta">Ap. 12, Botanica</div></div><span class="badge badge-violet">Programat</span></div>
+          <div class="cal-slot"><span class="cal-time">16:00</span><div class="cal-info"><div class="cal-name">Montaj AC</div><div class="cal-meta">SC ProConstruct</div></div><span class="badge badge-green">Finalizat</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><svg width="28" height="28" viewBox="0 0 100 100" fill="none"><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="white" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="white" opacity="0.85"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="white" opacity="0.75"/></svg><span class="footer-text">Dispecerat FSM</span><span class="footer-dot">·</span><span class="footer-text">Faber</span></div>
+</div>
+
+<!-- POST 4: Smetă -->
+<div class="post" id="post-04">
+  <div class="header">
+    <div class="logo">
+      <svg width="56" height="56" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="g4L" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#4f46e5"/></linearGradient><linearGradient id="g4R" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#ec4899"/></linearGradient><linearGradient id="g4T" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="url(#g4L)" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="url(#g4R)" opacity="0.95"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="url(#g4T)" opacity="0.85"/><path d="M 32 41.5 L 50 32 M 50 32 L 68 41.5 M 50 52 L 50 72.5" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/><circle cx="50" cy="32" r="2.5" fill="white"/><circle cx="32" cy="41.5" r="2.5" fill="white"/><circle cx="68" cy="41.5" r="2.5" fill="white"/><circle cx="50" cy="72.5" r="2.5" fill="white"/></svg>
+      <div class="logo-text"><span class="logo-name">Faber</span><span class="logo-tag">Field Service CRM</span></div>
+    </div>
+    <span class="domain">faber.md</span>
+  </div>
+  <div class="content">
+    <div class="left">
+      <span class="eyebrow">Smetă cu parametri</span>
+      <h1 class="title">Smetă cu calcul automat</h1>
+      <div class="features">
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><span class="feature-text">Dimensiuni încăperi</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><span class="feature-text">Materiale calculate</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div><span class="feature-text">Marjă de profit</span></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="estimate-doc">
+        <div class="doc-header">
+          <div><div class="doc-title">SMETĂ</div></div>
+          <div class="doc-meta">Ion Popescu<br/>Apartament 3 camere<br/>28.05.2026</div>
+        </div>
+        <table class="doc-table">
+          <thead><tr><th>Nr.</th><th>Denumire</th><th>UM</th><th>Cant.</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Zidărie cărămidă</td><td>m²</td><td>45</td><td>1.350 MDL</td></tr>
+            <tr><td>2</td><td>Tencuială mecanizată</td><td>m²</td><td>120</td><td>1.800 MDL</td></tr>
+            <tr><td>3</td><td>Instalare boiler</td><td>buc</td><td>1</td><td>1.700 MDL</td></tr>
+          </tbody>
+        </table>
+        <div class="doc-total"><span class="doc-total-label">Total</span><span class="doc-total-value">4.850 MDL</span></div>
+      </div>
+      <div class="pdf-badge">Export PDF</div>
+    </div>
+  </div>
+  <div class="footer"><svg width="28" height="28" viewBox="0 0 100 100" fill="none"><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="white" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="white" opacity="0.85"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="white" opacity="0.75"/></svg><span class="footer-text">Dimensionare inteligentă</span><span class="footer-dot">·</span><span class="footer-text">Faber</span></div>
+</div>
+
+<!-- POST 5: Facturare -->
+<div class="post" id="post-05">
+  <div class="header">
+    <div class="logo">
+      <svg width="56" height="56" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="g5L" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#4f46e5"/></linearGradient><linearGradient id="g5R" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#ec4899"/></linearGradient><linearGradient id="g5T" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="url(#g5L)" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="url(#g5R)" opacity="0.95"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="url(#g5T)" opacity="0.85"/><path d="M 32 41.5 L 50 32 M 50 32 L 68 41.5 M 50 52 L 50 72.5" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/><circle cx="50" cy="32" r="2.5" fill="white"/><circle cx="32" cy="41.5" r="2.5" fill="white"/><circle cx="68" cy="41.5" r="2.5" fill="white"/><circle cx="50" cy="72.5" r="2.5" fill="white"/></svg>
+      <div class="logo-text"><span class="logo-name">Faber</span><span class="logo-tag">Field Service CRM</span></div>
+    </div>
+    <span class="domain">faber.md</span>
+  </div>
+  <div class="content">
+    <div class="left">
+      <span class="eyebrow">Finanțe</span>
+      <h1 class="title">Facturi, TVA și încasări</h1>
+      <div class="features">
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div><span class="feature-text">Factură din smetă aprobată</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><span class="feature-text">TVA calculat automat</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div><span class="feature-text">Plăți și restanțe</span></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="mock-window">
+        <div class="mock-titlebar"><span class="dot dot-red"></span><span class="dot dot-amber"></span><span class="dot dot-green"></span><span class="mock-url">faber.md/company/facturi</span></div>
+        <div class="mock-body">
+          <div class="mock-page-title">Facturi</div>
+          <div class="mock-page-desc">Emite, urmărește plățile și exportă rapoarte.</div>
+          <div class="mock-toolbar">
+            <span class="mock-btn">Toate</span>
+            <span class="mock-btn">Export CSV</span>
+            <span class="mock-btn mock-btn-dark">Generează</span>
+          </div>
+          <div class="finance-summary">
+            <div class="finance-kpi"><div class="finance-kpi-label">Facturat luna</div><div class="finance-kpi-value">84.200</div><div class="finance-kpi-hint">MDL · +18%</div></div>
+            <div class="finance-kpi"><div class="finance-kpi-label">Plătite</div><div class="finance-kpi-value">62.4k</div><div class="finance-kpi-hint">MDL încasat</div></div>
+            <div class="finance-kpi"><div class="finance-kpi-label">Restante</div><div class="finance-kpi-value">12.4k</div><div class="finance-kpi-hint">MDL de recuperat</div></div>
+          </div>
+          <div class="invoice-table-wrap">
+            <table class="invoice-table">
+              <thead><tr><th>Număr</th><th>Beneficiar</th><th>Total</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="invoice-num">FAC-2026-089</div><div class="invoice-date">28 mai</div></td>
+                  <td><div class="invoice-client">Ion Popescu</div><div class="invoice-work">LUC-1039</div></td>
+                  <td><div class="invoice-amount">4.850 MDL</div></td>
+                  <td><span class="badge badge-green">Plătită</span></td>
+                </tr>
+                <tr>
+                  <td><div class="invoice-num">FAC-2026-088</div><div class="invoice-date">26 mai</div></td>
+                  <td><div class="invoice-client">SC Voltex SRL</div><div class="invoice-work">LUC-1042</div></td>
+                  <td><div class="invoice-amount">12.400 MDL</div></td>
+                  <td><span class="badge badge-amber">Restantă</span></td>
+                </tr>
+                <tr>
+                  <td><div class="invoice-num">FAC-2026-087</div><div class="invoice-date">24 mai</div></td>
+                  <td><div class="invoice-client">Maria Rusu</div><div class="invoice-work">LUC-1045</div></td>
+                  <td><div class="invoice-amount">2.100 MDL</div></td>
+                  <td><span class="badge badge-green">Plătită</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="vat-badge"><div class="vat-badge-label">TVA calculat automat</div><div class="vat-badge-value">20% · 970 MDL</div></div>
+    </div>
+  </div>
+  <div class="footer"><svg width="28" height="28" viewBox="0 0 100 100" fill="none"><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="white" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="white" opacity="0.85"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="white" opacity="0.75"/></svg><span class="footer-text">Facturare automată</span><span class="footer-dot">·</span><span class="footer-text">Faber</span></div>
+</div>
+
+<!-- POST 6: Profil public -->
+<div class="post" id="post-06">
+  <div class="header">
+    <div class="logo">
+      <svg width="56" height="56" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="g6L" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#4f46e5"/></linearGradient><linearGradient id="g6R" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#ec4899"/></linearGradient><linearGradient id="g6T" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="url(#g6L)" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="url(#g6R)" opacity="0.95"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="url(#g6T)" opacity="0.85"/><path d="M 32 41.5 L 50 32 M 50 32 L 68 41.5 M 50 52 L 50 72.5" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/><circle cx="50" cy="32" r="2.5" fill="white"/><circle cx="32" cy="41.5" r="2.5" fill="white"/><circle cx="68" cy="41.5" r="2.5" fill="white"/><circle cx="50" cy="72.5" r="2.5" fill="white"/></svg>
+      <div class="logo-text"><span class="logo-name">Faber</span><span class="logo-tag">Field Service CRM</span></div>
+    </div>
+    <span class="domain">faber.md</span>
+  </div>
+  <div class="content">
+    <div class="left">
+      <span class="eyebrow">Profil public</span>
+      <h1 class="title">Compania ta vizibilă online</h1>
+      <div class="features">
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div><span class="feature-text">Logo, galerie și recenzii</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><span class="feature-text">Servicii cu prețuri publice</span></div>
+        <div class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="feature-text">Cereri directe din catalog</span></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="mock-window profile-mock">
+        <div class="mock-titlebar"><span class="dot dot-red"></span><span class="dot dot-amber"></span><span class="dot dot-green"></span><span class="mock-url">faber.md/companies/voltex-instal</span></div>
+        <div class="profile-hero"><div class="profile-hero-glow"></div></div>
+        <div class="profile-body">
+          <div class="profile-head">
+            <div class="profile-logo">V</div>
+            <div class="profile-info">
+              <div class="profile-name-row">
+                <span class="profile-name">Voltex Instal SRL</span>
+                <span class="profile-verified">✓ Verificată</span>
+              </div>
+              <span class="profile-category">Instalații sanitare &amp; termice</span>
+              <div class="profile-meta">
+                <span>📍 Chișinău</span>
+                <span class="profile-rating">★ 4.9 · 24 recenzii</span>
+              </div>
+            </div>
+          </div>
+          <div class="profile-gallery">
+            <div class="profile-gallery-item"></div>
+            <div class="profile-gallery-item"></div>
+            <div class="profile-gallery-item"></div>
+            <div class="profile-gallery-item"></div>
+          </div>
+          <div class="profile-section-title">Servicii publice</div>
+          <div class="profile-services">
+            <div class="profile-service">
+              <div><div class="profile-service-name">Instalare boiler</div><div class="profile-service-desc">Montaj + testare</div></div>
+              <span class="profile-service-price">1.700 MDL</span>
+            </div>
+            <div class="profile-service">
+              <div><div class="profile-service-name">Revizie termică</div><div class="profile-service-desc">Verificare completă</div></div>
+              <span class="profile-service-price">850 MDL</span>
+            </div>
+            <div class="profile-service">
+              <div><div class="profile-service-name">Montaj calorifer</div><div class="profile-service-desc">Per bucătăție</div></div>
+              <span class="profile-service-price">450 MDL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-request-badge">Trimite cerere</div>
+    </div>
+  </div>
+  <div class="footer"><svg width="28" height="28" viewBox="0 0 100 100" fill="none"><path d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z" fill="white" opacity="0.95"/><path d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z" fill="white" opacity="0.85"/><path d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z" fill="white" opacity="0.75"/></svg><span class="footer-text">Catalog public</span><span class="footer-dot">·</span><span class="footer-text">Faber</span></div>
+</div>
+
+</body>
+</html>

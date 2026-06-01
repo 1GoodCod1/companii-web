@@ -22,17 +22,16 @@ export function WorkModulesPicker({ config, enabled, onToggle, disabled }: Props
 
   const sections = useMemo<ModuleSection[]>(() => {
     const buckets = new Map<string, BlueprintWorkModule[]>();
+    const sectionLabels = new Map<string, string>();
     const order: string[] = [];
 
     for (const module of allModules) {
-      // Prefer the module's own declared section (lets a blueprint group its
-      // modules without colliding in the global key→section map); fall back to
-      // the shared map for IT/elektrika/etc. that rely on it.
       const sec = module.section
         ? { key: module.section, label: module.section }
         : getModuleSection(module.key);
       if (!buckets.has(sec.key)) {
         buckets.set(sec.key, []);
+        sectionLabels.set(sec.key, sec.label);
         order.push(sec.key);
       }
       buckets.get(sec.key)!.push(module);
@@ -42,7 +41,11 @@ export function WorkModulesPicker({ config, enabled, onToggle, disabled }: Props
     const ordered = new Set([...MODULE_SECTIONS, ...order]);
     return [...ordered]
       .filter((key) => buckets.has(key))
-      .map((key) => ({ key, label: getModuleSection(key).label, modules: buckets.get(key)! }));
+      .map((key) => ({
+        key,
+        label: sectionLabels.get(key) ?? getModuleSection(key).label,
+        modules: buckets.get(key)!,
+      }));
   }, [allModules]);
 
   if (!allModules.length) return null;

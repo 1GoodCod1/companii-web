@@ -28,7 +28,7 @@ export const publicRoMarketing = {
   howItWorks: {
     badge: 'Simplitate · Control · Transparență',
     title: 'Cum funcționează',
-    titleHighlight: 'Faber Companii',
+    titleHighlight: 'Faber',
     subtitle:
       'O platformă unică creată pentru piața locală din Moldova. Conectăm direct prestatorii de servicii și angajații mobili cu beneficiarii finali printr-un portal modern și securizat.',
     roles: {
@@ -43,7 +43,7 @@ export const publicRoMarketing = {
         {
           title: '1. Profilul Public & Configurare Tarife',
           description:
-            'Te înregistrezi cu IDNO-ul firmei și datele de contact moldovenești. Configurezi pachetele de servicii și prețurile lor de bază. Faber Companii îți generează instant un profil web public modern unde clienții își pot trimite solicitările direct, fără intermediari.',
+            'Te înregistrezi cu IDNO-ul firmei și datele de contact moldovenești. Configurezi pachetele de servicii și prețurile lor de bază. Faber îți generează instant un profil web public modern unde clienții își pot trimite solicitările direct, fără intermediari.',
         },
         {
           title: '2. Dimensionare Inteligentă & Smetă Smart',
@@ -93,9 +93,9 @@ export const publicRoMarketing = {
       titleGuest: 'Pregătit să îți digitalizezi afacerea?',
       titleAuthed: 'Continuă activitatea în cabinet',
       descriptionGuest:
-        'Indiferent dacă ești prestator de servicii ce dorește smete și facturi rapide, sau un client ce dorește transparență maximă — Faber Companii este soluția completă.',
+        'Indiferent dacă ești prestator de servicii ce dorește smete și facturi rapide, sau un client ce dorește transparență maximă — Faber este soluția completă.',
       descriptionAuthed:
-        'Profilul tău public, membrii echipei de pe teren, prețurile serviciilor și programările le gestionezi simplu din cabinetul tău Faber Companii.',
+        'Profilul tău public, membrii echipei de pe teren, prețurile serviciilor și programările le gestionezi simplu din cabinetul tău Faber.',
     },
   },
 
@@ -127,12 +127,12 @@ export const publicRoMarketing = {
     privacy: {
       seoTitle: 'Politica de Confidențialitate',
       seoDescription:
-        'Cum colectăm, utilizăm și protejăm datele personale în platforma Faber Companii — conform GDPR și legislației Republicii Moldova.',
+        'Cum colectăm, utilizăm și protejăm datele personale în platforma Faber — conform GDPR și legislației Republicii Moldova.',
       badge: 'GDPR & Legea 133/2011',
       title: 'Politica de Confidențialitate',
       updatedAt: '25 mai 2026',
       intro:
-        'Această politică descrie modul în care Faber Companii colectează, utilizează, stochează și protejează datele personale ale utilizatorilor platformei SaaS de management operațional (FSM & CRM), în conformitate cu Regulamentul (UE) 2016/679 (GDPR) și legislația Republicii Moldova privind protecția datelor cu caracter personal.',
+        'Această politică descrie modul în care Faber colectează, utilizează, stochează și protejează datele personale ale utilizatorilor platformei SaaS de management operațional (FSM & CRM), în conformitate cu Regulamentul (UE) 2016/679 (GDPR) și legislația Republicii Moldova privind protecția datelor cu caracter personal.',
       relatedTermsLabel: 'Consultă Termenii și Condițiile',
       toc: [
         { id: 'introducere', label: 'Introducere și operator de date' },
@@ -153,12 +153,12 @@ export const publicRoMarketing = {
     terms: {
       seoTitle: 'Termeni și Condiții de Utilizare',
       seoDescription:
-        'Termenii de utilizare ai platformei Faber Companii — SaaS pentru management operațional, CRM și field service management.',
+        'Termenii de utilizare ai platformei Faber — SaaS pentru management operațional, CRM și field service management.',
       badge: 'Contract SaaS B2B',
       title: 'Termeni și Condiții de Utilizare',
       updatedAt: '25 mai 2026',
       intro:
-        'Prezentul document reglementează accesul și utilizarea platformei Faber Companii — soluție software ca serviciu (SaaS) pentru management operațional, relații cu clienții (CRM) și field service management (FSM). Vă rugăm să citiți cu atenție acești termeni înainte de crearea unui cont.',
+        'Prezentul document reglementează accesul și utilizarea platformei Faber — soluție software ca serviciu (SaaS) pentru management operațional, relații cu clienții (CRM) și field service management (FSM). Vă rugăm să citiți cu atenție acești termeni înainte de crearea unui cont.',
       relatedPrivacyLabel: 'Consultă Politica de Confidențialitate',
       toc: [
         { id: 'general', label: 'Informații generale' },

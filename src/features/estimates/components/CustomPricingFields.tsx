@@ -26,8 +26,8 @@ function parseOptionalNumber(raw: string): number | undefined {
 
 export function CustomPricingFields({ values, onChange, unitLabel, disabled }: Props) {
   const { t } = useTranslation();
-  const [showUnitPrice, setShowUnitPrice] = useState(values.customUnitPriceSqm !== undefined ? !!values.customUnitPriceSqm : true);
-  const [showLaborTotal, setShowLaborTotal] = useState(values.customLaborTotal !== undefined ? !!values.customLaborTotal : true);
+  const [showUnitPrice, setShowUnitPrice] = useState(!!values.customUnitPriceSqm);
+  const [showLaborTotal, setShowLaborTotal] = useState(!!values.customLaborTotal);
   const [showDuration, setShowDuration] = useState(!!values.customDurationDays);
   const [showLaborHours, setShowLaborHours] = useState(!!values.customLaborHours);
 

@@ -154,6 +154,12 @@ export const companiiRoPortal = {
       pdf: 'PDF',
       toastDownloaded: 'Chitanța PDF a fost descărcată!',
       toastError: 'Eroare la descărcarea PDF.',
+      uploadProof: 'Încarcă dovada',
+      uploading: 'Se încarcă...',
+      toastProofSubmitted: 'Dovada plății a fost trimisă — așteaptă confirmarea companiei.',
+      toastProofError: 'Nu s-a putut trimite dovada plății.',
+      pendingHint: 'Compania verifică dovada plății.',
+      rejectedHint: 'Respins: {{reason}} — încarcă din nou.',
     },
     interventionsSection: {
       pendingBanner: 'Ai {{count}} lucrări finalizate fără recenzie',

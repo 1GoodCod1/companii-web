@@ -4,7 +4,7 @@ import { cabinetBtnSecondary } from '@/components/cabinet/cabinet-ui';
 interface LeaveTeamSectionProps {
   canLeaveCompany: boolean;
   leaveCompanyPending: boolean;
-  handleLeaveTeam: () => Promise<void>;
+  handleLeaveTeam: () => void;
 }
 
 export function LeaveTeamSection({
@@ -29,7 +29,7 @@ export function LeaveTeamSection({
       <button
         type="button"
         disabled={leaveCompanyPending}
-        onClick={() => void handleLeaveTeam()}
+        onClick={() => handleLeaveTeam()}
         className={`${cabinetBtnSecondary} border-red-200 text-red-700 hover:bg-red-50`}
       >
         {leaveCompanyPending ? t('company.profileEditor.leaving') : t('company.profileEditor.leaveCompany')}

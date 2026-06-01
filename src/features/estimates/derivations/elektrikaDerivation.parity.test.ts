@@ -64,9 +64,29 @@ const elektrikaPreviewConfig: EstimateBlueprintConfig = {
     },
     {
       stageCode: 'aparataj',
-      description: 'Punct electric — material',
+      description: 'Priză — material',
       unit: 'buc',
-      qtyKey: 'electricPoints',
+      qtyKey: 'socketCount',
+      unitPrice: 85,
+      kind: 'material',
+      moduleKey: 'devices',
+      materialUnitPriceMultiplierKey: 'deviceTierMultiplier',
+    },
+    {
+      stageCode: 'aparataj',
+      description: 'Întrerupător — material',
+      unit: 'buc',
+      qtyKey: 'switchCount',
+      unitPrice: 85,
+      kind: 'material',
+      moduleKey: 'devices',
+      materialUnitPriceMultiplierKey: 'deviceTierMultiplier',
+    },
+    {
+      stageCode: 'aparataj',
+      description: 'Punct lumină — material',
+      unit: 'buc',
+      qtyKey: 'lightPointCount',
       unitPrice: 85,
       kind: 'material',
       moduleKey: 'devices',
@@ -149,13 +169,21 @@ describe('elektrika derivation parity', () => {
     expect(lines.some((l) => l.description.includes('Module automate'))).toBe(false);
   });
 
-  it('applies device tier via unitPrice with integer qty', () => {
-    const measurements = deriveElektrikaMeasurements({ roomCount: 2, deviceTier: 'standard' }, null);
+  it('applies device tier per point type with separate material lines', () => {
+    const measurements = deriveElektrikaMeasurements(
+      { roomCount: 2, deviceTier: 'standard', socketCount: 7, switchCount: 6, lightPointCount: 6 },
+      null,
+    );
     const lines = computePreviewLines(elektrikaPreviewConfig, measurements, ['devices']);
 
-    const material = lines.find((l) => l.description.includes('material'));
-    expect(material?.qty).toBe(measurements.electricPoints);
-    expect(material?.unitPrice).toBe(127.5);
+    const socketMaterial = lines.find((l) => l.description.includes('Priză — material'));
+    const switchMaterial = lines.find((l) => l.description.includes('Întrerupător — material'));
+    const lightMaterial = lines.find((l) => l.description.includes('Punct lumină — material'));
+
+    expect(socketMaterial?.qty).toBe(7);
+    expect(switchMaterial?.qty).toBe(6);
+    expect(lightMaterial?.qty).toBe(6);
+    expect(socketMaterial?.unitPrice).toBe(127.5);
   });
 
   it('explicit zero socket count stays zero (empty = auto)', () => {

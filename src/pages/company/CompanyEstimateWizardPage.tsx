@@ -9,6 +9,7 @@ import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import { ExistingEstimateWizard } from '@/features/estimates/wizard/ExistingEstimateWizard';
+import { getEstimateWizardRemountKey } from '@/features/estimates/wizard/getEstimateWizardRemountKey';
 import { NewEstimateForm } from '@/features/estimates/wizard/NewEstimateForm';
 
 export function CompanyEstimateWizardPage() {
@@ -48,7 +49,7 @@ export function CompanyEstimateWizardPage() {
         {isNew ? (
           <NewEstimateForm activeCompany={activeCompany} />
         ) : project ? (
-          <ExistingEstimateWizard key={project.id} project={project} />
+          <ExistingEstimateWizard key={getEstimateWizardRemountKey(project)} project={project} />
         ) : null}
       </div>
     </CompanyManagementGate>

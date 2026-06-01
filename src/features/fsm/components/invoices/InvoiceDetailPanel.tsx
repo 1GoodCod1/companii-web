@@ -11,9 +11,10 @@ type Props = {
 export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
   const { t } = useTranslation();
   const hookData = useInvoiceDetail({ selectedId, onClearSelection });
-  const { detail, isLoadingDetail, handleDelete } = hookData;
+  const { detail, isLoadingDetail, handleDelete, confirmDialog } = hookData;
 
   return (
+    <>
     <EntityDetailPanel
       title={t('company.fsm.invoices.detail.title')}
       selectedId={selectedId}
@@ -35,5 +36,7 @@ export function InvoiceDetailPanel({ selectedId, onClearSelection }: Props) {
     >
       {detail ? <InvoiceDetailView hookData={hookData} /> : null}
     </EntityDetailPanel>
+    {confirmDialog}
+    </>
   );
 }

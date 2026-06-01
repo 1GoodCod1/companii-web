@@ -45,6 +45,11 @@ export function CompanyInvoicesPage() {
                 <option value="OVERDUE">
                   {t('company.invoicesPage.filter.overdue', { defaultValue: 'Restante' })}
                 </option>
+                <option value="PENDING_CONFIRMATION">
+                  {t('company.invoicesPage.filter.pending', {
+                    defaultValue: 'Așteaptă confirmare',
+                  })}
+                </option>
                 <option value="PAID">
                   {t('company.invoicesPage.filter.paid', { defaultValue: 'Plătite' })}
                 </option>

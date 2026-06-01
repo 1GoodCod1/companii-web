@@ -18,10 +18,16 @@ export function InvoiceDetailView({ hookData }: Props) {
     cancelInvoicePending,
     recordPaymentPending,
     sendEmailPending,
+    confirmPaymentPending,
+    rejectPaymentPending,
     handlePaymentStatusChange,
     handleDownloadPdf,
     handleCancel,
     handlePartialPayment,
+    handleCashPaid,
+    handleConfirmPayment,
+    handleRejectPayment,
+    handleDownloadPaymentProof,
     handleSendEmail,
   } = hookData;
 
@@ -102,31 +108,114 @@ export function InvoiceDetailView({ hookData }: Props) {
           {t('company.fsm.invoices.detail.paymentSection.title')}
         </h4>
 
-        {/* action shortcuts for in-flight invoices */}
-        {(detail.paymentStatus === 'UNPAID' || detail.paymentStatus === 'OVERDUE') && (
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={handlePartialPayment}
-              disabled={recordPaymentPending}
-              className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-wider disabled:opacity-50 cursor-pointer"
-            >
-              {t('company.fsm.invoices.detail.payment.recordBtn', {
-                defaultValue: 'Înregistrează plată',
+        {detail.paymentStatus === 'PENDING_CONFIRMATION' && (
+          <div className="rounded-xl bg-blue-50/60 border border-blue-100 p-3 space-y-2.5">
+            <p className="text-xs text-blue-900 font-medium leading-relaxed">
+              {t('company.fsm.invoices.detail.paymentProof.pendingHint', {
+                defaultValue:
+                  'Clientul a încărcat dovada plății. Verificați fișierul și confirmați sau respingeți.',
               })}
-            </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              disabled={cancelInvoicePending}
-              className="flex-1 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-[10px] font-black uppercase tracking-wider disabled:opacity-50 cursor-pointer"
-            >
-              {t('company.fsm.invoices.detail.cancel.btn', {
-                defaultValue: 'Anulează factura',
-              })}
-            </button>
+            </p>
+            {detail.paymentProofSubmittedAt && (
+              <p className="text-[10px] text-blue-700 font-bold">
+                {t('company.fsm.invoices.detail.paymentProof.submittedAt', {
+                  date: formatDateLocalized(detail.paymentProofSubmittedAt, locale),
+                  defaultValue: 'Trimisă la: {{date}}',
+                })}
+              </p>
+            )}
+            {detail.paymentProofFileKey && (
+              <button
+                type="button"
+                onClick={handleDownloadPaymentProof}
+                className="w-full py-2 rounded-xl bg-white border border-blue-200 text-blue-800 text-[10px] font-black uppercase tracking-wider hover:bg-blue-50 cursor-pointer"
+              >
+                {t('company.fsm.invoices.detail.paymentProof.viewFile', {
+                  defaultValue: 'Vezi dovada plății',
+                })}
+              </button>
+            )}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleConfirmPayment}
+                disabled={confirmPaymentPending}
+                className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-wider disabled:opacity-50 cursor-pointer"
+              >
+                {t('company.fsm.invoices.detail.paymentProof.confirmBtn', {
+                  defaultValue: 'Confirmă plata',
+                })}
+              </button>
+              <button
+                type="button"
+                onClick={handleRejectPayment}
+                disabled={rejectPaymentPending}
+                className="flex-1 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-[10px] font-black uppercase tracking-wider disabled:opacity-50 cursor-pointer"
+              >
+                {t('company.fsm.invoices.detail.paymentProof.rejectBtn', {
+                  defaultValue: 'Respinge',
+                })}
+              </button>
+            </div>
           </div>
         )}
+
+        {/* action shortcuts for in-flight invoices */}
+        {(detail.paymentStatus === 'UNPAID' || detail.paymentStatus === 'OVERDUE') && (
+          <div className="space-y-2">
+            <p className="text-[11px] text-gray-500 font-medium leading-relaxed">
+              {t('company.fsm.invoices.detail.payment.clientUploadHint', {
+                defaultValue:
+                  'Clientul poate încărca dovada din portal. Pentru numerar sau transfer fără upload, marcați manual.',
+              })}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={handleCashPaid}
+                disabled={updateInvoicePending}
+                className="flex-1 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-[10px] font-black uppercase tracking-wider disabled:opacity-50 cursor-pointer"
+              >
+                {t('company.fsm.invoices.detail.payment.cashBtn', {
+                  defaultValue: 'Plătită (numerar)',
+                })}
+              </button>
+              <button
+                type="button"
+                onClick={handlePartialPayment}
+                disabled={recordPaymentPending}
+                className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-wider disabled:opacity-50 cursor-pointer"
+              >
+                {t('company.fsm.invoices.detail.payment.recordBtn', {
+                  defaultValue: 'Înregistrează plată',
+                })}
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                disabled={cancelInvoicePending}
+                className="flex-1 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 hover:bg-rose-50 text-[10px] font-black uppercase tracking-wider disabled:opacity-50 cursor-pointer"
+              >
+                {t('company.fsm.invoices.detail.cancel.btn', {
+                  defaultValue: 'Anulează factura',
+                })}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {detail.paymentProofRejectedReason &&
+          (detail.paymentStatus === 'UNPAID' || detail.paymentStatus === 'OVERDUE') && (
+            <div className="rounded-lg bg-amber-50/60 border border-amber-100 p-2.5 text-[11px] text-amber-900">
+              <span className="font-bold">
+                {t('company.fsm.invoices.detail.paymentProof.lastRejection', {
+                  defaultValue: 'Ultima respingere',
+                })}
+                :
+              </span>{' '}
+              {detail.paymentProofRejectedReason}
+            </div>
+          )}
 
         {detail.paymentStatus === 'CANCELLED' && detail.cancellationReason && (
           <div className="rounded-lg bg-rose-50/60 border border-rose-100 p-2.5 text-[11px] text-rose-900">
@@ -138,6 +227,7 @@ export function InvoiceDetailView({ hookData }: Props) {
         )}
 
         {(() => {
+          if (detail.paymentStatus === 'PENDING_CONFIRMATION') return null;
           const allowed = getAllowedPaymentTransitions(detail.paymentStatus);
           const hint = paymentStatusHint(detail.paymentStatus, t);
           if (allowed.length === 0) {
@@ -147,6 +237,8 @@ export function InvoiceDetailView({ hookData }: Props) {
               </p>
             );
           }
+          // Only show reversal toggle for PAID → UNPAID (rare clerical fix)
+          if (detail.paymentStatus !== 'PAID') return null;
           return (
             <div className="flex gap-2">
               {[detail.paymentStatus, ...allowed]

@@ -8,6 +8,7 @@ import {
   useDeleteInterventionPhotoMutation,
 } from '@/features/fsm/api/useInterventions';
 import { getErrorMessage } from '@/utils/errors';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 type WorksheetPhoto = {
   id: string;
@@ -25,6 +26,7 @@ export function WorksheetPhotos({ interventionId, photos, readOnly }: Props) {
   const [uploading, setUploading] = useState(false);
   const addPhotos = useAddInterventionPhotosMutation(interventionId);
   const deletePhoto = useDeleteInterventionPhotoMutation(interventionId);
+  const { ask, dialog } = useCabinetConfirmDialog();
 
   const handleUpload = async (files: FileList | null) => {
     if (!files?.length) return;
@@ -44,14 +46,19 @@ export function WorksheetPhotos({ interventionId, photos, readOnly }: Props) {
     }
   };
 
-  const handleDelete = async (photoId: string) => {
-    if (!confirm(t('company.workSheetPage.confirmDeletePhoto'))) return;
-    try {
-      await deletePhoto.mutateAsync(photoId);
-      toast.success(t('company.workSheetPage.photoDeleted'));
-    } catch (err) {
-      toast.error(getErrorMessage(err, t('company.workSheetPage.photoDeleteFailed')));
-    }
+  const handleDelete = (photoId: string) => {
+    ask({
+      title: t('cabinet.common.delete'),
+      message: t('company.workSheetPage.confirmDeletePhoto'),
+      onConfirm: async () => {
+        try {
+          await deletePhoto.mutateAsync(photoId);
+          toast.success(t('company.workSheetPage.photoDeleted'));
+        } catch (err) {
+          toast.error(getErrorMessage(err, t('company.workSheetPage.photoDeleteFailed')));
+        }
+      },
+    });
   };
 
   return (
@@ -129,6 +136,7 @@ export function WorksheetPhotos({ interventionId, photos, readOnly }: Props) {
           ))}
         </div>
       )}
+      {dialog}
     </div>
   );
 }

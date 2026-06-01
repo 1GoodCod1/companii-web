@@ -80,17 +80,19 @@ export function InterventionDetailEditForm({
           className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white font-medium"
         />
       </div>
-      <div>
-        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
-          {t('company.fsm.interventions.detail.editForm.description')}
-        </label>
-        <textarea
-          value={editDescription}
-          onChange={(e) => setEditDescription(e.target.value)}
-          rows={3}
-          className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white resize-none font-medium"
-        />
-      </div>
+      {isManagement ? (
+        <div>
+          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+            {t('company.fsm.interventions.detail.editForm.description')}
+          </label>
+          <textarea
+            value={editDescription}
+            onChange={(e) => setEditDescription(e.target.value)}
+            rows={3}
+            className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white resize-none font-medium"
+          />
+        </div>
+      ) : null}
       <div className="grid grid-cols-2 gap-2">
         {isManagement ? (
           <>
@@ -125,8 +127,8 @@ export function InterventionDetailEditForm({
           </>
         ) : null}
       </div>
-      <div className={`grid gap-2 ${isManagement ? 'grid-cols-2' : 'grid-cols-1'}`}>
-        {isManagement ? (
+      {isManagement ? (
+        <div className="grid grid-cols-2 gap-2">
           <div>
             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
               {t('company.fsm.interventions.detail.editForm.estimatedPrice')}
@@ -138,19 +140,19 @@ export function InterventionDetailEditForm({
               className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white font-bold"
             />
           </div>
-        ) : null}
-        <div>
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
-            {t('company.fsm.interventions.detail.editForm.finalPrice')}
-          </label>
-          <input
-            type="number"
-            value={editFinalPrice}
-            onChange={(e) => setEditFinalPrice(e.target.value)}
-            className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white font-bold"
-          />
+          <div>
+            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+              {t('company.fsm.interventions.detail.editForm.finalPrice')}
+            </label>
+            <input
+              type="number"
+              value={editFinalPrice}
+              onChange={(e) => setEditFinalPrice(e.target.value)}
+              className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white font-bold"
+            />
+          </div>
         </div>
-      </div>
+      ) : null}
       {isManagement ? (
         <div>
           <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">

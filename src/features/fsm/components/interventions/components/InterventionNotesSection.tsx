@@ -8,7 +8,7 @@ interface InterventionNotesSectionProps {
   noteBody: string;
   setNoteBody: (v: string) => void;
   handleAddNote: (e: React.FormEvent) => Promise<void>;
-  handleDeleteNote: (id: string) => Promise<void>;
+  handleDeleteNote: (id: string) => void;
   canDeleteNote: (n: InterventionNoteDto) => boolean;
 }
 
@@ -53,7 +53,7 @@ export function InterventionNotesSection({
               </span>
               {canDeleteNote(n) ? (
                 <button
-                  onClick={() => void handleDeleteNote(n.id)}
+                  onClick={() => handleDeleteNote(n.id)}
                   className="text-[10px] text-red-500 opacity-0 group-hover:opacity-100 hover:underline transition-opacity cursor-pointer font-bold uppercase"
                 >
                   {t('cabinet.common.delete')}

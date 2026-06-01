@@ -59,9 +59,12 @@ export const statusRu = {
     },
     payment: {
       UNPAID: 'Не оплачено',
+      PENDING_CONFIRMATION: 'Ожидает подтверждения',
       PAID: 'Оплачено',
       OVERDUE: 'Просрочено',
+      CANCELLED: 'Отменено',
       hintPaid: 'Счёт оплачен. Финальный статус — изменить нельзя.',
+      hintPendingConfirmation: 'Клиент загрузил подтверждение оплаты — подтвердите или отклоните.',
       dueImmediate: 'Сразу',
       dueLabel: 'Срок: {{date}}',
       packageClient: 'Клиент пакета',

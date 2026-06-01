@@ -34,7 +34,11 @@ export const queryKeys = {
     plans: [QUERY_KEY_ROOT.SUBSCRIPTIONS, QUERY_KEY_SUBSCRIPTIONS.PLANS] as const,
   },
   fsm: {
-    customers: [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.CUSTOMERS] as const,
+    customersRoot: [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.CUSTOMERS] as const,
+    customers: (companyId?: string | null) =>
+      [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.CUSTOMERS, companyId ?? null] as const,
+    customersCount: (companyId?: string | null) =>
+      [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.CUSTOMERS, 'count', companyId ?? null] as const,
     customer: (id: string) =>
       [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.CUSTOMERS, QUERY_KEY_FSM.DETAIL, id] as const,
     interventions: (status?: string) =>

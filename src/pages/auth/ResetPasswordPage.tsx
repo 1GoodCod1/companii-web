@@ -1,10 +1,22 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import { useResetPasswordMutation } from '@/features/auth/api/useAuth';
 import { getAuthErrorMessage } from '@/features/auth/authErrors';
 import { Lock, ArrowLeft, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { FormFieldError } from '@/components/ui/FormFieldError';
+import { fieldClassName } from '@/lib/forms/fieldClassName';
+import {
+  createResetPasswordSchema,
+  type ResetPasswordFormValues,
+} from '@/lib/forms/schemas/authSchemas';
+import { showFirstFormError } from '@/lib/forms/showFirstFormError';
+
+const resetFieldClass =
+  'w-full border border-slate-200 focus:border-slate-400 focus:ring-4 focus:ring-slate-100 rounded-xl pl-11 pr-4 py-3 text-sm outline-none transition-all bg-slate-50/50 hover:bg-slate-50/80 focus:bg-white text-slate-855 font-medium placeholder-slate-400';
 
 export function ResetPasswordPage() {
   const { t } = useTranslation();
@@ -13,43 +25,47 @@ export function ResetPasswordPage() {
   const resetPassword = useResetPasswordMutation();
   const nav = useNavigate();
 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError(null);
+  const schema = useMemo(() => createResetPasswordSchema(t), [t]);
+  const form = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
-    if (!token) {
-      setFormError(t('auth.resetPasswordPage.tokenMissingError'));
-      return;
-    }
+  const {
+    register,
+    formState: { errors },
+  } = form;
 
-    if (password.length < 8) {
-      setFormError(t('auth.resetPasswordPage.passwordMinLength'));
-      return;
-    }
+  const onSubmit = form.handleSubmit(
+    async (values) => {
+      setFormError(null);
 
-    if (password !== confirmPassword) {
-      setFormError(t('auth.resetPasswordPage.passwordMismatch'));
-      return;
-    }
+      if (!token) {
+        setFormError(t('auth.resetPasswordPage.tokenMissingError'));
+        return;
+      }
 
-    try {
-      await resetPassword.mutateAsync({
-        token,
-        password,
-      });
-      setSubmitted(true);
-      toast.success(t('auth.resetPasswordPage.toastChanged'));
-    } catch (err) {
-      const message = getAuthErrorMessage(err);
-      setFormError(message);
-      toast.error(message);
-    }
-  };
+      try {
+        await resetPassword.mutateAsync({
+          token,
+          password: values.password,
+        });
+        setSubmitted(true);
+        toast.success(t('auth.resetPasswordPage.toastChanged'));
+      } catch (err) {
+        const message = getAuthErrorMessage(err);
+        setFormError(message);
+        toast.error(message);
+      }
+    },
+    (validationErrors) => showFirstFormError(validationErrors),
+  );
 
   return (
     <div className="w-full animate-fade-in py-2 relative z-10">
@@ -104,7 +120,7 @@ export function ResetPasswordPage() {
             </p>
           </div>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={(e) => void onSubmit(e)}>
             {formError && (
               <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-semibold text-red-700 leading-relaxed">
                 {formError}
@@ -119,13 +135,12 @@ export function ResetPasswordPage() {
                 <Lock className="absolute left-4 top-3.5 w-4 h-4 text-slate-400" />
                 <input
                   type="password"
-                  required
                   placeholder="••••••••"
-                  className="w-full border border-slate-200 focus:border-slate-400 focus:ring-4 focus:ring-slate-100 rounded-xl pl-11 pr-4 py-3 text-sm outline-none transition-all bg-slate-50/50 hover:bg-slate-50/80 focus:bg-white text-slate-855 font-medium placeholder-slate-400"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  className={fieldClassName(resetFieldClass, !!errors.password)}
+                  {...register('password')}
                 />
               </div>
+              <FormFieldError message={errors.password?.message} />
             </div>
 
             <div className="space-y-1.5">
@@ -136,13 +151,12 @@ export function ResetPasswordPage() {
                 <Lock className="absolute left-4 top-3.5 w-4 h-4 text-slate-400" />
                 <input
                   type="password"
-                  required
                   placeholder="••••••••"
-                  className="w-full border border-slate-200 focus:border-slate-400 focus:ring-4 focus:ring-slate-100 rounded-xl pl-11 pr-4 py-3 text-sm outline-none transition-all bg-slate-50/50 hover:bg-slate-50/80 focus:bg-white text-slate-855 font-medium placeholder-slate-400"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={fieldClassName(resetFieldClass, !!errors.confirmPassword)}
+                  {...register('confirmPassword')}
                 />
               </div>
+              <FormFieldError message={errors.confirmPassword?.message} />
             </div>
 
             <button

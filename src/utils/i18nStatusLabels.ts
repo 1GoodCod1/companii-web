@@ -61,6 +61,9 @@ export function paymentStatusHint(
   if (status === 'PAID') {
     return t('status.payment.hintPaid');
   }
+  if (status === 'PENDING_CONFIRMATION') {
+    return t('status.payment.hintPendingConfirmation');
+  }
   return null;
 }
 

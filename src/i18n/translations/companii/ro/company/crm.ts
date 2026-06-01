@@ -17,5 +17,8 @@ export const companiiRoCompanyCrm = {
       toastDeleted: 'Client șters cu succes!',
       toastDeleteFailed:
         'Nu s-a putut șterge clientul. Verificați dacă are lucrări sau oferte active.',
+      paginationRange: '{{from}}–{{to}} din {{total}}',
+      paginationPrev: 'Anterioară',
+      paginationNext: 'Următoare',
     },
 };

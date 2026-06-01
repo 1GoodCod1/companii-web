@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { computeStageVisibility, getHiddenStagesCount, getVisibleStages } from './stageVisibility';
+import { computeStageVisibility, filterStagesForClientDisplay, getHiddenStagesCount, getVisibleStages } from './stageVisibility';
 import { buildScopeSummary, hasManualLines } from './scopeSummary';
 import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
 import type { EstimateStageDto } from '@/types/estimates';
@@ -74,10 +74,36 @@ describe('computeStageVisibility (J-01)', () => {
     expect(result[0].hidden).toBe(true);
   });
 
-  it('non-optional stages always show even when empty', () => {
+  it('non-optional stages without moduleKey always show even when empty', () => {
     const stages: EstimateStageDto[] = [makeStage({ code: 'demontare', lines: [] })];
     const result = computeStageVisibility(stages, config, []);
     expect(result[0].hidden).toBe(false);
+  });
+
+  it('hides non-optional stage when its module is disabled and has no lines', () => {
+    const elektrikaLikeConfig: EstimateBlueprintConfig = {
+      ...config,
+      workModules: [
+        { key: 'devices', label: 'Aparataj', defaultEnabled: true, stageCodes: ['aparataj'], fieldKeys: [] },
+        { key: 'cabling', label: 'Cablare', defaultEnabled: true, stageCodes: ['cablare'], fieldKeys: [] },
+      ],
+      defaultStages: [
+        { code: 'cablare', name: 'Cablare', kind: 'MIXED', moduleKey: 'cabling' },
+        { code: 'aparataj', name: 'Montaj aparataj', kind: 'MIXED', moduleKey: 'devices' },
+      ],
+    };
+    const stages: EstimateStageDto[] = [
+      makeStage({ code: 'cablare', lines: [] }),
+      makeStage({
+        code: 'aparataj',
+        lines: [{ id: 'l1', description: 'Material', qty: 38, unit: 'buc', source: 'rule' }],
+      }),
+    ];
+    const result = computeStageVisibility(stages, elektrikaLikeConfig, ['devices']);
+    const visMap = new Map(result.map((r) => [r.stage.code, r]));
+
+    expect(visMap.get('cablare')!.hidden).toBe(true);
+    expect(visMap.get('aparataj')!.hidden).toBe(false);
   });
 
   it('getVisibleStages + getHiddenStagesCount roundtrip', () => {
@@ -143,5 +169,22 @@ describe('hasManualLines (J-03)', () => {
       }),
     ];
     expect(hasManualLines(stages)).toBe(false);
+  });
+});
+
+describe('filterStagesForClientDisplay', () => {
+  it('drops empty stages without lines (client portal / PDF parity)', () => {
+    const stages = [
+      makeStage({ code: 'proiect', name: 'Proiect & traseu', lines: [], stageTotal: 0 }),
+      makeStage({
+        code: 'aparataj',
+        name: 'Montaj aparataj',
+        stageTotal: 7185,
+        lines: [{ id: 'l1', description: 'Lucrări', qty: 6, unit: 'ore', source: 'manual' }],
+      }),
+    ];
+    const filtered = filterStagesForClientDisplay(stages);
+    expect(filtered).toHaveLength(1);
+    expect(filtered[0].code).toBe('aparataj');
   });
 });

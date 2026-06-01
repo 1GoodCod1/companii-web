@@ -5,7 +5,7 @@ export const companiiRoNav = {
     companies: 'Companii',
     language: 'Limbă',
     howItWorks: 'Ghid',
-    subscriptions: 'Abonamente',
+    subscriptions: 'Prețuri',
     contacts: 'Contacte',
     faq: 'FAQ',
   },

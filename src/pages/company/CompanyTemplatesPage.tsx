@@ -15,22 +15,34 @@ import {
   useEstimateTemplatesQuery,
   useDeleteEstimateTemplateMutation,
 } from '@/features/estimates/api/useEstimateTemplates';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 export function CompanyTemplatesPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: templates, isLoading } = useEstimateTemplatesQuery();
   const deleteTemplate = useDeleteEstimateTemplateMutation();
+  const { ask, dialog } = useCabinetConfirmDialog();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm(t('company.estimatesTemplatesPage.confirmDelete'))) return;
-    try {
-      await deleteTemplate.mutateAsync(id);
-      toast.success(t('company.estimatesTemplatesPage.deleted'));
-    } catch {
-      toast.error('Failed to delete template');
-    }
+  const handleDeleteClick = (id: string, name: string) => {
+    ask({
+      title: t('company.estimatesTemplatesPage.deleteModalTitle'),
+      confirmLabel: t('company.estimatesTemplatesPage.confirmDeleteBtn'),
+      message: (
+        <p className="text-sm text-gray-600 leading-relaxed">
+          {t('company.estimatesTemplatesPage.confirmDelete', { name })}
+        </p>
+      ),
+      onConfirm: async () => {
+        try {
+          await deleteTemplate.mutateAsync(id);
+          toast.success(t('company.estimatesTemplatesPage.deleted'));
+        } catch {
+          toast.error(t('company.estimatesTemplatesPage.deleteError'));
+        }
+      },
+    });
   };
 
   const filteredTemplates = useMemo(() => {
@@ -113,7 +125,7 @@ export function CompanyTemplatesPage() {
                         </div>
                         <button
                           type="button"
-                          onClick={() => handleDelete(template.id)}
+                          onClick={() => handleDeleteClick(template.id, template.name)}
                           className="rounded-xl p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -165,6 +177,8 @@ export function CompanyTemplatesPage() {
             </div>
           )}
         </Panel>
+
+        {dialog}
       </div>
     </CompanyManagementGate>
   );

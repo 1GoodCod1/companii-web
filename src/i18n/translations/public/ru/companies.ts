@@ -7,23 +7,19 @@ export const publicRuCompanies = {
       keywords: 'компании Молдова, услуги, монтажники, электрики, клининг',
     },
     hero: {
-      eyebrow: 'Публичный каталог',
+      badge: 'Каталог',
       title: 'Сервисные компании',
-      description:
-        'Найдите проверенные команды из Молдовы — с профилем, логотипом, фотогалереей и опубликованными пакетами услуг.',
     },
     searchPlaceholder: 'Поиск компании, города, сферы...',
     allCities: 'Все города',
     allCategories: 'Все сферы',
     loadError: 'Не удалось загрузить компании. Проверьте подключение к API.',
-    emptyNone: 'Пока нет опубликованных компаний. Проверенные компании появляются здесь автоматически.',
+    emptyNone: 'Пока нет опубликованных компаний.',
     emptyFiltered: 'Нет результатов для выбранных фильтров.',
     countOne: 'компания найдена',
     countMany: 'компаний найдено',
-    emptyHintAuthedPrefix: 'Опубликуйте профиль компании из',
-    emptyHintGuestPrefix: 'У вас есть компания?',
-    emptyHintGuestLink: 'Зарегистрируйтесь',
-    emptyHintGuestSuffix: 'и опубликуйте профиль из кабинета.',
+    emptyCtaGuest: 'Зарегистрировать компанию',
+    emptyCtaAuthed: 'Опубликовать профиль из кабинета',
   },
 
   companyCard: {
@@ -33,7 +29,7 @@ export const publicRuCompanies = {
   },
 
   companyDetail: {
-    seoDescriptionFallback: 'Публичный профиль {{name}} на Faber Companii.',
+    seoDescriptionFallback: 'Публичный профиль {{name}} на Faber.',
     notFound: 'Компания не найдена или профиль не опубликован.',
     backToCatalog: '← Назад к каталогу',
     backLink: 'Все компании',

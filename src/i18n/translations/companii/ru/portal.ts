@@ -154,6 +154,12 @@ export const companiiRuPortal = {
       pdf: 'PDF',
       toastDownloaded: 'PDF-квитанция загружена!',
       toastError: 'Ошибка при загрузке PDF.',
+      uploadProof: 'Загрузить подтверждение',
+      uploading: 'Загрузка...',
+      toastProofSubmitted: 'Подтверждение отправлено — ожидайте проверки компании.',
+      toastProofError: 'Не удалось отправить подтверждение оплаты.',
+      pendingHint: 'Компания проверяет подтверждение оплаты.',
+      rejectedHint: 'Отклонено: {{reason}} — загрузите снова.',
     },
     interventionsSection: {
       pendingBanner: 'У вас {{count}} завершённых работ без отзыва',

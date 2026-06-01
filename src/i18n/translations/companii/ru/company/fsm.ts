@@ -67,18 +67,20 @@ export const companiiRuCompanyFsm = {
           fields: {
             client: 'КЛИЕНТ',
             address: 'АДРЕС ВЫПОЛНЕНИЯ',
-            description: 'ОПИСАНИЕ НЕИСПРАВНОСТИ',
+            description: 'ОПИСАНИЕ',
             schedule: 'ПРОГРЕСС / ДАТА',
             unscheduled: 'Не назначена',
             technician: 'НАЗНАЧЕННЫЙ ТЕХНИК',
             estimatedPrice: 'ОРИЕНТИРОВОЧНАЯ ЦЕНА',
             finalPrice: 'ИТОГОВАЯ ЦЕНА',
             internalNotes: 'Важные внутренние замечания',
+            executionSheetHint:
+              'План, материалы и чеклист — в листе выполнения, без цен.',
           },
           photos: { title: 'ФОТО ОБЪЕКТА', empty: 'Фотографий пока нет.', add: '+ Добавить фото' },
           edit: {
             management: '✏️ Редактировать карточку',
-            technician: '✏️ Обновить адрес / описание / цену',
+            technician: '✏️ Обновить адрес',
           },
           editForm: {
             titleManagement: 'Редактировать карточку',
@@ -223,6 +225,28 @@ export const companiiRuCompanyFsm = {
             title: 'Изменить статус оплаты',
             noActions: 'Нет доступных действий для этого статуса.',
           },
+          payment: {
+            clientUploadHint:
+              'Клиент может загрузить подтверждение в портале. Для наличных или перевода без загрузки — отметьте вручную.',
+            cashBtn: 'Оплачено (наличные)',
+            cashSuccess: 'Счёт отмечен как оплаченный (наличные / без загрузки клиентом)',
+          },
+          paymentProof: {
+            pendingHint:
+              'Клиент загрузил подтверждение оплаты. Проверьте файл и подтвердите или отклоните.',
+            submittedAt: 'Отправлено: {{date}}',
+            viewFile: 'Посмотреть подтверждение',
+            confirmBtn: 'Подтвердить оплату',
+            rejectBtn: 'Отклонить',
+            confirmSuccess: 'Оплата подтверждена — счёт оплачен',
+            confirmError: 'Ошибка подтверждения',
+            rejectPrompt: 'Причина отклонения (клиент сможет загрузить снова):',
+            rejectReasonRequired: 'Причина обязательна',
+            rejectSuccess: 'Подтверждение отклонено — клиент может загрузить снова',
+            rejectError: 'Ошибка отклонения',
+            downloadError: 'Не удалось скачать подтверждение',
+            lastRejection: 'Последнее отклонение',
+          },
           fields: {
             customer: 'КЛИЕНТ-БЕНЕФИЦИАР',
             packageCustomer: 'Клиент пакета',
@@ -326,24 +350,25 @@ export const companiiRuCompanyFsm = {
             failed: 'Импорт не удался.',
           },
           step1: {
-            title: 'Шаг 1 — Скачайте шаблон Faber',
+            title: 'Скачайте шаблон Faber',
             description:
               'Шаблон Excel включает лист с инструкциями. Обязательные колонки: полное имя, телефон, адрес.',
             downloadXlsx: 'Шаблон Excel (.xlsx)',
             downloadCsv: 'Шаблон CSV',
           },
+          or: 'или',
           step2: {
-            title: 'Шаг 2 — Загрузите заполненный файл',
+            title: 'Загрузите заполненный файл',
             fileLabel: 'Файл .xlsx или .csv',
             analyzing: 'Анализ…',
             selectFile: 'Выбрать файл',
           },
           summary: {
             total: '{{count}} всего',
-            create: '{{create}} новых',
-            update: '{{update}} обновлений',
-            skip: '{{skip}} пропущено',
-            error: '{{error}} ошибок',
+            create: '{{count}} новых',
+            update: '{{count}} обновлений',
+            skip: '{{count}} пропущено',
+            error: '{{count}} ошибок',
           },
           preview: {
             empty: 'Загрузите файл для предпросмотра перед импортом.',

@@ -8,11 +8,15 @@ import {
   useCancelInvoiceMutation,
   useRecordInvoicePaymentMutation,
   useSendInvoiceEmailMutation,
+  useConfirmInvoicePaymentMutation,
+  useRejectInvoicePaymentMutation,
   downloadCompanyInvoicePdf,
 } from '@/features/fsm/api/useInvoices';
+import { downloadFile } from '@/api/files';
 import { useLocale } from '@/hooks/useLocale';
 import { paymentStatusLabel } from '@/utils/i18nStatusLabels';
 import { getErrorMessage } from '@/utils/errors';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 interface UseInvoiceDetailProps {
   selectedId: string | null;
@@ -22,19 +26,19 @@ interface UseInvoiceDetailProps {
 export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDetailProps) {
   const { t } = useTranslation();
   const locale = useLocale();
+  const { ask, dialog: confirmDialog } = useCabinetConfirmDialog();
   const { data: detail, isLoading: isLoadingDetail } = useInvoiceQuery(selectedId || '');
   const updateInvoice = useUpdateInvoiceMutation();
   const deleteInvoice = useDeleteInvoiceMutation();
   const cancelInvoice = useCancelInvoiceMutation();
   const recordPayment = useRecordInvoicePaymentMutation();
   const sendEmail = useSendInvoiceEmailMutation();
+  const confirmPayment = useConfirmInvoicePaymentMutation();
+  const rejectPayment = useRejectInvoicePaymentMutation();
 
   const handlePaymentStatusChange = async (newStatus: InvoicePaymentStatus) => {
     if (!selectedId || !detail) return;
     if (newStatus === detail.paymentStatus) return;
-
-    // Reversal (PAID → UNPAID) requires a reason for audit. Prompt the user
-    // and abort if they cancel or leave it blank.
     let paymentReversalReason: string | undefined;
     if (detail.paymentStatus === 'PAID' && newStatus === 'UNPAID') {
       const reason = window.prompt(
@@ -44,7 +48,7 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
         }),
         '',
       );
-      if (reason === null) return; // user clicked Cancel
+      if (reason === null) return;
       if (!reason.trim()) {
         toast.error(
           t('company.fsm.invoices.detail.reversal.reasonRequired', {
@@ -138,6 +142,88 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
     }
   };
 
+  const handleCashPaid = async () => {
+    if (!selectedId || !detail) return;
+    try {
+      await updateInvoice.mutateAsync({ id: selectedId, paymentStatus: 'PAID' });
+      toast.success(
+        t('company.fsm.invoices.detail.payment.cashSuccess', {
+          defaultValue: 'Factura marcată ca plătită (numerar / fără upload client)',
+        }),
+      );
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.toast.updateError')));
+    }
+  };
+
+  const handleConfirmPayment = async () => {
+    if (!selectedId) return;
+    try {
+      await confirmPayment.mutateAsync(selectedId);
+      toast.success(
+        t('company.fsm.invoices.detail.paymentProof.confirmSuccess', {
+          defaultValue: 'Plata confirmată — factura este plătită',
+        }),
+      );
+    } catch (err: unknown) {
+      toast.error(
+        getErrorMessage(
+          err,
+          t('company.fsm.invoices.detail.paymentProof.confirmError', {
+            defaultValue: 'Confirmare eșuată',
+          }),
+        ),
+      );
+    }
+  };
+
+  const handleRejectPayment = async () => {
+    if (!selectedId) return;
+    const reason = window.prompt(
+      t('company.fsm.invoices.detail.paymentProof.rejectPrompt', {
+        defaultValue: 'Motiv respingere (clientul va putea reîncărca dovada):',
+      }),
+      '',
+    );
+    if (reason === null) return;
+    if (!reason.trim()) {
+      toast.error(
+        t('company.fsm.invoices.detail.paymentProof.rejectReasonRequired', {
+          defaultValue: 'Motivul este obligatoriu',
+        }),
+      );
+      return;
+    }
+    try {
+      await rejectPayment.mutateAsync({ id: selectedId, reason: reason.trim() });
+      toast.success(
+        t('company.fsm.invoices.detail.paymentProof.rejectSuccess', {
+          defaultValue: 'Dovada respinsă — clientul poate reîncărca',
+        }),
+      );
+    } catch (err: unknown) {
+      toast.error(
+        getErrorMessage(
+          err,
+          t('company.fsm.invoices.detail.paymentProof.rejectError', {
+            defaultValue: 'Respingere eșuată',
+          }),
+        ),
+      );
+    }
+  };
+
+  const handleDownloadPaymentProof = async () => {
+    if (!detail?.paymentProofFileKey) return;
+    try {
+      await downloadFile(detail.paymentProofFileKey, `dovada-${detail.number}`);
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.paymentProof.downloadError', {
+        defaultValue: 'Nu s-a putut descărca dovada',
+      })));
+    }
+  };
+
   const handleSendEmail = async () => {
     if (!selectedId || !detail) return;
     const customMessage = window.prompt(
@@ -171,7 +257,7 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!selectedId) return;
     const interventionNumber = detail?.intervention?.number;
     const confirmMsg = interventionNumber
@@ -181,14 +267,19 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
             'Ștergi factura definitiv? Lucrarea „{{intervention}}” va reveni în statusul „Finalizată” și va putea fi re-facturată.',
         })
       : t('company.fsm.invoices.detail.confirm.delete');
-    if (!confirm(confirmMsg)) return;
-    try {
-      await deleteInvoice.mutateAsync(selectedId);
-      toast.success(t('company.fsm.invoices.detail.toast.deleted'));
-      onClearSelection();
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.toast.deleteError')));
-    }
+    ask({
+      title: t('cabinet.common.delete'),
+      message: confirmMsg,
+      onConfirm: async () => {
+        try {
+          await deleteInvoice.mutateAsync(selectedId);
+          toast.success(t('company.fsm.invoices.detail.toast.deleted'));
+          onClearSelection();
+        } catch (err: unknown) {
+          toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.toast.deleteError')));
+        }
+      },
+    });
   };
 
   return {
@@ -200,11 +291,18 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
     cancelInvoicePending: cancelInvoice.isPending,
     recordPaymentPending: recordPayment.isPending,
     sendEmailPending: sendEmail.isPending,
+    confirmPaymentPending: confirmPayment.isPending,
+    rejectPaymentPending: rejectPayment.isPending,
     handlePaymentStatusChange,
     handleDownloadPdf,
     handleCancel,
     handlePartialPayment,
+    handleCashPaid,
+    handleConfirmPayment,
+    handleRejectPayment,
+    handleDownloadPaymentProof,
     handleSendEmail,
     handleDelete,
+    confirmDialog,
   };
 }

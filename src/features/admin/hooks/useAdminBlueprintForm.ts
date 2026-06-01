@@ -2,6 +2,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { getErrorMessage } from '@/utils/errors';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 import {
   useCreateAdminBlueprintMutation,
   useUpdateAdminBlueprintMutation,
@@ -38,6 +39,7 @@ export const DEFAULT_BLUEPRINT_CONFIG: EstimateBlueprintConfig = {
 
 export function useAdminBlueprintForm() {
   const { t } = useTranslation();
+  const { ask, dialog: confirmDialog } = useCabinetConfirmDialog();
   const createMutation = useCreateAdminBlueprintMutation();
   const updateMutation = useUpdateAdminBlueprintMutation();
   const deleteMutation = useDeleteAdminBlueprintMutation();
@@ -281,14 +283,19 @@ export function useAdminBlueprintForm() {
     }
   };
 
-  const handleDelete = async (bp: AdminBlueprintDto) => {
-    if (!confirm(t('admin.blueprintsPage.confirmDelete', { name: bp.name }))) return;
-    try {
-      await deleteMutation.mutateAsync(bp.id);
-      toast.success(t('admin.blueprintsPage.toastDeleted'));
-    } catch (err) {
-      toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
-    }
+  const handleDelete = (bp: AdminBlueprintDto) => {
+    ask({
+      title: t('cabinet.common.delete'),
+      message: t('admin.blueprintsPage.confirmDelete', { name: bp.name }),
+      onConfirm: async () => {
+        try {
+          await deleteMutation.mutateAsync(bp.id);
+          toast.success(t('admin.blueprintsPage.toastDeleted'));
+        } catch (err) {
+          toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
+        }
+      },
+    });
   };
 
   return {
@@ -325,5 +332,6 @@ export function useAdminBlueprintForm() {
     handleSubmit,
     handleDelete,
     isPending: createMutation.isPending || updateMutation.isPending,
+    confirmDialog,
   };
 }

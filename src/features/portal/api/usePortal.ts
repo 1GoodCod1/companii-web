@@ -103,6 +103,20 @@ export function useRequestPortalEstimateChangesMutation() {
   });
 }
 
+export function useSubmitPortalInvoicePaymentProofMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ invoiceId, fileId }: { invoiceId: string; fileId: string }) =>
+      apiFetch<InvoiceDto>(`/portal/invoices/${invoiceId}/payment-proof`, {
+        method: 'POST',
+        body: JSON.stringify({ fileId }),
+      }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.portal.dashboard });
+    },
+  });
+}
+
 export function useAcceptPortalInvitationMutation() {
   const qc = useQueryClient();
   return useMutation({

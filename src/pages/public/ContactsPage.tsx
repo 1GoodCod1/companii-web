@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
+import { PublicPageHeader } from '@/components/public/PublicPageHeader';
 
 export function ContactsPage() {
   const { t } = useTranslation();
@@ -38,19 +39,12 @@ export function ContactsPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-10 space-y-12 animate-fade-in">
-      {/* Header */}
-      <div className="text-center space-y-3">
-        <span className="inline-block text-xs font-black uppercase tracking-widest text-violet-700 bg-violet-50 border border-violet-100 px-3.5 py-1.5 rounded-full shadow-xs">
-          {t('contacts.badge')}
-        </span>
-        <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
-          {t('contacts.title')}
-        </h1>
-        <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-xl mx-auto">
-          {t('contacts.subtitle')}
-        </p>
-      </div>
+    <div className="max-w-4xl mx-auto py-10 space-y-12">
+      <PublicPageHeader
+        badge={t('contacts.badge')}
+        title={t('contacts.title')}
+        description={t('contacts.subtitle')}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         {/* Contact Info */}

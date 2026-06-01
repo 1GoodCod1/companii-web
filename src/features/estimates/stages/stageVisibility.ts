@@ -32,14 +32,14 @@ export function computeStageVisibility(
     let hidden = false;
     let hiddenReason: StageVisibility['hiddenReason'];
 
-    if (blueprintDef?.optional && meaningfulLineCount === 0) {
-      if (blueprintDef.moduleKey && !enabledSet.has(blueprintDef.moduleKey)) {
+    if (blueprintDef?.moduleKey && !enabledSet.has(blueprintDef.moduleKey)) {
+      if (meaningfulLineCount === 0) {
         hidden = true;
         hiddenReason = 'optional-module-off';
-      } else if (!blueprintDef.moduleKey) {
-        hidden = true;
-        hiddenReason = 'optional-empty';
       }
+    } else if (blueprintDef?.optional && meaningfulLineCount === 0 && !blueprintDef.moduleKey) {
+      hidden = true;
+      hiddenReason = 'optional-empty';
     }
 
     return { stage, blueprintDef, meaningfulLineCount, hidden, hiddenReason };
@@ -62,4 +62,12 @@ export function getHiddenStagesCount(
   enabledModules: string[],
 ): number {
   return computeStageVisibility(stages, config, enabledModules).filter((s) => s.hidden).length;
+}
+
+export function filterStagesForClientDisplay(stages: EstimateStageDto[]): EstimateStageDto[] {
+  return stages.filter((stage) => {
+    const lines = stage.lines ?? [];
+    if (lines.length > 0) return true;
+    return Number(stage.stageTotal ?? 0) > 0;
+  });
 }

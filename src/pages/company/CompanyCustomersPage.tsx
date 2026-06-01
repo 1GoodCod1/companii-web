@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
@@ -13,17 +13,20 @@ import type { CustomerDto } from '@/types/fsm';
 import { useCustomersQuery, useDeleteCustomerMutation } from '@/features/fsm/api/useCustomers';
 import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
 import { CustomerImportModal } from '@/features/fsm/components/CustomerImportModal';
-import { CustomersListTable } from '@/features/fsm/components/customers/CustomersListTable';
+import { CustomersListTable, CUSTOMERS_LIST_PAGE_SIZE } from '@/features/fsm/components/customers/CustomersListTable';
 import { CustomerDetailPanel } from '@/features/fsm/components/customers/CustomerDetailPanel';
 import { CustomerFormModal } from '@/features/fsm/components/customers/CustomerFormModal';
 import { useEntityModal } from '@/hooks/useEntityModal';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 export function CompanyCustomersPage() {
   const { t } = useTranslation();
   const { data: customers, isLoading } = useCustomersQuery();
   const deleteCustomer = useDeleteCustomerMutation();
+  const { ask, dialog } = useCabinetConfirmDialog();
 
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
   const formModal = useEntityModal<CustomerDto>();
   const importModal = useEntityModal();
   const [viewCustomer, setViewCustomer] = useState<CustomerDto | null>(null);
@@ -44,16 +47,47 @@ export function CompanyCustomersPage() {
     [customers, search],
   );
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('company.customersPage.confirmDelete'))) return;
-    try {
-      await deleteCustomer.mutateAsync(id);
-      toast.success(t('company.customersPage.toastDeleted'));
-      if (viewCustomer?.id === id) setViewCustomer(null);
-    } catch (err: unknown) {
-      const error = err as Error;
-      toast.error(error.message || t('company.customersPage.toastDeleteFailed'));
+  const pageCount = Math.max(1, Math.ceil(filtered.length / CUSTOMERS_LIST_PAGE_SIZE));
+  const safePage = Math.min(page, pageCount);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
+
+  useEffect(() => {
+    if (page > pageCount) {
+      setPage(pageCount);
     }
+  }, [page, pageCount]);
+
+  const paginatedCustomers = useMemo(
+    () =>
+      filtered.slice(
+        (safePage - 1) * CUSTOMERS_LIST_PAGE_SIZE,
+        safePage * CUSTOMERS_LIST_PAGE_SIZE,
+      ),
+    [filtered, safePage],
+  );
+
+  const handleDelete = (id: string) => {
+    ask({
+      title: t('cabinet.common.delete'),
+      message: (
+        <p className="text-sm text-gray-600 leading-relaxed">
+          {t('company.customersPage.confirmDelete')}
+        </p>
+      ),
+      onConfirm: async () => {
+        try {
+          await deleteCustomer.mutateAsync(id);
+          toast.success(t('company.customersPage.toastDeleted'));
+          if (viewCustomer?.id === id) setViewCustomer(null);
+        } catch (err: unknown) {
+          const error = err as Error;
+          toast.error(error.message || t('company.customersPage.toastDeleteFailed'));
+        }
+      },
+    });
   };
 
   return (
@@ -87,10 +121,14 @@ export function CompanyCustomersPage() {
         <EntityListDetailLayout
           list={
             <CustomersListTable
-              customers={filtered}
+              customers={paginatedCustomers}
               isLoading={isLoading}
+              isEmpty={filtered.length === 0}
               selectedId={selectedCustomer?.id ?? null}
               onSelect={setViewCustomer}
+              page={safePage}
+              totalCount={filtered.length}
+              onPageChange={setPage}
             />
           }
           detail={
@@ -108,6 +146,7 @@ export function CompanyCustomersPage() {
           editingCustomer={formModal.entity}
         />
         <CustomerImportModal open={importModal.open} onClose={importModal.closeModal} />
+        {dialog}
       </div>
     </CompanyManagementGate>
   );

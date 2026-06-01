@@ -49,14 +49,16 @@ export function InterventionDetailView({
           </span>
           <span className="font-bold text-gray-800">{detail.address}</span>
         </div>
-        <div>
-          <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
-            {t('company.fsm.interventions.detail.fields.description')}
-          </span>
-          <p className="text-xs text-gray-600 mt-1 whitespace-pre-wrap bg-gray-50/50 p-3 rounded-xl border border-gray-100 leading-relaxed font-medium">
-            {detail.description}
-          </p>
-        </div>
+        {!(detail.estimateProjectId && !isManagement) ? (
+          <div>
+            <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+              {t('company.fsm.interventions.detail.fields.description')}
+            </span>
+            <p className="text-xs text-gray-600 mt-1 whitespace-pre-wrap bg-gray-50/50 p-3 rounded-xl border border-gray-100 leading-relaxed font-medium">
+              {detail.description}
+            </p>
+          </div>
+        ) : null}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
@@ -103,31 +105,37 @@ export function InterventionDetailView({
             )}
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-3.5">
-          <div>
-            <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
-              {t('company.fsm.interventions.detail.fields.estimatedPrice')}
-            </span>
-            <span className="font-black text-sm text-gray-900">
-              {detail.estimatedPrice
-                ? `${detail.estimatedPrice} MDL`
-                : t('company.fsm.common.unspecified')}
-            </span>
+        {isManagement ? (
+          <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-3.5">
+            <div>
+              <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                {t('company.fsm.interventions.detail.fields.estimatedPrice')}
+              </span>
+              <span className="font-black text-sm text-gray-900">
+                {detail.estimatedPrice
+                  ? `${detail.estimatedPrice} MDL`
+                  : t('company.fsm.common.unspecified')}
+              </span>
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
+                {t('company.fsm.interventions.detail.fields.finalPrice')}
+              </span>
+              <span className="font-black text-sm text-emerald-600">
+                {detail.finalPrice
+                  ? `${detail.finalPrice} MDL`
+                  : t('company.fsm.common.unspecified')}
+              </span>
+            </div>
           </div>
-          <div>
-            <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">
-              {t('company.fsm.interventions.detail.fields.finalPrice')}
-            </span>
-            <span className="font-black text-sm text-emerald-600">
-              {detail.finalPrice
-                ? `${detail.finalPrice} MDL`
-                : t('company.fsm.common.unspecified')}
-            </span>
-          </div>
-        </div>
+        ) : detail.estimateProjectId ? (
+          <p className="text-xs text-gray-500 bg-violet-50/60 border border-violet-100 rounded-xl px-3 py-2.5 leading-relaxed">
+            {t('company.fsm.interventions.detail.fields.executionSheetHint')}
+          </p>
+        ) : null}
       </div>
 
-      {detail.internalNotes && (
+      {isManagement && detail.internalNotes && (
         <div className="bg-amber-50/50 p-3.5 rounded-xl border border-amber-100">
           <span className="text-[10px] font-bold text-amber-800 block uppercase tracking-wider mb-1">
             {t('company.fsm.interventions.detail.fields.internalNotes')}

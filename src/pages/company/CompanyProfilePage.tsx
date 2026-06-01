@@ -9,9 +9,11 @@ import { useMeQuery } from '@/features/auth/api/useAuth';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { CompanyProfileEditor } from '@/features/companies/profile/CompanyProfileEditor';
+import { useAuthStore } from '@/stores/authStore';
 
 export function CompanyProfilePage() {
   const { t } = useTranslation();
+  const authUser = useAuthStore((s) => s.user);
   const { data: authMe } = useMeQuery();
   const { data: companyMe, isLoading: isLoadingMe } = useCompanyMeQuery();
   const { data: cities, isLoading: isLoadingCities } = useCitiesQuery();
@@ -21,7 +23,7 @@ export function CompanyProfilePage() {
 
   const { company: activeCompany } = resolveActiveCompany(companyMe, activeCompanyId);
   const userDefaults = {
-    email: authMe?.email,
+    email: authMe?.email ?? authUser?.email,
     phone: authMe?.phone ?? null,
   };
 

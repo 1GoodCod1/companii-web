@@ -1,8 +1,11 @@
 import { Suspense } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 import { PublicLayout } from '@/components/layout/PublicLayout';
 import { RedirectToLocalized } from '@/components/i18n/RedirectToLocalized';
 import { LocaleOutlet } from '@/components/i18n/LocaleOutlet';
 import { PUBLIC_ROUTE } from '@/constants/routes.constants';
+import { getInitialLanguage } from '@/i18n';
+import { localizePath } from '@/lib/i18n/localeRoutes';
 import {
   LandingPage,
   CompaniesListPage,
@@ -16,6 +19,11 @@ import { TermsPage } from '@/pages/public/TermsPage';
 import { SubscriptionsPage } from '@/pages/public/SubscriptionsPage';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 
+function RedirectLegacySubscriptionsPath() {
+  const { locale } = useParams<{ locale: string }>();
+  return <Navigate to={`/${locale ?? 'ro'}/${PUBLIC_ROUTE.SUBSCRIPTIONS}`} replace />;
+}
+
 export const localizedPublicRoutes = [
   { index: true, element: <LandingPage /> },
   { path: PUBLIC_ROUTE.COMPANII, element: <LandingPage /> },
@@ -24,6 +32,7 @@ export const localizedPublicRoutes = [
   { path: PUBLIC_ROUTE.CONTACTS, element: <ContactsPage /> },
   { path: PUBLIC_ROUTE.PRIVACY, element: <PrivacyPage /> },
   { path: PUBLIC_ROUTE.TERMS, element: <TermsPage /> },
+  { path: 'subscriptions', element: <RedirectLegacySubscriptionsPath /> },
   { path: PUBLIC_ROUTE.SUBSCRIPTIONS, element: <SubscriptionsPage /> },
   { path: PUBLIC_ROUTE.COMPANIES, element: <CompaniesListPage /> },
   { path: PUBLIC_ROUTE.COMPANY_DETAIL, element: <CompanyDetailPage /> },
@@ -61,4 +70,16 @@ export const publicRoutesSection = [
     ],
   },
   ...legacyLocalizedRedirects,
+  {
+    path: 'subscriptions',
+    element: (
+      <Navigate to={localizePath(`/${PUBLIC_ROUTE.SUBSCRIPTIONS}`, getInitialLanguage())} replace />
+    ),
+  },
+  {
+    path: 'subscriptions/*',
+    element: (
+      <Navigate to={localizePath(`/${PUBLIC_ROUTE.SUBSCRIPTIONS}`, getInitialLanguage())} replace />
+    ),
+  },
 ];

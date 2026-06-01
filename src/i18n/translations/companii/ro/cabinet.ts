@@ -9,6 +9,7 @@ export const companiiRoCabinet = {
       create: 'Creează',
       edit: 'Editează',
       delete: 'Șterge',
+      confirmAction: 'Confirmă',
       open: 'Deschide',
       viewAll: 'Vezi toate',
       back: 'Înapoi',
@@ -48,7 +49,7 @@ export const companiiRoCabinet = {
         description:
           'Planul tău curent nu include {{feature}}. Treci la {{plan}} pentru a continua.',
         defaultFeature: 'funcționalitatea {{plan}}',
-        viewSubscriptions: 'Vezi abonamente',
+        viewSubscriptions: 'Vezi prețurile',
       },
       activeCompany: 'Companie activă',
       companySwitched: 'Compania activă a fost schimbată.',

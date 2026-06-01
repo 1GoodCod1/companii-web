@@ -53,7 +53,7 @@ export function useConvertLeadMutation() {
       }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.leadsAll });
-      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customers });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customersRoot });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
     },

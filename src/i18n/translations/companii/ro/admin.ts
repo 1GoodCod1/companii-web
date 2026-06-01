@@ -15,10 +15,10 @@ export const companiiRoAdmin = {
       platform: 'Platformă',
       catalog: 'Catalog',
     },
-    documentTitle: 'Admin · Faber Companii',
+    documentTitle: 'Admin · Faber',
     homePage: {
       title: 'Panou administrare',
-      subtitle: 'Monitorizați platforma Faber Companii și gestionați verificările companiilor.',
+      subtitle: 'Monitorizați platforma Faber și gestionați verificările companiilor.',
       statsCompanies: 'Companii',
       statsUsers: 'Utilizatori',
       statsInterventions: 'Intervenții',

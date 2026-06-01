@@ -21,7 +21,7 @@ const BASE_STATIC_PATHS = [
   '/contacts',
   '/privacy',
   '/terms',
-  '/subscriptions',
+  '/preturi',
 ];
 
 export const STATIC_ROUTES = SEO_LOCALES.flatMap((locale) =>

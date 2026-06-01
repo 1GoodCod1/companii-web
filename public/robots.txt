@@ -8,7 +8,7 @@ Allow: /faq
 Allow: /contacts
 Allow: /privacy
 Allow: /terms
-Allow: /subscriptions
+Allow: /preturi
 
 Disallow: /company
 Disallow: /company/*

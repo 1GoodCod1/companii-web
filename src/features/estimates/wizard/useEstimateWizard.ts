@@ -4,13 +4,15 @@ import { useWizardDerivations } from './hooks/useWizardDerivations';
 import { useWizardLineActions } from './hooks/useWizardLineActions';
 import { useWizardStepActions } from './hooks/useWizardStepActions';
 import type { EstimateProjectDto } from '@/types/estimates';
+import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
 
 export function useEstimateWizard(project: EstimateProjectDto) {
   const formState = useWizardFormState(project);
   const offlineState = useWizardOffline(project.id, formState);
   const derivations = useWizardDerivations(project, formState);
-  const lineActions = useWizardLineActions(project.id);
-  const stepActions = useWizardStepActions({ project, formState, derivations });
+  const { ask, dialog: confirmDialog } = useCabinetConfirmDialog();
+  const lineActions = useWizardLineActions(project.id, ask);
+  const stepActions = useWizardStepActions({ project, formState, derivations, askConfirm: ask });
 
   return {
     // Form state & setters
@@ -91,6 +93,7 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     isElektrikaCategory: derivations.isElektrikaCategory,
     isPlumbingCategory: derivations.isPlumbingCategory,
     isConstructiiCategory: derivations.isConstructiiCategory,
+    laborUnits: derivations.laborUnits,
 
     // Line Actions
     editingStore: lineActions.editingStore,
@@ -123,6 +126,7 @@ export function useEstimateWizard(project: EstimateProjectDto) {
     calculate: stepActions.calculate,
     generateQuote: stepActions.generateQuote,
     sendEstimate: stepActions.sendEstimate,
+    confirmDialog,
   };
 }
 

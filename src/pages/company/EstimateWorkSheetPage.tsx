@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { PageHero, Panel, SkeletonPage, SoftBadge, EmptyState } from '@/components/cabinet/cabinet-ui';
 import { PlanEditor } from '@/features/estimates/components/PlanEditor';
+import { planHasWorksheetContent } from '@/features/estimates/plan/planWorksheetContent';
 import { WorksheetPhotos } from '@/features/estimates/components/WorksheetPhotos';
 import { useWorksheetByInterventionQuery } from '@/features/estimates/api/useEstimates';
 import { useUpdateChecklistMutation } from '@/features/fsm/api/useFsm';
@@ -105,10 +106,11 @@ export function EstimateWorkSheetPage() {
         </Panel>
       </div>
 
-      {sheet.sitePlan?.plan2d && (
+      {sheet.sitePlan?.plan2d && planHasWorksheetContent(sheet.sitePlan.plan2d) && (
         <PlanEditor
           value={sheet.sitePlan.plan2d}
           readOnly={true}
+          variant="worksheet"
           onChange={() => { }}
           categoryName={sheet.project.category.name}
           categorySlug={sheet.project.category.slug}
@@ -125,6 +127,13 @@ export function EstimateWorkSheetPage() {
       )}
 
       <div className="space-y-4">
+        {sheet.stages.length === 0 ? (
+          <Panel className="p-6 text-sm text-gray-500">
+            {t('company.workSheetPage.noStages', {
+              defaultValue: 'Nu există etape active pentru această lucrare. Recalculați smeta și verificați modulele din Diagnostic.',
+            })}
+          </Panel>
+        ) : null}
         {sheet.stages.map((stage, index) => (
           <Panel key={stage.id} className="p-6">
             <div className="flex items-start gap-3 mb-4">

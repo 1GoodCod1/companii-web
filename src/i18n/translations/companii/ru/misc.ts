@@ -1,4 +1,11 @@
 export const companiiRuMisc = {
+  validation: {
+    required: 'Это поле обязательно.',
+    email: 'Введите корректный email.',
+    minLength: 'Минимум {{min}} символов.',
+    passwordMismatch: 'Пароли не совпадают.',
+  },
+
   versions: {
     title: 'История версий',
     select: 'Выбрать...',

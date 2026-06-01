@@ -11,10 +11,10 @@ export const FAQ_SECTIONS: FaqSection[] = [
   {
     id: 'platforma',
     title: 'Despre platformă',
-    description: 'Ce este Faber Companii, pentru cine și cum începeți.',
+    description: 'Ce este Faber, pentru cine și cum începeți.',
     items: [
       {
-        q: 'Ce este Faber Companii?',
+        q: 'Ce este Faber?',
         a: 'O platformă cloud pentru gestionarea echipelor de teren și CRM. Creată pentru firmele cu brigăzi mobile — instalații, reparații, mentenanță, curățenie.',
       },
       {

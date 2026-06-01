@@ -7,7 +7,6 @@ import { PageHero } from '@/components/cabinet/cabinet-ui';
 import {
   useCalendarBoardQuery,
   useUpdateInterventionMutation,
-  useUpdateInterventionStatusMutation,
   useConvertLeadMutation,
 } from '@/features/fsm/api/useFsm';
 import { useCompanyMembersQuery } from '@/features/companies/api/useCompanies';
@@ -17,7 +16,6 @@ import { CalendarBoardView } from '@/features/fsm/components/calendar/CalendarBo
 import { getWeekRange } from '@/utils/calendar';
 import { formatWeekRangeLabel } from '@/utils/date';
 import { useLocale } from '@/hooks/useLocale';
-import { INTERVENTION_STATUS } from '@/constants/interventionStatus.constants';
 import { getErrorMessage } from '@/utils/errors';
 
 export function CompanyCalendarPage() {
@@ -28,7 +26,6 @@ export function CompanyCalendarPage() {
   const { isManagement } = useCompanyPermissions();
   const { data: members } = useCompanyMembersQuery({ enabled: isManagement });
   const updateIntervention = useUpdateInterventionMutation();
-  const updateStatus = useUpdateInterventionStatusMutation();
   const convertLead = useConvertLeadMutation();
   const qc = useQueryClient();
 
@@ -75,7 +72,6 @@ export function CompanyCalendarPage() {
         scheduledAt: new Date(scheduleAt).toISOString(),
         ...assignFields,
       });
-      await updateStatus.mutateAsync({ id: schedulingId, status: INTERVENTION_STATUS.SCHEDULED });
       toast.success(t('company.calendarPage.toastScheduled'));
       setSchedulingId(null);
       setScheduleAt('');

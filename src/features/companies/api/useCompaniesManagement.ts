@@ -122,7 +122,7 @@ export function useSwitchCompanyMutation() {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.members });
       void qc.invalidateQueries({ queryKey: queryKeys.companies.invitations });
       void qc.invalidateQueries({ queryKey: queryKeys.subscriptions.me });
-      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customers });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customersRoot });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
     },

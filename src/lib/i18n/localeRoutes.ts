@@ -37,7 +37,7 @@ const LOCALIZED_PUBLIC_PREFIXES = [
   '/contacts',
   '/privacy',
   '/terms',
-  '/subscriptions',
+  '/preturi',
 ] as const;
 
 export function isPublicPathLocalizable(pathname: string): boolean {
