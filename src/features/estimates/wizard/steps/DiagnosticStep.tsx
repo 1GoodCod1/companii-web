@@ -4,7 +4,7 @@ import {
   FormSection,
   Panel,
   cabinetBtnPrimary,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import { CustomFieldInput } from '@/features/estimates/components/CustomFieldInput';
 import { CustomPricingFields } from '@/features/estimates/components/CustomPricingFields';
 import { WorkModulesPicker } from '@/features/estimates/components/WorkModulesPicker';

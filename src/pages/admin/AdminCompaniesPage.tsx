@@ -1,11 +1,13 @@
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { useAdminCompaniesQuery, type AdminCompanyDto } from '@/features/admin/api/useAdmin';
-import { AdminCompanyModerationModal } from '@/features/admin/components/AdminCompanyModerationModal';
-import { useAdminSetCompanyPlanMutation } from '@/features/subscriptions/api/useSubscriptions';
-import { DEFAULT_SUBSCRIPTION_PLAN, SUBSCRIPTION_PLAN_CODES } from '@/constants/subscriptions.constants';
-import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
+import { AppSelect } from '@/widgets/cabinet/cabinet-ui';
+import { useAdminCompaniesQuery, type AdminCompanyDto } from '@/features/admin';
+import { AdminCompanyModerationModal } from '@/features/admin';
+import { useAdminSetCompanyPlanMutation } from '@/entities/subscription/api/useSubscriptions';
+import { DEFAULT_SUBSCRIPTION_PLAN, SUBSCRIPTION_PLAN_CODES } from '@/entities/subscription/model/subscriptions.constants';
+import type { CompanySubscriptionPlanCode } from '@/entities/subscription/model/types';
 
 export function AdminCompaniesPage() {
   const { t } = useTranslation();
@@ -13,6 +15,15 @@ export function AdminCompaniesPage() {
   const { data: companies, isLoading } = useAdminCompaniesQuery();
   const setPlan = useAdminSetCompanyPlanMutation();
   const moderationCompanyId = params.get('moderate');
+
+  const planOptions = useMemo(
+    () =>
+      SUBSCRIPTION_PLAN_CODES.map((code) => ({
+        value: code,
+        label: code,
+      })),
+    [],
+  );
 
   const openModeration = (companyId: string) => {
     setParams(
@@ -79,20 +90,17 @@ export function AdminCompaniesPage() {
                     <td className="px-6 py-4 text-gray-600">{company.owner?.email ?? '—'}</td>
                     <td className="px-6 py-4 text-gray-600">{company.city?.name ?? '—'}</td>
                     <td className="px-6 py-4">
-                      <select
+                      <AppSelect
                         value={company.subscription?.plan?.code ?? DEFAULT_SUBSCRIPTION_PLAN}
-                        onChange={(e) =>
-                          handleSetPlan(company.id, e.target.value as CompanySubscriptionPlanCode)
+                        onChange={(value) =>
+                          handleSetPlan(company.id, value as CompanySubscriptionPlanCode)
                         }
+                        options={planOptions}
                         disabled={setPlan.isPending}
-                        className="border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-wider bg-white"
-                      >
-                        {SUBSCRIPTION_PLAN_CODES.map((code) => (
-                          <option key={code} value={code}>
-                            {code}
-                          </option>
-                        ))}
-                      </select>
+                        aria-label={t('admin.companiesPage.colPlan')}
+                        className="min-w-[120px]"
+                        maxVisibleItems={8}
+                      />
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">

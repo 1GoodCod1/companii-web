@@ -6,8 +6,8 @@ import {
   EmptyState,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
-import type { CompanyLeadDto } from '@/types/fsm';
+} from '@/widgets/cabinet/cabinet-ui';
+import type { CompanyLeadDto } from '@/entities/fsm/model/types';
 
 export function DashboardNewLeadsPanel({
   leads,

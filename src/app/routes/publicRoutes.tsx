@@ -1,10 +1,11 @@
 import { Suspense } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
-import { PublicLayout } from '@/components/layout/PublicLayout';
-import { RedirectToLocalized } from '@/components/i18n/RedirectToLocalized';
-import { LocaleOutlet } from '@/components/i18n/LocaleOutlet';
-import { PUBLIC_ROUTE } from '@/constants/routes.constants';
-import { getInitialLanguage } from '@/i18n';
+import { Navigate } from 'react-router-dom';
+import { PublicLayout } from '@/widgets/layout/PublicLayout';
+import { RedirectToLocalized } from '@/shared/ui/i18n/RedirectToLocalized';
+import { RedirectLegacySubscriptionsPath } from '@/shared/ui/i18n/RedirectLegacySubscriptionsPath';
+import { LocaleOutlet } from '@/shared/ui/i18n/LocaleOutlet';
+import { PUBLIC_ROUTE } from '@/shared/constants/routes.constants';
+import { getInitialLanguage } from '@/shared/config/i18n';
 import { localizePath } from '@/lib/i18n/localeRoutes';
 import {
   LandingPage,
@@ -18,11 +19,6 @@ import { PrivacyPage } from '@/pages/public/PrivacyPage';
 import { TermsPage } from '@/pages/public/TermsPage';
 import { SubscriptionsPage } from '@/pages/public/SubscriptionsPage';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
-
-function RedirectLegacySubscriptionsPath() {
-  const { locale } = useParams<{ locale: string }>();
-  return <Navigate to={`/${locale ?? 'ro'}/${PUBLIC_ROUTE.SUBSCRIPTIONS}`} replace />;
-}
 
 export const localizedPublicRoutes = [
   { index: true, element: <LandingPage /> },

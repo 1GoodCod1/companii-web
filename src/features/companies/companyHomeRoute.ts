@@ -1,6 +1,6 @@
-import { defaultRouteForRole } from '@/utils/roleAccess';
-import { COMPANY_ROUTE } from '@/constants/routes.constants';
-import { companyAbsolutePath } from '@/utils/routes';
+import { defaultRouteForRole } from '@/entities/company/model/roleAccess';
+import { COMPANY_ROUTE } from '@/shared/constants/routes.constants';
+import { companyAbsolutePath } from '@/shared/utils/routes';
 
 type CompanyHomeInput = {
   companyRole?: string;

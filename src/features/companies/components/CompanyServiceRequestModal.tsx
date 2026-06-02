@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppModal } from '@/components/ui/AppModal';
+import { AppModal } from '@/shared/ui/AppModal';
 import {
   cabinetBtnPrimary,
   cabinetFieldClass,
   cabinetLabelClass,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 
 interface CompanyServiceRequestModalProps {
   open: boolean;

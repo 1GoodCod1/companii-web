@@ -2,20 +2,20 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { ClaimableSubscriptionPlanCode, CompanyPlanDto, CompanySubscriptionPlanCode } from '@/types/subscriptions';
-import type { PublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
-import { canActivatePlan, plansForDisplay } from '@/config/planEntitlements';
-import { planFeatures } from '@/utils/subscriptions';
+import type { ClaimableSubscriptionPlanCode, CompanyPlanDto, CompanySubscriptionPlanCode } from '@/entities/subscription/model/types';
+import type { PublicAuthCta } from '@/features/auth';
+import { canActivatePlan, plansForDisplay } from '@/entities/subscription/model/planEntitlements';
+import { planFeatures } from '@/entities/subscription/model/subscriptions';
 import {
   isBusinessPlan,
   isClaimablePlanCode,
   isFreePlan,
   isProPlan,
-} from '@/utils/subscriptionPlan';
+} from '@/entities/subscription/model/subscriptionPlan';
 import {
   PLAN_ACCENTS,
   SUBSCRIPTION_PLAN,
-} from '@/constants/subscriptions.constants';
+} from '@/entities/subscription/model/subscriptions.constants';
 
 function PlanPricing({
   plan,

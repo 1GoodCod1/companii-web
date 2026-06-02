@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
-import { useResetPasswordMutation } from '@/features/auth/api/useAuth';
-import { getAuthErrorMessage } from '@/features/auth/authErrors';
+import { useResetPasswordMutation } from '@/features/auth';
+import { getAuthErrorMessage } from '@/features/auth';
 import { Lock, ArrowLeft, CheckCircle2, ShieldAlert } from 'lucide-react';
-import { FormFieldError } from '@/components/ui/FormFieldError';
+import { FormFieldError } from '@/shared/ui/FormFieldError';
 import { fieldClassName } from '@/lib/forms/fieldClassName';
 import {
   createResetPasswordSchema,

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { uploadFiles } from '@/api/files';
-import type { InterventionNoteDto, InterventionStatus } from '@/types/fsm';
+import { uploadFiles } from '@/shared/api/files';
+import type { InterventionNoteDto, InterventionStatus } from '@/entities/fsm/model/types';
 import {
   useInterventionQuery,
   useUpdateInterventionMutation,
@@ -13,9 +13,9 @@ import {
   useAddInterventionPhotosMutation,
 } from '@/features/fsm/api/useInterventions';
 import { useCreateInvoiceMutation } from '@/features/fsm/api/useInvoices';
-import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
-import { getErrorMessage } from '@/utils/errors';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 interface UseInterventionDetailProps {
   selectedId: string | null;

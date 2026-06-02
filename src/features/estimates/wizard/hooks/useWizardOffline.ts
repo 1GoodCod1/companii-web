@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useEstimateOfflineCache } from '@/features/estimates/offline/useEstimateOfflineCache';
 import { useSaveSitePlanMutation, useUpdateEstimateProjectMutation } from '@/features/estimates/api/useEstimates';
-import type { Plan2dData } from '@/types/estimates';
+import type { Plan2dData } from '@/entities/estimate/model/estimates';
 import type { WizardFormState } from './useWizardFormState';
 
 export function useWizardOffline(projectId: string, formState: WizardFormState) {
@@ -143,7 +143,7 @@ export function useWizardOffline(projectId: string, formState: WizardFormState) 
     offline.acknowledgeConflict();
     const { readMutationQueue, idbPut } = await Promise.all([
       import('@/features/estimates/offline/mutationQueue'),
-      import('@/utils/idb'),
+      import('@/entities/estimate/model/idb'),
     ]).then(([mq, idb]) => ({ readMutationQueue: mq.readMutationQueue, idbPut: idb.idbPut }));
     const queue = await readMutationQueue(projectId);
     for (const record of queue) {

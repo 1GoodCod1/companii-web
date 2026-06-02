@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { INTERVENTION_STATUS_TABS } from '@/constants/interventionStatus.constants';
-import { interventionTabLabel } from '@/utils/i18nStatusLabels';
-import type { InterventionStatus } from '@/types/fsm';
+import { INTERVENTION_STATUS_TABS } from '@/entities/fsm/model/interventionStatus.constants';
+import { interventionTabLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import type { InterventionStatus } from '@/entities/fsm/model/types';
 
 type StatusFilterProps = {
   value: string;

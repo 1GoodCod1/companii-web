@@ -1,14 +1,15 @@
 import { useTranslation } from 'react-i18next';
-import { EmptyState, Panel, PanelHeader } from '@/components/cabinet/cabinet-ui';
-import type { CompanyRole } from '@/types/roles';
-import type { CompanyMemberDto } from '@/types/fsm';
+import { EmptyState, Panel, PanelHeader, cabinetPanelContentInsetClass } from '@/widgets/cabinet/cabinet-ui';
+import { cabinetSplitPanelClass } from '@/widgets/cabinet/EntityListDetailLayout';
+import type { CompanyRole } from '@/entities/company/model/roles.types';
+import type { CompanyMemberDto } from '@/entities/fsm/model/types';
 import { useInterventionDetail } from './hooks/useInterventionDetail';
 import { InterventionDetailView } from './components/InterventionDetailView';
 import { InterventionDetailEditForm } from './components/InterventionDetailEditForm';
 import { InterventionStatusTransition } from './components/InterventionStatusTransition';
 import { InterventionNotesSection } from './components/InterventionNotesSection';
-import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
-import { getInterventionStatusStyle } from '@/utils/interventionStatus';
+import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import { getInterventionStatusStyle } from '@/entities/fsm/model/interventionStatus';
 
 type Props = {
   selectedId: string | null;
@@ -81,7 +82,7 @@ export function InterventionDetailPanel({
   });
 
   return (
-    <Panel>
+    <Panel className={cabinetSplitPanelClass()}>
       <PanelHeader
         title={t('company.fsm.interventions.detail.title')}
         action={
@@ -97,9 +98,12 @@ export function InterventionDetailPanel({
         }
       />
 
+      <div className={cabinetPanelContentInsetClass}>
       {selectedId ? (
         isLoadingDetail || !detail ? (
-          <div className="text-center py-20 text-gray-400">{t('company.fsm.interventions.detail.loading')}</div>
+          <div className="flex flex-1 items-center justify-center text-gray-400">
+            {t('company.fsm.interventions.detail.loading')}
+          </div>
         ) : (
           <div className="space-y-4">
             <div className="flex justify-between items-start">
@@ -171,8 +175,9 @@ export function InterventionDetailPanel({
           </div>
         )
       ) : (
-        <EmptyState message={t('company.fsm.interventions.detail.empty')} />
+        <EmptyState message={t('company.fsm.interventions.detail.empty')} fill />
       )}
+      </div>
       {confirmDialog}
     </Panel>
   );

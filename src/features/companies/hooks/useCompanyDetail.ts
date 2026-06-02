@@ -7,10 +7,10 @@ import {
   useRequestPublicServiceMutation,
   useRequestPublicProjectMutation,
 } from '@/features/companies/api/useCompanies';
-import { useAuthStore } from '@/stores/authStore';
-import { useMeQuery } from '@/features/auth/api/useAuth';
-import { formatPersonName } from '@/utils/person';
-import { getErrorMessage } from '@/utils/errors';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import { useMeQuery } from '@/features/auth';
+import { formatPersonName } from '@/shared/utils/person';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 export function useCompanyDetail() {
   const { t } = useTranslation();

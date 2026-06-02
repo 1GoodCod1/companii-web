@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import type { CompanyMemberDto, CustomerDto } from '@/types/fsm';
+import type { CompanyMemberDto, CustomerDto } from '@/entities/fsm/model/types';
 import { useCreateInterventionMutation } from '@/features/fsm/api/useInterventions';
 import { useCrewsQuery } from '@/features/fsm/api/useCrews';
-import { memberDisplayName } from '@/utils/teamMembers';
-import { getErrorMessage } from '@/utils/errors';
+import { memberDisplayName } from '@/entities/company/model/teamMembers';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 export type AssignMode = 'single' | 'multiple' | 'crew';
 

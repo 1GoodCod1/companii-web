@@ -6,7 +6,7 @@ import {
 import {
   ESTIMATE_BLUEPRINT_CATEGORY_SLUGS,
   ESTIMATE_EXCLUDED_CATEGORY_SLUGS,
-} from '@/constants/estimateCategorySlugs.constants';
+} from '@/entities/estimate/model/estimateCategorySlugs.constants';
 
 describe('getExcludedAlternative (K-02)', () => {
   it('returns alternative for each excluded slug', () => {

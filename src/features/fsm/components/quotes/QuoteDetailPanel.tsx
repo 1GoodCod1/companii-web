@@ -4,10 +4,10 @@ import toast from 'react-hot-toast';
 import {
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
-import { EntityDetailPanel } from '@/components/cabinet/EntityDetailPanel';
-import { QUOTE_STATUS } from '@/constants/quoteStatus.constants';
-import type { QuoteLineDto, QuoteStatus } from '@/types/fsm';
+} from '@/widgets/cabinet/cabinet-ui';
+import { EntityDetailPanel } from '@/widgets/cabinet/EntityDetailPanel';
+import { QUOTE_STATUS } from '@/entities/fsm/model/quoteStatus.constants';
+import type { QuoteLineDto, QuoteStatus } from '@/entities/fsm/model/types';
 import {
   useQuoteQuery,
   useUpdateQuoteMutation,
@@ -16,12 +16,12 @@ import {
   useSendQuoteMutation,
   downloadCompanyQuotePdf,
 } from '@/features/fsm/api/useQuotes';
-import { useLocale } from '@/hooks/useLocale';
-import { getQuoteStatusStyle } from '@/utils/quoteStatusStyles';
-import { formatDateLocalized } from '@/utils/date';
-import { quoteStatusLabel } from '@/utils/i18nStatusLabels';
-import { getErrorMessage } from '@/utils/errors';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { getQuoteStatusStyle } from '@/entities/fsm/model/quoteStatusStyles';
+import { formatDateLocalized } from '@/shared/utils/date';
+import { quoteStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 type Props = {
   selectedId: string | null;

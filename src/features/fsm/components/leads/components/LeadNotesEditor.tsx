@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Edit2, Save, X } from 'lucide-react';
-import type { CompanyLeadDto } from '@/types/fsm';
-import { isOpenLeadStatus } from '@/utils/leadStatus';
+import type { CompanyLeadDto } from '@/entities/fsm/model/types';
+import { isOpenLeadStatus } from '@/entities/fsm/model/leadStatus';
 
 interface LeadNotesEditorProps {
   lead: CompanyLeadDto;

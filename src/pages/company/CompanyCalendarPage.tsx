@@ -2,21 +2,21 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
-import { queryKeys } from '@/api/queryKeys';
-import { PageHero } from '@/components/cabinet/cabinet-ui';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { PageHero } from '@/widgets/cabinet/cabinet-ui';
 import {
   useCalendarBoardQuery,
   useUpdateInterventionMutation,
   useConvertLeadMutation,
-} from '@/features/fsm/api/useFsm';
+} from '@/features/fsm';
 import { useCompanyMembersQuery } from '@/features/companies/api/useCompanies';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
-import { filterAssignableTechnicians } from '@/utils/teamMembers';
-import { CalendarBoardView } from '@/features/fsm/components/calendar/CalendarBoardView';
-import { getWeekRange } from '@/utils/calendar';
-import { formatWeekRangeLabel } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
-import { getErrorMessage } from '@/utils/errors';
+import { filterAssignableTechnicians } from '@/entities/company/model/teamMembers';
+import { CalendarBoardView } from '@/features/fsm';
+import { getWeekRange } from '@/entities/fsm/model/calendar';
+import { formatWeekRangeLabel } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 export function CompanyCalendarPage() {
   const { t } = useTranslation();

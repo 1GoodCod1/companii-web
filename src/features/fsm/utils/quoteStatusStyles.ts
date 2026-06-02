@@ -1,1 +1,1 @@
-export * from '@/utils/quoteStatusStyles';
+export * from '@/entities/fsm/model/quoteStatusStyles';

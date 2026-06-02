@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
+import { apiFetch } from '@/shared/api/client';
 
 export interface PortalInviteResponse {
   id: string;

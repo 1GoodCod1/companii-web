@@ -1,4 +1,4 @@
-import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimate-blueprint-config.types';
 import { readBoolean } from '../utils/diagnosticReader';
 import { ENABLED_WORK_MODULES_KEY, readEnabledWorkModules } from './workModules';
 

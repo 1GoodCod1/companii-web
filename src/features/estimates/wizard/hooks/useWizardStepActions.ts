@@ -11,11 +11,11 @@ import {
 } from '@/features/estimates/api/useEstimates';
 import { syncGlobalParamsToDiagnostic } from '../syncGlobalParamsToDiagnostic';
 import { resolveEstimateWizardStepIndex } from '../resolveEstimateWizardStep';
-import { getErrorMessage } from '@/utils/errors';
-import type { EstimateProjectDto } from '@/types/estimates';
+import { getErrorMessage } from '@/shared/utils/errors';
+import type { EstimateProjectDto } from '@/entities/estimate/model/estimates';
 import type { WizardFormState } from './useWizardFormState';
 import type { WizardDerivations } from './useWizardDerivations';
-import type { AskCabinetConfirm } from '@/hooks/useCabinetConfirmDialog';
+import type { AskCabinetConfirm } from '@/shared/hooks/useCabinetConfirmDialog';
 
 type SubHookProps = {
   project: EstimateProjectDto;

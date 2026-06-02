@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import { CheckCircle2, Eye, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
-import { Panel } from '@/components/cabinet/cabinet-ui';
-import type { EstimateProjectDto } from '@/types/estimates';
+import { Panel } from '@/widgets/cabinet/cabinet-ui';
+import type { EstimateProjectDto } from '@/entities/estimate/model/estimates';
 
 type ReviewInterventionsProps = {
   project: EstimateProjectDto;

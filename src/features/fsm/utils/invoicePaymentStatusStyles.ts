@@ -1,1 +1,1 @@
-export * from '@/utils/invoicePaymentStatusStyles';
+export * from '@/entities/fsm/model/invoicePaymentStatusStyles';

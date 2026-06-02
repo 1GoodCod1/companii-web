@@ -1,22 +1,23 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
+  AppSelect,
   SoftBadge,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-  cabinetSelectClass,
-} from '@/components/cabinet/cabinet-ui';
-import type { CompanyLeadDto, CompanyLeadStatus } from '@/types/fsm';
-import { LEAD_STATUS } from '@/constants/leadStatus.constants';
+} from '@/widgets/cabinet/cabinet-ui';
+import type { CompanyLeadDto, CompanyLeadStatus } from '@/entities/fsm/model/types';
+import { LEAD_STATUS } from '@/entities/fsm/model/leadStatus.constants';
 import {
   LEAD_STATUS_OPTIONS,
   LEAD_STATUS_TONES,
-} from '@/constants/leads.constants';
-import { isOpenLeadStatus } from '@/utils/leadStatus';
-import { leadStatusLabel } from '@/utils/i18nStatusLabels';
-import { useLocale } from '@/hooks/useLocale';
-import { formatDateLocalized, formatDateTimeLocalized } from '@/utils/date';
-import { isEstimateExcludedCategorySlug } from '@/constants/estimateCategorySlugs.constants';
+} from '@/entities/fsm/model/leads.constants';
+import { isOpenLeadStatus } from '@/entities/fsm/model/leadStatus';
+import { leadStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { formatDateLocalized, formatDateTimeLocalized } from '@/shared/utils/date';
+import { isEstimateExcludedCategorySlug } from '@/entities/estimate/model/estimateCategorySlugs.constants';
 import { LeadNotesEditor } from './components/LeadNotesEditor';
 
 export function LeadInboxItem({
@@ -47,6 +48,15 @@ export function LeadInboxItem({
     t(`company.fsm.leads.sources.${source}`, { defaultValue: source });
 
   const isExcluded = lead.category?.slug ? isEstimateExcludedCategorySlug(lead.category.slug) : false;
+
+  const leadStatusOptions = useMemo(
+    () =>
+      LEAD_STATUS_OPTIONS.map((status) => ({
+        value: status,
+        label: leadStatusLabel(status, t),
+      })),
+    [t],
+  );
 
   return (
     <article className="px-4 py-5 space-y-3">
@@ -115,17 +125,14 @@ export function LeadInboxItem({
         </div>
 
         {isOpenLeadStatus(lead.status) ? (
-          <select
+          <AppSelect
             value={lead.status}
-            onChange={(e) => onStatusChange(lead, e.target.value as CompanyLeadStatus)}
-            className={cabinetSelectClass}
-          >
-            {LEAD_STATUS_OPTIONS.map((status) => (
-              <option key={status} value={status}>
-                {leadStatusLabel(status, t)}
-              </option>
-            ))}
-          </select>
+            onChange={(value) => onStatusChange(lead, value as CompanyLeadStatus)}
+            options={leadStatusOptions}
+            aria-label={t('company.fsm.leads.inbox.status')}
+            className="min-w-[160px]"
+            maxVisibleItems={8}
+          />
         ) : null}
       </div>
 

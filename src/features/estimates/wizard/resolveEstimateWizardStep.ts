@@ -1,5 +1,5 @@
-import { ESTIMATE_STATUS } from '@/constants/estimateStatus.constants';
-import { EMPTY_PLAN } from '@/constants/estimatesWizard.constants';
+import { ESTIMATE_STATUS } from '@/entities/estimate/model/estimateStatus.constants';
+import { EMPTY_PLAN } from '@/entities/estimate/model/estimatesWizard.constants';
 import { validateDiagnostic } from '@/features/estimates/diagnostic/diagnosticValidation';
 import type {
   BlueprintWizardStep,
@@ -7,7 +7,7 @@ import type {
   EstimateProjectDto,
   EstimateProjectStatus,
   Plan2dData,
-} from '@/types/estimates';
+} from '@/entities/estimate/model/estimates';
 
 function stepIndex(steps: BlueprintWizardStep[], step: BlueprintWizardStep): number {
   const index = steps.indexOf(step);

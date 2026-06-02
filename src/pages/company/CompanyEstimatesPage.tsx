@@ -9,17 +9,17 @@ import {
   SkeletonPage,
   cabinetBtnPrimary,
   SoftBadge,
-} from '@/components/cabinet/cabinet-ui';
-import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
+} from '@/widgets/cabinet/cabinet-ui';
+import { CompanyManagementGate } from '@/features/companies';
 import {
   useEstimateProjectsQuery,
   useDeleteEstimateProjectMutation,
-} from '@/features/estimates/api/useEstimates';
+} from '@/features/estimates';
 import {
   ESTIMATE_STATUS_TONES,
-} from '@/constants/estimates.constants';
-import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+} from '@/entities/estimate/model/estimates.constants';
+import { estimateStatusLabel } from '@/entities/estimate/model/i18nStatusLabels';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 export function CompanyEstimatesPage() {
   const { t } = useTranslation();
@@ -51,13 +51,14 @@ export function CompanyEstimatesPage() {
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
         <PageHero
+          flat
           title={t('company.estimatesPage.title')}
           description={t('company.estimatesPage.description')}
           action={
             <div className="flex items-center gap-2 flex-wrap">
               <Link
                 to="/company/smete/coeficienti"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-violet-200 bg-white px-3 py-2 text-xs font-bold text-violet-700 hover:bg-violet-50 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-none border border-violet-200 bg-white px-3 py-2 text-xs font-bold text-violet-700 hover:bg-violet-50 transition-colors"
               >
                 <Percent className="w-4 h-4" />
                 {t('company.estimatesPage.pricingModifiersBtn', { defaultValue: 'Coeficienți de preț' })}
@@ -71,17 +72,17 @@ export function CompanyEstimatesPage() {
         />
 
         <div className="grid md:grid-cols-3 gap-4">
-          <Panel className="p-5 bg-gradient-to-br from-violet-50 to-white border-violet-100">
+          <Panel className="p-5 bg-violet-50 border-violet-100">
             <Sparkles className="w-5 h-5 text-violet-600 mb-2" />
             <p className="font-bold text-gray-900">{t('company.estimatesPage.featureCategories')}</p>
             <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureCategoriesHint')}</p>
           </Panel>
-          <Panel className="p-5 bg-gradient-to-br from-sky-50 to-white border-sky-100">
+          <Panel className="p-5 bg-sky-50 border-sky-100">
             <Calculator className="w-5 h-5 text-sky-600 mb-2" />
             <p className="font-bold text-gray-900">{t('company.estimatesPage.featureAutoCalc')}</p>
             <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureAutoCalcHint')}</p>
           </Panel>
-          <Panel className="p-5 bg-gradient-to-br from-emerald-50 to-white border-emerald-100">
+          <Panel className="p-5 bg-emerald-50 border-emerald-100">
             <ChevronRight className="w-5 h-5 text-emerald-600 mb-2" />
             <p className="font-bold text-gray-900">{t('company.estimatesPage.featureExecution')}</p>
             <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureExecutionHint')}</p>
@@ -92,15 +93,7 @@ export function CompanyEstimatesPage() {
           {isLoading ? (
             <SkeletonPage rows={6} />
           ) : !projects?.length ? (
-            <EmptyState
-              message={t('company.estimatesPage.empty')}
-              action={
-                <Link to="/company/smete/new" className={cabinetBtnPrimary}>
-                  <Plus className="w-4 h-4" />
-                  {t('company.estimatesPage.newBtn')}
-                </Link>
-              }
-            />
+            <EmptyState message={t('company.estimatesPage.empty')} />
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">

@@ -1,1 +1,1 @@
-export * from '@/types/auth';
+export * from '@/entities/user/model/auth.types';

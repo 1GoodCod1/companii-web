@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiFetch, downloadApiBlob } from '@/api/client';
-import { queryKeys } from '@/api/queryKeys';
+import { apiFetch, downloadApiBlob } from '@/shared/api/client';
+import { queryKeys } from '@/shared/api/queryKeys';
 
 export type CustomerImportPreviewRow = {
   rowNumber: number;

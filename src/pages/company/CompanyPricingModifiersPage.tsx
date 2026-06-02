@@ -7,14 +7,14 @@ import {
   FormSection,
   cabinetBtnPrimary,
   cabinetFieldClass,
-} from '@/components/cabinet/cabinet-ui';
-import { useAuthStore } from '@/stores/authStore';
+} from '@/widgets/cabinet/cabinet-ui';
+import { useAuthStore } from '@/entities/user/model/authStore';
 import {
   usePricingModifiersQuery,
   useUpdatePricingModifiersMutation,
   type PricingModifierDef,
 } from '@/features/companies/api/useCompanies';
-import { getErrorMessage } from '@/utils/errors';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 /** Group catalog → categorySlug → group → defs (config order preserved). */
 function groupCatalog(catalog: PricingModifierDef[]) {

@@ -1,4 +1,4 @@
-import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimate-blueprint-config.types';
 import type { PreviewLine } from './previewEngine';
 
 const round2 = (n: number) => Math.round(n * 100) / 100;

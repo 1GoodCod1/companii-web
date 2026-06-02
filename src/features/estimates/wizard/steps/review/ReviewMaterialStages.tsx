@@ -1,11 +1,11 @@
 import { Check, Eye, Paperclip, Trash2, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Panel } from '@/components/cabinet/cabinet-ui';
-import { downloadFile } from '@/api/files';
+import { Panel } from '@/widgets/cabinet/cabinet-ui';
+import { downloadFile } from '@/shared/api/files';
 import { EstimateLineSourceBadge } from '@/features/estimates/components/EstimateLineSourceBadge';
 import { EstimateLineUnitSelect } from '@/features/estimates/components/EstimateLineUnitSelect';
-import type { EstimateMeasurementUnit } from '@/constants/estimateMeasurementUnits.constants';
-import type { EstimateStageDto } from '@/types/estimates';
+import type { EstimateMeasurementUnit } from '@/entities/estimate/model/estimateMeasurementUnits.constants';
+import type { EstimateStageDto } from '@/entities/estimate/model/estimates';
 import { getLineExplanation } from '@/features/estimates/utils/calculationExplanation';
 import { isEstimateLaborLine } from '@/features/estimates/utils/estimateLaborLine';
 import type { EstimateWizardApi } from '../../useEstimateWizard';

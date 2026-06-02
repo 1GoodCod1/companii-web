@@ -2,19 +2,19 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { Download, FileSpreadsheet, Upload } from 'lucide-react';
-import { AppModal } from '@/components/ui/AppModal';
-import { getErrorMessage } from '@/utils/errors';
+import { AppModal } from '@/shared/ui/AppModal';
+import { getErrorMessage } from '@/shared/utils/errors';
 import {
   cabinetBtnPrimary,
   cabinetBtnSecondary,
   cabinetLabelClass,
   EmptyState,
   SoftBadge,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import {
   CUSTOMER_IMPORT_ACTION_TONES,
   type CustomerImportAction,
-} from '@/constants/customerImport.constants';
+} from '@/entities/fsm/model/customerImport.constants';
 import {
   downloadCustomerImportTemplate,
   useConfirmCustomerImportMutation,
@@ -123,7 +123,6 @@ export function CustomerImportModal({ open, onClose }: Props) {
       onClose={handleClose}
       title={t('company.fsm.customers.import.title')}
       size="xl"
-      backgroundIndex={1}
     >
       <div className="space-y-4">
         <div className="rounded-2xl border border-violet-100 bg-violet-50/50 p-4 space-y-3">

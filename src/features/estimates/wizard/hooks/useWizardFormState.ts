@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
-import type { EstimateProjectDto, Plan2dData } from '@/types/estimates';
+import type { EstimateProjectDto, Plan2dData } from '@/entities/estimate/model/estimates';
 import type { CustomPricingValues } from '@/features/estimates/utils/customPricing';
 import { readCustomPricing } from '@/features/estimates/utils/customPricing';
-import { EMPTY_PLAN } from '@/constants/estimatesWizard.constants';
+import { EMPTY_PLAN } from '@/entities/estimate/model/estimatesWizard.constants';
 import {
   ENABLED_WORK_MODULES_KEY,
   readEnabledWorkModules,

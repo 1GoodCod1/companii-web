@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { EntityDetailPanel } from '@/components/cabinet/EntityDetailPanel';
+import { EntityDetailPanel } from '@/widgets/cabinet/EntityDetailPanel';
 import { useInvoiceDetail } from './hooks/useInvoiceDetail';
 import { InvoiceDetailView } from './components/InvoiceDetailView';
 

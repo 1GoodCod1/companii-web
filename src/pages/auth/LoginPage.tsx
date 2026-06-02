@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { useLoginForm } from '@/features/auth/hooks/useLoginForm';
-import { ACCOUNT_KIND } from '@/constants/roles.constants';
-import { PUBLIC_ROUTE } from '@/constants/routes.constants';
-import { LoginTeamInviteBanner } from '@/features/auth/components/LoginTeamInviteBanner';
-import { LoginPortalInviteBanner } from '@/features/auth/components/LoginPortalInviteBanner';
-import { authFieldClass, authLabelClass } from '@/features/auth/authFormStyles';
-import { FormFieldError } from '@/components/ui/FormFieldError';
+import { useLoginForm } from '@/features/auth';
+import { ACCOUNT_KIND } from '@/entities/company/model/roles.constants';
+import { PUBLIC_ROUTE } from '@/shared/constants/routes.constants';
+import { LoginTeamInviteBanner } from '@/features/auth';
+import { LoginPortalInviteBanner } from '@/features/auth';
+import { authFieldClass, authLabelClass } from '@/features/auth';
+import { FormFieldError } from '@/shared/ui/FormFieldError';
 import { fieldClassName } from '@/lib/forms/fieldClassName';
 
 export function LoginPage() {

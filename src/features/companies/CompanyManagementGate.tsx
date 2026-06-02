@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EmptyState } from '@/components/cabinet/cabinet-ui';
+import { EmptyState } from '@/widgets/cabinet/cabinet-ui';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 
 type GateProps = {

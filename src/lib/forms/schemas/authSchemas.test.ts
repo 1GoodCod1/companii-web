@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { TFunction } from 'i18next';
 import {
   createForgotPasswordSchema,
   createLoginSchema,
@@ -7,7 +8,7 @@ import {
 } from '@/lib/forms/schemas/authSchemas';
 import { createCustomerSchema } from '@/lib/forms/schemas/customerSchema';
 
-const t = (key: string) => key;
+const t = ((key: string) => key) as unknown as TFunction;
 
 describe('authSchemas', () => {
   it('requires login credentials', () => {

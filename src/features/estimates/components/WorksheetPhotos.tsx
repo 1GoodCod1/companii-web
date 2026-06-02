@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Camera, ImagePlus, Loader2, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { downloadFile, uploadFile } from '@/api/files';
+import { downloadFile, uploadFile } from '@/shared/api/files';
 import {
   useAddInterventionPhotosMutation,
   useDeleteInterventionPhotoMutation,
-} from '@/features/fsm/api/useInterventions';
-import { getErrorMessage } from '@/utils/errors';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+} from '@/features/fsm';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 type WorksheetPhoto = {
   id: string;

@@ -3,5 +3,5 @@ export type {
   CompanyPlanDto,
   CompanySubscriptionDto,
   CompanySubscriptionPlanCode,
-} from '@/types/subscriptions';
-export { planFeatures, planPriceLabel } from '@/utils/subscriptions';
+} from '@/entities/subscription/model/types';
+export { planFeatures, planPriceLabel } from '@/entities/subscription/model/subscriptions';

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { PLAN_LABELS } from '@/constants/subscriptions.constants';
-import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
-import { cabinetBtnPrimary, cabinetPanelClass } from '@/components/cabinet/cabinet-ui';
+import { PLAN_LABELS } from '@/entities/subscription/model/subscriptions.constants';
+import type { CompanySubscriptionPlanCode } from '@/entities/subscription/model/types';
+import { cabinetBtnPrimary, cabinetPanelClass } from '@/widgets/cabinet/cabinet-ui';
 
 export function PlanUpgradePanel({
   requiredPlan,

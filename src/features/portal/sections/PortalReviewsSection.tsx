@@ -3,9 +3,9 @@ import {
   Panel,
   PanelHeader,
   EmptyState,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
-import { ReviewCard } from '@/components/reviews/ReviewCard';
+import { ReviewCard } from '@/entities/review/ui/ReviewCard';
 
 export function PortalReviewsSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();

@@ -6,21 +6,15 @@ import {
   useCreateCompanyMutation,
   useUpdateCompanyMutation,
   usePublishCompanyMutation,
-  useAddGalleryImageMutation,
-  useRemoveGalleryImageMutation,
   uploadCompanyLogo,
   useLeaveCompanyMutation,
 } from '@/features/companies/api/useCompanies';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
-import { createFormState, MAX_GALLERY } from './profileFormState';
-import type { OwnedCompanyDto } from '@/types/companies';
-import { uploadFile, uploadFiles } from '@/api/files';
-import { MAX_VIDEO_COUNT, MAX_VIDEO_DURATION } from '@/constants/fileMedia.constants';
-import { validateMediaFile, isVideoFile, getVideoDuration } from '@/utils/validateFile';
-import { getErrorMessage } from '@/utils/errors';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+import { createFormState } from './profileFormState';
+import type { OwnedCompanyDto } from '@/entities/company/model/companies.types';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 import { MANAGER_PROFILE_FIELDS } from '@/features/companies/resolveActiveCompany';
-import type { PendingGalleryItem } from '@/components/company/CompanyBrandingSection';
 
 export interface UseCompanyProfileFormOptions {
   ownedCompany: OwnedCompanyDto | null;
@@ -49,8 +43,6 @@ export function useCompanyProfileForm({
   const createCompany = useCreateCompanyMutation();
   const updateCompany = useUpdateCompanyMutation();
   const publishCompany = usePublishCompanyMutation();
-  const addGalleryImage = useAddGalleryImageMutation();
-  const removeGalleryImage = useRemoveGalleryImageMutation();
 
   const [name, setName] = useState(initial.name);
   const [legalName, setLegalName] = useState(initial.legalName);
@@ -79,7 +71,6 @@ export function useCompanyProfileForm({
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoRemoved, setLogoRemoved] = useState(false);
-  const [pendingGallery, setPendingGallery] = useState<PendingGalleryItem[]>([]);
   const [isSavingMedia, setIsSavingMedia] = useState(false);
 
   const handleLogoPick = useCallback(
@@ -98,115 +89,10 @@ export function useCompanyProfileForm({
     [logoPreview],
   );
 
-  const handleGalleryPick = useCallback(
-    async (fileList: FileList | File[]) => {
-      const existingCount = (ownedCompany?.galleryImages?.length ?? 0) + pendingGallery.length;
-      const room = MAX_GALLERY - existingCount;
-      if (room <= 0) {
-        toast.error(t('company.profileEditor.form.galleryMax', { count: MAX_GALLERY }));
-        return;
-      }
-
-      const existingVideos =
-        (ownedCompany?.galleryImages ?? []).filter((img) => {
-          const u = img.url.split('?')[0]?.toLowerCase() ?? '';
-          return u.endsWith('.mp4') || u.endsWith('.mov') || u.endsWith('.webm');
-        }).length +
-        pendingGallery.filter((p) => isVideoFile(p.file)).length;
-
-      let videoCount = existingVideos;
-      const next: PendingGalleryItem[] = [];
-
-      for (const file of Array.from(fileList).slice(0, room)) {
-        const err = validateMediaFile(file);
-        if (err) {
-          toast.error(
-            err === 'files.tooLarge'
-              ? t('company.profileEditor.form.fileTooLarge', {
-                  max: isVideoFile(file) ? '150' : '10',
-                })
-              : t('company.profileEditor.form.invalidFormat'),
-          );
-          continue;
-        }
-
-        if (isVideoFile(file)) {
-          if (videoCount >= MAX_VIDEO_COUNT) {
-            toast.error(t('company.profileEditor.form.videoMax', { count: MAX_VIDEO_COUNT }));
-            continue;
-          }
-          try {
-            const duration = await getVideoDuration(file);
-            if (duration > MAX_VIDEO_DURATION) {
-              toast.error(
-                t('company.profileEditor.form.videoDurationMax', {
-                  minutes: MAX_VIDEO_DURATION / 60,
-                }),
-              );
-              continue;
-            }
-          } catch {
-            toast.error(t('company.profileEditor.form.videoDurationCheckFailed'));
-            continue;
-          }
-          videoCount += 1;
-        }
-
-        next.push({
-          id: `${Date.now()}-${Math.random()}`,
-          file,
-          preview: URL.createObjectURL(file),
-          caption: '',
-        });
-      }
-      if (next.length > 0) setPendingGallery((prev) => [...prev, ...next]);
-    },
-    [ownedCompany?.galleryImages, pendingGallery, t],
-  );
-
-  const handlePendingGalleryRemove = useCallback((id: string) => {
-    setPendingGallery((prev) => {
-      const item = prev.find((entry) => entry.id === id);
-      if (item) URL.revokeObjectURL(item.preview);
-      return prev.filter((entry) => entry.id !== id);
-    });
-  }, []);
-
-  const handleGalleryRemove = async (imageId: string) => {
-    if (!ownedCompany) return;
-    try {
-      await removeGalleryImage.mutateAsync({ companyId: ownedCompany.id, imageId });
-      toast.success(t('company.profileEditor.form.photoDeleted'));
-    } catch (err: unknown) {
-      const error = err as Error;
-      toast.error(error.message || t('company.profileEditor.form.photoDeleteFailed'));
-    }
-  };
-
   const resolveLogoPayload = async (): Promise<string | undefined> => {
     if (logoFile) return uploadCompanyLogo(logoFile);
     if (logoRemoved) return '';
     return undefined;
-  };
-
-  const savePendingGallery = async (companyId: string) => {
-    if (pendingGallery.length === 0) return;
-    const files = pendingGallery.map((item) => item.file);
-    const uploaded =
-      files.length === 1
-        ? [await uploadFile(files[0]!, { visibility: 'PUBLIC' })]
-        : await uploadFiles(files, { visibility: 'PUBLIC' });
-
-    for (let i = 0; i < uploaded.length; i += 1) {
-      await addGalleryImage.mutateAsync({
-        companyId,
-        url: uploaded[i]!.url,
-        caption: pendingGallery[i]?.caption.trim() || undefined,
-      });
-    }
-
-    pendingGallery.forEach((item) => URL.revokeObjectURL(item.preview));
-    setPendingGallery([]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -282,7 +168,6 @@ export function useCompanyProfileForm({
           ...payload,
           ...(logoChanged ? { logoUrl: nextLogoUrl } : {}),
         });
-        await savePendingGallery(ownedCompany.id);
         if (logoChanged && nextLogoUrl === '') setLogoUrl(null);
         else if (logoChanged && nextLogoUrl) setLogoUrl(nextLogoUrl);
         setLogoFile(null);
@@ -290,11 +175,10 @@ export function useCompanyProfileForm({
         setLogoRemoved(false);
         toast.success(t('company.profileEditor.toastUpdated'));
       } else {
-        const created = (await createCompany.mutateAsync({
+        await createCompany.mutateAsync({
           ...payload,
           ...(logoChanged && nextLogoUrl ? { logoUrl: nextLogoUrl } : {}),
-        })) as { id: string };
-        await savePendingGallery(created.id);
+        });
         toast.success(t('company.profileEditor.toastCreated'));
         navigate('/company', { replace: true });
       }
@@ -367,17 +251,12 @@ export function useCompanyProfileForm({
     setDescription,
     logoUrl,
     logoPreview,
-    pendingGallery,
-    setPendingGallery,
     isSaving,
     legalReadOnly,
     canLeaveCompany,
     leaveCompanyPending: leaveCompany.isPending,
     publishCompanyPending: publishCompany.isPending,
     handleLogoPick,
-    handleGalleryPick,
-    handlePendingGalleryRemove,
-    handleGalleryRemove,
     handleSubmit,
     handlePublish,
     handleLeaveTeam,

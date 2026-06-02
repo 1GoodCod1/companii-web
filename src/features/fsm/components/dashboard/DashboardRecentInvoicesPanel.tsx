@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Panel, PanelHeader, EmptyState } from '@/components/cabinet/cabinet-ui';
-import type { InvoiceDto } from '@/types/fsm';
-import { paymentStatusClass } from '@/utils/dashboard';
-import { formatDateLocalized } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
-import { paymentStatusLabel } from '@/utils/i18nStatusLabels';
+import { Panel, PanelHeader, EmptyState } from '@/widgets/cabinet/cabinet-ui';
+import type { InvoiceDto } from '@/entities/fsm/model/types';
+import { paymentStatusBadgeClass as paymentStatusClass } from '@/entities/fsm/model/invoicePaymentStatus';
+import { formatDateLocalized } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { paymentStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 
 export function DashboardRecentInvoicesPanel({ invoices }: { invoices: InvoiceDto[] | undefined }) {
   const { t } = useTranslation();

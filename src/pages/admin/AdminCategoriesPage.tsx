@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { AppModal } from '@/components/ui/AppModal';
-import { getErrorMessage } from '@/utils/errors';
+import { AppModal } from '@/shared/ui/AppModal';
+import { getErrorMessage } from '@/shared/utils/errors';
 import {
   buildCatalogTranslations,
   readCatalogRuName,
-} from '@/utils/catalogTranslations';
+} from '@/shared/utils/catalogTranslations';
 import {
   PageHero,
   Panel,
@@ -16,15 +16,15 @@ import {
   cabinetFieldClass,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import {
   useAdminCategoriesQuery,
   useCreateAdminCategoryMutation,
   useUpdateAdminCategoryMutation,
   useDeleteAdminCategoryMutation,
   type AdminCategoryDto,
-} from '@/features/admin/api/useAdmin';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+} from '@/features/admin';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 export function AdminCategoriesPage() {
   const { t } = useTranslation();

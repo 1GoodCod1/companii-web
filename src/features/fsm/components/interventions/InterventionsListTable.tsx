@@ -1,12 +1,12 @@
-import type { InterventionDto } from '@/types/fsm';
-import { getInterventionStatusStyle } from '@/utils/interventionStatus';
-import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
-import { technicianDisplayName } from '@/utils/teamMembers';
-import { EntityListPanel } from '@/components/cabinet/EntityListPanel';
-import { entityListRowClass } from '@/components/cabinet/rowStyles';
-import { formatDateTimeLocalized } from '@/utils/date';
+import type { InterventionDto } from '@/entities/fsm/model/types';
+import { getInterventionStatusStyle } from '@/entities/fsm/model/interventionStatus';
+import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import { technicianDisplayName } from '@/entities/company/model/teamMembers';
+import { EntityListPanel } from '@/widgets/cabinet/EntityListPanel';
+import { entityListRowClass } from '@/widgets/cabinet/rowStyles';
+import { formatDateTimeLocalized } from '@/shared/utils/date';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '@/hooks/useLocale';
+import { useLocale } from '@/shared/hooks/useLocale';
 
 type Props = {
   interventions: InterventionDto[] | undefined;

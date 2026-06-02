@@ -1,7 +1,7 @@
-import { env } from '@/config/env';
+import { env } from '@/shared/config/env';
 
 const UPLOAD_PATH_RE = /^\/uploads\/.+/i;
-const UPLOAD_FILE_RE = /^[a-f0-9-]{36}\.(png|jpe?g|webp|gif)$/i;
+const UPLOAD_FILE_RE = /^[a-f0-9-]{36}\.(png|jpe?g|webp|gif|mp4|mov|webm)$/i;
 
 export function apiOrigin(): string {
   return env.apiUrl.replace(/\/api\/v1\/?$/, '');

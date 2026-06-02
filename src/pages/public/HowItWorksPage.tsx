@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
-import { SEOHead } from '@/components/seo/SEOHead';
+import { usePublicAuthCta } from '@/features/auth';
+import { SEOHead } from '@/shared/ui/seo/SEOHead';
 import {
   Building2,
   ArrowRight,

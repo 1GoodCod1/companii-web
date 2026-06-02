@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useAuthStore, type AuthUserSnapshot } from '@/stores/authStore';
+import { useAuthStore, type AuthUserSnapshot } from '@/entities/user/model/authStore';
 
 export type PublicAuthCta = {
   to: string;

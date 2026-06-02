@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ESTIMATE_STATUS } from '@/constants/estimateStatus.constants';
+import { ESTIMATE_STATUS } from '@/entities/estimate/model/estimateStatus.constants';
 import {
   resolveEstimateWizardStep,
   resolveEstimateWizardStepIndex,

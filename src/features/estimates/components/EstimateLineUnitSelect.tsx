@@ -1,16 +1,13 @@
 import { useMemo } from 'react';
-import { ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { AppSelect } from '@/widgets/cabinet/cabinet-ui';
 import {
   ESTIMATE_MEASUREMENT_UNITS,
   normalizeEstimateUnit,
   type EstimateMeasurementUnit,
-} from '@/constants/estimateMeasurementUnits.constants';
-import {
-  estimateLineFieldWrap,
-  estimateLineUnitSelect,
-} from './estimateLineTableStyles';
+} from '@/entities/estimate/model/estimateMeasurementUnits.constants';
+import { estimateLineFieldWrap } from './estimateLineTableStyles';
 
 type Props = {
   value: string;
@@ -41,37 +38,24 @@ export function EstimateLineUnitSelect({
     }
     return units.map((unit) => ({
       value: unit,
+      label: unit,
       title: t(`company.estimateWizard.unitsTitle.${unitKey(unit)}`, { defaultValue: unit }),
     }));
   }, [allowedUnits, normalizedValue, t]);
 
-  const selectedTitle =
-    options.find((option) => option.value === normalizedValue)?.title ?? normalizedValue;
-
   return (
-    <div className={cn('relative', estimateLineFieldWrap, className)}>
-      <select
-        value={normalizedValue}
-        disabled={disabled}
-        aria-label={ariaLabel ?? t('company.estimateWizard.stagesStep.colUnit')}
-        title={selectedTitle}
-        onChange={(event) => {
-          const unit = normalizeEstimateUnit(event.target.value);
-          if (unit) onChange(unit);
-        }}
-        className={estimateLineUnitSelect}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value} title={option.title}>
-            {option.value}
-          </option>
-        ))}
-      </select>
-      <ChevronDown
-        className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400"
-        aria-hidden
-      />
-    </div>
+    <AppSelect
+      value={normalizedValue}
+      onChange={(nextValue) => {
+        const unit = normalizeEstimateUnit(nextValue);
+        if (unit) onChange(unit);
+      }}
+      options={options}
+      disabled={disabled}
+      className={cn(estimateLineFieldWrap, className)}
+      aria-label={ariaLabel ?? t('company.estimateWizard.stagesStep.colUnit')}
+      maxVisibleItems={8}
+    />
   );
 }
 

@@ -1,1 +1,1 @@
-export * from '@/types/reviews';
+export * from '@/entities/review/model/reviews.types';

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EmptyState, SoftBadge } from '@/components/cabinet/cabinet-ui';
-import type { CalendarBoardDto, InterventionDto } from '@/types/fsm';
-import { useLocale } from '@/hooks/useLocale';
+import { EmptyState, SoftBadge } from '@/widgets/cabinet/cabinet-ui';
+import type { CalendarBoardDto, InterventionDto } from '@/entities/fsm/model/types';
+import { useLocale } from '@/shared/hooks/useLocale';
 import { InterventionCard } from './InterventionCard';
-import { formatDateLocalized } from '@/utils/date';
+import { formatDateLocalized } from '@/shared/utils/date';
 
 type ScheduledIntervention = InterventionDto & { scheduledAt: string };
 
@@ -23,7 +23,7 @@ export function ScheduledColumn({ scheduled }: { scheduled: CalendarBoardDto['sc
   }, [scheduled, locale]);
 
   if (scheduled.length === 0) {
-    return <EmptyState message={t('company.fsm.calendar.scheduled.empty')} />;
+    return <EmptyState message={t('company.fsm.calendar.scheduled.empty')} compact />;
   }
 
   return (

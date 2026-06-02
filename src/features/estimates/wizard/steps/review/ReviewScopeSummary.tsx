@@ -1,6 +1,6 @@
 import { CheckCircle2, CircleDashed, PlusCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Panel } from '@/components/cabinet/cabinet-ui';
+import { Panel } from '@/widgets/cabinet/cabinet-ui';
 import type { EstimateWizardApi } from '../../useEstimateWizard';
 
 type ReviewScopeSummaryProps = {

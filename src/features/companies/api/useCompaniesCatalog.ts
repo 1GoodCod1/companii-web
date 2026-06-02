@@ -1,8 +1,8 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { publicListQueryOptions } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import type { CatalogOptionDto } from '@/types/companies';
+import { apiFetch } from '@/shared/api/client';
+import { publicListQueryOptions } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import type { CatalogOptionDto } from '@/entities/company/model/companies.types';
 
 export function useCitiesQuery(): UseQueryResult<CatalogOptionDto[], Error> {
   return useQuery<CatalogOptionDto[], Error>({

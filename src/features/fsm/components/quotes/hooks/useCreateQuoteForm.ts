@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import type { CompanyServiceDto } from '@/types/fsm';
+import type { CompanyServiceDto } from '@/entities/fsm/model/types';
 import { useCreateQuoteMutation } from '@/features/fsm/api/useQuotes';
 import { useCustomersQuery } from '@/features/fsm/api/useCustomers';
 import { useCompanyServicesQuery } from '@/features/fsm/api/useCompanyServices';
-import { getErrorMessage } from '@/utils/errors';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 interface UseCreateQuoteFormProps {
   onClose: () => void;

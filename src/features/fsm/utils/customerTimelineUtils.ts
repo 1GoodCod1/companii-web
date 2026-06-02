@@ -1,1 +1,1 @@
-export * from '@/utils/customerTimeline';
+export * from '@/entities/fsm/model/customerTimeline';

@@ -2,15 +2,15 @@ import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
-import { PageHero, SkeletonForm } from '@/components/cabinet/cabinet-ui';
-import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
-import { useEstimateProjectQuery } from '@/features/estimates/api/useEstimates';
-import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
+import { PageHero, SkeletonForm } from '@/widgets/cabinet/cabinet-ui';
+import { CompanyManagementGate } from '@/features/companies';
+import { useEstimateProjectQuery } from '@/features/estimates';
+import { estimateStatusLabel } from '@/entities/estimate/model/i18nStatusLabels';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
-import { ExistingEstimateWizard } from '@/features/estimates/wizard/ExistingEstimateWizard';
-import { getEstimateWizardRemountKey } from '@/features/estimates/wizard/getEstimateWizardRemountKey';
-import { NewEstimateForm } from '@/features/estimates/wizard/NewEstimateForm';
+import { ExistingEstimateWizard } from '@/features/estimates';
+import { getEstimateWizardRemountKey } from '@/features/estimates';
+import { NewEstimateForm } from '@/features/estimates';
 
 export function CompanyEstimateWizardPage() {
   const { t } = useTranslation();

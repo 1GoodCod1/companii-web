@@ -1,23 +1,23 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInterventionsQuery } from '@/features/fsm/api/useInterventions';
-import { useCustomersQuery } from '@/features/fsm/api/useCustomers';
+import { useInterventionsQuery } from '@/features/fsm';
+import { useCustomersQuery } from '@/features/fsm';
 import { useCompanyMembersQuery } from '@/features/companies/api/useCompanies';
-import { PageHero, cabinetBtnPrimary } from '@/components/cabinet/cabinet-ui';
-import { EntityListDetailLayout } from '@/components/cabinet/EntityListDetailLayout';
-import type { InterventionStatus, InterventionDto } from '@/types/fsm';
-import { filterAssignableTechnicians } from '@/utils/teamMembers';
+import { PageHero, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
+import { EntityListDetailLayout } from '@/widgets/cabinet/EntityListDetailLayout';
+import type { InterventionStatus, InterventionDto } from '@/entities/fsm/model/types';
+import { filterAssignableTechnicians } from '@/entities/company/model/teamMembers';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import {
   InterventionsListTable,
-} from '@/features/fsm/components/interventions/InterventionsListTable';
+} from '@/features/fsm';
 import {
   InterventionsStatusFilter,
-} from '@/features/fsm/components/interventions/components/InterventionsStatusFilter';
-import { InterventionDetailPanel } from '@/features/fsm/components/interventions/InterventionDetailPanel';
-import { CreateInterventionModal } from '@/features/fsm/components/interventions/CreateInterventionModal';
-import { useEntityModal } from '@/hooks/useEntityModal';
-import { useEntitySelection } from '@/hooks/useEntitySelection';
+} from '@/features/fsm';
+import { InterventionDetailPanel } from '@/features/fsm';
+import { CreateInterventionModal } from '@/features/fsm';
+import { useEntityModal } from '@/shared/hooks/useEntityModal';
+import { useEntitySelection } from '@/shared/hooks/useEntitySelection';
 
 export function CompanyInterventionsPage() {
   const { t } = useTranslation();

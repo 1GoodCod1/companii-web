@@ -4,12 +4,20 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
-import { AuthBootstrap } from '@/features/auth/AuthBootstrap';
-import { createQueryClient } from '@/api/queryClient';
-import { queryPersistOptions } from '@/api/persistQuery';
-import { QUERY_CACHE_PERSIST_KEY } from '@/constants/storage';
+import { AuthBootstrap } from '@/features/auth';
+import { createQueryClient } from '@/shared/api/queryClient';
+import { queryPersistOptions } from '@/shared/api/persistQuery';
+import { QUERY_CACHE_PERSIST_KEY } from '@/shared/constants/storage';
 import { safeStorage } from '@/lib/safeStorage';
-import { bindLogoutCleanup } from '@/features/auth/logout-cleanup';
+import { bindLogoutCleanup } from '@/entities/user/model/logout-cleanup';
+import { configureApiClient } from '@/shared/api/client/config';
+import { getRequestAuthContext } from '@/entities/user/api/authContext';
+import { refreshAccessToken } from '@/entities/user/api/refreshAccessToken';
+
+configureApiClient({
+  getAuthContext: getRequestAuthContext,
+  onUnauthorized: refreshAccessToken,
+});
 
 const persister = createAsyncStoragePersister({
   storage: safeStorage,

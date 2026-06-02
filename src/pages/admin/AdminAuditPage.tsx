@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useAdminAuditQuery, useAdminCompaniesQuery, type AdminAuditLogDto } from '@/features/admin/api/useAdmin';
-import { AUDIT_ACTION_FILTER_OPTIONS } from '@/constants/admin.constants';
-import { auditActionLabel, formatAuditDetails } from '@/utils/audit';
-import { formatAuditActorName } from '@/utils/person';
-import { formatDateTimeLocalized } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
+import { useAdminAuditQuery, useAdminCompaniesQuery, type AdminAuditLogDto } from '@/features/admin';
+import { AUDIT_ACTION_FILTER_OPTIONS } from '@/entities/company/model/admin.constants';
+import { auditActionLabel, formatAuditDetails } from '@/shared/utils/audit';
+import { formatAuditActorName } from '@/shared/utils/person';
+import { formatDateTimeLocalized } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { AppSelect } from '@/widgets/cabinet/cabinet-ui';
 
 export function AdminAuditPage() {
   const { t } = useTranslation();
@@ -22,6 +23,28 @@ export function AdminAuditPage() {
 
   const { data: logs, isLoading } = useAdminAuditQuery(filters);
 
+  const companyOptions = useMemo(
+    () => [
+      { value: '', label: t('admin.auditPage.filterAllCompanies') },
+      ...(companies?.map((company) => ({
+        value: company.id,
+        label: company.name,
+      })) ?? []),
+    ],
+    [companies, t],
+  );
+
+  const actionOptions = useMemo(
+    () => [
+      { value: '', label: t('admin.auditPage.filterAllActions') },
+      ...AUDIT_ACTION_FILTER_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(`admin.auditPage.filterLabels.${option.value}`, option.label),
+      })),
+    ],
+    [t],
+  );
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
@@ -30,30 +53,22 @@ export function AdminAuditPage() {
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <select
+        <AppSelect
           value={companyId}
-          onChange={(e) => setCompanyId(e.target.value)}
-          className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white min-w-[220px]"
-        >
-          <option value="">{t('admin.auditPage.filterAllCompanies')}</option>
-          {companies?.map((company) => (
-            <option key={company.id} value={company.id}>
-              {company.name}
-            </option>
-          ))}
-        </select>
-        <select
+          onChange={setCompanyId}
+          options={companyOptions}
+          aria-label={t('admin.auditPage.filterAllCompanies')}
+          className="min-w-[220px]"
+          maxVisibleItems={8}
+        />
+        <AppSelect
           value={actionFilter}
-          onChange={(e) => setActionFilter(e.target.value)}
-          className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-white min-w-[220px]"
-        >
-          <option value="">{t('admin.auditPage.filterAllActions')}</option>
-          {AUDIT_ACTION_FILTER_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {t(`admin.auditPage.filterLabels.${option.value}`, option.label)}
-            </option>
-          ))}
-        </select>
+          onChange={setActionFilter}
+          options={actionOptions}
+          aria-label={t('admin.auditPage.filterAllActions')}
+          className="min-w-[220px]"
+          maxVisibleItems={8}
+        />
       </div>
 
       {isLoading ? (

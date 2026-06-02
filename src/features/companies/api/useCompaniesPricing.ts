@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
 
 export interface PricingModifierDef {
   key: string;

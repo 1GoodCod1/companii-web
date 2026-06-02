@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { useCompanyProfileForm } from './useCompanyProfileForm';
-import { PageHero, cabinetBtnPrimary } from '@/components/cabinet/cabinet-ui';
-import { CompanyBrandingSection } from '@/components/company/CompanyBrandingSection';
-import type { CatalogOptionDto, OwnedCompanyDto } from '@/types/companies';
+import { PageHero, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
+import { CompanyBrandingSection } from '@/entities/company/ui/CompanyBrandingSection';
+import type { CatalogOptionDto, OwnedCompanyDto } from '@/entities/company/model/companies.types';
+import { ROUTE_ABS, COMPANY_CABINET_PATH } from '@/shared/constants/routes.constants';
 import { CatalogPublishSection } from './components/CatalogPublishSection';
 import { LegalInfoSection } from './components/LegalInfoSection';
 import { LocationSection } from './components/LocationSection';
@@ -32,6 +33,9 @@ export function CompanyProfileEditor({
   userDefaults?: { email?: string; phone?: string | null };
 }) {
   const { t } = useTranslation();
+  const manageGalleryLink = ownedCompany
+    ? `${ROUTE_ABS.COMPANY}${COMPANY_CABINET_PATH.GALLERY}`
+    : undefined;
 
   const {
     name,
@@ -62,17 +66,12 @@ export function CompanyProfileEditor({
     setDescription,
     logoUrl,
     logoPreview,
-    pendingGallery,
-    setPendingGallery,
     isSaving,
     legalReadOnly,
     canLeaveCompany,
     leaveCompanyPending,
     publishCompanyPending,
     handleLogoPick,
-    handleGalleryPick,
-    handlePendingGalleryRemove,
-    handleGalleryRemove,
     handleSubmit,
     handlePublish,
     handleLeaveTeam,
@@ -179,16 +178,7 @@ export function CompanyProfileEditor({
               logoUrl={logoUrl}
               logoPreview={logoPreview}
               onLogoPick={handleLogoPick}
-              galleryImages={ownedCompany?.galleryImages ?? []}
-              pendingGallery={pendingGallery}
-              onGalleryPick={handleGalleryPick}
-              onPendingGalleryCaptionChange={(id, caption) =>
-                setPendingGallery((prev) =>
-                  prev.map((item) => (item.id === id ? { ...item, caption } : item)),
-                )
-              }
-              onPendingGalleryRemove={handlePendingGalleryRemove}
-              onGalleryRemove={(imageId) => void handleGalleryRemove(imageId)}
+              manageGalleryLink={manageGalleryLink}
               disabled={isSaving}
             />
           </div>

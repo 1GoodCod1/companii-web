@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveLaborUnits, DEFAULT_LABOR_UNITS } from '@/constants/estimateMeasurementUnits.constants';
+import { resolveLaborUnits, DEFAULT_LABOR_UNITS } from '@/entities/estimate/model/estimateMeasurementUnits.constants';
 import { isEstimateLaborLine } from './estimateLaborLine';
 
 describe('isEstimateLaborLine', () => {

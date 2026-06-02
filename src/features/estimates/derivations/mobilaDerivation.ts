@@ -1,6 +1,6 @@
 import { type PricingModifierOverrides, modifierFactor } from '../utils/pricingModifierOverrides';
 import { readNumber, readBoolean, round2 } from '../utils/diagnosticReader';
-import type { Plan2dData } from '@/types/estimates';
+import type { Plan2dData } from '@/entities/estimate/model/estimates';
 
 function resolveHardwareCostMultiplier(hardwareTier: unknown, overrides?: PricingModifierOverrides): number {
   const normalized = String(hardwareTier ?? 'basic')

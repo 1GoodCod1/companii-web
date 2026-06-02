@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Panel, EmptyState } from '@/components/cabinet/cabinet-ui';
+import { Panel, EmptyState } from '@/widgets/cabinet/cabinet-ui';
 
 export function PortalError() {
   const { t } = useTranslation();

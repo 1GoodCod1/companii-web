@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
-import { CompanyLayout } from '@/components/layout/CompanyLayout';
-import { RequireAuth, RequireCompanyRole } from '@/features/auth/guards';
+import { CompanyLayout } from '@/widgets/layout/CompanyLayout';
+import { RequireAuth, RequireCompanyRole } from '@/features/auth';
 import {
   CompanyEstimatesPage,
   CompanyTemplatesPage,
@@ -10,6 +10,7 @@ import {
 } from './lazy-pages';
 import { CompanyDashboardPage } from '@/pages/company/CompanyDashboardPage';
 import { CompanyProfilePage } from '@/pages/company/CompanyProfilePage';
+import { CompanyGalleryPage } from '@/pages/company/CompanyGalleryPage';
 import { CompanyTeamPage } from '@/pages/company/CompanyTeamPage';
 import { CompanyCustomersPage } from '@/pages/company/CompanyCustomersPage';
 import { CompanyLeadsPage } from '@/pages/company/CompanyLeadsPage';
@@ -21,7 +22,7 @@ import { CompanyServicesPage } from '@/pages/company/CompanyServicesPage';
 import { CompanyInvoicesPage } from '@/pages/company/CompanyInvoicesPage';
 import { CompanyReviewsPage } from '@/pages/company/CompanyReviewsPage';
 import { CompanyAuditPage } from '@/pages/company/CompanyAuditPage';
-import { SettingsPage } from '@/features/settings/SettingsPage';
+import { SettingsPage } from '@/features/settings';
 import { CompanySubscriptionPage } from '@/pages/company/CompanySubscriptionPage';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import {
@@ -29,7 +30,7 @@ import {
   ROUTE_ACCESS,
   COMPANY_CABINET_PATH,
   COMPANY_ROUTE,
-} from '@/constants/routes.constants';
+} from '@/shared/constants/routes.constants';
 
 export const companyRoutesSection = {
   path: ROUTE_ROOT.COMPANY,
@@ -52,6 +53,14 @@ export const companyRoutesSection = {
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.PROFILE}>
           <CompanyProfilePage />
+        </RequireCompanyRole>
+      ),
+    },
+    {
+      path: COMPANY_ROUTE.GALLERY,
+      element: (
+        <RequireCompanyRole routePath={COMPANY_CABINET_PATH.GALLERY}>
+          <CompanyGalleryPage />
         </RequireCompanyRole>
       ),
     },

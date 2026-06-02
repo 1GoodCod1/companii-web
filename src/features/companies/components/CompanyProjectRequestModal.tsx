@@ -1,13 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppModal } from '@/components/ui/AppModal';
+import { AppModal } from '@/shared/ui/AppModal';
 import {
   cabinetBtnPrimary,
   cabinetFieldClass,
   cabinetLabelClass,
-} from '@/components/cabinet/cabinet-ui';
-import { getTranslatedCategoryName } from '@/utils/translateCityCategory';
-import type { PublicCompanyDetailDto } from '@/types/companies';
+} from '@/widgets/cabinet/cabinet-ui';
+import { getTranslatedCategoryName } from '@/shared/utils/translateCityCategory';
+import type { PublicCompanyDetailDto } from '@/entities/company/model/companies.types';
 
 interface CompanyProjectRequestModalProps {
   open: boolean;

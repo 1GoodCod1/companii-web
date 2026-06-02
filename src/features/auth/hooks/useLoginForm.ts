@@ -8,22 +8,22 @@ import { useLoginMutation } from '@/features/auth/api/useAuth';
 import {
   useAcceptPortalInvitationMutation,
   usePortalInvitePreviewQuery,
-} from '@/features/portal/api/usePortal';
+} from '@/features/portal';
 import {
   useAcceptTeamInvitationMutation,
   useTeamInvitePreviewQuery,
 } from '@/features/companies/api/useCompanies';
 import { getAuthErrorMessage } from '@/features/auth/authErrors';
-import { useAuthStore } from '@/stores/authStore';
-import { ROUTE_ABS } from '@/constants/routes.constants';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import { ROUTE_ABS } from '@/shared/constants/routes.constants';
 import {
   isCompanyStaffAccount,
   isEndClientAccount,
   isPlatformAdminAccount,
-} from '@/utils/roles';
+} from '@/entities/company/model/roles';
 import { resolveCompanyHomeRoute } from '@/features/companies/companyHomeRoute';
-import { companyAbsolutePath } from '@/utils/routes';
-import { COMPANY_ROUTE } from '@/constants/routes.constants';
+import { companyAbsolutePath } from '@/shared/utils/routes';
+import { COMPANY_ROUTE } from '@/shared/constants/routes.constants';
 import { createLoginSchema, type LoginFormValues } from '@/lib/forms/schemas/authSchemas';
 import { showFirstFormError } from '@/lib/forms/showFirstFormError';
 

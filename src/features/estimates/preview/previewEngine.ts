@@ -1,5 +1,5 @@
-import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
-import type { Plan2dData } from '@/types/estimate-plan2d.types';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimate-blueprint-config.types';
+import type { Plan2dData } from '@/entities/estimate/model/estimate-plan2d.types';
 import { isPricingRuleActive } from '../diagnostic/workModules';
 import type { CustomPricingValues } from '../utils/customPricing';
 import { deriveItNetworksMeasurements } from '../derivations/itNetworksDerivation';

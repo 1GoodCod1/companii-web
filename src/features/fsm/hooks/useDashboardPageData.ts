@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import toast from 'react-hot-toast';
-import i18n from '@/i18n';
+import i18n from '@/shared/config/i18n';
 import {
   useCustomersCountQuery,
   useInterventionsQuery,
@@ -9,16 +9,16 @@ import {
   useConvertLeadMutation,
 } from '@/features/fsm/api/useFsm';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
-import { useMySubscriptionQuery } from '@/features/subscriptions/api/useSubscriptions';
+import { useMySubscriptionQuery } from '@/entities/subscription/api/useSubscriptions';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { needsCompanyOnboarding } from '@/features/companies/companyHomeRoute';
-import { INTERVENTION_STATUS } from '@/constants/interventionStatus.constants';
-import { LEAD_STATUS } from '@/constants/leadStatus.constants';
-import type { InterventionDto } from '@/types/fsm';
-import { KPI_ACCENTS, type DashboardKpi } from '@/utils/dashboard';
-import { getErrorMessage } from '@/utils/errors';
-import { isActiveInterventionStatus } from '@/utils/interventionStatus';
-import { isPaidPaymentStatus } from '@/utils/invoicePaymentStatus';
+import { INTERVENTION_STATUS } from '@/entities/fsm/model/interventionStatus.constants';
+import { LEAD_STATUS } from '@/entities/fsm/model/leadStatus.constants';
+import type { InterventionDto } from '@/entities/fsm/model/types';
+import { KPI_ACCENTS, type DashboardKpi } from '@/entities/fsm/model/dashboard.constants';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { isActiveInterventionStatus } from '@/entities/fsm/model/interventionStatus';
+import { isPaidPaymentStatus } from '@/entities/fsm/model/invoicePaymentStatus';
 
 export function useDashboardPageData() {
   const { isManagement, activeCompanyId } = useCompanyPermissions();

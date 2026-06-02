@@ -7,18 +7,18 @@ import {
   PanelHeader,
   EmptyState,
   SoftBadge,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
 import { interventionStatusTone } from '@/features/portal/portalStatus';
 import type { ReviewTarget } from '@/features/portal/portalSectionTypes';
-import { useCreateReviewMutation } from '@/features/reviews/api/useReviews';
-import { ReviewModal } from '@/components/reviews/ReviewModal';
-import { StarRating } from '@/components/reviews/StarRating';
-import type { PortalInterventionDto } from '@/types/reviews';
-import { formatDateLocalized } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
-import { getErrorMessage } from '@/utils/errors';
-import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
+import { useCreateReviewMutation } from '@/features/reviews';
+import { ReviewModal } from '@/features/reviews';
+import { StarRating } from '@/shared/ui/reviews/StarRating';
+import type { PortalInterventionDto } from '@/entities/review/model/reviews.types';
+import { formatDateLocalized } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 
 export function PortalInterventionsSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();

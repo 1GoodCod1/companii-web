@@ -1,19 +1,19 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuthStore, type AccountKind } from '@/stores/authStore';
-import { canAccessCompanyRoute, defaultRouteForRole } from '@/utils/roleAccess';
+import { useAuthStore, type AccountKind } from '@/entities/user/model/authStore';
+import { canAccessCompanyRoute, defaultRouteForRole } from '@/entities/company/model/roleAccess';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
-import { useMySubscriptionQuery } from '@/features/subscriptions/api/useSubscriptions';
-import { useCompanyContextStore } from '@/stores/companyContextStore';
-import { resolveCompanyRole } from '@/components/layout/cabinet-nav';
+import { useMySubscriptionQuery } from '@/entities/subscription/api/useSubscriptions';
+import { useCompanyContextStore } from '@/entities/company/model/companyContextStore';
+import { resolveCompanyRole } from '@/widgets/layout/cabinet-nav';
 import {
   hasMinPlan,
   requiredPlanForRoute,
-} from '@/config/planEntitlements';
-import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
-import { resolveSubscriptionPlanCode } from '@/utils/subscriptionPlan';
-import { PlanUpgradePanel } from '@/features/subscriptions/components/PlanUpgradePanel';
+} from '@/entities/subscription/model/planEntitlements';
+import type { CompanySubscriptionPlanCode } from '@/entities/subscription/model/types';
+import { resolveSubscriptionPlanCode } from '@/entities/subscription/model/subscriptionPlan';
+import { PlanUpgradePanel } from '@/features/subscriptions';
 import { ForbiddenPage } from '@/pages/errors/ForbiddenPage';
 
 export function RequireAuth({

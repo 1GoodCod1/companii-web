@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { getErrorMessage } from '@/utils/errors';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 import {
   useCreateAdminBlueprintMutation,
   useUpdateAdminBlueprintMutation,
@@ -13,7 +13,7 @@ import type {
   EstimateBlueprintConfig,
   BlueprintAccessDifficultyImpact,
   BlueprintUrgencyImpact,
-} from '@/types/estimate-blueprint-config.types';
+} from '@/entities/estimate/model/estimate-blueprint-config.types';
 
 export type EditorTab = 'visual' | 'json';
 

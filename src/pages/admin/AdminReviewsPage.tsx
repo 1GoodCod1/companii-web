@@ -1,8 +1,8 @@
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { useAdminReviewsQuery, useModerateReviewMutation, type AdminReviewDto } from '@/features/admin/api/useAdmin';
-import { formatPersonName } from '@/utils/person';
-import { getErrorMessage } from '@/utils/errors';
+import { useAdminReviewsQuery, useModerateReviewMutation, type AdminReviewDto } from '@/features/admin';
+import { formatPersonName } from '@/shared/utils/person';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 export function AdminReviewsPage() {
   const { t } = useTranslation();

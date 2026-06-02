@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Globe, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
-import { Panel, PanelHeader } from '@/components/cabinet/cabinet-ui';
-import { LanguageSwitcher } from '@/components/i18n/LanguageSwitcher';
-import { AppModal } from '@/components/ui/AppModal';
-import { useChangePasswordMutation } from '@/features/auth/api/useAuth';
-import { getAuthErrorMessage } from '@/features/auth/authErrors';
+import { Panel, PanelHeader } from '@/widgets/cabinet/cabinet-ui';
+import { LanguageSwitcher } from '@/shared/ui/i18n/LanguageSwitcher';
+import { AppModal } from '@/shared/ui/AppModal';
+import { useChangePasswordMutation } from '@/features/auth';
+import { getAuthErrorMessage } from '@/features/auth';
 
 export function SettingsPage() {
   const { t } = useTranslation();

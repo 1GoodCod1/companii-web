@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import { useAuthStore } from '@/stores/authStore';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import { useAuthStore } from '@/entities/user/model/authStore';
 import { FSM_BASE } from './fsmBase';
 
 const base = `${FSM_BASE}/crews`;

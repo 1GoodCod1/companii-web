@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch, downloadApiBlob } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import { useAuthStore } from '@/stores/authStore';
-import type { QuoteDto, QuoteLineDto, QuoteStatus, InterventionDto } from '@/types/fsm';
+import { apiFetch, downloadApiBlob } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import type { QuoteDto, QuoteLineDto, QuoteStatus, InterventionDto } from '@/entities/fsm/model/types';
 import { FSM_BASE } from './fsmBase';
 
 export function useQuotesQuery(): UseQueryResult<QuoteDto[], Error> {

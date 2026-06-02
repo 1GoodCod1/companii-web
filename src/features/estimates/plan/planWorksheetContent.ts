@@ -1,4 +1,4 @@
-import type { Plan2dData } from '@/types/estimates';
+import type { Plan2dData } from '@/entities/estimate/model/estimates';
 
 export function planHasWorksheetContent(plan: Plan2dData | null | undefined): boolean {
   if (!plan) return false;

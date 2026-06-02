@@ -7,7 +7,7 @@ import viteCompression from 'vite-plugin-compression';
 import {
   DEV_API_ORIGIN,
   PROD_API_ORIGIN,
-} from './src/config/urls';
+} from './src/shared/config/urls';
 
 function collectConnectSrcOrigins(mode: string): string {
   const env = loadEnv(mode, process.cwd(), '');

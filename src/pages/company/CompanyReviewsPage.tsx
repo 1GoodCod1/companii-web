@@ -1,18 +1,17 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MessageSquareQuote } from 'lucide-react';
-import { useCompanyReviewsMeQuery } from '@/features/reviews/api/useReviews';
-import { ReviewCard } from '@/components/reviews/ReviewCard';
-import { StarRating } from '@/components/reviews/StarRating';
+import { useCompanyReviewsMeQuery } from '@/features/reviews';
+import { ReviewCard } from '@/entities/review/ui/ReviewCard';
+import { StarRating } from '@/shared/ui/reviews/StarRating';
 import {
   PageHero,
   Panel,
-  PanelHeader,
   EmptyState,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
-import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
-import { useAuthStore } from '@/stores/authStore';
+} from '@/widgets/cabinet/cabinet-ui';
+import { CompanyManagementGate } from '@/features/companies';
+import { useAuthStore } from '@/entities/user/model/authStore';
 
 export function CompanyReviewsPage() {
   const { t } = useTranslation();
@@ -48,11 +47,6 @@ export function CompanyReviewsPage() {
       />
 
       <Panel>
-        <PanelHeader
-          title={t('company.reviewsPage.panelTitle')}
-          description={t('company.reviewsPage.panelDescription')}
-        />
-
         {isLoading && !data ? (
           <p className="text-sm text-gray-400 py-8 text-center">{t('company.reviewsPage.loading')}</p>
         ) : showEmpty ? (

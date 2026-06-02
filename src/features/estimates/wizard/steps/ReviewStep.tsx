@@ -8,7 +8,7 @@ import {
   Panel,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import { LeadBudgetGauge } from '@/features/estimates/components/LeadBudgetGauge';
 import { useDownloadEstimatePdf } from '@/features/estimates/api/useEstimates';
 import { EstimateVersionHistory } from '@/features/estimates/components/EstimateVersionHistory';

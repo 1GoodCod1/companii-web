@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CompanyMemberDto } from '@/types/fsm';
+import { AppSelect } from '@/widgets/cabinet/cabinet-ui';
+import type { CompanyMemberDto } from '@/entities/fsm/model/types';
 import type { CrewDto } from '@/features/fsm/api/useCrews';
 import type { AssignMode } from '../hooks/useCreateInterventionForm';
-import { memberDisplayName } from '@/utils/teamMembers';
+import { memberDisplayName } from '@/entities/company/model/teamMembers';
 
 interface AssignmentSectionProps {
   assignMode: AssignMode;
@@ -30,6 +32,36 @@ export function AssignmentSection({
   activeCrews,
 }: AssignmentSectionProps) {
   const { t } = useTranslation();
+
+  const technicianOptions = useMemo(
+    () => [
+      {
+        value: '',
+        label: t('company.fsm.interventions.createModal.fields.technicianPlaceholder'),
+      },
+      ...techniciansSorted.map((m) => ({
+        value: m.id,
+        label: memberDisplayName(m),
+      })),
+    ],
+    [techniciansSorted, t],
+  );
+
+  const crewOptions = useMemo(
+    () => [
+      {
+        value: '',
+        label: t('company.fsm.interventions.createModal.assignMode.crewPlaceholder', {
+          defaultValue: 'Alege o brigadă...',
+        }),
+      },
+      ...activeCrews.map((c) => ({
+        value: c.id,
+        label: `${c.name} (${c.members.length})`,
+      })),
+    ],
+    [activeCrews, t],
+  );
 
   return (
     <div className="rounded-xl border border-gray-100 bg-gray-50/40 p-3 space-y-3">
@@ -59,20 +91,12 @@ export function AssignmentSection({
       </div>
 
       {assignMode === 'single' && (
-        <select
+        <AppSelect
           value={technicianId}
-          onChange={(e) => setTechnicianId(e.target.value)}
-          className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none bg-white cursor-pointer font-medium"
-        >
-          <option value="">
-            {t('company.fsm.interventions.createModal.fields.technicianPlaceholder')}
-          </option>
-          {techniciansSorted.map((m) => (
-            <option key={m.id} value={m.id}>
-              {memberDisplayName(m)}
-            </option>
-          ))}
-        </select>
+          onChange={setTechnicianId}
+          options={technicianOptions}
+          aria-label={t('company.fsm.interventions.createModal.fields.technicianPlaceholder')}
+        />
       )}
 
       {assignMode === 'multiple' && (
@@ -117,22 +141,14 @@ export function AssignmentSection({
 
       {assignMode === 'crew' && (
         <div className="space-y-2">
-          <select
+          <AppSelect
             value={crewId}
-            onChange={(e) => setCrewId(e.target.value)}
-            className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none bg-white cursor-pointer font-medium"
-          >
-            <option value="">
-              {t('company.fsm.interventions.createModal.assignMode.crewPlaceholder', {
-                defaultValue: 'Alege o brigadă...',
-              })}
-            </option>
-            {activeCrews.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name} ({c.members.length})
-              </option>
-            ))}
-          </select>
+            onChange={setCrewId}
+            options={crewOptions}
+            aria-label={t('company.fsm.interventions.createModal.assignMode.crewPlaceholder', {
+              defaultValue: 'Alege o brigadă...',
+            })}
+          />
           {(() => {
             const chosen = activeCrews.find((c) => c.id === crewId);
             if (!chosen) return null;

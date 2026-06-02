@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppModal } from '@/components/ui/AppModal';
-import type { CompanyServiceDto, CustomerDto } from '@/types/fsm';
+import { AppModal } from '@/shared/ui/AppModal';
+import { AppSelect, cabinetBtnPrimary, cabinetBtnSecondary } from '@/widgets/cabinet/cabinet-ui';
+import type { CompanyServiceDto, CustomerDto } from '@/entities/fsm/model/types';
 import { useCreateQuoteForm } from './hooks/useCreateQuoteForm';
 
 type Props = {
@@ -17,7 +19,6 @@ export function CreateQuoteModal({ open, onClose }: Props) {
       onClose={onClose}
       title={t('company.fsm.quotes.createModal.title')}
       size="xl"
-      backgroundIndex={4}
     >
       {open ? <CreateQuoteForm onClose={onClose} /> : null}
     </AppModal>
@@ -45,6 +46,25 @@ function CreateQuoteForm({ onClose }: Pick<Props, 'onClose'>) {
     isPending,
   } = useCreateQuoteForm({ onClose });
 
+  const customerOptions = useMemo(
+    () => [
+      { value: '', label: t('company.fsm.quotes.createModal.fields.customerPlaceholder') },
+      ...(customers?.map((c: CustomerDto) => ({ value: c.id, label: c.fullName })) ?? []),
+    ],
+    [customers, t],
+  );
+
+  const catalogServiceOptions = useMemo(
+    () => [
+      { value: '', label: t('company.fsm.quotes.createModal.lines.catalogPlaceholder') },
+      ...(services?.map((service: CompanyServiceDto) => ({
+        value: service.id,
+        label: `${service.name} — ${Number(service.defaultPrice).toLocaleString('ro-MD')} MDL`,
+      })) ?? []),
+    ],
+    [services, t],
+  );
+
   return (
     <form onSubmit={handleCreateSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
@@ -52,19 +72,12 @@ function CreateQuoteForm({ onClose }: Pick<Props, 'onClose'>) {
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
             {t('company.fsm.quotes.createModal.fields.customer')}
           </label>
-          <select
-            required
+          <AppSelect
             value={customerId}
-            onChange={(e) => setCustomerId(e.target.value)}
-            className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white cursor-pointer font-medium"
-          >
-            <option value="">{t('company.fsm.quotes.createModal.fields.customerPlaceholder')}</option>
-            {customers?.map((c: CustomerDto) => (
-              <option key={c.id} value={c.id}>
-                {c.fullName}
-              </option>
-            ))}
-          </select>
+            onChange={setCustomerId}
+            options={customerOptions}
+            aria-label={t('company.fsm.quotes.createModal.fields.customer')}
+          />
         </div>
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
@@ -87,18 +100,14 @@ function CreateQuoteForm({ onClose }: Pick<Props, 'onClose'>) {
           <div className="flex flex-wrap items-center gap-2">
             {services?.length ? (
               <>
-                <select
+                <AppSelect
                   value={catalogServiceId}
-                  onChange={(e) => setCatalogServiceId(e.target.value)}
-                  className="border border-gray-200 rounded-xl px-3 py-1.5 text-xs bg-white"
-                >
-                  <option value="">{t('company.fsm.quotes.createModal.lines.catalogPlaceholder')}</option>
-                  {services.map((service: CompanyServiceDto) => (
-                    <option key={service.id} value={service.id}>
-                      {service.name} — {Number(service.defaultPrice).toLocaleString('ro-MD')} MDL
-                    </option>
-                  ))}
-                </select>
+                  onChange={setCatalogServiceId}
+                  options={catalogServiceOptions}
+                  aria-label={t('company.fsm.quotes.createModal.lines.catalogPlaceholder')}
+                  className="min-w-[180px]"
+                  maxVisibleItems={8}
+                />
                 <button
                   type="button"
                   onClick={handleAddFromCatalog}
@@ -171,18 +180,10 @@ function CreateQuoteForm({ onClose }: Pick<Props, 'onClose'>) {
       </div>
 
       <div className="pt-4 flex justify-end gap-2 border-t border-gray-100">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2.5 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs font-bold uppercase tracking-wider text-gray-500 cursor-pointer"
-        >
+        <button type="button" onClick={onClose} className={cabinetBtnSecondary}>
           {t('cabinet.common.cancel')}
         </button>
-        <button
-          type="submit"
-          disabled={isPending}
-          className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer"
-        >
+        <button type="submit" disabled={isPending} className={cabinetBtnPrimary}>
           {t('company.fsm.quotes.createModal.submit')}
         </button>
       </div>

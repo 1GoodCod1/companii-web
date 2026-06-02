@@ -5,18 +5,18 @@ import {
   PanelHeader,
   EmptyState,
   SoftBadge,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import { useUpdatePortalQuoteMutation } from '@/features/portal/api/usePortal';
 import {
   QUOTE_STATUS,
   type PortalQuoteActionStatus,
-} from '@/constants/quoteStatus.constants';
-import { quoteStatusTone } from '@/utils/portalStatus';
+} from '@/entities/fsm/model/quoteStatus.constants';
+import { quoteStatusTone } from '@/entities/fsm/model/portalStatus';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
-import type { QuoteDto } from '@/types/fsm';
-import { getErrorMessage } from '@/utils/errors';
-import { quoteStatusLabel } from '@/utils/i18nStatusLabels';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+import type { QuoteDto } from '@/entities/fsm/model/types';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { quoteStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();

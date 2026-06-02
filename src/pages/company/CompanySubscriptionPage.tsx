@@ -9,29 +9,29 @@ import {
   EmptyState,
   SoftBadge,
   cabinetBtnPrimary,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import {
   useMySubscriptionQuery,
   useSubscriptionPlansQuery,
   useClaimFreePlanMutation,
-} from '@/features/subscriptions/api/useSubscriptions';
-import { PlanCards } from '@/features/subscriptions/components/PlanCards';
+} from '@/entities/subscription/api/useSubscriptions';
+import { PlanCards } from '@/features/subscriptions';
 import type {
   ClaimableSubscriptionPlanCode,
   CompanyPlanDto,
   CompanySubscriptionDto,
   CompanySubscriptionPlanCode,
-} from '@/types/subscriptions';
+} from '@/entities/subscription/model/types';
 import {
   isOnFreePlan,
   isProPlan,
   isProToBusinessUpgrade,
-} from '@/utils/subscriptionPlan';
-import { planPriceLabel } from '@/utils/subscriptions';
-import { useAuthStore } from '@/stores/authStore';
-import { CompanyOwnerGate } from '@/features/companies/CompanyManagementGate';
-import { formatDateLocalized } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
+} from '@/entities/subscription/model/subscriptionPlan';
+import { planPriceLabel } from '@/entities/subscription/model/subscriptions';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import { CompanyOwnerGate } from '@/features/companies';
+import { formatDateLocalized } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
 
 export function CompanySubscriptionPage() {
   const { t } = useTranslation();

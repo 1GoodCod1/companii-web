@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
-import { useRegisterForm } from '@/features/auth/hooks/useRegisterForm';
+import { useRegisterForm } from '@/features/auth';
 import {
   isCompanyStaffAccount,
   isEndClientAccount,
-} from '@/utils/roles';
-import { RegisterTeamInviteBanner } from '@/features/auth/components/RegisterTeamInviteBanner';
-import { RegisterPortalInviteBanner } from '@/features/auth/components/RegisterPortalInviteBanner';
-import { RegisterAccountKindSelector } from '@/features/auth/components/RegisterAccountKindSelector';
-import { authFieldClass, authLabelClass } from '@/features/auth/authFormStyles';
-import { FormFieldError } from '@/components/ui/FormFieldError';
+} from '@/entities/company/model/roles';
+import { RegisterTeamInviteBanner } from '@/features/auth';
+import { RegisterPortalInviteBanner } from '@/features/auth';
+import { RegisterAccountKindSelector } from '@/features/auth';
+import { authFieldClass, authLabelClass } from '@/features/auth';
+import { FormFieldError } from '@/shared/ui/FormFieldError';
 import { fieldClassName } from '@/lib/forms/fieldClassName';
 
 export function RegisterPage() {

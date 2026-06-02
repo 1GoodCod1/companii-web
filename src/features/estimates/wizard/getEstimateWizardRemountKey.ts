@@ -1,4 +1,4 @@
-import type { EstimateProjectDto } from '@/types/estimates';
+import type { EstimateProjectDto } from '@/entities/estimate/model/estimates';
 
 function readClientFeedback(
   raw: EstimateProjectDto['clientFeedback'],

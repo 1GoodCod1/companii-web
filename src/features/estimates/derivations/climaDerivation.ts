@@ -1,4 +1,4 @@
-import type { Plan2dData } from '@/types/estimate-plan2d.types';
+import type { Plan2dData } from '@/entities/estimate/model/estimate-plan2d.types';
 import { type PricingModifierOverrides, modifierFactor } from '../utils/pricingModifierOverrides';
 import { readNumber, readBoolean, readAutoNumber } from '../utils/diagnosticReader';
 

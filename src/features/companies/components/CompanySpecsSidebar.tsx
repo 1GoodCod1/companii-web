@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import {
   getTranslatedCategoryName,
   getTranslatedCityName,
-} from '@/utils/translateCityCategory';
-import type { PublicCompanyDetailDto } from '@/types/companies';
+} from '@/shared/utils/translateCityCategory';
+import type { PublicCompanyDetailDto } from '@/entities/company/model/companies.types';
 
 interface CompanySpecsSidebarProps {
   company: PublicCompanyDetailDto;

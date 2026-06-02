@@ -4,17 +4,17 @@ import {
   useMySubscriptionQuery,
   useSubscriptionPlansQuery,
   useClaimFreePlanMutation,
-} from '@/features/subscriptions/api/useSubscriptions';
-import { PlanCards } from '@/features/subscriptions/components/PlanCards';
-import type { CompanyPlanDto, CompanySubscriptionDto, ClaimableSubscriptionPlanCode, CompanySubscriptionPlanCode } from '@/types/subscriptions';
+} from '@/entities/subscription/api/useSubscriptions';
+import { PlanCards } from '@/features/subscriptions';
+import type { CompanyPlanDto, CompanySubscriptionDto, ClaimableSubscriptionPlanCode, CompanySubscriptionPlanCode } from '@/entities/subscription/model/types';
 import {
   isOnFreePlan,
   isProToBusinessUpgrade,
-} from '@/utils/subscriptionPlan';
-import { useLocalizedPath } from '@/hooks/useLocalizedPath';
-import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
-import { SEOHead } from '@/components/seo/SEOHead';
-import { PublicPageHeader } from '@/components/public/PublicPageHeader';
+} from '@/entities/subscription/model/subscriptionPlan';
+import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
+import { usePublicAuthCta } from '@/features/auth';
+import { SEOHead } from '@/shared/ui/seo/SEOHead';
+import { PublicPageHeader } from '@/shared/ui/PublicPageHeader';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 

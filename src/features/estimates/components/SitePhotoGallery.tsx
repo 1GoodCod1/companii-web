@@ -2,16 +2,16 @@ import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Camera, Trash2, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { uploadFiles } from '@/api/files';
-import { fileDownloadPath } from '@/api/files';
+import { uploadFiles } from '@/shared/api/files';
+import { fileDownloadPath } from '@/shared/api/files';
 import {
   useAddEstimateProjectPhotosMutation,
   useDeleteEstimateProjectPhotoMutation,
   useUpdateEstimateProjectPhotoCaptionMutation,
 } from '@/features/estimates/api/useEstimates';
-import type { EstimateProjectPhotoDto } from '@/types/estimates';
-import { getErrorMessage } from '@/utils/errors';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+import type { EstimateProjectPhotoDto } from '@/entities/estimate/model/estimates';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 type Props = {
   projectId: string;

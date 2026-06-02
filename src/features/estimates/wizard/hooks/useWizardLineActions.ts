@@ -6,8 +6,8 @@ import {
   useAddEstimateLineMutation,
   useDeleteEstimateLineMutation,
 } from '@/features/estimates/api/useEstimates';
-import { getErrorMessage } from '@/utils/errors';
-import type { AskCabinetConfirm } from '@/hooks/useCabinetConfirmDialog';
+import { getErrorMessage } from '@/shared/utils/errors';
+import type { AskCabinetConfirm } from '@/shared/hooks/useCabinetConfirmDialog';
 
 export function useWizardLineActions(projectId: string, askConfirm: AskCabinetConfirm) {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ export function useWizardLineActions(projectId: string, askConfirm: AskCabinetCo
   const handleUploadReceipt = async (lineId: string, stageId: string, file: File) => {
     setUploadingLineId(lineId);
     try {
-      const { uploadFile } = await import('@/api/files');
+      const { uploadFile } = await import('@/shared/api/files');
       const uploaded = await uploadFile(file);
       await updateLine.mutateAsync({
         projectId,

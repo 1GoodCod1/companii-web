@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next';
-import type { EstimateBlueprintConfig, Plan2dData, Plan2dPoint, Plan2dRoom } from '@/types/estimates';
+import type { EstimateBlueprintConfig, Plan2dData, Plan2dPoint, Plan2dRoom } from '@/entities/estimate/model/estimates';
 
 export const PX_PER_M = 44;
 const ROOM_GAP_M = 0.6;

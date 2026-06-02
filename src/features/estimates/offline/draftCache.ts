@@ -1,5 +1,5 @@
-import { STORE_DRAFTS, idbDelete, idbGet, idbPut } from '@/utils/idb';
-import type { Plan2dData } from '@/types/estimate-plan2d.types';
+import { STORE_DRAFTS, idbDelete, idbGet, idbPut } from '@/entities/estimate/model/idb';
+import type { Plan2dData } from '@/entities/estimate/model/estimate-plan2d.types';
 import type { CustomPricingValues } from '../utils/customPricing';
 
 export type EstimateDraft = {

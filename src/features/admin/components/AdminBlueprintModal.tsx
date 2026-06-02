@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Sliders, RefreshCw, Play, AlertCircle, FileCode } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { AppModal } from '@/components/ui/AppModal';
+import { AppModal } from '@/shared/ui/AppModal';
 import {
+  AppSelect,
   cabinetLabelClass,
   cabinetFieldClass,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import type { AdminBlueprintDto, AdminCategoryDto } from '@/features/admin/api/useAdmin';
 import type { EditorTab } from '../hooks/useAdminBlueprintForm';
 
@@ -78,6 +79,17 @@ export function AdminBlueprintModal({
 }: AdminBlueprintModalProps) {
   const { t } = useTranslation();
 
+  const categoryOptions = useMemo(
+    () => [
+      { value: '', label: t('admin.blueprintsPage.selectCategory') },
+      ...availableCategories.map((cat) => ({
+        value: cat.id,
+        label: `${cat.name} (${cat.slug})`,
+      })),
+    ],
+    [availableCategories, t],
+  );
+
   return (
     <AppModal
       open={open}
@@ -101,20 +113,13 @@ export function AdminBlueprintModal({
           </div>
           <div>
             <label className={cabinetLabelClass}>{t('admin.blueprintsPage.categoryLabel')}</label>
-            <select
-              required
+            <AppSelect
               value={categoryId}
-              onChange={(e) => onCategoryIdChange(e.target.value)}
+              onChange={onCategoryIdChange}
+              options={categoryOptions}
               disabled={!!editing}
-              className={`${cabinetFieldClass} appearance-none cursor-pointer`}
-            >
-              <option value="">{t('admin.blueprintsPage.selectCategory')}</option>
-              {availableCategories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name} ({cat.slug})
-                </option>
-              ))}
-            </select>
+              aria-label={t('admin.blueprintsPage.categoryLabel')}
+            />
           </div>
         </div>
 

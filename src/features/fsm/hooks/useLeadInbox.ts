@@ -9,9 +9,9 @@ import {
   useConvertLeadMutation,
   useCompleteLeadMutation,
 } from '@/features/fsm/api/useLeads';
-import { LEAD_STATUS } from '@/constants/leadStatus.constants';
-import type { CompanyLeadDto, CompanyLeadStatus } from '@/types/fsm';
-import { getErrorMessage } from '@/utils/errors';
+import { LEAD_STATUS } from '@/entities/fsm/model/leadStatus.constants';
+import type { CompanyLeadDto, CompanyLeadStatus } from '@/entities/fsm/model/types';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD_STATUS.NEW) {
   const { t } = useTranslation();

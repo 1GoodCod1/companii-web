@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { getAllowedPaymentTransitions } from '@/utils/fsmStatusTransitions';
-import { paymentStatusHint, paymentStatusLabel } from '@/utils/i18nStatusLabels';
-import { getInvoicePaymentStatusStyle } from '@/utils/invoicePaymentStatusStyles';
-import { formatDateLocalized } from '@/utils/date';
+import { getAllowedPaymentTransitions } from '@/entities/fsm/model/invoicePaymentStatus';
+import { paymentStatusHint, paymentStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import { getInvoicePaymentStatusStyle } from '@/entities/fsm/model/invoicePaymentStatusStyles';
+import { formatDateLocalized } from '@/shared/utils/date';
 import { useInvoiceDetail } from '../hooks/useInvoiceDetail';
 
 type Props = {

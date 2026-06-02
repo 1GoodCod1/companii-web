@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Globe, LayoutGrid, ListTree, MapPin } from 'lucide-react';
-import type { Plan2dData, Plan2dRoom } from '@/types/estimates';
+import type { Plan2dData, Plan2dRoom } from '@/entities/estimate/model/estimates';
 import {
   defaultRoomsForCategory,
   getPointTypeMeta,

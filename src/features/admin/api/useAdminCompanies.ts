@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import type { CompanySubscriptionPlanCode } from '@/types/subscriptions';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import type { CompanySubscriptionPlanCode } from '@/entities/subscription/model/types';
 
 export interface AdminCompanyDto {
   id: string;

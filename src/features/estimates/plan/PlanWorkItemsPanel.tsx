@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Minus, Plus, PlusCircle, Sparkles, LayoutTemplate } from 'lucide-react';
-import type { EstimateBlueprintConfig } from '@/types/estimates';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimates';
 import { getTemplatesForCategory, type PointTemplate } from './planTemplates';
 
 type CustomCounter = { label: string; count: number };

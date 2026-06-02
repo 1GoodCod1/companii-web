@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import type { InvoicePaymentStatus } from '@/types/fsm';
+import type { InvoicePaymentStatus } from '@/entities/fsm/model/types';
 import {
   useInvoiceQuery,
   useUpdateInvoiceMutation,
@@ -12,11 +12,11 @@ import {
   useRejectInvoicePaymentMutation,
   downloadCompanyInvoicePdf,
 } from '@/features/fsm/api/useInvoices';
-import { downloadFile } from '@/api/files';
-import { useLocale } from '@/hooks/useLocale';
-import { paymentStatusLabel } from '@/utils/i18nStatusLabels';
-import { getErrorMessage } from '@/utils/errors';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+import { downloadFile } from '@/shared/api/files';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { paymentStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 interface UseInvoiceDetailProps {
   selectedId: string | null;

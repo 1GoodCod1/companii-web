@@ -1,14 +1,15 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppModal } from '@/components/ui/AppModal';
+import { AppModal } from '@/shared/ui/AppModal';
 import {
+  AppSelect,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
   cabinetFieldClass,
   cabinetLabelClass,
-  cabinetSelectClass,
-} from '@/components/cabinet/cabinet-ui';
-import { DURATION_UNIT_OPTIONS } from '@/constants/services.constants';
-import type { ServiceFormState } from '@/types/serviceForm';
+} from '@/widgets/cabinet/cabinet-ui';
+import { DURATION_UNIT_OPTIONS } from '@/entities/fsm/model/services.constants';
+import type { ServiceFormState } from '@/entities/fsm/model/serviceForm.types';
 
 export function CompanyServiceFormModal({
   open,
@@ -33,6 +34,15 @@ export function CompanyServiceFormModal({
 
   const durationUnitLabel = (value: ServiceFormState['durationUnit']) =>
     t(`company.fsm.services.form.durationUnits.${value}`);
+
+  const durationUnitOptions = useMemo(
+    () =>
+      DURATION_UNIT_OPTIONS.map((option) => ({
+        value: option.value,
+        label: durationUnitLabel(option.value),
+      })),
+    [t],
+  );
 
   return (
     <AppModal
@@ -99,19 +109,18 @@ export function CompanyServiceFormModal({
               className={cabinetFieldClass}
               placeholder={t('company.fsm.services.form.fields.durationPlaceholder')}
             />
-            <select
+            <AppSelect
               value={form.durationUnit}
-              onChange={(e) =>
-                onFormChange((f) => ({ ...f, durationUnit: e.target.value as ServiceFormState['durationUnit'] }))
+              onChange={(value) =>
+                onFormChange((f) => ({
+                  ...f,
+                  durationUnit: value as ServiceFormState['durationUnit'],
+                }))
               }
-              className={cabinetSelectClass}
-            >
-              {DURATION_UNIT_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {durationUnitLabel(option.value)}
-                </option>
-              ))}
-            </select>
+              options={durationUnitOptions}
+              aria-label={t('company.fsm.services.form.fields.duration')}
+              className="min-w-[100px]"
+            />
           </div>
         </div>
         <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">

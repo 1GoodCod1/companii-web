@@ -7,17 +7,17 @@ import {
   cabinetFieldClass,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
-import { EntityListDetailLayout } from '@/components/cabinet/EntityListDetailLayout';
-import type { CustomerDto } from '@/types/fsm';
-import { useCustomersQuery, useDeleteCustomerMutation } from '@/features/fsm/api/useCustomers';
-import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
-import { CustomerImportModal } from '@/features/fsm/components/CustomerImportModal';
-import { CustomersListTable, CUSTOMERS_LIST_PAGE_SIZE } from '@/features/fsm/components/customers/CustomersListTable';
-import { CustomerDetailPanel } from '@/features/fsm/components/customers/CustomerDetailPanel';
-import { CustomerFormModal } from '@/features/fsm/components/customers/CustomerFormModal';
-import { useEntityModal } from '@/hooks/useEntityModal';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+} from '@/widgets/cabinet/cabinet-ui';
+import { EntityListDetailLayout } from '@/widgets/cabinet/EntityListDetailLayout';
+import type { CustomerDto } from '@/entities/fsm/model/types';
+import { useCustomersQuery, useDeleteCustomerMutation } from '@/features/fsm';
+import { CompanyManagementGate } from '@/features/companies';
+import { CustomerImportModal } from '@/features/fsm';
+import { CustomersListTable, CUSTOMERS_LIST_PAGE_SIZE } from '@/features/fsm';
+import { CustomerDetailPanel } from '@/features/fsm';
+import { CustomerFormModal } from '@/features/fsm';
+import { useEntityModal } from '@/shared/hooks/useEntityModal';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 export function CompanyCustomersPage() {
   const { t } = useTranslation();

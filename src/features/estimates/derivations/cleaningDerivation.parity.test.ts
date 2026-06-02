@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimate-blueprint-config.types';
 import { deriveCleaningMeasurements } from './cleaningDerivation';
 import { readCleaningEnabledWorkModules } from '../diagnostic/cleaningWorkModules';
 import { computePreviewLines } from '../preview/previewEngine';

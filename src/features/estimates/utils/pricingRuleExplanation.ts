@@ -1,8 +1,8 @@
 import type {
   BlueprintPricingRule,
   EstimateBlueprintConfig,
-} from '@/types/estimate-blueprint-config.types';
-import type { EstimateLineDto, EstimateStageDto } from '@/types/estimates';
+} from '@/entities/estimate/model/estimate-blueprint-config.types';
+import type { EstimateLineDto, EstimateStageDto } from '@/entities/estimate/model/estimates';
 
 type MeasurementDto = {
   key: string;

@@ -6,18 +6,18 @@ import {
   PanelHeader,
   EmptyState,
   SoftBadge,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
 import { useSubmitPortalInvoicePaymentProofMutation } from '@/features/portal/api/usePortal';
 import { invoiceStatusTone } from '@/features/portal/portalStatus';
-import type { InvoiceDto } from '@/types/fsm';
-import { INVOICE_PAYMENT_STATUS } from '@/constants/invoicePaymentStatus.constants';
-import { downloadPortalInvoicePdf } from '@/features/fsm/api/useInvoices';
-import { uploadFile } from '@/api/files';
-import { formatDateLocalized } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
-import { paymentStatusLabel } from '@/utils/i18nStatusLabels';
-import { getErrorMessage } from '@/utils/errors';
+import type { InvoiceDto } from '@/entities/fsm/model/types';
+import { INVOICE_PAYMENT_STATUS } from '@/entities/fsm/model/invoicePaymentStatus.constants';
+import { downloadPortalInvoicePdf } from '@/features/fsm';
+import { uploadFile } from '@/shared/api/files';
+import { formatDateLocalized } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { paymentStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 export function PortalInvoicesSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();

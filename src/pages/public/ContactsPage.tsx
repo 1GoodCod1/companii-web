@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { PublicPageHeader } from '@/components/public/PublicPageHeader';
+import { PublicPageHeader } from '@/shared/ui/PublicPageHeader';
 
 export function ContactsPage() {
   const { t } = useTranslation();

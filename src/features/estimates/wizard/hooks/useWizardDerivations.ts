@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/entities/user/model/authStore';
 import { usePricingModifiersQuery } from '@/features/companies/api/useCompanies';
 import { getCustomFieldKeys, groupVisibleCustomFields } from '@/features/estimates/diagnostic/groupCustomFields';
 import { readEnabledWorkModulesForCategory, mergeEnabledWorkModulesIntoDiagnostic } from '@/features/estimates/diagnostic/workModules';
@@ -10,10 +10,10 @@ import { getVisibleStages } from '@/features/estimates/stages/stageVisibility';
 import { groupStagesByWorkModule } from '@/features/estimates/stages/stageGrouping';
 import { buildScopeSummary, hasManualLines } from '@/features/estimates/stages/scopeSummary';
 import { computePreviewLinesWithStageDefaults, computePreviewTotals, extractMeasurementsFromDiagnostic } from '@/features/estimates/preview/previewEngine';
-import { DUPLICATE_DIAGNOSTIC_KEYS } from '@/constants/estimatesWizard.constants';
-import { resolveLaborUnits } from '@/constants/estimateMeasurementUnits.constants';
-import { isEstimateServiceCategorySlug } from '@/constants/estimateCategorySlugs.constants';
-import type { EstimateProjectDto } from '@/types/estimates';
+import { DUPLICATE_DIAGNOSTIC_KEYS } from '@/entities/estimate/model/estimatesWizard.constants';
+import { resolveLaborUnits } from '@/entities/estimate/model/estimateMeasurementUnits.constants';
+import { isEstimateServiceCategorySlug } from '@/entities/estimate/model/estimateCategorySlugs.constants';
+import type { EstimateProjectDto } from '@/entities/estimate/model/estimates';
 import type { WizardFormState } from './useWizardFormState';
 
 export function useWizardDerivations(project: EstimateProjectDto, formState: WizardFormState) {

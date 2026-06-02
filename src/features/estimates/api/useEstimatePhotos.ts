@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { queryKeys } from '@/api/queryKeys';
-import type { EstimateProjectPhotoDto } from '@/types/estimates';
+import { apiFetch } from '@/shared/api/client';
+import { queryKeys } from '@/shared/api/queryKeys';
+import type { EstimateProjectPhotoDto } from '@/entities/estimate/model/estimates';
 import { ESTIMATES_API_BASE } from './constants';
 
 export function useAddEstimateProjectPhotosMutation() {

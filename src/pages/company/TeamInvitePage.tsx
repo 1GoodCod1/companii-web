@@ -6,9 +6,9 @@ import {
   useAcceptTeamInvitationMutation,
   useTeamInvitePreviewQuery,
 } from '@/features/companies/api/useCompanies';
-import { useAuthStore } from '@/stores/authStore';
-import { getCompanyRoleLabel } from '@/utils/companyRoleLabel';
-import { getErrorMessage } from '@/utils/errors';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import { getCompanyRoleLabel } from '@/entities/company/model/companyRoleLabel';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 export function TeamInvitePage() {
   const { t } = useTranslation();

@@ -9,7 +9,7 @@ import {
   Calculator,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { Plan2dData } from '@/types/estimates';
+import type { Plan2dData } from '@/entities/estimate/model/estimates';
 import { computeRoofAreaFromSlope } from '@/features/estimates/derivations/roofGeometry';
 
 type GlobalParams = NonNullable<Plan2dData['globalParameters']>;

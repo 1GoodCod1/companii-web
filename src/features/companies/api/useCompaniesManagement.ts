@@ -1,14 +1,15 @@
+import type { CompanyGalleryImageDto } from '@/entities/company/model/companies.types';
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { uploadFile } from '@/api/files';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import { refreshAuthSession } from '@/features/auth/api/useAuth';
-import { useAuthStore } from '@/stores/authStore';
-import { useCompanyContextStore } from '@/stores/companyContextStore';
-import { COMPANY_ROLE } from '@/constants/roles.constants';
-import type { CompanyMeResponse } from '@/types/companies';
-import type { AuthUserSnapshot } from '@/types/auth';
+import { apiFetch } from '@/shared/api/client';
+import { uploadFile } from '@/shared/api/files';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { refreshAuthSession } from '@/features/auth';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import { useCompanyContextStore } from '@/entities/company/model/companyContextStore';
+import { COMPANY_ROLE } from '@/entities/company/model/roles.constants';
+import type { CompanyMeResponse } from '@/entities/company/model/companies.types';
+import type { AuthUserSnapshot } from '@/entities/user/model/auth.types';
 
 export function useCompanyMeQuery(): UseQueryResult<CompanyMeResponse, Error> {
   return useQuery<CompanyMeResponse, Error>({
@@ -76,11 +77,7 @@ export function useAddGalleryImageMutation() {
       companyId: string;
       url: string;
       caption?: string;
-    }) =>
-      apiFetch(`/companies/${companyId}/gallery`, {
-        method: 'POST',
-        body: JSON.stringify({ url, caption: caption || undefined }),
-      }),
+    }) => addGalleryImageApi(companyId, { url, caption }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: queryKeys.companies.all });
@@ -88,11 +85,25 @@ export function useAddGalleryImageMutation() {
   });
 }
 
+export function addGalleryImageApi(
+  companyId: string,
+  body: { url: string; caption?: string },
+): Promise<CompanyGalleryImageDto> {
+  return apiFetch<CompanyGalleryImageDto>(`/companies/${companyId}/gallery`, {
+    method: 'POST',
+    body: JSON.stringify({ url: body.url, caption: body.caption || undefined }),
+  });
+}
+
+export function removeGalleryImageApi(companyId: string, imageId: string): Promise<void> {
+  return apiFetch(`/companies/${companyId}/gallery/${imageId}`, { method: 'DELETE' });
+}
+
 export function useRemoveGalleryImageMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ companyId, imageId }: { companyId: string; imageId: string }) =>
-      apiFetch(`/companies/${companyId}/gallery/${imageId}`, { method: 'DELETE' }),
+      removeGalleryImageApi(companyId, imageId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: queryKeys.companies.all });

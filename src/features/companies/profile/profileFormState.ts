@@ -1,4 +1,4 @@
-import type { OwnedCompanyDto } from '@/types/companies';
+import type { OwnedCompanyDto } from '@/entities/company/model/companies.types';
 
 export const MAX_GALLERY = 12;
 

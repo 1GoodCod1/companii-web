@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, Calendar, Hammer, MapPin, Phone, User } from 'lucide-react';
-import { EmptyState, PageHero, Panel, SoftBadge } from '@/components/cabinet/cabinet-ui';
-import { useMyAssignedWorksheetsQuery } from '@/features/estimates/api/useEstimates';
+import { EmptyState, PageHero, Panel, SoftBadge } from '@/widgets/cabinet/cabinet-ui';
+import { useMyAssignedWorksheetsQuery } from '@/features/estimates';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
-import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
+import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 
 /**
  * N-04: shortcut list for field technicians (MEMBER role).

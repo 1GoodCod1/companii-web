@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppModal } from '@/components/ui/AppModal';
-import type { CompanyMemberDto, CustomerDto } from '@/types/fsm';
+import { AppModal } from '@/shared/ui/AppModal';
+import { AppSelect, cabinetBtnPrimary, cabinetBtnSecondary } from '@/widgets/cabinet/cabinet-ui';
+import type { CompanyMemberDto, CustomerDto } from '@/entities/fsm/model/types';
 import { useCreateInterventionForm } from './hooks/useCreateInterventionForm';
 import { AssignmentSection } from './components/AssignmentSection';
 
@@ -20,7 +22,6 @@ export function CreateInterventionModal({ open, onClose, customers, assignableTe
       onClose={onClose}
       title={t('company.fsm.interventions.createModal.title')}
       size="xl"
-      backgroundIndex={3}
     >
       {open ? (
         <CreateInterventionForm
@@ -73,6 +74,14 @@ function CreateInterventionForm({
     onClose,
   });
 
+  const customerOptions = useMemo(
+    () => [
+      { value: '', label: t('company.fsm.interventions.createModal.fields.customerPlaceholder') },
+      ...(customers?.map((c) => ({ value: c.id, label: c.fullName })) ?? []),
+    ],
+    [customers, t],
+  );
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
@@ -80,19 +89,12 @@ function CreateInterventionForm({
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
             {t('company.fsm.interventions.createModal.fields.customer')}
           </label>
-          <select
-            required
+          <AppSelect
             value={customerId}
-            onChange={(e) => handleCustomerChange(e.target.value)}
-            className="w-full border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-sm outline-none transition-all bg-white cursor-pointer font-medium"
-          >
-            <option value="">{t('company.fsm.interventions.createModal.fields.customerPlaceholder')}</option>
-            {customers?.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.fullName}
-              </option>
-            ))}
-          </select>
+            onChange={handleCustomerChange}
+            options={customerOptions}
+            aria-label={t('company.fsm.interventions.createModal.fields.customer')}
+          />
         </div>
         <div>
           <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
@@ -190,18 +192,10 @@ function CreateInterventionForm({
       </div>
 
       <div className="pt-4 flex justify-end gap-2 border-t border-gray-100">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2.5 border border-gray-200 hover:bg-gray-50 rounded-xl text-xs font-bold uppercase tracking-wider text-gray-500 cursor-pointer"
-        >
+        <button type="button" onClick={onClose} className={cabinetBtnSecondary}>
           {t('cabinet.common.cancel')}
         </button>
-        <button
-          type="submit"
-          disabled={isPending}
-          className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer"
-        >
+        <button type="submit" disabled={isPending} className={cabinetBtnPrimary}>
           {t('company.fsm.interventions.createModal.submit')}
         </button>
       </div>

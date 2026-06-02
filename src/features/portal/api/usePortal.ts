@@ -1,14 +1,14 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import type { CustomerDto, QuoteDto, InvoiceDto } from '@/types/fsm';
-import type { EstimateProjectListDto, EstimateProjectDto } from '@/types/estimates';
-import type { CompanyReviewDto, PortalInterventionDto } from '@/types/reviews';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import type { CustomerDto, QuoteDto, InvoiceDto } from '@/entities/fsm/model/types';
+import type { EstimateProjectListDto, EstimateProjectDto } from '@/entities/estimate/model/estimates';
+import type { CompanyReviewDto, PortalInterventionDto } from '@/entities/review/model/reviews.types';
 
-import type { PortalEstimateActionStatus } from '@/constants/estimateStatus.constants';
-import type { PortalQuoteActionStatus } from '@/constants/quoteStatus.constants';
-import type { CompanyLeadDto } from '@/types/fsm';
+import type { PortalEstimateActionStatus } from '@/entities/estimate/model/estimateStatus.constants';
+import type { PortalQuoteActionStatus } from '@/entities/fsm/model/quoteStatus.constants';
+import type { CompanyLeadDto } from '@/entities/fsm/model/types';
 
 export type PortalLeadDto = Pick<
   CompanyLeadDto,

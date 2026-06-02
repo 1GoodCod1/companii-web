@@ -3,8 +3,8 @@ import { useWizardOffline } from './hooks/useWizardOffline';
 import { useWizardDerivations } from './hooks/useWizardDerivations';
 import { useWizardLineActions } from './hooks/useWizardLineActions';
 import { useWizardStepActions } from './hooks/useWizardStepActions';
-import type { EstimateProjectDto } from '@/types/estimates';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+import type { EstimateProjectDto } from '@/entities/estimate/model/estimates';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 export function useEstimateWizard(project: EstimateProjectDto) {
   const formState = useWizardFormState(project);

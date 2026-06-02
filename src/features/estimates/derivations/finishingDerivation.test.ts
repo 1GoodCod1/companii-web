@@ -4,7 +4,7 @@ import {
   computePreviewLines,
   extractMeasurementsFromDiagnostic,
 } from '../preview/previewEngine';
-import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimate-blueprint-config.types';
 import { round2 } from '../utils/diagnosticReader';
 
 describe('finishingDerivation (frontend mirror of backend)', () => {

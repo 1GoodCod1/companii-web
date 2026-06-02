@@ -1,17 +1,17 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch, ApiError } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import { shouldPersistQuery } from '@/api/persistQuery';
-import { queryKeys } from '@/api/queryKeys';
-import { env } from '@/config/env';
+import { apiFetch, ApiError } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import { shouldPersistQuery } from '@/shared/api/persistQuery';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { env } from '@/shared/config/env';
 import {
   isHttpOnlyGuestHint,
   markHttpOnlySessionHint,
   persistRememberMe,
   setLogoutFlag,
   takeLogoutFlag,
-} from '@/features/auth/persist';
-import { useAuthStore, type AuthUserSnapshot } from '@/stores/authStore';
+} from '@/entities/user/model/persist';
+import { useAuthStore, type AuthUserSnapshot } from '@/entities/user/model/authStore';
 
 type AuthSession = {
   accessToken: string;

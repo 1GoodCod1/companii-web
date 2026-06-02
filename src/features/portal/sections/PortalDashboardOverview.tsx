@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ESTIMATE_STATUS } from '@/constants/estimateStatus.constants';
-import { QUOTE_STATUS } from '@/constants/quoteStatus.constants';
+import { ESTIMATE_STATUS } from '@/entities/estimate/model/estimateStatus.constants';
+import { QUOTE_STATUS } from '@/entities/fsm/model/quoteStatus.constants';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
-import { isActiveInterventionStatus, isInterventionStatus } from '@/utils/interventionStatus';
-import { isPaidPaymentStatus } from '@/utils/invoicePaymentStatus';
+import { isActiveInterventionStatus, isInterventionStatus } from '@/entities/fsm/model/interventionStatus';
+import { isPaidPaymentStatus } from '@/entities/fsm/model/invoicePaymentStatus';
 
 export function PortalDashboardOverview({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();

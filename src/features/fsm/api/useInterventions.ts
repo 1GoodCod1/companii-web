@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import { QUERY_KEY_FSM, QUERY_KEY_ROOT } from '@/constants/queryKeys.constants';
-import { useAuthStore } from '@/stores/authStore';
-import type { InterventionDto, InterventionNoteDto, InterventionStatus } from '@/types/fsm';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { QUERY_KEY_FSM, QUERY_KEY_ROOT } from '@/shared/constants/queryKeys.constants';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import type { InterventionDto, InterventionNoteDto, InterventionStatus } from '@/entities/fsm/model/types';
 import { FSM_BASE } from './fsmBase';
 
 export function useInterventionsQuery(

@@ -4,14 +4,14 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowRight } from 'lucide-react';
 import {
+  AppSelect,
   Panel,
   cabinetBtnPrimary,
   cabinetFieldClass,
   cabinetLabelClass,
-  cabinetSelectClass,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import { useCategoriesQuery } from '@/features/companies/api/useCompanies';
-import { useCustomersQuery } from '@/features/fsm/api/useCustomers';
+import { useCustomersQuery } from '@/features/fsm';
 import {
   useCreateEstimateProjectMutation,
   useEstimateBlueprintsQuery,
@@ -22,9 +22,9 @@ import {
 } from '@/features/estimates/api/useEstimateTemplates';
 import { CategoryDescriptionPanel } from '@/features/estimates/components/CategoryDescriptionPanel';
 import { ExcludedCategoryNotice } from '@/features/estimates/components/ExcludedCategoryNotice';
-import { isEstimateExcludedCategorySlug } from '@/constants/estimateCategorySlugs.constants';
-import type { OwnedCompanyDto } from '@/types/companies';
-import { getErrorMessage } from '@/utils/errors';
+import { isEstimateExcludedCategorySlug } from '@/entities/estimate/model/estimateCategorySlugs.constants';
+import type { OwnedCompanyDto } from '@/entities/company/model/companies.types';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 type Props = {
   activeCompany: OwnedCompanyDto | null | undefined;
@@ -75,6 +75,33 @@ export function NewEstimateForm({ activeCompany }: Props) {
     !activeBlueprint &&
     isEstimateExcludedCategorySlug(selectedCategory.slug);
 
+  const customerOptions = useMemo(
+    () => [
+      { value: '', label: t('company.estimateWizard.newForm.selectCustomer') },
+      ...(customers?.map((c) => ({
+        value: c.id,
+        label: `${c.fullName} · ${c.phone}`,
+      })) ?? []),
+    ],
+    [customers, t],
+  );
+
+  const categoryOptions = useMemo(
+    () => [
+      { value: '', label: t('company.estimateWizard.newForm.selectCategory') },
+      ...selectableCategories.map((c) => ({ value: c.id, label: c.name })),
+    ],
+    [selectableCategories, t],
+  );
+
+  const templateOptions = useMemo(
+    () => [
+      { value: '', label: t('company.estimatesTemplatesPage.noTemplate') },
+      ...(templates?.map((tpl) => ({ value: tpl.id, label: tpl.name })) ?? []),
+    ],
+    [templates, t],
+  );
+
   const handleCreate = async () => {
     if (!customerId || !categoryId) {
       toast.error(t('company.estimateWizard.newForm.selectCustomerAndCategory'));
@@ -112,18 +139,12 @@ export function NewEstimateForm({ activeCompany }: Props) {
       <div className="space-y-4">
         <label className={cabinetLabelClass}>
           {t('company.estimateWizard.newForm.client')}
-          <select
+          <AppSelect
             value={customerId}
-            onChange={(e) => setCustomerId(e.target.value)}
-            className={cabinetSelectClass}
-          >
-            <option value="">{t('company.estimateWizard.newForm.selectCustomer')}</option>
-            {customers?.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.fullName} · {c.phone}
-              </option>
-            ))}
-          </select>
+            onChange={setCustomerId}
+            options={customerOptions}
+            aria-label={t('company.estimateWizard.newForm.client')}
+          />
         </label>
 
         {activeCompany?.categoryId ? (
@@ -141,18 +162,12 @@ export function NewEstimateForm({ activeCompany }: Props) {
         ) : (
           <label className={cabinetLabelClass}>
             {t('company.estimateWizard.newForm.workCategory')}
-            <select
+            <AppSelect
               value={selectedCategoryId}
-              onChange={(e) => setSelectedCategoryId(e.target.value)}
-              className={cabinetSelectClass}
-            >
-              <option value="">{t('company.estimateWizard.newForm.selectCategory')}</option>
-              {selectableCategories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+              onChange={setSelectedCategoryId}
+              options={categoryOptions}
+              aria-label={t('company.estimateWizard.newForm.workCategory')}
+            />
             <span className="text-[11px] text-gray-400 mt-1">
               {t('company.estimateWizard.newForm.onlyBlueprintCategoriesHint')}
             </span>
@@ -175,18 +190,12 @@ export function NewEstimateForm({ activeCompany }: Props) {
         {templates && templates.length > 0 && (
           <label className={cabinetLabelClass}>
             {t('company.estimatesTemplatesPage.initializingFromTemplate')}
-            <select
+            <AppSelect
               value={templateId}
-              onChange={(e) => setTemplateId(e.target.value)}
-              className={cabinetSelectClass}
-            >
-              <option value="">{t('company.estimatesTemplatesPage.noTemplate')}</option>
-              {templates.map((tpl) => (
-                <option key={tpl.id} value={tpl.id}>
-                  {tpl.name}
-                </option>
-              ))}
-            </select>
+              onChange={setTemplateId}
+              options={templateOptions}
+              aria-label={t('company.estimatesTemplatesPage.initializingFromTemplate')}
+            />
           </label>
         )}
 

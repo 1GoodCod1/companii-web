@@ -1,5 +1,5 @@
-import { PortalLayout } from '@/components/layout/PortalLayout';
-import { RequireAuth } from '@/features/auth/guards';
+import { PortalLayout } from '@/widgets/layout/PortalLayout';
+import { RequireAuth } from '@/features/auth';
 import { PortalCereriPage } from '@/pages/portal/PortalCereriPage';
 import { PortalDashboardPage } from '@/pages/portal/PortalDashboardPage';
 import { PortalLucrariPage } from '@/pages/portal/PortalLucrariPage';
@@ -7,7 +7,7 @@ import { PortalOfertePage } from '@/pages/portal/PortalOfertePage';
 import { PortalFacturiPage } from '@/pages/portal/PortalFacturiPage';
 import { PortalSmetePage } from '@/pages/portal/PortalSmetePage';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
-import { ROUTE_ROOT, ROUTE_ACCESS, PORTAL_ROUTE } from '@/constants/routes.constants';
+import { ROUTE_ROOT, ROUTE_ACCESS, PORTAL_ROUTE } from '@/shared/constants/routes.constants';
 
 export const portalRoutesSection = {
   path: ROUTE_ROOT.PORTAL,

@@ -2,7 +2,7 @@ import type {
   BlueprintCustomField,
   BlueprintDiagnosticQuestion,
   EstimateBlueprintConfig,
-} from '@/types/estimate-blueprint-config.types';
+} from '@/entities/estimate/model/estimate-blueprint-config.types';
 import { isCustomFieldActive, isCustomFieldRequired, readEnabledWorkModules } from './workModules';
 
 export type DiagnosticFieldWarning = {

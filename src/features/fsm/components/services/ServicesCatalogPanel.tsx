@@ -2,11 +2,11 @@ import {
   EmptyState,
   SoftBadge,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
-import type { CompanyServiceDto } from '@/types/fsm';
-import { formatServiceDurationI18n } from '@/utils/serviceDuration';
+} from '@/widgets/cabinet/cabinet-ui';
+import type { CompanyServiceDto } from '@/entities/fsm/model/types';
+import { formatServiceDurationI18n } from '@/entities/fsm/model/serviceDuration';
 import { useTranslation } from 'react-i18next';
-import { getTranslatedCategoryName } from '@/utils/translateCityCategory';
+import { getTranslatedCategoryName } from '@/shared/utils/translateCityCategory';
 
 export function ServicesCatalogPanel({
   services,

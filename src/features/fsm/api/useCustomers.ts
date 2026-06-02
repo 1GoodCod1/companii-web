@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetCustomersQueryOptions } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import { useAuthStore } from '@/stores/authStore';
-import type { CustomerDto, CustomerTimelineDto } from '@/types/fsm';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetCustomersQueryOptions } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import type { CustomerDto, CustomerTimelineDto } from '@/entities/fsm/model/types';
 import { FSM_BASE } from './fsmBase';
 
 const CUSTOMERS_PAGE_SIZE = 100;

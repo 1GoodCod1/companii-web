@@ -3,15 +3,15 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Circle, ClipboardList, MapPin, Phone, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { PageHero, Panel, SkeletonPage, SoftBadge, EmptyState } from '@/components/cabinet/cabinet-ui';
-import { PlanEditor } from '@/features/estimates/components/PlanEditor';
-import { planHasWorksheetContent } from '@/features/estimates/plan/planWorksheetContent';
-import { WorksheetPhotos } from '@/features/estimates/components/WorksheetPhotos';
-import { useWorksheetByInterventionQuery } from '@/features/estimates/api/useEstimates';
-import { useUpdateChecklistMutation } from '@/features/fsm/api/useFsm';
+import { PageHero, Panel, SkeletonPage, SoftBadge, EmptyState } from '@/widgets/cabinet/cabinet-ui';
+import { PlanEditor } from '@/features/estimates';
+import { planHasWorksheetContent } from '@/features/estimates';
+import { WorksheetPhotos } from '@/features/estimates';
+import { useWorksheetByInterventionQuery } from '@/features/estimates';
+import { useUpdateChecklistMutation } from '@/features/fsm';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
-import { getErrorMessage } from '@/utils/errors';
-import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 
 export function EstimateWorkSheetPage() {
   const { t } = useTranslation();

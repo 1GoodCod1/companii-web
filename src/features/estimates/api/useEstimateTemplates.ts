@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import { useAuthStore } from '@/stores/authStore';
-import type { EstimateProjectDto, EstimateStageKind } from '@/types/estimates';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import type { EstimateProjectDto, EstimateStageKind } from '@/entities/estimate/model/estimates';
 
 const base = '/estimates/templates';
 

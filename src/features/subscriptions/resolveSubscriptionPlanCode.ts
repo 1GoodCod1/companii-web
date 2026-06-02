@@ -1,1 +1,1 @@
-export { resolveSubscriptionPlanCode } from '@/utils/subscriptionPlan';
+export { resolveSubscriptionPlanCode } from '@/entities/subscription/model/subscriptionPlan';

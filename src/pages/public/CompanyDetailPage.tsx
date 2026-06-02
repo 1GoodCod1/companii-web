@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import { SEOHead } from '@/components/seo/SEOHead';
+import { SEOHead } from '@/shared/ui/seo/SEOHead';
 import { ArrowLeft, Clock, Sparkles, HardHat } from 'lucide-react';
-import { CompanyGallery } from '@/components/public/CompanyGallery';
-import { CompanyReviewsSection } from '@/components/reviews/CompanyReviewsSection';
-import { formatServiceDurationI18n } from '@/utils/serviceDuration';
-import { useLocalizedPath } from '@/hooks/useLocalizedPath';
+import { CompanyGallery } from '@/entities/company/ui/CompanyGallery';
+import { CompanyReviewsSection } from '@/features/reviews';
+import { formatServiceDurationI18n } from '@/entities/fsm/model/serviceDuration';
+import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { useCompanyDetail } from '@/features/companies/hooks/useCompanyDetail';
 import { CompanyHero } from '@/features/companies/components/CompanyHero';
 import { CompanySpecsSidebar } from '@/features/companies/components/CompanySpecsSidebar';
@@ -126,7 +126,6 @@ export function CompanyDetailPage() {
               </section>
             ) : null}
 
-            {/* Photo Gallery Frame */}
             <section className="glass-panel rounded-[28px] p-6 sm:p-8 border border-white/40">
               <div className="mb-6">
                 <h2 className="text-lg font-black text-slate-900 tracking-tight">

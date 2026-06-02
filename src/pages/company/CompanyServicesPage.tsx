@@ -1,31 +1,31 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { PageHero, Panel, PanelHeader, cabinetBtnPrimary } from '@/components/cabinet/cabinet-ui';
-import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
+import { PageHero, Panel, PanelHeader, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
+import { CompanyManagementGate } from '@/features/companies';
 import { useCategoriesQuery } from '@/features/companies/api/useCompanies';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
-import { useMySubscriptionQuery } from '@/features/subscriptions/api/useSubscriptions';
-import { hasMinPlan } from '@/config/planEntitlements';
-import { SUBSCRIPTION_PLAN } from '@/constants/subscriptions.constants';
+import { useMySubscriptionQuery } from '@/entities/subscription/api/useSubscriptions';
+import { hasMinPlan } from '@/entities/subscription/model/planEntitlements';
+import { SUBSCRIPTION_PLAN } from '@/entities/subscription/model/subscriptions.constants';
 import {
   useCompanyServicesQuery,
   useCreateCompanyServiceMutation,
   useDeleteCompanyServiceMutation,
   useUpdateCompanyServiceMutation,
-} from '@/features/fsm/api/useCompanyServices';
-import type { CompanyServiceDto } from '@/types/fsm';
-import { CompanyServiceFormModal } from '@/features/fsm/components/services/CompanyServiceFormModal';
-import { ServicesCatalogPanel } from '@/features/fsm/components/services/ServicesCatalogPanel';
-import { getErrorMessage } from '@/utils/errors';
-import { EMPTY_SERVICE_FORM } from '@/constants/serviceForm.constants';
-import type { ServiceFormState } from '@/types/serviceForm';
+} from '@/features/fsm';
+import type { CompanyServiceDto } from '@/entities/fsm/model/types';
+import { CompanyServiceFormModal } from '@/features/fsm';
+import { ServicesCatalogPanel } from '@/features/fsm';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { EMPTY_SERVICE_FORM } from '@/entities/fsm/model/serviceForm.constants';
+import type { ServiceFormState } from '@/entities/fsm/model/serviceForm.types';
 import {
   buildServicePayload,
   serviceToForm,
-} from '@/utils/serviceForm';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+} from '@/entities/fsm/model/serviceForm';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 export function CompanyServicesPage() {
   const { t } = useTranslation();

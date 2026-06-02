@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { SEOHead } from '@/components/seo/SEOHead';
-import { LegalDocumentLayout, type LegalTocItem } from '@/components/legal/LegalDocumentLayout';
-import { useLocalizedPath } from '@/hooks/useLocalizedPath';
-import { useLegalLocale } from '@/hooks/useLegalLocale';
-import { renderPrivacyContent } from '@/i18n/content/legalPrivacy';
+import { SEOHead } from '@/shared/ui/seo/SEOHead';
+import { LegalDocumentLayout, type LegalTocItem } from '@/shared/ui/legal/LegalDocumentLayout';
+import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { renderPrivacyContent } from '@/shared/config/i18n/content/legalPrivacy';
 
 export function PrivacyPage() {
   const { t } = useTranslation();
   const lp = useLocalizedPath();
-  const locale = useLegalLocale();
+  const locale = useLocale();
   const toc = t('legal.privacy.toc', { returnObjects: true }) as LegalTocItem[];
 
   return (

@@ -1,14 +1,15 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AppModal } from '@/components/ui/AppModal';
+import { AppModal } from '@/shared/ui/AppModal';
 import {
+  AppSelect,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
   cabinetFieldClass,
   cabinetLabelClass,
-  cabinetSelectClass,
-} from '@/components/cabinet/cabinet-ui';
-import type { CatalogOptionDto } from '@/types/companies';
-import type { CompanyLeadDto } from '@/types/fsm';
+} from '@/widgets/cabinet/cabinet-ui';
+import type { CatalogOptionDto } from '@/entities/company/model/companies.types';
+import type { CompanyLeadDto } from '@/entities/fsm/model/types';
 
 export function ConvertLeadToEstimateModal({
   lead,
@@ -33,6 +34,17 @@ export function ConvertLeadToEstimateModal({
 }) {
   const { t } = useTranslation();
 
+  const categoryOptions = useMemo(
+    () => [
+      { value: '', label: t('company.fsm.leads.convertEstimate.fields.categoryPlaceholder') },
+      ...(categories?.map((category) => ({
+        value: category.id,
+        label: category.name,
+      })) ?? []),
+    ],
+    [categories, t],
+  );
+
   return (
     <AppModal open={!!lead} onClose={onClose} title={t('company.fsm.leads.convertEstimate.title')}>
       <form onSubmit={onSubmit} className="space-y-4">
@@ -42,19 +54,12 @@ export function ConvertLeadToEstimateModal({
         </p>
         <label className={cabinetLabelClass}>
           {t('company.fsm.leads.convertEstimate.fields.category')}
-          <select
+          <AppSelect
             value={categoryId}
-            onChange={(e) => onCategoryChange(e.target.value)}
-            className={cabinetSelectClass}
-            required
-          >
-            <option value="">{t('company.fsm.leads.convertEstimate.fields.categoryPlaceholder')}</option>
-            {categories?.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+            onChange={onCategoryChange}
+            options={categoryOptions}
+            aria-label={t('company.fsm.leads.convertEstimate.fields.category')}
+          />
         </label>
         <label className={cabinetLabelClass}>
           {t('company.fsm.leads.convertEstimate.fields.title')}

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { SEOHead } from '@/components/seo/SEOHead';
-import { PublicPageHeader } from '@/components/public/PublicPageHeader';
-import { useLocalizedPath } from '@/hooks/useLocalizedPath';
-import { useFaqSections } from '@/hooks/useFaqSections';
+import { SEOHead } from '@/shared/ui/seo/SEOHead';
+import { PublicPageHeader } from '@/shared/ui/PublicPageHeader';
+import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
+import { useFaqSections } from '@/entities/company/model/useFaqSections';
 
 function faqKey(sectionId: string, index: number) {
   return `${sectionId}-${index}`;

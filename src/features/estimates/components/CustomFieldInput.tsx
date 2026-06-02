@@ -1,13 +1,13 @@
-import type { ReactElement } from 'react';
+import { useMemo, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { BlueprintCustomField } from '@/types/estimate-blueprint-config.types';
+import type { BlueprintCustomField } from '@/entities/estimate/model/estimate-blueprint-config.types';
 import {
+  AppSelect,
   cabinetFieldClass,
   cabinetLabelClass,
-  cabinetSelectClass,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import { parseNumberInputValue } from '@/features/estimates/diagnostic/diagnosticValidation';
-import { useTranslateOption } from '@/utils/translateOption';
+import { useTranslateOption } from '@/entities/estimate/model/translateOption';
 
 type Props = {
   field: BlueprintCustomField;
@@ -21,6 +21,26 @@ type Props = {
 export function CustomFieldInput({ field, value, onChange, error, warning, disabled }: Props) {
   const { t } = useTranslation();
   const translateOption = useTranslateOption();
+
+  const booleanOptions = useMemo(
+    () => [
+      { value: '', label: '—' },
+      { value: 'true', label: t('company.estimateWizard.diagnosticStep.yes') },
+      { value: 'false', label: t('company.estimateWizard.diagnosticStep.no') },
+    ],
+    [t],
+  );
+
+  const selectOptions = useMemo(
+    () => [
+      { value: '', label: '—' },
+      ...(field.options ?? []).map((opt) => ({
+        value: opt,
+        label: translateOption(opt),
+      })),
+    ],
+    [field.options, translateOption],
+  );
 
   const labelNode = (
     <span className="flex items-center justify-between gap-2">
@@ -40,38 +60,23 @@ export function CustomFieldInput({ field, value, onChange, error, warning, disab
 
   if (field.type === 'boolean') {
     inputNode = (
-      <select
+      <AppSelect
         value={value === true ? 'true' : value === false ? 'false' : ''}
-        onChange={(e) => {
-          const v = e.target.value;
-          onChange(v === '' ? undefined : v === 'true');
-        }}
+        onChange={(v) => onChange(v === '' ? undefined : v === 'true')}
+        options={booleanOptions}
         disabled={disabled}
-        className={cabinetSelectClass}
-      >
-        <option value="">—</option>
-        <option value="true">{t('company.estimateWizard.diagnosticStep.yes')}</option>
-        <option value="false">{t('company.estimateWizard.diagnosticStep.no')}</option>
-      </select>
+        aria-label={field.label}
+      />
     );
   } else if (field.type === 'select') {
     inputNode = (
-      <select
+      <AppSelect
         value={String(value ?? '')}
-        onChange={(e) => {
-          const v = e.target.value;
-          onChange(v === '' ? undefined : v);
-        }}
+        onChange={(v) => onChange(v === '' ? undefined : v)}
+        options={selectOptions}
         disabled={disabled}
-        className={cabinetSelectClass}
-      >
-        <option value="">—</option>
-        {(field.options ?? []).map((opt) => (
-          <option key={opt} value={opt}>
-            {translateOption(opt)}
-          </option>
-        ))}
-      </select>
+        aria-label={field.label}
+      />
     );
   } else if (field.type === 'number') {
     inputNode = (

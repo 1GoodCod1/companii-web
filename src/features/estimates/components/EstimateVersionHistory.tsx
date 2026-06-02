@@ -2,8 +2,8 @@ import { useState, useMemo } from 'react';
 import { ArrowRightLeft, TrendingDown, TrendingUp, Minus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useEstimateVersions, useEstimateVersionDiff } from '../api/useEstimateVersions';
-import type { EstimateVersionSummary } from '@/types/estimates';
-import { Panel, PanelHeader } from '@/components/cabinet/cabinet-ui';
+import type { EstimateVersionSummary } from '@/entities/estimate/model/estimates';
+import { Panel, PanelHeader, AppSelect } from '@/widgets/cabinet/cabinet-ui';
 
 interface Props {
   projectId: string;
@@ -27,6 +27,24 @@ export function EstimateVersionHistory({ projectId }: Props) {
     }));
   }, [versions]);
 
+  const versionSelectOptions = useMemo(
+    () => [
+      { value: '', label: t('versions.select', 'Select...') },
+      ...versionOptions.map((opt) => ({ value: String(opt.value), label: opt.label })),
+    ],
+    [versionOptions, t],
+  );
+
+  const versionBSelectOptions = useMemo(
+    () => [
+      { value: '', label: t('versions.select', 'Select...') },
+      ...versionOptions
+        .filter((opt) => opt.value !== selectedA)
+        .map((opt) => ({ value: String(opt.value), label: opt.label })),
+    ],
+    [versionOptions, selectedA, t],
+  );
+
   return (
     <Panel>
       <PanelHeader
@@ -43,39 +61,25 @@ export function EstimateVersionHistory({ projectId }: Props) {
         <div className="p-4 space-y-4">
           {/* Diff selector */}
           <div className="flex flex-wrap items-center gap-3">
-            <select
-              className="border rounded px-2 py-1 text-sm"
-              value={selectedA ?? ''}
-              onChange={(e) =>
-                setSelectedA(e.target.value ? Number(e.target.value) : undefined)
-              }
-            >
-              <option value="">{t('versions.select', 'Select...')}</option>
-              {versionOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            <AppSelect
+              value={selectedA != null ? String(selectedA) : ''}
+              onChange={(value) => setSelectedA(value ? Number(value) : undefined)}
+              options={versionSelectOptions}
+              aria-label={t('versions.select', 'Select...')}
+              className="min-w-[200px]"
+              maxVisibleItems={8}
+            />
 
             <ArrowRightLeft className="w-4 h-4 text-muted-foreground flex-shrink-0" />
 
-            <select
-              className="border rounded px-2 py-1 text-sm"
-              value={selectedB ?? ''}
-              onChange={(e) =>
-                setSelectedB(e.target.value ? Number(e.target.value) : undefined)
-              }
-            >
-              <option value="">{t('versions.select', 'Select...')}</option>
-              {versionOptions
-                .filter((opt) => opt.value !== selectedA)
-                .map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-            </select>
+            <AppSelect
+              value={selectedB != null ? String(selectedB) : ''}
+              onChange={(value) => setSelectedB(value ? Number(value) : undefined)}
+              options={versionBSelectOptions}
+              aria-label={t('versions.select', 'Select...')}
+              className="min-w-[200px]"
+              maxVisibleItems={8}
+            />
           </div>
 
           {/* Diff result */}

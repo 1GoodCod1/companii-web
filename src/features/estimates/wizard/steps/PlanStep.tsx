@@ -1,6 +1,6 @@
 import { Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { cabinetBtnPrimary, cabinetBtnSecondary } from '@/components/cabinet/cabinet-ui';
+import { cabinetBtnPrimary, cabinetBtnSecondary } from '@/widgets/cabinet/cabinet-ui';
 import { PlanEditor } from '@/features/estimates/components/PlanEditor';
 import type { EstimateWizardApi } from '../useEstimateWizard';
 

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { cabinetBtnSecondary } from '@/components/cabinet/cabinet-ui';
+import { cabinetBtnSecondary } from '@/widgets/cabinet/cabinet-ui';
 
 interface LeaveTeamSectionProps {
   canLeaveCompany: boolean;

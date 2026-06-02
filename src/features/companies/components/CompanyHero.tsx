@@ -1,11 +1,11 @@
 import { BadgeCheck, MapPin, Users, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { CompanyLogo } from '@/components/public/CompanyLogo';
+import { CompanyLogo } from '@/entities/company/ui/CompanyLogo';
 import {
   getTranslatedCategoryName,
   getTranslatedCityName,
-} from '@/utils/translateCityCategory';
-import type { PublicCompanyDetailDto } from '@/types/companies';
+} from '@/shared/utils/translateCityCategory';
+import type { PublicCompanyDetailDto } from '@/entities/company/model/companies.types';
 
 interface CompanyHeroProps {
   company: PublicCompanyDetailDto;
@@ -17,15 +17,12 @@ export function CompanyHero({ company }: CompanyHeroProps) {
 
   return (
     <div className="relative rounded-[32px] overflow-hidden border border-slate-200/60 bg-white glass-panel">
-      {/* Deep corporate backdrop */}
       <div
         className="absolute top-0 inset-x-0 h-44 sm:h-52"
         style={{
           background: 'linear-gradient(135deg, #1e293b 0%, #334155 40%, #1e3a5f 70%, #0f172a 100%)',
         }}
       />
-
-      {/* Subtle warm accent glow */}
       <div
         className="absolute top-0 inset-x-0 h-44 sm:h-52 opacity-30"
         style={{
@@ -33,8 +30,6 @@ export function CompanyHero({ company }: CompanyHeroProps) {
             'radial-gradient(ellipse at 70% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 55%), radial-gradient(ellipse at 20% 80%, rgba(51, 65, 85, 0.3) 0%, transparent 50%)',
         }}
       />
-
-      {/* Fine grid lines for blueprint feel */}
       <div
         className="absolute top-0 inset-x-0 h-44 sm:h-52 opacity-[0.06]"
         style={{
@@ -43,15 +38,11 @@ export function CompanyHero({ company }: CompanyHeroProps) {
           backgroundSize: '24px 24px',
         }}
       />
-
-      {/* Decorative glass accents */}
       <div className="absolute top-10 right-12 w-32 h-16 rounded-2xl bg-white/[0.06] backdrop-blur-md border border-white/[0.08] hidden md:block" />
       <div className="absolute top-24 right-28 w-12 h-12 rounded-full bg-white/[0.04] backdrop-blur-lg border border-white/[0.06] hidden md:block" />
 
-      {/* Hero Content Section */}
       <div className="relative pt-24 sm:pt-32 px-6 sm:px-10 pb-8">
         <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-8">
-          {/* Logo Frame with Double Gradient Glow */}
           <div className="shrink-0 -mt-14 relative group self-start md:self-auto">
             <div className="absolute -inset-1 bg-gradient-to-tr from-slate-600 to-indigo-500 rounded-[30px] blur opacity-30 group-hover:opacity-55 transition-opacity duration-500" />
             <div className="relative p-1 bg-white rounded-[30px] shadow-2xl">
@@ -64,7 +55,6 @@ export function CompanyHero({ company }: CompanyHeroProps) {
             </div>
           </div>
 
-          {/* Identity details with Premium Tags */}
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-3 mb-2">
               <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-none text-wrap:balance">
@@ -82,7 +72,6 @@ export function CompanyHero({ company }: CompanyHeroProps) {
               </span>
             ) : null}
 
-            {/* Refined modern info tags */}
             <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-600 pt-2 border-t border-slate-100">
               {company.city ? (
                 <span className="inline-flex items-center gap-2 font-medium">

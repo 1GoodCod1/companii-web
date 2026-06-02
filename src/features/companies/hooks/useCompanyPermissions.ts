@@ -1,17 +1,17 @@
-import { useAuthStore } from '@/stores/authStore';
-import { useCompanyContextStore } from '@/stores/companyContextStore';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import { useCompanyContextStore } from '@/entities/company/model/companyContextStore';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
-import { resolveCompanyRole } from '@/components/layout/cabinet-nav';
+import { resolveCompanyRole } from '@/widgets/layout/cabinet-nav';
 import {
   isManagementRole,
   isOwnerRole,
   isTechnicianRole,
-} from '@/utils/roles';
-import type { CompanyRole } from '@/types/roles';
-import { canAccessCompanyRoute } from '@/utils/roleAccess';
-import { companyRoleCan } from '@/config/rolePermissions';
+} from '@/entities/company/model/roles';
+import type { CompanyRole } from '@/entities/company/model/roles.types';
+import { canAccessCompanyRoute } from '@/entities/company/model/roleAccess';
+import { companyRoleCan } from '@/entities/company/model/rolePermissions';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
-import type { CompanyPermissionAction } from '@/config/rolePermissions';
+import type { CompanyPermissionAction } from '@/entities/company/model/rolePermissions';
 
 export function useCompanyPermissions() {
   const user = useAuthStore((s) => s.user);

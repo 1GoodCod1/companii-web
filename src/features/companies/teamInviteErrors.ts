@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next';
-import { ApiError } from '@/api/client';
+import { ApiError } from '@/shared/api/client';
 
 const TEAM_ERROR_KEYS: Record<string, string> = {
   'Nu există cont de tip Companie pentru acest contact. Folosiți link invitație.':

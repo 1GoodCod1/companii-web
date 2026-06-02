@@ -7,7 +7,7 @@ import {
   toggleWorkModule,
 } from './workModules';
 import { mergeCustomPricing, readCustomPricing } from '../utils/customPricing';
-import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimate-blueprint-config.types';
 
 const config: EstimateBlueprintConfig = {
   wizardSteps: ['object', 'plan', 'diagnostic', 'stages', 'review'],
@@ -126,7 +126,6 @@ describe('validateDiagnostic (G-01)', () => {
     const result = validateDiagnostic(config, {
       enabledWorkModules: ['paint'],
       paintArea: 50,
-      // tileArea is required but tile module disabled
     });
     expect(result.ok).toBe(true);
     expect(result.fieldErrors.tileArea).toBeUndefined();
@@ -163,7 +162,6 @@ describe('CustomPricing separation from blueprint customFields (G-04)', () => {
     const pricing = readCustomPricing(diagnostic);
     expect(pricing.customUnitPriceSqm).toBe(25);
     expect(pricing.customLaborHours).toBe(16);
-    // blueprint custom fields not surfaced as pricing
     expect((pricing as Record<string, unknown>).paintArea).toBeUndefined();
   });
 

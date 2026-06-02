@@ -1,0 +1,49 @@
+.legal-document {
+  color: #374151;
+}
+
+.legal-title {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.03em;
+}
+
+.legal-lead,
+.legal-paragraph,
+.legal-list,
+.legal-subsection p {
+  font-size: 0.975rem;
+  line-height: 1.8;
+  color: #4b5563;
+}
+
+.legal-paragraph strong,
+.legal-list strong {
+  color: #111827;
+  font-weight: 600;
+}
+
+.legal-section-title {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.legal-section-content a,
+.legal-lead a {
+  color: #6d28d9;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.legal-section-content a:hover,
+.legal-lead a:hover {
+  color: #5b21b6;
+}
+
+.legal-toc a {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.legal-document-body {
+  border-top: 3px solid rgba(124, 58, 237, 0.12);
+}

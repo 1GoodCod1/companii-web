@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Panel, PanelHeader, EmptyState, SoftBadge } from '@/components/cabinet/cabinet-ui';
-import type { InterventionDto } from '@/types/fsm';
-import { formatDateLocalized } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
-import { interventionStatusLabel } from '@/utils/i18nStatusLabels';
+import { Panel, PanelHeader, EmptyState, SoftBadge } from '@/widgets/cabinet/cabinet-ui';
+import type { InterventionDto } from '@/entities/fsm/model/types';
+import { formatDateLocalized } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 
 export function DashboardActiveInterventionsPanel({
   interventions,

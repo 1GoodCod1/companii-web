@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { PageHero } from '@/components/cabinet/cabinet-ui';
+import { PageHero } from '@/widgets/cabinet/cabinet-ui';
 import {
   PortalDashboardOverview,
   PortalError,
   PortalHero,
   PortalLoading,
-} from '@/features/portal/portalSections';
-import { usePortalData } from '@/features/portal/usePortalData';
+} from '@/features/portal';
+import { usePortalData } from '@/features/portal';
 
 export function PortalDashboardPage() {
   const { t } = useTranslation();

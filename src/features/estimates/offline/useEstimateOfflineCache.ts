@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useOnlineStatus } from '@/hooks/useOnlineStatus';
-import type { Plan2dData } from '@/types/estimate-plan2d.types';
+import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus';
+import type { Plan2dData } from '@/entities/estimate/model/estimate-plan2d.types';
 import type { CustomPricingValues } from '../utils/customPricing';
 import {
   clearDraft,

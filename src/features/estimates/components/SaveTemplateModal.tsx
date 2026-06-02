@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { AppModal } from '@/components/ui/AppModal';
+import { AppModal } from '@/shared/ui/AppModal';
 import {
   cabinetBtnPrimary,
   cabinetBtnSecondary,
   cabinetFieldClass,
   cabinetLabelClass,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import { useCreateEstimateTemplateMutation } from '../api/useEstimateTemplates';
-import { getErrorMessage } from '@/utils/errors';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 type Props = {
   open: boolean;

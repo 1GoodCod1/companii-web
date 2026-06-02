@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
-import { PageHero, Panel, PanelHeader, EmptyState } from '@/components/cabinet/cabinet-ui';
-import { LeadInboxItem } from '@/features/fsm/components/leads/LeadInboxItem';
-import { LeadsStatusFilter } from '@/features/fsm/components/leads/LeadsStatusFilter';
-import { ConvertLeadToEstimateModal } from '@/features/fsm/components/leads/ConvertLeadToEstimateModal';
-import { LEAD_STATUS } from '@/constants/leadStatus.constants';
-import { useLeadInbox } from '@/features/fsm/hooks/useLeadInbox';
+import { CompanyManagementGate } from '@/features/companies';
+import { PageHero, Panel, PanelHeader, EmptyState } from '@/widgets/cabinet/cabinet-ui';
+import { LeadInboxItem } from '@/features/fsm';
+import { LeadsStatusFilter } from '@/features/fsm';
+import { ConvertLeadToEstimateModal } from '@/features/fsm';
+import { LEAD_STATUS } from '@/entities/fsm/model/leadStatus.constants';
+import { useLeadInbox } from '@/features/fsm';
 
 export function CompanyLeadsPage() {
   const { t } = useTranslation();

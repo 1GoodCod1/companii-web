@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import type { EstimateCommentDto } from '@/types/estimates';
+import { apiFetch } from '@/shared/api/client';
+import type { EstimateCommentDto } from '@/entities/estimate/model/estimates';
 
 export function useEstimateComments(projectId: string | undefined, isPortal = false) {
   const prefix = isPortal ? '/portal' : '/estimates';

@@ -1,18 +1,19 @@
 import { Calculator, Layers, Tag } from 'lucide-react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
+  AppSelect,
   Panel,
   cabinetBtnPrimary,
-  cabinetSelectClass,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import { LeadBudgetGauge } from '@/features/estimates/components/LeadBudgetGauge';
 import {
   useApplyEstimateTemplateMutation,
   useEstimateTemplatesQuery,
 } from '@/features/estimates/api/useEstimateTemplates';
 import { getHiddenStagesCount } from '@/features/estimates/stages/stageVisibility';
-import { getErrorMessage } from '@/utils/errors';
+import { getErrorMessage } from '@/shared/utils/errors';
 import type { EstimateWizardApi } from '../useEstimateWizard';
 import { StageCard } from './stages/StageCard';
 
@@ -85,6 +86,19 @@ export function StagesStep({ wizard }: Props) {
 
   let globalIndex = 0;
 
+  const pricingTemplateOptions = useMemo(
+    () => [
+      {
+        value: '',
+        label: t('company.estimateWizard.stagesStep.applyPricingTemplate', {
+          defaultValue: 'Aplică prețuri din șablon...',
+        }),
+      },
+      ...(templates?.map((tpl) => ({ value: tpl.id, label: tpl.name })) ?? []),
+    ],
+    [templates, t],
+  );
+
   return (
     <div className="space-y-4">
       {project.sourceLead?.estimatedBudget && (
@@ -105,26 +119,17 @@ export function StagesStep({ wizard }: Props) {
             {!isReadOnly && templates && templates.length > 0 && (
               <label className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
                 <Tag className="w-3.5 h-3.5 text-indigo-500" />
-                <select
+                <AppSelect
                   value=""
-                  onChange={(e) => {
-                    handleApplyPricingTemplate(e.target.value);
-                    e.target.value = '';
-                  }}
+                  onChange={handleApplyPricingTemplate}
+                  options={pricingTemplateOptions}
+                  aria-label={t('company.estimateWizard.stagesStep.applyPricingTemplate', {
+                    defaultValue: 'Aplică prețuri din șablon...',
+                  })}
+                  className="max-w-[180px]"
+                  maxVisibleItems={8}
                   disabled={applyTemplate.isPending}
-                  className={`${cabinetSelectClass} max-w-[180px] text-[11px] py-1.5`}
-                >
-                  <option value="">
-                    {t('company.estimateWizard.stagesStep.applyPricingTemplate', {
-                      defaultValue: 'Aplică prețuri din șablon...',
-                    })}
-                  </option>
-                  {templates.map((tpl) => (
-                    <option key={tpl.id} value={tpl.id}>
-                      {tpl.name}
-                    </option>
-                  ))}
-                </select>
+                />
               </label>
             )}
             <div className="flex rounded-xl bg-slate-100 p-0.5">

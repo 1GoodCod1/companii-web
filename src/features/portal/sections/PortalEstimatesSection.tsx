@@ -2,39 +2,39 @@ import { useState } from 'react';
 import { Eye, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { downloadFile } from '@/api/files';
-import { EstimateCommentThread } from '@/features/estimates/components/EstimateCommentThread';
+import { downloadFile } from '@/shared/api/files';
+import { EstimateCommentThread } from '@/features/estimates';
 import {
   Panel,
   PanelHeader,
   EmptyState,
   SoftBadge,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import {
   useUpdatePortalEstimateMutation,
   usePortalEstimateQuery,
   useRequestPortalEstimateChangesMutation,
 } from '@/features/portal/api/usePortal';
-import { downloadPortalEstimatePdf } from '@/features/estimates/api/useEstimates';
+import { downloadPortalEstimatePdf } from '@/features/estimates';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
-import type { EstimateProjectListDto, EstimateStageDto } from '@/types/estimates';
+import type { EstimateProjectListDto, EstimateStageDto } from '@/entities/estimate/model/estimates';
 import {
   ESTIMATE_STATUS,
   ESTIMATE_STATUS_TONES,
   PORTAL_ESTIMATE_ACTION,
   type PortalEstimateActionStatus,
-} from '@/constants/estimateStatus.constants';
-import { getErrorMessage } from '@/utils/errors';
-import { getTranslatedCategoryName } from '@/utils/translateCityCategory';
-import { estimateStatusLabel } from '@/utils/i18nStatusLabels';
-import { buildScopeSummary } from '@/features/estimates/stages/scopeSummary';
-import { filterStagesForClientDisplay } from '@/features/estimates/stages/stageVisibility';
-import { isEstimateLaborLine } from '@/features/estimates/utils/estimateLaborLine';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+} from '@/entities/estimate/model/estimateStatus.constants';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { getTranslatedCategoryName } from '@/shared/utils/translateCityCategory';
+import { estimateStatusLabel } from '@/entities/estimate/model/i18nStatusLabels';
+import { buildScopeSummary } from '@/features/estimates';
+import { filterStagesForClientDisplay } from '@/features/estimates';
+import { isEstimateLaborLine } from '@/features/estimates';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 import {
   findPricingRuleForLine,
   formatPricingRuleExplanation,
-} from '@/features/estimates/utils/pricingRuleExplanation';
+} from '@/features/estimates';
 
 export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();

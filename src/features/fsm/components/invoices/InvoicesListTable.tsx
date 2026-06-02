@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import type { InvoiceDto } from '@/types/fsm';
-import { getInvoicePaymentStatusStyle } from '@/utils/invoicePaymentStatusStyles';
-import { EntityListPanel } from '@/components/cabinet/EntityListPanel';
-import { entityListRowClass } from '@/components/cabinet/rowStyles';
-import { formatDateLocalized, daysSince } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
-import { paymentStatusLabel } from '@/utils/i18nStatusLabels';
+import type { InvoiceDto } from '@/entities/fsm/model/types';
+import { getInvoicePaymentStatusStyle } from '@/entities/fsm/model/invoicePaymentStatusStyles';
+import { EntityListPanel } from '@/widgets/cabinet/EntityListPanel';
+import { entityListRowClass } from '@/widgets/cabinet/rowStyles';
+import { formatDateLocalized, daysSince } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { paymentStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 
 type Props = {
   invoices: InvoiceDto[] | undefined;

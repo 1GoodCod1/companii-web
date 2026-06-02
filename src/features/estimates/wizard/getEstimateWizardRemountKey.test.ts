@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { EstimateClientFeedbackEntry } from '@/types/estimates';
+import type { EstimateClientFeedbackEntry } from '@/entities/estimate/model/estimates';
 import { getEstimateWizardRemountKey } from './getEstimateWizardRemountKey';
 
 describe('getEstimateWizardRemountKey', () => {

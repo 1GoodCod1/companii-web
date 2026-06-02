@@ -1,2 +1,2 @@
-export * from '@/constants/roleAccess.constants';
-export * from '@/utils/roleAccess';
+export * from '@/entities/company/model/roleAccess.constants';
+export * from '@/entities/company/model/roleAccess';

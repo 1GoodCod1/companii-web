@@ -4,12 +4,12 @@ import {
   useCitiesQuery,
   useCategoriesQuery,
 } from '@/features/companies/api/useCompanies';
-import { EmptyState } from '@/components/cabinet/cabinet-ui';
-import { useMeQuery } from '@/features/auth/api/useAuth';
+import { EmptyState } from '@/widgets/cabinet/cabinet-ui';
+import { useMeQuery } from '@/features/auth';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { CompanyProfileEditor } from '@/features/companies/profile/CompanyProfileEditor';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/entities/user/model/authStore';
 
 export function CompanyProfilePage() {
   const { t } = useTranslation();

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { computeStageVisibility, filterStagesForClientDisplay, getHiddenStagesCount, getVisibleStages } from './stageVisibility';
 import { buildScopeSummary, hasManualLines } from './scopeSummary';
-import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
-import type { EstimateStageDto } from '@/types/estimates';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimate-blueprint-config.types';
+import type { EstimateStageDto } from '@/entities/estimate/model/estimates';
 
 const config: EstimateBlueprintConfig = {
   wizardSteps: ['object', 'plan', 'diagnostic', 'stages', 'review'],

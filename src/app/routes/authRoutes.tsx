@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { AuthLayout } from '@/components/layout/AuthLayout';
+import { AuthLayout } from '@/widgets/layout/AuthLayout';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
@@ -7,7 +7,7 @@ import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
 import { PortalInvitePage } from '@/pages/portal/PortalInvitePage';
 import { TeamInvitePage } from '@/pages/company/TeamInvitePage';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
-import { PUBLIC_ROUTE, INVITE_ROUTE } from '@/constants/routes.constants';
+import { PUBLIC_ROUTE, INVITE_ROUTE } from '@/shared/constants/routes.constants';
 
 export const authPublicRoutes = [
   { path: PUBLIC_ROUTE.LOGIN, element: <LoginPage /> },

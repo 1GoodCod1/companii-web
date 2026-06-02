@@ -8,7 +8,7 @@ import {
   Wrench,
   type LucideIcon,
 } from 'lucide-react';
-import type { EstimateExcludedCategorySlug } from '@/constants/estimateCategorySlugs.constants';
+import type { EstimateExcludedCategorySlug } from '@/entities/estimate/model/estimateCategorySlugs.constants';
 import {
   getExcludedAlternative,
   type ExcludedCategoryAlternative,

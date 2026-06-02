@@ -1,1 +1,1 @@
-export * from '@/utils/audit';
+export * from '@/shared/utils/audit';

@@ -1,4 +1,4 @@
-import type { AppLanguage } from '@/i18n/utils';
+import type { AppLanguage } from '@/shared/config/i18n/utils';
 
 export const LOCALES: readonly AppLanguage[] = ['ro', 'ru'];
 export const DEFAULT_LOCALE: AppLanguage = 'ro';

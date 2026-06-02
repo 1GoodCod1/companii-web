@@ -1,12 +1,13 @@
+import { useMemo } from 'react';
 import { Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import {
+  AppSelect,
   Panel,
   cabinetBtnPrimary,
   cabinetFieldClass,
   cabinetLabelClass,
-  cabinetSelectClass,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import { SitePhotoGallery } from '@/features/estimates/components/SitePhotoGallery';
 import type { EstimateWizardApi } from '../useEstimateWizard';
 import { ObjectLeadInfo } from './object/ObjectLeadInfo';
@@ -46,6 +47,32 @@ export function ObjectStep({ wizard }: Props) {
   const showPhysicalSiteFields =
     !isServiceCategory && !isFurnitureCategory && !isElektrikaCategory && !isPlumbingCategory;
 
+  const siteTypeOptions = useMemo(
+    () => (config?.siteTypes ?? []).map((siteTypeOption) => ({
+      value: siteTypeOption.value,
+      label: siteTypeOption.label,
+    })),
+    [config?.siteTypes],
+  );
+
+  const urgencyOptions = useMemo(
+    () => [
+      { value: '', label: t('company.estimateWizard.objectStep.urgencyNormal') },
+      { value: 'urgent', label: t('company.estimateWizard.objectStep.urgencyUrgent') },
+      { value: 'emergency', label: t('company.estimateWizard.objectStep.urgencyEmergency') },
+    ],
+    [t],
+  );
+
+  const accessDifficultyOptions = useMemo(
+    () => [
+      { value: '', label: t('company.estimateWizard.objectStep.accessEasy') },
+      { value: 'medium', label: t('company.estimateWizard.objectStep.accessMedium') },
+      { value: 'difficult', label: t('company.estimateWizard.objectStep.accessDifficult') },
+    ],
+    [t],
+  );
+
   return (
     <Panel className="p-6 max-w-2xl space-y-4">
       <ObjectLeadInfo project={project} />
@@ -55,11 +82,12 @@ export function ObjectStep({ wizard }: Props) {
       </label>
       <label className={cabinetLabelClass}>
         {t('company.estimateWizard.objectStep.siteType')}
-        <select value={siteType} onChange={(e) => setSiteType(e.target.value)} className={cabinetSelectClass}>
-          {(config?.siteTypes ?? []).map((siteTypeOption) => (
-            <option key={siteTypeOption.value} value={siteTypeOption.value}>{siteTypeOption.label}</option>
-          ))}
-        </select>
+        <AppSelect
+          value={siteType}
+          onChange={setSiteType}
+          options={siteTypeOptions}
+          aria-label={t('company.estimateWizard.objectStep.siteType')}
+        />
       </label>
       <label className={cabinetLabelClass}>
         {t('company.estimateWizard.objectStep.address')}
@@ -108,15 +136,12 @@ export function ObjectStep({ wizard }: Props) {
           )}
           <label className={cabinetLabelClass}>
             {t('company.estimateWizard.objectStep.urgency')}
-            <select
+            <AppSelect
               value={urgency ?? ''}
-              onChange={(e) => setUrgency(e.target.value || null)}
-              className={cabinetSelectClass}
-            >
-              <option value="">{t('company.estimateWizard.objectStep.urgencyNormal')}</option>
-              <option value="urgent">{t('company.estimateWizard.objectStep.urgencyUrgent')}</option>
-              <option value="emergency">{t('company.estimateWizard.objectStep.urgencyEmergency')}</option>
-            </select>
+              onChange={(value) => setUrgency(value || null)}
+              options={urgencyOptions}
+              aria-label={t('company.estimateWizard.objectStep.urgency')}
+            />
           </label>
         </div>
       )}
@@ -124,15 +149,12 @@ export function ObjectStep({ wizard }: Props) {
       {showPhysicalSiteFields && (
         <label className={cabinetLabelClass}>
           {t('company.estimateWizard.objectStep.accessDifficulty')}
-          <select
+          <AppSelect
             value={accessDifficulty ?? ''}
-            onChange={(e) => setAccessDifficulty(e.target.value || null)}
-            className={cabinetSelectClass}
-          >
-            <option value="">{t('company.estimateWizard.objectStep.accessEasy')}</option>
-            <option value="medium">{t('company.estimateWizard.objectStep.accessMedium')}</option>
-            <option value="difficult">{t('company.estimateWizard.objectStep.accessDifficult')}</option>
-          </select>
+            onChange={(value) => setAccessDifficulty(value || null)}
+            options={accessDifficultyOptions}
+            aria-label={t('company.estimateWizard.objectStep.accessDifficulty')}
+          />
           <span className="text-[10px] text-slate-400 font-semibold mt-0.5 block">
             {t('company.estimateWizard.objectStep.accessHint')}
           </span>

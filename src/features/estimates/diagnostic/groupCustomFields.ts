@@ -1,7 +1,7 @@
 import type {
   BlueprintCustomField,
   EstimateBlueprintConfig,
-} from '@/types/estimate-blueprint-config.types';
+} from '@/entities/estimate/model/estimate-blueprint-config.types';
 import { isCustomFieldActive } from './workModules';
 
 export const DEFAULT_SECTION_KEY = '_default';

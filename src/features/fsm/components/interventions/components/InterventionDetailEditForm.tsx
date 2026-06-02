@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { memberDisplayName } from '@/utils/teamMembers';
-import type { CompanyMemberDto } from '@/types/fsm';
+import { memberDisplayName } from '@/entities/company/model/teamMembers';
+import { AppSelect } from '@/widgets/cabinet/cabinet-ui';
+import type { CompanyMemberDto } from '@/entities/fsm/model/types';
 
 interface InterventionDetailEditFormProps {
   isManagement: boolean;
@@ -48,6 +50,17 @@ export function InterventionDetailEditForm({
   setIsEditingDetail,
 }: InterventionDetailEditFormProps) {
   const { t } = useTranslation();
+
+  const technicianOptions = useMemo(
+    () => [
+      { value: '', label: t('company.fsm.interventions.detail.editForm.unassigned') },
+      ...assignableTechnicians.map((m) => ({
+        value: m.id,
+        label: memberDisplayName(m),
+      })),
+    ],
+    [assignableTechnicians, t],
+  );
 
   return (
     <div className="space-y-3.5 p-4 bg-gray-50/50 border border-gray-100 rounded-xl">
@@ -100,18 +113,12 @@ export function InterventionDetailEditForm({
               <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
                 {t('company.fsm.interventions.detail.editForm.technician')}
               </label>
-              <select
+              <AppSelect
                 value={editTechnicianId}
-                onChange={(e) => setEditTechnicianId(e.target.value)}
-                className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white cursor-pointer font-medium"
-              >
-                <option value="">{t('company.fsm.interventions.detail.editForm.unassigned')}</option>
-                {assignableTechnicians.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {memberDisplayName(m)}
-                  </option>
-                ))}
-              </select>
+                onChange={setEditTechnicianId}
+                options={technicianOptions}
+                aria-label={t('company.fsm.interventions.detail.editForm.technician')}
+              />
             </div>
             <div>
               <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">

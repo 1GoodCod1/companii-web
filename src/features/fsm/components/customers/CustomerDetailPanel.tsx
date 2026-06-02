@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
+import { cabinetSplitPanelClass } from '@/widgets/cabinet/EntityListDetailLayout';
 import {
   EmptyState,
   Panel,
@@ -10,21 +11,22 @@ import {
   cabinetFieldClass,
   cabinetLabelClass,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
-import type { CustomerDto, CustomerTimelineItemDto } from '@/types/fsm';
+  cabinetPanelContentInsetClass,
+} from '@/widgets/cabinet/cabinet-ui';
+import type { CustomerDto, CustomerTimelineItemDto } from '@/entities/fsm/model/types';
 import { useCustomerTimelineQuery } from '@/features/fsm/api/useCustomers';
 import {
   buildPortalInviteUrl,
   useCreatePortalInviteMutation,
 } from '@/features/companies/api/usePortalInvite';
-import { useLocale } from '@/hooks/useLocale';
+import { useLocale } from '@/shared/hooks/useLocale';
 import {
   timelineHref,
   timelineStatusLabel,
   timelineStatusTone,
-} from '@/utils/customerTimeline';
-import { formatDateLocalized, formatDateTimeLocalized } from '@/utils/date';
-import { getErrorMessage } from '@/utils/errors';
+} from '@/entities/fsm/model/customerTimeline';
+import { formatDateLocalized, formatDateTimeLocalized } from '@/shared/utils/date';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 type Props = {
   customer: CustomerDto | null;
@@ -81,11 +83,12 @@ export function CustomerDetailPanel({ customer, onEdit, onDelete }: Props) {
   };
 
   return (
-    <Panel>
+    <Panel className={cabinetSplitPanelClass()}>
       <PanelHeader
         title={t('company.fsm.customers.detail.title')}
         description={t('company.fsm.customers.detail.subtitle')}
       />
+      <div className={cabinetPanelContentInsetClass}>
       {customer ? (
         <div className="space-y-4">
           <div className="flex items-start justify-between gap-4">
@@ -248,8 +251,9 @@ export function CustomerDetailPanel({ customer, onEdit, onDelete }: Props) {
           </div>
         </div>
       ) : (
-        <EmptyState message={t('company.fsm.customers.detail.empty')} />
+        <EmptyState message={t('company.fsm.customers.detail.empty')} fill />
       )}
+      </div>
     </Panel>
   );
 }

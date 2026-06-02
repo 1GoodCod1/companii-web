@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import { useAuthStore } from '@/stores/authStore';
-import type { CalendarBoardDto } from '@/types/fsm';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import type { CalendarBoardDto } from '@/entities/fsm/model/types';
 import { FSM_BASE } from './fsmBase';
 
 export function useCalendarBoardQuery(from: string, to: string) {

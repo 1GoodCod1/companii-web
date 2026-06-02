@@ -9,13 +9,13 @@ import {
   EmptyState,
   SkeletonPage,
   cabinetBtnPrimary,
-} from '@/components/cabinet/cabinet-ui';
-import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
+} from '@/widgets/cabinet/cabinet-ui';
+import { CompanyManagementGate } from '@/features/companies';
 import {
   useEstimateTemplatesQuery,
   useDeleteEstimateTemplateMutation,
-} from '@/features/estimates/api/useEstimateTemplates';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+} from '@/features/estimates';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 export function CompanyTemplatesPage() {
   const { t } = useTranslation();

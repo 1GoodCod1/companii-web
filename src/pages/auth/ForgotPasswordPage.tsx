@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
-import { useForgotPasswordMutation } from '@/features/auth/api/useAuth';
-import { getAuthErrorMessage } from '@/features/auth/authErrors';
+import { useForgotPasswordMutation } from '@/features/auth';
+import { getAuthErrorMessage } from '@/features/auth';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
-import { authFieldClass, authLabelClass } from '@/features/auth/authFormStyles';
-import { FormFieldError } from '@/components/ui/FormFieldError';
+import { authFieldClass, authLabelClass } from '@/features/auth';
+import { FormFieldError } from '@/shared/ui/FormFieldError';
 import { fieldClassName } from '@/lib/forms/fieldClassName';
 import {
   createForgotPasswordSchema,

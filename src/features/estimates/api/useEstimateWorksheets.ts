@@ -1,9 +1,9 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import { useAuthStore } from '@/stores/authStore';
-import type { WorkSheetDto, AssignedWorksheetDto } from '@/types/estimates';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import type { WorkSheetDto, AssignedWorksheetDto } from '@/entities/estimate/model/estimates';
 import { ESTIMATES_API_BASE } from './constants';
 
 export function useWorksheetByInterventionQuery(

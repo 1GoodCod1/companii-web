@@ -1,21 +1,22 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/entities/user/model/authStore';
 import {
   useCompanyAuditLogsQuery,
   useCompanyMembersQuery,
 } from '@/features/companies/api/useCompanies';
-import type { AdminAuditLogDto } from '@/features/admin/api/useAdmin';
-import { auditActionLabel, formatAuditDetails, formatEntityType } from '@/utils/audit';
-import { formatAuditActorName } from '@/utils/person';
-import { formatDateTimeLocalized } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
+import type { AdminAuditLogDto } from '@/features/admin';
+import { auditActionLabel, formatAuditDetails, formatEntityType } from '@/shared/utils/audit';
+import { formatAuditActorName } from '@/shared/utils/person';
+import { formatDateTimeLocalized } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
 import {
   PageHero,
   Panel,
   EmptyState,
-} from '@/components/cabinet/cabinet-ui';
-import { CompanyOwnerGate } from '@/features/companies/CompanyManagementGate';
+  AppSelect,
+} from '@/widgets/cabinet/cabinet-ui';
+import { CompanyOwnerGate } from '@/features/companies';
 
 const COMPANY_AUDIT_ACTION_OPTIONS = [
   { value: 'COMPANY_CREATED', labelFallback: 'Companie creată' },
@@ -48,6 +49,28 @@ export function CompanyAuditPage() {
     limit: 100,
   });
 
+  const actionOptions = useMemo(
+    () => [
+      { value: '', label: t('company.auditPage.filterAllActions') },
+      ...COMPANY_AUDIT_ACTION_OPTIONS.map((opt) => ({
+        value: opt.value,
+        label: t(`admin.auditPage.filterLabels.${opt.value}`, opt.labelFallback),
+      })),
+    ],
+    [t],
+  );
+
+  const userOptions = useMemo(
+    () => [
+      { value: '', label: t('company.auditPage.filterAllUsers') },
+      ...(members?.map((m) => ({
+        value: m.userId,
+        label: `${m.user?.firstName ?? ''} ${m.user?.lastName ?? ''} (${m.role})`.trim(),
+      })) ?? []),
+    ],
+    [members, t],
+  );
+
   return (
     <CompanyOwnerGate>
       <div className="space-y-6 animate-fade-in">
@@ -58,31 +81,23 @@ export function CompanyAuditPage() {
 
         {/* ── Filters ── */}
         <div className="flex flex-wrap gap-3">
-          <select
+          <AppSelect
             value={actionFilter}
-            onChange={(e) => setActionFilter(e.target.value)}
-            className="border border-gray-200 px-4 py-2.5 text-sm bg-white min-w-[220px]"
-          >
-            <option value="">{t('company.auditPage.filterAllActions')}</option>
-            {COMPANY_AUDIT_ACTION_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {t(`admin.auditPage.filterLabels.${opt.value}`, opt.labelFallback)}
-              </option>
-            ))}
-          </select>
+            onChange={setActionFilter}
+            options={actionOptions}
+            aria-label={t('company.auditPage.filterAllActions')}
+            className="min-w-[220px]"
+            maxVisibleItems={8}
+          />
 
-          <select
+          <AppSelect
             value={userFilter}
-            onChange={(e) => setUserFilter(e.target.value)}
-            className="border border-gray-200 px-4 py-2.5 text-sm bg-white min-w-[220px]"
-          >
-            <option value="">{t('company.auditPage.filterAllUsers')}</option>
-            {members?.map((m) => (
-              <option key={m.userId} value={m.userId}>
-                {m.user?.firstName ?? ''} {m.user?.lastName ?? ''} ({m.role})
-              </option>
-            ))}
-          </select>
+            onChange={setUserFilter}
+            options={userOptions}
+            aria-label={t('company.auditPage.filterAllUsers')}
+            className="min-w-[220px]"
+            maxVisibleItems={8}
+          />
         </div>
 
         {/* ── Table ── */}

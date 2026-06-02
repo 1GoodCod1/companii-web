@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { SEOHead } from '@/components/seo/SEOHead';
-import { LegalDocumentLayout, type LegalTocItem } from '@/components/legal/LegalDocumentLayout';
-import { useLocalizedPath } from '@/hooks/useLocalizedPath';
-import { useLegalLocale } from '@/hooks/useLegalLocale';
-import { renderTermsContent } from '@/i18n/content/legalTerms';
+import { SEOHead } from '@/shared/ui/seo/SEOHead';
+import { LegalDocumentLayout, type LegalTocItem } from '@/shared/ui/legal/LegalDocumentLayout';
+import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { renderTermsContent } from '@/shared/config/i18n/content/legalTerms';
 
 export function TermsPage() {
   const { t } = useTranslation();
   const lp = useLocalizedPath();
-  const locale = useLegalLocale();
+  const locale = useLocale();
   const toc = t('legal.terms.toc', { returnObjects: true }) as LegalTocItem[];
 
   return (

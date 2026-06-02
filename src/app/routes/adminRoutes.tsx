@@ -1,5 +1,5 @@
-import { AdminLayout } from '@/components/layout/AdminLayout';
-import { RequireAuth } from '@/features/auth/guards';
+import { AdminLayout } from '@/widgets/layout/AdminLayout';
+import { RequireAuth } from '@/features/auth';
 import { AdminHomePage } from '@/pages/admin/AdminHomePage';
 import { AdminCompaniesPage } from '@/pages/admin/AdminCompaniesPage';
 import { AdminSubscriptionsPage } from '@/pages/admin/AdminSubscriptionsPage';
@@ -11,7 +11,7 @@ import { AdminReviewsPage } from '@/pages/admin/AdminReviewsPage';
 import { AdminAuditPage } from '@/pages/admin/AdminAuditPage';
 import { AdminBlueprintsPage } from '@/pages/admin/AdminBlueprintsPage';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
-import { ROUTE_ROOT, ROUTE_ACCESS, ADMIN_ROUTE } from '@/constants/routes.constants';
+import { ROUTE_ROOT, ROUTE_ACCESS, ADMIN_ROUTE } from '@/shared/constants/routes.constants';
 
 export const adminRoutesSection = {
   path: ROUTE_ROOT.ADMIN,

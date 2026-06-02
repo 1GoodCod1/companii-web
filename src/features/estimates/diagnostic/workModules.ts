@@ -3,7 +3,7 @@ import type {
   BlueprintPricingRule,
   BlueprintWorkModule,
   EstimateBlueprintConfig,
-} from '@/types/estimate-blueprint-config.types';
+} from '@/entities/estimate/model/estimate-blueprint-config.types';
 
 export const ENABLED_WORK_MODULES_KEY = 'enabledWorkModules';
 

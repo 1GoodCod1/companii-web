@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { SEOHead } from '@/components/seo/SEOHead';
-import { StatusPage } from '@/components/errors/StatusPage';
-import { StandaloneErrorLayout } from '@/components/errors/StandaloneErrorLayout';
+import { SEOHead } from '@/shared/ui/seo/SEOHead';
+import { StatusPage } from '@/shared/ui/errors/StatusPage';
+import { StandaloneErrorLayout } from '@/shared/ui/errors/StandaloneErrorLayout';
 
 type NotFoundPageProps = {
   standalone?: boolean;

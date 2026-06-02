@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { LayoutTemplate, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { Plan2dData, Plan2dRoom } from '@/types/estimates';
+import { AppSelect } from '@/widgets/cabinet/cabinet-ui';
+import type { Plan2dData, Plan2dRoom } from '@/entities/estimate/model/estimates';
 
 type Props = {
   value: Plan2dData;
@@ -23,6 +25,25 @@ export function PlanRoomsTable({
 }: Props) {
   const { t } = useTranslation();
   const ns = 'company.estimateWizard.planEditor.roomsTable';
+
+  const shapeTypeOptions = useMemo(
+    () => [
+      { value: 'rectangle', label: t(`${ns}.shapeRectangle`) },
+      { value: 'l-shape', label: t(`${ns}.shapeL`) },
+      { value: 't-shape', label: t(`${ns}.shapeT`) },
+      { value: 'u-shape', label: t(`${ns}.shapeU`) },
+    ],
+    [ns, t],
+  );
+
+  const roofTypeOptions = useMemo(
+    () => [
+      { value: 'flat', label: t(`${ns}.roofFlat`) },
+      { value: 'gable', label: t(`${ns}.roofGable`) },
+      { value: 'hip', label: t(`${ns}.roofHip`) },
+    ],
+    [ns, t],
+  );
 
   return (
     <div className="rounded-3xl border border-slate-100 bg-white p-6 glass-panel space-y-4">
@@ -114,33 +135,30 @@ export function PlanRoomsTable({
                       />
                     </td>
                     <td className="py-2 px-3">
-                      <select
-                        disabled={readOnly}
+                      <AppSelect
                         value={room.shapeType || 'rectangle'}
-                        onChange={(e) =>
-                          onUpdateRoom(room.id, { shapeType: e.target.value as Plan2dRoom['shapeType'] })
+                        onChange={(value) =>
+                          onUpdateRoom(room.id, { shapeType: value as Plan2dRoom['shapeType'] })
                         }
-                        className="w-full rounded-lg border border-slate-200 bg-transparent px-2 py-1.5 text-xs font-bold focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
-                      >
-                        <option value="rectangle">{t(`${ns}.shapeRectangle`)}</option>
-                        <option value="l-shape">{t(`${ns}.shapeL`)}</option>
-                        <option value="t-shape">{t(`${ns}.shapeT`)}</option>
-                        <option value="u-shape">{t(`${ns}.shapeU`)}</option>
-                      </select>
+                        options={shapeTypeOptions}
+                        disabled={readOnly}
+                        aria-label={t(`${ns}.shapeRectangle`)}
+                        className="min-w-[100px]"
+                        maxVisibleItems={8}
+                      />
                     </td>
                     <td className="py-2 px-3">
-                      <select
-                        disabled={readOnly}
+                      <AppSelect
                         value={room.roofType || 'flat'}
-                        onChange={(e) =>
-                          onUpdateRoom(room.id, { roofType: e.target.value as Plan2dRoom['roofType'] })
+                        onChange={(value) =>
+                          onUpdateRoom(room.id, { roofType: value as Plan2dRoom['roofType'] })
                         }
-                        className="w-full rounded-lg border border-slate-200 bg-transparent px-2 py-1.5 text-xs font-bold focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
-                      >
-                        <option value="flat">{t(`${ns}.roofFlat`)}</option>
-                        <option value="gable">{t(`${ns}.roofGable`)}</option>
-                        <option value="hip">{t(`${ns}.roofHip`)}</option>
-                      </select>
+                        options={roofTypeOptions}
+                        disabled={readOnly}
+                        aria-label={t(`${ns}.roofFlat`)}
+                        className="min-w-[100px]"
+                        maxVisibleItems={8}
+                      />
                     </td>
                     <td className="py-2 px-3 text-right font-black text-slate-800">
                       {area.toFixed(1)} m²

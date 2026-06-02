@@ -1,24 +1,24 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { SEOHead } from '@/components/seo/SEOHead';
+import { SEOHead } from '@/shared/ui/seo/SEOHead';
 import { Building2, Search } from 'lucide-react';
-import { CompanyCard } from '@/components/public/CompanyCard';
-import { PublicPageHeader } from '@/components/public/PublicPageHeader';
+import { CompanyCard } from '@/entities/company/ui/CompanyCard';
+import { PublicPageHeader } from '@/shared/ui/PublicPageHeader';
 import {
   useCategoriesQuery,
   useCitiesQuery,
   useCompaniesListQuery,
 } from '@/features/companies/api/useCompanies';
-import type { CatalogOptionDto } from '@/types/companies';
-import { useLocalizedPath } from '@/hooks/useLocalizedPath';
-import { usePublicAuthCta } from '@/features/auth/hooks/usePublicAuthCta';
-import { AppSelect, cabinetFieldClass } from '@/components/cabinet/cabinet-ui';
+import type { CatalogOptionDto } from '@/entities/company/model/companies.types';
+import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
+import { usePublicAuthCta } from '@/features/auth';
+import { AppSelect, cabinetFieldClass } from '@/widgets/cabinet/cabinet-ui';
 import {
   getCatalogSearchText,
   getTranslatedCategoryName,
   getTranslatedCityName,
-} from '@/utils/translateCityCategory';
+} from '@/shared/utils/translateCityCategory';
 
 export function CompaniesListPage() {
   const { t } = useTranslation();

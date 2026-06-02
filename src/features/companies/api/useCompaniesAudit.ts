@@ -1,7 +1,7 @@
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults } from '@/api/queryPolicies';
-import type { AdminAuditLogDto } from '@/features/admin/api/useAdmin';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
+import type { AdminAuditLogDto } from '@/features/admin';
 
 export function useCompanyAuditLogsQuery(
   companyId: string,

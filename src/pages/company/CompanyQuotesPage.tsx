@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import { PageHero, cabinetBtnPrimary } from '@/components/cabinet/cabinet-ui';
-import { EntityListDetailLayout } from '@/components/cabinet/EntityListDetailLayout';
-import { useQuotesQuery } from '@/features/fsm/api/useQuotes';
-import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
-import { QuotesListTable } from '@/features/fsm/components/quotes/QuotesListTable';
-import { QuoteDetailPanel } from '@/features/fsm/components/quotes/QuoteDetailPanel';
-import { CreateQuoteModal } from '@/features/fsm/components/quotes/CreateQuoteModal';
-import { useEntityModal } from '@/hooks/useEntityModal';
-import { useEntitySelection } from '@/hooks/useEntitySelection';
+import { PageHero, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
+import { EntityListDetailLayout } from '@/widgets/cabinet/EntityListDetailLayout';
+import { useQuotesQuery } from '@/features/fsm';
+import { CompanyManagementGate } from '@/features/companies';
+import { QuotesListTable } from '@/features/fsm';
+import { QuoteDetailPanel } from '@/features/fsm';
+import { CreateQuoteModal } from '@/features/fsm';
+import { useEntityModal } from '@/shared/hooks/useEntityModal';
+import { useEntitySelection } from '@/shared/hooks/useEntitySelection';
 
 export function CompanyQuotesPage() {
   const { t } = useTranslation();

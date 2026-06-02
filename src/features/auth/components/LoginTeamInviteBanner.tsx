@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { isManagerRole } from '@/utils/roles';
+import { isManagerRole } from '@/entities/company/model/roles';
 
 interface LoginTeamInviteBannerProps {
   teamPreview: {

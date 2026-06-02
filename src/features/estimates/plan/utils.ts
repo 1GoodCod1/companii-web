@@ -1,1 +1,1 @@
-export * from '@/utils/planEditor';
+export * from '@/entities/estimate/model/planEditor';

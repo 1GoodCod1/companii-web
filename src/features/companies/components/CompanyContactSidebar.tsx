@@ -1,6 +1,6 @@
 import { MessageSquare, Phone, Mail, ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { PublicCompanyDetailDto } from '@/types/companies';
+import type { PublicCompanyDetailDto } from '@/entities/company/model/companies.types';
 
 interface CompanyContactSidebarProps {
   company: PublicCompanyDetailDto;

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import type { CompanyLeadStatus } from '@/types/fsm';
-import { LEAD_STATUS_FILTERS } from '@/constants/leads.constants';
-import { leadFilterLabel } from '@/utils/i18nStatusLabels';
+import type { CompanyLeadStatus } from '@/entities/fsm/model/types';
+import { LEAD_STATUS_FILTERS } from '@/entities/fsm/model/leads.constants';
+import { leadFilterLabel } from '@/entities/fsm/model/i18nStatusLabels';
 
 export function LeadsStatusFilter({
   value,

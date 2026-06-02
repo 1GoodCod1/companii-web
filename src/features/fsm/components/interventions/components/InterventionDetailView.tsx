@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { fileDownloadPath } from '@/api/files';
-import { useLocale } from '@/hooks/useLocale';
-import { technicianDisplayName } from '@/utils/teamMembers';
-import { formatDateTimeLocalized } from '@/utils/date';
-import type { InterventionDto } from '@/types/fsm';
+import { fileDownloadPath } from '@/shared/api/files';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { technicianDisplayName } from '@/entities/company/model/teamMembers';
+import { formatDateTimeLocalized } from '@/shared/utils/date';
+import type { InterventionDto } from '@/entities/fsm/model/types';
 
 interface InterventionDetailViewProps {
   detail: InterventionDto;

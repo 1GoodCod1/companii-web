@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlertTriangle, Gauge, Home, Layers, Ruler, Sparkles } from 'lucide-react';
-import type { Plan2dData, Plan2dRoom } from '@/types/estimates';
+import { AppSelect } from '@/widgets/cabinet/cabinet-ui';
+import type { Plan2dData, Plan2dRoom } from '@/entities/estimate/model/estimates';
 import {
   computeRectangularRoofBaseArea,
   computeRectangularRoofPerimeter,
@@ -215,6 +216,30 @@ export function PlanRoofGeometryPanel({
   const needsReview = drawingReasons.length > 0;
   const roomsArea = totalRoomsArea(value.rooms);
   const diagnosticShape = roofShapeForDiagnostic(inferredShape, planeCount);
+
+  const shapeSelectOptions = useMemo(
+    () => SHAPE_OPTIONS.map((option) => ({ value: option.value, label: option.label })),
+    [],
+  );
+
+  const roofTypeOptions = useMemo(
+    () => [
+      { value: 'gable', label: 'În două ape' },
+      { value: 'hip', label: 'În patru ape' },
+      { value: 'flat', label: 'Plat / anexă' },
+    ],
+    [],
+  );
+
+  const overhangOptions = useMemo(
+    () => [
+      { value: '0.3', label: '0.3 m' },
+      { value: '0.4', label: '0.4 m' },
+      { value: '0.5', label: '0.5 m' },
+      { value: '0.6', label: '0.6 m' },
+    ],
+    [],
+  );
   const diagnosticPatch = (patch: Record<string, unknown>) => {
     onChange({
       ...value,
@@ -427,18 +452,15 @@ export function PlanRoofGeometryPanel({
                 <Layers className="h-3.5 w-3.5" />
                 Formă
               </span>
-              <select
-                disabled={readOnly}
+              <AppSelect
                 value={value.rooms[0]?.shapeType ?? 'rectangle'}
-                onChange={(event) => updatePrimaryRoom({ shapeType: event.target.value as Plan2dRoom['shapeType'] })}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-850 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
-              >
-                {SHAPE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                onChange={(nextValue) =>
+                  updatePrimaryRoom({ shapeType: nextValue as Plan2dRoom['shapeType'] })
+                }
+                options={shapeSelectOptions}
+                disabled={readOnly}
+                aria-label="Formă"
+              />
             </label>
 
             <label className="space-y-1">
@@ -446,16 +468,15 @@ export function PlanRoofGeometryPanel({
                 <Sparkles className="h-3.5 w-3.5" />
                 Tip
               </span>
-              <select
-                disabled={readOnly}
+              <AppSelect
                 value={roofType}
-                onChange={(event) => updatePrimaryRoom({ roofType: event.target.value as Plan2dRoom['roofType'] })}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-850 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
-              >
-                <option value="gable">În două ape</option>
-                <option value="hip">În patru ape</option>
-                <option value="flat">Plat / anexă</option>
-              </select>
+                onChange={(nextValue) =>
+                  updatePrimaryRoom({ roofType: nextValue as Plan2dRoom['roofType'] })
+                }
+                options={roofTypeOptions}
+                disabled={readOnly}
+                aria-label="Tip"
+              />
             </label>
 
             <label className="space-y-1">
@@ -463,11 +484,10 @@ export function PlanRoofGeometryPanel({
                 <Ruler className="h-3.5 w-3.5" />
                 Surplombă
               </span>
-              <select
-                disabled={readOnly}
-                value={globalParams.roofOverhangM ?? 0.4}
-                onChange={(event) => {
-                  const nextOverhang = Number(event.target.value);
+              <AppSelect
+                value={String(globalParams.roofOverhangM ?? 0.4)}
+                onChange={(nextValue) => {
+                  const nextOverhang = Number(nextValue);
                   setGlobalParams({
                     roofOverhangM: nextOverhang,
                     roofGutterLengthM: primaryRoom
@@ -475,13 +495,10 @@ export function PlanRoofGeometryPanel({
                       : undefined,
                   });
                 }}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-850 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
-              >
-                <option value={0.3}>0.3 m</option>
-                <option value={0.4}>0.4 m</option>
-                <option value={0.5}>0.5 m</option>
-                <option value={0.6}>0.6 m</option>
-              </select>
+                options={overhangOptions}
+                disabled={readOnly}
+                aria-label="Surplombă"
+              />
             </label>
           </div>
 
@@ -771,21 +788,21 @@ function SelectControl({
   disabled?: boolean;
   onChange: (value: string) => void;
 }) {
+  const appOptions = useMemo(
+    () => options.map(([optionValue, optionLabel]) => ({ value: optionValue, label: optionLabel })),
+    [options],
+  );
+
   return (
     <label className="space-y-1">
       <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">{label}</span>
-      <select
-        disabled={disabled}
+      <AppSelect
         value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-850 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
-      >
-        {options.map(([optionValue, optionLabel]) => (
-          <option key={optionValue} value={optionValue}>
-            {optionLabel}
-          </option>
-        ))}
-      </select>
+        onChange={onChange}
+        options={appOptions}
+        disabled={disabled}
+        aria-label={label}
+      />
     </label>
   );
 }

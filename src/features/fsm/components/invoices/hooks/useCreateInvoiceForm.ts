@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { INTERVENTION_STATUS } from '@/constants/interventionStatus.constants';
+import { INTERVENTION_STATUS } from '@/entities/fsm/model/interventionStatus.constants';
 import { useCreateInvoiceMutation } from '@/features/fsm/api/useInvoices';
 import { useInterventionsQuery } from '@/features/fsm/api/useInterventions';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
-import { useAuthStore } from '@/stores/authStore';
-import { getErrorMessage } from '@/utils/errors';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 interface UseCreateInvoiceFormProps {
   onClose: () => void;

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { FormSection, cabinetLabelClass, cabinetFieldClass } from '@/components/cabinet/cabinet-ui';
+import { FormSection, cabinetLabelClass, cabinetFieldClass } from '@/widgets/cabinet/cabinet-ui';
 
 interface ContactSectionProps {
   contactPhone: string;

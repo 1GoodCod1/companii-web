@@ -1,23 +1,24 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { COMPANY_ROLE } from '@/constants/roles.constants';
-import type { InvitableCompanyRole } from '@/types/roles';
+import { COMPANY_ROLE } from '@/entities/company/model/roles.constants';
+import type { InvitableCompanyRole } from '@/entities/company/model/roles.types';
 import {
+  AppSelect,
   SoftBadge,
   cabinetBtnSecondary,
-  cabinetSelectClass,
-} from '@/components/cabinet/cabinet-ui';
-import type { CompanyMemberDto } from '@/types/fsm';
-import { TEAM_ROLE_CONFIG } from '@/constants/teamRoles.constants';
-import type { TeamRoleKey } from '@/types/team';
+} from '@/widgets/cabinet/cabinet-ui';
+import type { CompanyMemberDto } from '@/entities/fsm/model/types';
+import { TEAM_ROLE_CONFIG } from '@/entities/company/model/teamRoles.constants';
+import type { TeamRoleKey } from '@/entities/company/model/team.types';
 import {
   memberContactEmail,
   memberContactPhone,
   memberDisplayName,
   memberInitials,
-} from '@/utils/teamMembers';
-import { formatDateLocalized } from '@/utils/date';
-import { getCompanyRoleLabel } from '@/utils/companyRoleLabel';
-import { useLocale } from '@/hooks/useLocale';
+} from '@/entities/company/model/teamMembers';
+import { formatDateLocalized } from '@/shared/utils/date';
+import { getCompanyRoleLabel } from '@/entities/company/model/companyRoleLabel';
+import { useLocale } from '@/shared/hooks/useLocale';
 
 const ROLE_SECTION_KEYS: Record<
   TeamRoleKey,
@@ -87,6 +88,14 @@ function TeamMemberCard({
     !isSelf &&
     member.role !== COMPANY_ROLE.OWNER &&
     (canInviteManagers || member.role === COMPANY_ROLE.MEMBER);
+
+  const memberRoleOptions = useMemo(
+    () => [
+      { value: COMPANY_ROLE.MEMBER, label: getCompanyRoleLabel(t, COMPANY_ROLE.MEMBER) },
+      { value: COMPANY_ROLE.MANAGER, label: getCompanyRoleLabel(t, COMPANY_ROLE.MANAGER) },
+    ],
+    [t],
+  );
 
   return (
     <li className="rounded-2xl border border-gray-100/80 bg-white/70 p-4 shadow-xs">
@@ -163,20 +172,13 @@ function TeamMemberCard({
         {canModify ? (
           <div className="mt-4 flex flex-wrap gap-2 border-t border-gray-100 pt-3">
             {canInviteManagers && member.role !== COMPANY_ROLE.OWNER ? (
-              <select
+              <AppSelect
                 value={member.role === COMPANY_ROLE.MANAGER ? COMPANY_ROLE.MANAGER : COMPANY_ROLE.MEMBER}
-                onChange={(e) =>
-                  onChangeRole(member.id, e.target.value as InvitableCompanyRole)
-                }
-                className={cabinetSelectClass}
-              >
-                <option value={COMPANY_ROLE.MEMBER}>
-                  {getCompanyRoleLabel(t, COMPANY_ROLE.MEMBER)}
-                </option>
-                <option value={COMPANY_ROLE.MANAGER}>
-                  {getCompanyRoleLabel(t, COMPANY_ROLE.MANAGER)}
-                </option>
-              </select>
+                onChange={(value) => onChangeRole(member.id, value as InvitableCompanyRole)}
+                options={memberRoleOptions}
+                aria-label={t('company.teamPage.roleLabel')}
+                className="min-w-[140px]"
+              />
             ) : null}
             <button
               type="button"

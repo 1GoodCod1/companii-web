@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { CheckCircle2 } from 'lucide-react';
-import type { EstimateBlueprintDto } from '@/types/estimates';
+import type { EstimateBlueprintDto } from '@/entities/estimate/model/estimates';
 
 type Props = {
   blueprint: EstimateBlueprintDto;

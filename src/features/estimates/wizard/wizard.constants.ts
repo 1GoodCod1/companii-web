@@ -1,1 +1,1 @@
-export * from '@/constants/estimatesWizard.constants';
+export * from '@/entities/estimate/model/estimatesWizard.constants';

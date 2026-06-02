@@ -1,1 +1,1 @@
-export * from '@/types/fsm';
+export * from '@/entities/fsm/model/types';

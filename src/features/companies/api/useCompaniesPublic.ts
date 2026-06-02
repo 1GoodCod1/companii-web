@@ -1,14 +1,14 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
+import { apiFetch } from '@/shared/api/client';
 import {
   publicDetailQueryOptions,
   publicListQueryOptions,
-} from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
+} from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
 import type {
   CompaniesListResponse,
   PublicCompanyDetailDto,
-} from '@/types/companies';
+} from '@/entities/company/model/companies.types';
 
 export function useCompaniesListQuery(
   filters: Record<string, string | undefined> = {},

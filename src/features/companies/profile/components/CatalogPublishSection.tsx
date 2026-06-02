@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { SoftBadge, cabinetBtnPrimary } from '@/components/cabinet/cabinet-ui';
-import type { OwnedCompanyDto } from '@/types/companies';
+import { SoftBadge, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
+import type { OwnedCompanyDto } from '@/entities/company/model/companies.types';
 
 interface CatalogPublishSectionProps {
   ownedCompany: OwnedCompanyDto;

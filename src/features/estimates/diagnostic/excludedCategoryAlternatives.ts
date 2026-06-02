@@ -1,4 +1,4 @@
-import type { EstimateExcludedCategorySlug } from '@/constants/estimateCategorySlugs.constants';
+import type { EstimateExcludedCategorySlug } from '@/entities/estimate/model/estimateCategorySlugs.constants';
 
 export type ExcludedCategoryAlternative = {
   slug: EstimateExcludedCategorySlug;

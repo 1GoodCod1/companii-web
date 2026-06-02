@@ -1,1 +1,1 @@
-export * from '@/utils/portalStatus';
+export * from '@/entities/fsm/model/portalStatus';

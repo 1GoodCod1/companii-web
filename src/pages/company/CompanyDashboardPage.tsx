@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { PageHero, Panel, SoftBadge } from '@/components/cabinet/cabinet-ui';
-import { useAuthStore } from '@/stores/authStore';
+import { PageHero, Panel, SoftBadge } from '@/widgets/cabinet/cabinet-ui';
+import { useAuthStore } from '@/entities/user/model/authStore';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
-import { DashboardKpiGrid } from '@/features/fsm/components/dashboard/DashboardKpiGrid';
-import { DashboardNewLeadsPanel } from '@/features/fsm/components/dashboard/DashboardNewLeadsPanel';
-import { DashboardActiveInterventionsPanel } from '@/features/fsm/components/dashboard/DashboardActiveInterventionsPanel';
-import { DashboardRecentInvoicesPanel } from '@/features/fsm/components/dashboard/DashboardRecentInvoicesPanel';
-import { useDashboardPageData } from '@/features/fsm/hooks/useDashboardPageData';
+import { DashboardKpiGrid } from '@/features/fsm';
+import { DashboardNewLeadsPanel } from '@/features/fsm';
+import { DashboardActiveInterventionsPanel } from '@/features/fsm';
+import { DashboardRecentInvoicesPanel } from '@/features/fsm';
+import { useDashboardPageData } from '@/features/fsm';
 
 export function CompanyDashboardPage() {
   const { t } = useTranslation();

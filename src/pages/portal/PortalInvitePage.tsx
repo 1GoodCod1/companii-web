@@ -5,9 +5,9 @@ import toast from 'react-hot-toast';
 import {
   useAcceptPortalInvitationMutation,
   usePortalInvitePreviewQuery,
-} from '@/features/portal/api/usePortal';
-import { useAuthStore } from '@/stores/authStore';
-import { getErrorMessage } from '@/utils/errors';
+} from '@/features/portal';
+import { useAuthStore } from '@/entities/user/model/authStore';
+import { getErrorMessage } from '@/shared/utils/errors';
 
 export function PortalInvitePage() {
   const { t } = useTranslation();

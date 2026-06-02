@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { useAdminWaitlistQuery } from '@/features/admin/api/useAdmin';
-import { formatDateTimeLocalized } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
+import { useAdminWaitlistQuery } from '@/features/admin';
+import { formatDateTimeLocalized } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
 
 export function AdminWaitlistPage() {
   const { t } = useTranslation();

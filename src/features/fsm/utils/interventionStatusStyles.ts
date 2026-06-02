@@ -1,1 +1,1 @@
-export * from '@/utils/interventionStatusStyles';
+export * from '@/entities/fsm/model/interventionStatusStyles';

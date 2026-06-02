@@ -11,7 +11,7 @@ import {
   setProjectMeta,
   type EstimateMutationRecord,
 } from './mutationQueue';
-import { _resetEstimateDb, idbClear, STORE_DRAFTS, STORE_META } from '@/utils/idb';
+import { _resetEstimateDb, idbClear, STORE_DRAFTS, STORE_META } from '@/entities/estimate/model/idb';
 
 beforeEach(async () => {
   _resetEstimateDb();

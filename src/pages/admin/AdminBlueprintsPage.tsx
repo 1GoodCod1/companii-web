@@ -6,15 +6,15 @@ import {
   EmptyState,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import {
   useAdminBlueprintsQuery,
   useAdminCategoriesQuery,
-} from '@/features/admin/api/useAdmin';
-import { useAdminBlueprintForm } from '@/features/admin/hooks/useAdminBlueprintForm';
-import { AdminBlueprintControlPanel } from '@/features/admin/components/AdminBlueprintControlPanel';
-import { AdminBlueprintCard } from '@/features/admin/components/AdminBlueprintCard';
-import { AdminBlueprintModal } from '@/features/admin/components/AdminBlueprintModal';
+} from '@/features/admin';
+import { useAdminBlueprintForm } from '@/features/admin';
+import { AdminBlueprintControlPanel } from '@/features/admin';
+import { AdminBlueprintCard } from '@/features/admin';
+import { AdminBlueprintModal } from '@/features/admin';
 
 export function AdminBlueprintsPage() {
   const { t } = useTranslation();

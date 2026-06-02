@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Send, MessageCircle } from 'lucide-react';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/entities/user/model/authStore';
 import { useEstimateComments, useAddComment } from '../api/useEstimateComments';
-import type { EstimateCommentDto } from '@/types/estimates';
+import type { EstimateCommentDto } from '@/entities/estimate/model/estimates';
 
 interface Props {
   projectId: string;

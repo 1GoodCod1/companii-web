@@ -1,5 +1,5 @@
-import { ApiError } from '@/api/client';
-import i18n from '@/i18n';
+import { ApiError } from '@/shared/api/client';
+import i18n from '@/shared/config/i18n';
 
 export function isAuthPhoneTakenError(err: unknown): boolean {
   if (!(err instanceof ApiError) || err.status !== 409) return false;

@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import type { CustomerDto } from '@/types/fsm';
-import { EntityListPanel } from '@/components/cabinet/EntityListPanel';
-import { cabinetBtnSecondary } from '@/components/cabinet/cabinet-ui';
-import { entityListRowClass } from '@/components/cabinet/rowStyles';
+import type { CustomerDto } from '@/entities/fsm/model/types';
+import { EntityListPanel } from '@/widgets/cabinet/EntityListPanel';
+import { cabinetBtnSecondary } from '@/widgets/cabinet/cabinet-ui';
+import { entityListRowClass } from '@/widgets/cabinet/rowStyles';
 
 export const CUSTOMERS_LIST_PAGE_SIZE = 20;
 

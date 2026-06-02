@@ -6,7 +6,7 @@ import {
   groupVisibleCustomFields,
 } from './groupCustomFields';
 import { evaluateWarningRule, validateDiagnostic } from './diagnosticValidation';
-import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimate-blueprint-config.types';
 
 const config: EstimateBlueprintConfig = {
   wizardSteps: ['object', 'plan', 'diagnostic', 'stages', 'review'],

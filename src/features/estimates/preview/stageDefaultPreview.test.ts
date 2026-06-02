@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimate-blueprint-config.types';
 import { appendStageDefaultPreviewLines, isStageDefaultLaborChargeable } from './stageDefaultPreview';
 
 const config: EstimateBlueprintConfig = {

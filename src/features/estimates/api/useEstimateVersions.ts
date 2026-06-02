@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import type { EstimateVersionSummary, EstimateVersionDiff } from '@/types/estimates';
+import { apiFetch } from '@/shared/api/client';
+import type { EstimateVersionSummary, EstimateVersionDiff } from '@/entities/estimate/model/estimates';
 
 export function useEstimateVersions(projectId: string | undefined) {
   return useQuery<EstimateVersionSummary[]>({

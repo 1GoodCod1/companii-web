@@ -7,13 +7,13 @@ import {
   PanelHeader,
   EmptyState,
   SoftBadge,
-} from '@/components/cabinet/cabinet-ui';
-import { usePortalLeadsQuery } from '@/features/portal/api/usePortal';
-import { formatDateLocalized } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
-import { LEAD_STATUS_TONES } from '@/constants/leads.constants';
-import { leadStatusLabel } from '@/utils/i18nStatusLabels';
-import type { CompanyLeadDto } from '@/types/fsm';
+} from '@/widgets/cabinet/cabinet-ui';
+import { usePortalLeadsQuery } from '@/features/portal';
+import { formatDateLocalized } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { LEAD_STATUS_TONES } from '@/entities/fsm/model/leads.constants';
+import { leadStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import type { CompanyLeadDto } from '@/entities/fsm/model/types';
 
 function leadSourceLabel(source: CompanyLeadDto['source'], t: (key: string) => string) {
   return t(`portal.cereriPage.source.${source}`);

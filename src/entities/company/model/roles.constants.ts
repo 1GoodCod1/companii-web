@@ -1,0 +1,40 @@
+export const ACCOUNT_KIND = {
+  COMPANY_STAFF: 'COMPANY_STAFF',
+  END_CLIENT: 'END_CLIENT',
+  PLATFORM_ADMIN: 'PLATFORM_ADMIN',
+} as const;
+
+export const COMPANY_ROLE = {
+  OWNER: 'OWNER',
+  MANAGER: 'MANAGER',
+  MEMBER: 'MEMBER',
+} as const;
+
+export const INVITABLE_COMPANY_ROLES = [
+  COMPANY_ROLE.MANAGER,
+  COMPANY_ROLE.MEMBER,
+] as const;
+
+export const COMPANY_ROLE_CODES = Object.values(COMPANY_ROLE);
+
+export const ACCOUNT_KIND_CODES = Object.values(ACCOUNT_KIND);
+
+export const COMPANY_ROLE_GROUPS = {
+  ALL_STAFF: [
+    COMPANY_ROLE.OWNER,
+    COMPANY_ROLE.MANAGER,
+    COMPANY_ROLE.MEMBER,
+  ] as const,
+  MANAGEMENT: [COMPANY_ROLE.OWNER, COMPANY_ROLE.MANAGER] as const,
+  OWNER_ONLY: [COMPANY_ROLE.OWNER] as const,
+  MEMBER_ONLY: [COMPANY_ROLE.MEMBER] as const,
+};
+
+export const ACCOUNT_KIND_LABELS: Record<
+  (typeof ACCOUNT_KIND)[keyof typeof ACCOUNT_KIND],
+  string
+> = {
+  [ACCOUNT_KIND.COMPANY_STAFF]: 'Companie',
+  [ACCOUNT_KIND.END_CLIENT]: 'Client',
+  [ACCOUNT_KIND.PLATFORM_ADMIN]: 'Administrator',
+};

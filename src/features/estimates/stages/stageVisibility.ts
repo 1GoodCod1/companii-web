@@ -1,8 +1,8 @@
 import type {
   BlueprintStageDef,
   EstimateBlueprintConfig,
-} from '@/types/estimate-blueprint-config.types';
-import type { EstimateStageDto } from '@/types/estimates';
+} from '@/entities/estimate/model/estimate-blueprint-config.types';
+import type { EstimateStageDto } from '@/entities/estimate/model/estimates';
 
 export type StageVisibility = {
   stage: EstimateStageDto;

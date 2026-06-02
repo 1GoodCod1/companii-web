@@ -1,6 +1,6 @@
 import { Calculator } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { EstimateProjectDto } from '@/types/estimates';
+import type { EstimateProjectDto } from '@/entities/estimate/model/estimates';
 
 type ObjectLeadInfoProps = {
   project: EstimateProjectDto;

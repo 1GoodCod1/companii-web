@@ -3,20 +3,20 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
-import { AppModal } from '@/components/ui/AppModal';
-import { FormFieldError } from '@/components/ui/FormFieldError';
+import { AppModal } from '@/shared/ui/AppModal';
+import { FormFieldError } from '@/shared/ui/FormFieldError';
 import {
   cabinetFieldClass,
   cabinetLabelClass,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
-import type { CustomerDto } from '@/types/fsm';
+} from '@/widgets/cabinet/cabinet-ui';
+import type { CustomerDto } from '@/entities/fsm/model/types';
 import {
   useCreateCustomerMutation,
   useUpdateCustomerMutation,
 } from '@/features/fsm/api/useCustomers';
-import { getErrorMessage } from '@/utils/errors';
+import { getErrorMessage } from '@/shared/utils/errors';
 import { fieldClassName } from '@/lib/forms/fieldClassName';
 import {
   createCustomerSchema,
@@ -175,7 +175,6 @@ export function CustomerFormModal({ open, onClose, editingCustomer }: Props) {
           : t('company.fsm.customers.form.titleCreate')
       }
       size="lg"
-      backgroundIndex={1}
     >
       {open ? <CustomerFormBody key={formKey} editingCustomer={editingCustomer} onClose={onClose} /> : null}
     </AppModal>

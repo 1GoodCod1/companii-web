@@ -1,1 +1,1 @@
-export * from '@/utils/serviceForm';
+export * from '@/entities/fsm/model/serviceForm';

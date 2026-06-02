@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import { PageHero, SoftBadge } from '@/components/cabinet/cabinet-ui';
-import { ESTIMATE_STATUS } from '@/constants/estimateStatus.constants';
-import { QUOTE_STATUS } from '@/constants/quoteStatus.constants';
+import { PageHero, SoftBadge } from '@/widgets/cabinet/cabinet-ui';
+import { ESTIMATE_STATUS } from '@/entities/estimate/model/estimateStatus.constants';
+import { QUOTE_STATUS } from '@/entities/fsm/model/quoteStatus.constants';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
-import { isActiveInterventionStatus, isInterventionStatus } from '@/utils/interventionStatus';
+import { isActiveInterventionStatus, isInterventionStatus } from '@/entities/fsm/model/interventionStatus';
 
 export function PortalHero({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();

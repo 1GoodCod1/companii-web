@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { useAdminCompaniesQuery, type AdminCompanyDto } from '@/features/admin/api/useAdmin';
-import { useSubscriptionPlansQuery } from '@/features/subscriptions/api/useSubscriptions';
-import type { CompanyPlanDto } from '@/types/subscriptions';
-import { planPriceLabel } from '@/utils/subscriptions';
+import { useAdminCompaniesQuery, type AdminCompanyDto } from '@/features/admin';
+import { useSubscriptionPlansQuery } from '@/entities/subscription/api/useSubscriptions';
+import type { CompanyPlanDto } from '@/entities/subscription/model/types';
+import { planPriceLabel } from '@/entities/subscription/model/subscriptions';
 
 export function AdminSubscriptionsPage() {
   const { t } = useTranslation();

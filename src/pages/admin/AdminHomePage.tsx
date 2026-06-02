@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAdminPendingCompaniesQuery, useAdminStatsQuery, type AdminCompanyDto } from '@/features/admin/api/useAdmin';
-import { AdminCompanyModerationModal } from '@/features/admin/components/AdminCompanyModerationModal';
-import { useLocale } from '@/hooks/useLocale';
-import { formatDateLocalized } from '@/utils/date';
+import { useAdminPendingCompaniesQuery, useAdminStatsQuery, type AdminCompanyDto } from '@/features/admin';
+import { AdminCompanyModerationModal } from '@/features/admin';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { formatDateLocalized } from '@/shared/utils/date';
 
 export function AdminHomePage() {
   const { t } = useTranslation();

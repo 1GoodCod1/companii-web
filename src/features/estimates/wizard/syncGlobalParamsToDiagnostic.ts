@@ -1,4 +1,4 @@
-import type { Plan2dData, Plan2dGlobalParameters, Plan2dWorkContext } from '@/types/estimate-plan2d.types';
+import type { Plan2dData, Plan2dGlobalParameters, Plan2dWorkContext } from '@/entities/estimate/model/estimate-plan2d.types';
 import { ENABLED_WORK_MODULES_KEY } from '@/features/estimates/diagnostic/workModules';
 
 export function syncGlobalParamsToDiagnostic(

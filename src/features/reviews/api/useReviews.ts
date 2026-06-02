@@ -4,15 +4,15 @@ import {
   useQueryClient,
   type UseQueryResult,
 } from '@tanstack/react-query';
-import { apiFetch } from '@/api/client';
-import { cabinetQueryDefaults, publicDetailQueryOptions } from '@/api/queryPolicies';
-import { queryKeys } from '@/api/queryKeys';
-import { useAuthStore } from '@/stores/authStore';
+import { apiFetch } from '@/shared/api/client';
+import { cabinetQueryDefaults, publicDetailQueryOptions } from '@/shared/api/queryPolicies';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { useAuthStore } from '@/entities/user/model/authStore';
 import type {
   CompanyReviewDto,
   CompanyReviewsPageDto,
   CreateReviewPayload,
-} from '@/types/reviews';
+} from '@/entities/review/model/reviews.types';
 
 export function useCompanyReviewsBySlugQuery(
   slug: string,

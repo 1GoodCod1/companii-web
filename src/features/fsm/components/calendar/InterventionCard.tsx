@@ -2,18 +2,18 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   SoftBadge,
+  AppSelect,
   cabinetPanelClass,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
   cabinetFieldClass,
-  cabinetSelectClass,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import { cn } from '@/lib/utils';
-import { useLocale } from '@/hooks/useLocale';
-import { memberDisplayName, technicianDisplayName } from '@/utils/teamMembers';
-import type { CompanyMemberDto, InterventionDto } from '@/types/fsm';
-import { statusTone } from '@/utils/calendar';
-import { formatTimeLocalized } from '@/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { memberDisplayName, technicianDisplayName } from '@/entities/company/model/teamMembers';
+import type { CompanyMemberDto, InterventionDto } from '@/entities/fsm/model/types';
+import { statusTone } from '@/entities/fsm/model/calendar';
+import { formatTimeLocalized } from '@/shared/utils/date';
 import { useCrewsQuery } from '@/features/fsm/api/useCrews';
 
 export function InterventionCard({
@@ -66,6 +66,33 @@ export function InterventionCard({
         memberDisplayName(a).localeCompare(memberDisplayName(b)),
       ),
     [technicians],
+  );
+
+  const technicianOptions = useMemo(
+    () => [
+      { value: '', label: t(`${ns}.noTechnician`, { defaultValue: 'Niciun angajat' }) },
+      ...techniciansSorted.map((member) => ({
+        value: member.id,
+        label: memberDisplayName(member),
+      })),
+    ],
+    [techniciansSorted, t, ns],
+  );
+
+  const crewOptions = useMemo(
+    () => [
+      {
+        value: '',
+        label: t('company.fsm.interventions.createModal.assignMode.crewPlaceholder', {
+          defaultValue: 'Alege o brigadă...',
+        }),
+      },
+      ...activeCrews.map((c) => ({
+        value: c.id,
+        label: `${c.name} (${c.members.length})`,
+      })),
+    ],
+    [activeCrews, t],
   );
 
   const toggleMember = (id: string) => {
@@ -139,18 +166,12 @@ export function InterventionCard({
               </div>
 
               {assignMode === 'single' && (
-                <select
+                <AppSelect
                   value={scheduleTechnicianId ?? ''}
-                  onChange={(e) => onScheduleTechnicianChange?.(e.target.value)}
-                  className={cabinetSelectClass}
-                >
-                  <option value="">{t(`${ns}.noTechnician`, { defaultValue: 'Niciun angajat' })}</option>
-                  {techniciansSorted.map((member) => (
-                    <option key={member.id} value={member.id}>
-                      {memberDisplayName(member)}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(value) => onScheduleTechnicianChange?.(value)}
+                  options={technicianOptions}
+                  aria-label={t(`${ns}.technician`)}
+                />
               )}
 
               {assignMode === 'multiple' && (
@@ -192,22 +213,14 @@ export function InterventionCard({
 
               {assignMode === 'crew' && (
                 <div className="space-y-1">
-                  <select
-                    value={scheduleCrewId}
-                    onChange={(e) => onScheduleCrewIdChange?.(e.target.value)}
-                    className={cabinetSelectClass}
-                  >
-                    <option value="">
-                      {t('company.fsm.interventions.createModal.assignMode.crewPlaceholder', {
-                        defaultValue: 'Alege o brigadă...',
-                      })}
-                    </option>
-                    {activeCrews.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name} ({c.members.length})
-                      </option>
-                    ))}
-                  </select>
+                  <AppSelect
+                    value={scheduleCrewId ?? ''}
+                    onChange={(value) => onScheduleCrewIdChange?.(value)}
+                    options={crewOptions}
+                    aria-label={t('company.fsm.interventions.createModal.assignMode.crewPlaceholder', {
+                      defaultValue: 'Alege o brigadă...',
+                    })}
+                  />
                   {(() => {
                     const chosen = activeCrews.find((c) => c.id === scheduleCrewId);
                     if (!chosen) return null;

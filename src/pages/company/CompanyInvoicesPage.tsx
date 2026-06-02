@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { PageHero, cabinetBtnPrimary, cabinetBtnSecondary } from '@/components/cabinet/cabinet-ui';
-import { EntityListDetailLayout } from '@/components/cabinet/EntityListDetailLayout';
-import { useInvoicesQuery, downloadInvoicesCsv } from '@/features/fsm/api/useInvoices';
-import { CompanyManagementGate } from '@/features/companies/CompanyManagementGate';
-import { InvoicesListTable } from '@/features/fsm/components/invoices/InvoicesListTable';
-import { InvoiceDetailPanel } from '@/features/fsm/components/invoices/InvoiceDetailPanel';
-import { CreateInvoiceModal } from '@/features/fsm/components/invoices/CreateInvoiceModal';
-import { useEntityModal } from '@/hooks/useEntityModal';
-import { useEntitySelection } from '@/hooks/useEntitySelection';
-import type { InvoicePaymentStatus } from '@/types/fsm';
+import { AppSelect, PageHero, cabinetBtnPrimary, cabinetBtnSecondary } from '@/widgets/cabinet/cabinet-ui';
+import { EntityListDetailLayout } from '@/widgets/cabinet/EntityListDetailLayout';
+import { useInvoicesQuery, downloadInvoicesCsv } from '@/features/fsm';
+import { CompanyManagementGate } from '@/features/companies';
+import { InvoicesListTable } from '@/features/fsm';
+import { InvoiceDetailPanel } from '@/features/fsm';
+import { CreateInvoiceModal } from '@/features/fsm';
+import { useEntityModal } from '@/shared/hooks/useEntityModal';
+import { useEntitySelection } from '@/shared/hooks/useEntitySelection';
+import type { InvoicePaymentStatus } from '@/entities/fsm/model/types';
 
 type StatusFilter = InvoicePaymentStatus | 'ALL';
 
@@ -23,6 +23,20 @@ export function CompanyInvoicesPage() {
   const createModal = useEntityModal();
   const { selectedId, select, clear } = useEntitySelection();
 
+  const statusFilterOptions = useMemo(
+    () => [
+      { value: 'ALL', label: t('company.invoicesPage.filter.all', { defaultValue: 'Toate' }) },
+      { value: 'UNPAID', label: t('company.invoicesPage.filter.unpaid', { defaultValue: 'Neplătite' }) },
+      { value: 'OVERDUE', label: t('company.invoicesPage.filter.overdue', { defaultValue: 'Restante' }) },
+      {
+        value: 'PENDING_CONFIRMATION',
+        label: t('company.invoicesPage.filter.pending', { defaultValue: 'Așteaptă confirmare' }),
+      },
+      { value: 'PAID', label: t('company.invoicesPage.filter.paid', { defaultValue: 'Plătite' }) },
+    ],
+    [t],
+  );
+
   return (
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
@@ -30,30 +44,7 @@ export function CompanyInvoicesPage() {
           title={t('company.invoicesPage.title')}
           description={t('company.invoicesPage.description')}
           action={
-            <div className="flex flex-wrap gap-2 items-center">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-                className="px-3 py-2 text-xs font-bold rounded-xl border border-gray-200 bg-white cursor-pointer focus:border-violet-500 focus:outline-none"
-              >
-                <option value="ALL">
-                  {t('company.invoicesPage.filter.all', { defaultValue: 'Toate' })}
-                </option>
-                <option value="UNPAID">
-                  {t('company.invoicesPage.filter.unpaid', { defaultValue: 'Neplătite' })}
-                </option>
-                <option value="OVERDUE">
-                  {t('company.invoicesPage.filter.overdue', { defaultValue: 'Restante' })}
-                </option>
-                <option value="PENDING_CONFIRMATION">
-                  {t('company.invoicesPage.filter.pending', {
-                    defaultValue: 'Așteaptă confirmare',
-                  })}
-                </option>
-                <option value="PAID">
-                  {t('company.invoicesPage.filter.paid', { defaultValue: 'Plătite' })}
-                </option>
-              </select>
+            <div className="flex flex-nowrap items-center gap-2">
               <button
                 type="button"
                 onClick={() => downloadInvoicesCsv().catch((e: Error) => toast.error(e.message))}
@@ -61,6 +52,15 @@ export function CompanyInvoicesPage() {
               >
                 {t('company.invoicesPage.exportCsv')}
               </button>
+              <AppSelect
+                value={statusFilter}
+                onChange={(value) => setStatusFilter(value as StatusFilter)}
+                options={statusFilterOptions}
+                aria-label={t('company.invoicesPage.filter.all', { defaultValue: 'Toate' })}
+                className="w-[118px] shrink-0 [&>button]:px-2.5 [&>button]:py-1.5 [&>button]:text-xs"
+                maxVisibleItems={6}
+                menuPortal
+              />
               <button type="button" onClick={createModal.openCreate} className={cabinetBtnPrimary}>
                 {t('company.invoicesPage.generateBtn')}
               </button>

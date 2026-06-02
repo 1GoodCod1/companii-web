@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import type { EstimateProjectDto } from '@/types/estimates';
-import { wizardStepLabel } from '@/utils/i18nStatusLabels';
+import type { EstimateProjectDto } from '@/entities/estimate/model/estimates';
+import { wizardStepLabel } from '@/entities/estimate/model/i18nStatusLabels';
 import { useEstimateWizard } from './useEstimateWizard';
 import { ObjectStep } from './steps/ObjectStep';
 import { PlanStep } from './steps/PlanStep';

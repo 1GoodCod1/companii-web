@@ -1,1 +1,1 @@
-export * from '@/types/estimates';
+export * from '@/entities/estimate/model/estimates';

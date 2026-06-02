@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { AppModal } from '@/components/ui/AppModal';
-import { CompanyLogo } from '@/components/public/CompanyLogo';
+import { AppModal } from '@/shared/ui/AppModal';
+import { CompanyLogo } from '@/entities/company/ui/CompanyLogo';
 import {
   cabinetBtnPrimary,
   cabinetBtnSecondary,
   cabinetFieldClass,
   cabinetLabelClass,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import {
   useAdminAuditQuery,
   useAdminCompanyQuery,
@@ -17,12 +17,12 @@ import {
   useVerifyCompanyMutation,
   type AdminCompanyDto,
 } from '@/features/admin/api/useAdmin';
-import { auditActionLabel } from '@/utils/audit';
-import { formatAuditActorName, formatPersonNameOrDash } from '@/utils/person';
-import { formatDateTimeLocalized } from '@/utils/date';
-import { getErrorMessage } from '@/utils/errors';
-import { useLocale } from '@/hooks/useLocale';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
+import { auditActionLabel } from '@/shared/utils/audit';
+import { formatAuditActorName, formatPersonNameOrDash } from '@/shared/utils/person';
+import { formatDateTimeLocalized } from '@/shared/utils/date';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (

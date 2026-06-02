@@ -1,0 +1,69 @@
+# FSD Architectural Guidelines for Companii-Web
+
+You are an AI coding assistant working on Companii-Web. This codebase strictly adheres to the **Feature-Sliced Design (FSD)** architecture. You must respect the layer boundaries, import rules, and slice encapsulation guidelines at all times.
+
+---
+
+## 1. Layer Structure & Directory Map
+
+All source code resides in `src/` and is divided into the following hierarchical FSD layers:
+
+1. **`src/app/`** — App-wide bootstrap logic, global routing (`router.tsx`, `routes/`), and provider setups (`providers.tsx`).
+2. **`src/pages/`** — Thin page components mapped strictly to routes. Pages should contain zero business logic and only compose widgets/features.
+3. **`src/widgets/`** — Composition layer. Contains layouts (`widgets/layout/`) and complex UI blocks composed of multiple features/entities.
+4. **`src/features/`** — User interaction scenarios (e.g. `auth` forms, `estimates` builder wizards, `fsm` actions, payment checkouts).
+5. **`src/entities/`** — Core domain concepts (models, state stores, mock data, dumb UI items). Slices: `user`, `company`, `estimate`, `fsm`, `review`, `subscription`.
+6. **`src/shared/`** — Reusable, domain-agnostic helpers. Subfolders: `api/` (query clients), `config/` (env/urls), `constants/`, `hooks/`, `types/`, `ui/` (primitives like buttons, modals, legal alerts), `utils/` (formatting/validation).
+
+---
+
+## 2. Strict Architectural Rules
+
+### Rule A: Layer Import Hierarchy (No upward imports)
+A module in a layer can **only import from layers BELOW it**. 
+* **Allowed:** `Page` imports `Widget` ➡️ `Feature` ➡️ `Entity` ➡️ `Shared`.
+* **FORBIDDEN:** `Shared` imports from `Entity` or `Feature`.
+* **FORBIDDEN:** `Entity` imports from `Feature` or `Widget`.
+
+### Rule B: No Sibling Imports inside Features & Entities
+* Slices within the same layer **cannot import from each other** directly.
+* **FORBIDDEN:** `@/features/estimates` importing from `@/features/fsm`.
+* *Solution:* Move shared domain logic to the `Entities` layer (which is allowed to be imported by multiple features) or elevate composition to a `Widget` / `Page`.
+
+### Rule C: Public API Encapsulation (index.ts)
+* Every slice inside `features/` or `entities/` MUST have an `index.ts` file acting as its Public API.
+* Always import from the root slice alias (e.g., `@/features/auth`), NEVER deep-import internal files (e.g., `@/features/auth/components/LoginForm`).
+* When writing code *inside* a slice, use relative imports (`./sibling`) for files within the same slice to avoid self-referential Public API import issues.
+
+### Rule D: Zero Global Folders directly under `src/`
+* Do NOT create directories like `src/components/`, `src/utils/`, `src/constants/`, `src/hooks/`, or `src/types/`.
+* All new files must be allocated to:
+  * A specific domain slice in `src/entities/` or `src/features/`.
+  * The generic `src/shared/` layer.
+
+---
+
+## 3. How to Add New Code
+
+### 1. Adding a new Utility or Constant
+* If it is a generic utility (e.g. string/date formatter): Place in `src/shared/utils/` or `src/shared/constants/`.
+* If it is specific to a domain concept (e.g. estimate measurement types or quote status transitions): Place in `src/entities/<slice>/model/` (e.g., `src/entities/estimate/model/`).
+
+### 2. Adding a new UI Component
+* If it is a basic, reusable primitive (e.g. custom Select, Input, Tooltip): Place in `src/shared/ui/`.
+* If it is a dumb representation of a domain (e.g. client review card, company logo badge): Place in `src/entities/<slice>/ui/`.
+* If it contains an interactive flow or fetches mutation endpoints (e.g. login form, payment popup, company edit form): Place in `src/features/<slice>/components/` (or `ui/`).
+
+### 3. Adding a new hook or endpoint
+* React Query endpoints, state stores, and getters belong in:
+  * `src/shared/api/` (if generic client settings)
+  * `src/entities/<slice>/api/` (for domain reads, queries, and stores)
+  * `src/features/<slice>/api/` (for form submit mutations and page actions)
+
+---
+
+## 4. Verification Check
+
+Before concluding any work, always verify:
+1. **No TS errors:** Run `npm run typecheck` or `npx tsc --noEmit` and ensure all modifications are free of syntax and layer violations.
+2. **Bundle build success:** Run `npm run build` or `npx vite build` to ensure the bundling step outputs successfully.

@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { INTERVENTION_STATUS } from '@/constants/interventionStatus.constants';
-import { interventionStatusHint, interventionStatusLabel } from '@/utils/i18nStatusLabels';
+import { INTERVENTION_STATUS } from '@/entities/fsm/model/interventionStatus.constants';
+import { interventionStatusHint, interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 import {
   getAllowedInterventionTransitions,
   isTerminalInterventionStatus,
-} from '@/utils/interventionStatus';
-import type { InterventionDto, InterventionStatus } from '@/types/fsm';
-import type { CompanyRole } from '@/types/roles';
+} from '@/entities/fsm/model/interventionStatus';
+import type { InterventionDto, InterventionStatus } from '@/entities/fsm/model/types';
+import type { CompanyRole } from '@/entities/company/model/roles.types';
 
 interface InterventionStatusTransitionProps {
   detail: InterventionDto;

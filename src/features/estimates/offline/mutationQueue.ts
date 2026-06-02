@@ -6,7 +6,7 @@ import {
   idbPut,
   STORE_META,
   STORE_QUEUE,
-} from '@/utils/idb';
+} from '@/entities/estimate/model/idb';
 
 export type EstimateMutationKind =
   | 'update-project'

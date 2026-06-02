@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { Plan2dData } from '@/types/estimate-plan2d.types';
-import type { EstimateBlueprintConfig } from '@/types/estimate-blueprint-config.types';
+import type { Plan2dData } from '@/entities/estimate/model/estimate-plan2d.types';
+import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimate-blueprint-config.types';
 import { deriveElektrikaMeasurements } from './elektrikaDerivation';
 import {
   appendStageDefaultPreviewLines,

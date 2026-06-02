@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '@/hooks/useLocale';
-import { formatDateLocalized } from '@/utils/date';
-import type { InterventionNoteDto } from '@/types/fsm';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { formatDateLocalized } from '@/shared/utils/date';
+import type { InterventionNoteDto } from '@/entities/fsm/model/types';
 
 interface InterventionNotesSectionProps {
   notes: InterventionNoteDto[] | undefined;

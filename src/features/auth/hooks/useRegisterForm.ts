@@ -5,7 +5,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import { useRegisterMutation } from '@/features/auth/api/useAuth';
-import { usePortalInvitePreviewQuery } from '@/features/portal/api/usePortal';
+import { usePortalInvitePreviewQuery } from '@/features/portal';
 import { useTeamInvitePreviewQuery } from '@/features/companies/api/useCompanies';
 import {
   getAuthErrorMessage,
@@ -13,14 +13,14 @@ import {
   isAuthPhoneTakenError,
   isAuthRegistrationConflictError,
 } from '@/features/auth/authErrors';
-import { ACCOUNT_KIND } from '@/constants/roles.constants';
-import { ROUTE_ABS } from '@/constants/routes.constants';
+import { ACCOUNT_KIND } from '@/entities/company/model/roles.constants';
+import { ROUTE_ABS } from '@/shared/constants/routes.constants';
 import {
   isEndClientAccount,
   isPlatformAdminAccount,
-} from '@/utils/roles';
-import type { AccountKind } from '@/stores/authStore';
-import { useAuthStore } from '@/stores/authStore';
+} from '@/entities/company/model/roles';
+import type { AccountKind } from '@/entities/user/model/authStore';
+import { useAuthStore } from '@/entities/user/model/authStore';
 import { resolveCompanyHomeRoute } from '@/features/companies/companyHomeRoute';
 import {
   createRegisterSchema,

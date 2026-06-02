@@ -1,7 +1,7 @@
 import { Building2, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { ACCOUNT_KIND } from '@/constants/roles.constants';
-import type { AccountKind } from '@/stores/authStore';
+import { ACCOUNT_KIND } from '@/entities/company/model/roles.constants';
+import type { AccountKind } from '@/entities/user/model/authStore';
 
 interface RegisterAccountKindSelectorProps {
   portalInviteToken: string | undefined;

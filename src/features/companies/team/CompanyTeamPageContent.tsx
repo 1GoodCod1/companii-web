@@ -1,18 +1,18 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { AppModal } from '@/components/ui/AppModal';
+import { AppModal } from '@/shared/ui/AppModal';
 import {
+  AppSelect,
   PageHero,
   Panel,
   PanelHeader,
   EmptyState,
   cabinetLabelClass,
   cabinetFieldClass,
-  cabinetSelectClass,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import {
   useCompanyMembersQuery,
   useCompanyInvitationsQuery,
@@ -26,23 +26,23 @@ import {
   type CompanyInvitationDto,
 } from '@/features/companies/api/useCompanies';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/entities/user/model/authStore';
 import {
   getTeamInviteErrorMessage,
   isTeamMemberNotFoundError,
   isTeamPlanLimitError,
   isTeamWrongAccountKindError,
 } from '@/features/companies/teamInviteErrors';
-import { COMPANY_ROLE } from '@/constants/roles.constants';
-import type { InvitableCompanyRole } from '@/types/roles';
-import type { TeamRoleKey } from '@/types/team';
-import { groupMembersByRole, memberDisplayName } from '@/utils/teamMembers';
+import { COMPANY_ROLE } from '@/entities/company/model/roles.constants';
+import type { InvitableCompanyRole } from '@/entities/company/model/roles.types';
+import type { TeamRoleKey } from '@/entities/company/model/team.types';
+import { groupMembersByRole, memberDisplayName } from '@/entities/company/model/teamMembers';
 import { TeamRoleSection } from '@/features/companies/team/teamMemberViews';
-import { formatDateTimeLocalized } from '@/utils/date';
-import { getCompanyRoleLabel } from '@/utils/companyRoleLabel';
-import { getErrorMessage } from '@/utils/errors';
-import { useCabinetConfirmDialog } from '@/hooks/useCabinetConfirmDialog';
-import { useLocale } from '@/hooks/useLocale';
+import { formatDateTimeLocalized } from '@/shared/utils/date';
+import { getCompanyRoleLabel } from '@/entities/company/model/companyRoleLabel';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
+import { useLocale } from '@/shared/hooks/useLocale';
 
 type InviteMode = 'link' | 'direct';
 
@@ -226,8 +226,33 @@ export function CompanyTeamPage() {
   };
 
   const roleGroups = members ? groupMembersByRole(members) : [];
-  const transferableMembers =
-    members?.filter((member) => member.role !== COMPANY_ROLE.OWNER && member.userId !== user?.sub) ?? [];
+  const transferableMembers = useMemo(
+    () =>
+      members?.filter((member) => member.role !== COMPANY_ROLE.OWNER && member.userId !== user?.sub) ??
+      [],
+    [members, user?.sub],
+  );
+
+  const inviteRoleOptions = useMemo(() => {
+    const options: Array<{ value: InvitableCompanyRole; label: string }> = [
+      { value: COMPANY_ROLE.MEMBER, label: t('company.teamPage.roleMember') },
+    ];
+    if (canInviteManagers) {
+      options.push({ value: COMPANY_ROLE.MANAGER, label: t('company.teamPage.roleManager') });
+    }
+    return options;
+  }, [canInviteManagers, t]);
+
+  const transferMemberOptions = useMemo(
+    () => [
+      { value: '', label: t('company.teamPage.selectMember') },
+      ...transferableMembers.map((member) => ({
+        value: member.userId,
+        label: memberDisplayName(member),
+      })),
+    ],
+    [transferableMembers, t],
+  );
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -332,7 +357,6 @@ export function CompanyTeamPage() {
         onClose={closeInviteModal}
         title={t('company.teamPage.inviteModalTitle')}
         size="lg"
-        backgroundIndex={0}
       >
         <div className="flex gap-2 mb-5">
           <button
@@ -371,16 +395,12 @@ export function CompanyTeamPage() {
             </p>
             <div>
               <label className={cabinetLabelClass}>{t('company.teamPage.roleLabel')}</label>
-              <select
+              <AppSelect
                 value={role}
-                onChange={(e) => setRole(e.target.value as InvitableCompanyRole)}
-                className={cabinetSelectClass}
-              >
-                <option value={COMPANY_ROLE.MEMBER}>{t('company.teamPage.roleMember')}</option>
-                {canInviteManagers ? (
-                  <option value={COMPANY_ROLE.MANAGER}>{t('company.teamPage.roleManager')}</option>
-                ) : null}
-              </select>
+                onChange={(value) => setRole(value as InvitableCompanyRole)}
+                options={inviteRoleOptions}
+                aria-label={t('company.teamPage.roleLabel')}
+              />
             </div>
             <div>
               <label className={cabinetLabelClass}>{t('company.teamPage.colleagueEmailLabel')}</label>
@@ -476,16 +496,12 @@ export function CompanyTeamPage() {
             ) : null}
             <div>
               <label className={cabinetLabelClass}>{t('company.teamPage.roleLabel')}</label>
-              <select
+              <AppSelect
                 value={role}
-                onChange={(e) => setRole(e.target.value as InvitableCompanyRole)}
-                className={cabinetSelectClass}
-              >
-                <option value={COMPANY_ROLE.MEMBER}>{t('company.teamPage.roleMember')}</option>
-                {canInviteManagers ? (
-                  <option value={COMPANY_ROLE.MANAGER}>{t('company.teamPage.roleManager')}</option>
-                ) : null}
-              </select>
+                onChange={(value) => setRole(value as InvitableCompanyRole)}
+                options={inviteRoleOptions}
+                aria-label={t('company.teamPage.roleLabel')}
+              />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button type="button" onClick={closeInviteModal} className={cabinetBtnSecondary}>
@@ -506,19 +522,12 @@ export function CompanyTeamPage() {
             <p className="text-sm text-gray-500">{t('company.teamPage.transferDescription')}</p>
             <div>
               <label className={cabinetLabelClass}>{t('company.teamPage.newOwnerLabel')}</label>
-              <select
+              <AppSelect
                 value={transferTargetUserId}
-                onChange={(e) => setTransferTargetUserId(e.target.value)}
-                className={cabinetSelectClass}
-                required
-              >
-                <option value="">{t('company.teamPage.selectMember')}</option>
-                {transferableMembers.map((member) => (
-                  <option key={member.id} value={member.userId}>
-                    {memberDisplayName(member)}
-                  </option>
-                ))}
-              </select>
+                onChange={setTransferTargetUserId}
+                options={transferMemberOptions}
+                aria-label={t('company.teamPage.newOwnerLabel')}
+              />
             </div>
             <div className="flex justify-end">
               <button

@@ -7,9 +7,9 @@ import {
   PanelHeader,
   cabinetBtnPrimary,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
-import type { CalendarBoardDto, CompanyLeadDto, CompanyMemberDto, InterventionDto } from '@/types/fsm';
-import { leadStatusLabel } from '@/utils/i18nStatusLabels';
+} from '@/widgets/cabinet/cabinet-ui';
+import type { CalendarBoardDto, CompanyLeadDto, CompanyMemberDto, InterventionDto } from '@/entities/fsm/model/types';
+import { leadStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 import { InterventionCard } from './InterventionCard';
 import { ScheduledColumn } from './ScheduledColumn';
 
@@ -55,8 +55,8 @@ export function CalendarBoardView({
   const { t } = useTranslation();
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
-      <Panel className="xl:col-span-5 p-5">
+    <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
+      <Panel>
         <PanelHeader
           title={t('company.fsm.calendar.board.scheduled.title')}
           meta={<span className="text-xs text-gray-400">{board?.scheduled.length ?? 0}</span>}
@@ -64,13 +64,13 @@ export function CalendarBoardView({
         <ScheduledColumn scheduled={board?.scheduled ?? []} />
       </Panel>
 
-      <Panel className="xl:col-span-4 p-5">
+      <Panel>
         <PanelHeader
           title={t('company.fsm.calendar.board.backlog.title')}
           meta={<span className="text-xs text-gray-400">{board?.unscheduled.length ?? 0}</span>}
         />
         {!board?.unscheduled.length ? (
-          <EmptyState message={t('company.fsm.calendar.board.backlog.empty')} />
+          <EmptyState message={t('company.fsm.calendar.board.backlog.empty')} compact />
         ) : (
           <div className="space-y-3">
             {board.unscheduled.map((item: InterventionDto) => (
@@ -99,7 +99,7 @@ export function CalendarBoardView({
         )}
       </Panel>
 
-      <Panel className="xl:col-span-3 p-5">
+      <Panel>
         <PanelHeader
           title={t('company.fsm.calendar.board.leads.title')}
           meta={
@@ -109,7 +109,7 @@ export function CalendarBoardView({
           }
         />
         {!board?.openLeads.length ? (
-          <EmptyState message={t('company.fsm.calendar.board.leads.empty')} />
+          <EmptyState message={t('company.fsm.calendar.board.leads.empty')} compact />
         ) : (
           <ul className="space-y-3">
             {board.openLeads.map((lead: CompanyLeadDto) => (

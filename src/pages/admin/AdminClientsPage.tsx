@@ -7,16 +7,16 @@ import {
   EmptyState,
   SoftBadge,
   cabinetBtnSecondary,
-} from '@/components/cabinet/cabinet-ui';
+} from '@/widgets/cabinet/cabinet-ui';
 import {
   useAdminClientsQuery,
   useUpdateAdminClientMutation,
   type AdminClientDto,
-} from '@/features/admin/api/useAdmin';
-import { formatDateLocalized } from '@/utils/date';
-import { useLocale } from '@/hooks/useLocale';
-import { getErrorMessage } from '@/utils/errors';
-import { formatPersonName } from '@/utils/person';
+} from '@/features/admin';
+import { formatDateLocalized } from '@/shared/utils/date';
+import { useLocale } from '@/shared/hooks/useLocale';
+import { getErrorMessage } from '@/shared/utils/errors';
+import { formatPersonName } from '@/shared/utils/person';
 
 export function AdminClientsPage() {
   const { t } = useTranslation();
