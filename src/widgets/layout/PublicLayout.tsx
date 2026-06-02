@@ -92,7 +92,7 @@ export function PublicLayout() {
               className="lg:hidden rounded-lg p-2 text-gray-500 hover:bg-gray-100 transition-colors"
               aria-label="Menu"
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="size-5" />
             </button>
           </div>
         </div>
@@ -111,7 +111,7 @@ export function PublicLayout() {
               onClick={closeMobileMenu}
               className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
             >
-              <X className="h-5 w-5" />
+              <X className="size-5" />
             </button>
           </div>
 

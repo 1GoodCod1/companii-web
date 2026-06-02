@@ -59,9 +59,9 @@ export function LandingHeroMock() {
 
       <div className="rounded-[1.5rem] border border-gray-200/80 bg-white shadow-[0_32px_80px_-16px_rgba(15,23,42,0.12)] overflow-hidden">
         <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-100 bg-slate-50/90">
-          <span className="h-2 w-2 rounded-full bg-red-400/90" />
-          <span className="h-2 w-2 rounded-full bg-amber-400/90" />
-          <span className="h-2 w-2 rounded-full bg-emerald-400/90" />
+          <span className="size-2 rounded-full bg-red-400/90" />
+          <span className="size-2 rounded-full bg-amber-400/90" />
+          <span className="size-2 rounded-full bg-emerald-400/90" />
           <span className="ml-2 text-[10px] font-medium text-gray-400 truncate">
             {t('landingMocks.hero.windowTitle')}
           </span>
@@ -73,13 +73,13 @@ export function LandingHeroMock() {
               <span
                 key={i}
                 className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
+                  'flex size-8 items-center justify-center rounded-lg transition-colors',
                   i === 0
                     ? 'bg-violet-50 text-violet-600 shadow-xs'
                     : 'text-gray-400',
                 )}
               >
-                <Icon className="h-4 w-4" strokeWidth={1.75} />
+                <Icon className="size-4" strokeWidth={1.75} />
               </span>
             ))}
           </aside>
@@ -122,11 +122,11 @@ export function LandingHeroMock() {
                       </span>
                       <span
                         className={cn(
-                          'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg',
+                          'flex size-7 shrink-0 items-center justify-center rounded-lg',
                           accent.iconBg,
                         )}
                       >
-                        <Icon className="h-3.5 w-3.5" strokeWidth={2} />
+                        <Icon className="size-3.5" strokeWidth={2} />
                       </span>
                     </div>
                     <p className="mt-2 text-lg sm:text-xl font-black tracking-tight text-gray-900">
@@ -144,7 +144,7 @@ export function LandingHeroMock() {
                   <p className="text-[11px] font-semibold text-gray-900">{interventions.title}</p>
                   <span className="text-[9px] font-semibold text-violet-600 flex items-center gap-0.5">
                     {interventions.viewAll}
-                    <ArrowUpRight className="h-2.5 w-2.5" />
+                    <ArrowUpRight className="size-2.5" />
                   </span>
                 </div>
                 <div className="space-y-1.5">
@@ -181,7 +181,7 @@ export function LandingHeroMock() {
                   <p className="text-[11px] font-semibold text-gray-900">{leads.title}</p>
                   <span className="text-[9px] font-semibold text-violet-600 flex items-center gap-0.5">
                     {leads.viewAll}
-                    <ArrowUpRight className="h-2.5 w-2.5" />
+                    <ArrowUpRight className="size-2.5" />
                   </span>
                 </div>
                 <div className="space-y-1.5">

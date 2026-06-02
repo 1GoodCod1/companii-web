@@ -53,7 +53,7 @@ export function LandingPage() {
         className="relative min-h-[92vh] flex flex-col justify-center overflow-hidden pt-8 pb-16 sm:pb-24"
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute top-[8%] right-[-8%] h-[520px] w-[520px] rounded-full bg-violet-400/[0.09] blur-[100px] lg:top-[12%] lg:right-[2%]" />
+          <div className="absolute top-[8%] right-[-8%] size-[520px] rounded-full bg-violet-400/[0.09] blur-[100px] lg:top-[12%] lg:right-[2%]" />
         </div>
 
         <div className="relative max-w-6xl mx-auto px-6 w-full">
@@ -69,9 +69,9 @@ export function LandingPage() {
                 transition={{ delay: 0.1 }}
                 className="inline-flex items-center gap-2 rounded-full bg-violet-50 px-4 py-1.5 text-xs font-semibold text-violet-700 mb-6"
               >
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-400 opacity-60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-violet-600" />
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-violet-400 opacity-60" />
+                  <span className="relative inline-flex size-2 rounded-full bg-violet-600" />
                 </span>
                 {t('landing.hero.badge')}
               </motion.span>
@@ -95,20 +95,20 @@ export function LandingPage() {
                   className="inline-flex items-center gap-2 rounded-xl bg-gray-900 hover:bg-gray-800 px-7 py-3.5 text-sm font-black text-white transition-colors"
                 >
                   {primaryCta.label}
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="size-4" />
                 </Link>
                 <Link
                   to={lp('/companies')}
                   className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-7 py-3.5 text-sm font-black text-violet-800 transition-colors hover:bg-violet-100"
                 >
-                  <Building2 className="h-4 w-4" />
+                  <Building2 className="size-4" />
                   {t('landing.hero.browseCatalogLink')}
                 </Link>
                 <Link
                   to={lp('/how-it-works')}
                   className="inline-flex items-center gap-2 rounded-xl glass-panel px-7 py-3.5 text-sm font-semibold text-gray-700 hover:bg-white transition-colors"
                 >
-                  <PlayCircle className="h-4 w-4 text-violet-600" />
+                  <PlayCircle className="size-4 text-violet-600" />
                   {t('landing.hero.howItWorksLink')}
                 </Link>
               </div>

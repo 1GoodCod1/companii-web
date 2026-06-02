@@ -112,6 +112,7 @@ export function CompanyCustomersPage() {
           <input
             type="text"
             placeholder={t('company.customersPage.searchPlaceholder')}
+            aria-label={t('company.customersPage.searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cabinetFieldClass}

@@ -140,6 +140,7 @@ export function InterventionCard({
               type="datetime-local"
               value={scheduleAt ?? ''}
               onChange={(e) => onScheduleAtChange?.(e.target.value)}
+              aria-label={t(`${ns}.scheduledTime`)}
               className={cabinetFieldClass}
             />
 

@@ -82,8 +82,7 @@ export function CatalogPublishSection({
           {t('company.profileEditor.form.visibleInCatalog')}
           {ownedCompany.slug ? (
             <>
-              {' '}
-              —{' '}
+              :{' '}
               <a
                 href={`/companies/${ownedCompany.slug}`}
                 target="_blank"

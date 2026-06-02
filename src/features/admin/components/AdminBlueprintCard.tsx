@@ -60,6 +60,11 @@ export function AdminBlueprintCard({
         <div className="flex items-center justify-between pt-1">
           <div className="flex items-center gap-2">
             <label className="relative inline-flex items-center cursor-pointer">
+              <span className="sr-only">
+                {t('admin.blueprintsPage.toggleActive', {
+                  defaultValue: 'Comută starea activă a blueprintului',
+                })}
+              </span>
               <input
                 type="checkbox"
                 checked={bp.isActive}

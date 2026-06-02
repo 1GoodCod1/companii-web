@@ -130,7 +130,7 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
             }}
             aria-hidden
           >
-            <Icon className="h-8 w-8" strokeWidth={1.5} />
+            <Icon className="size-8" strokeWidth={1.5} />
           </motion.div>
         ))}
 
@@ -149,9 +149,9 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
             config.badgeClass,
           )}
         >
-          <span className="relative flex h-2 w-2">
-            <span className="status-ping absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" />
-            <span className="status-dot relative inline-flex h-2 w-2 rounded-full" />
+          <span className="relative flex size-2">
+            <span className="status-ping absolute inline-flex size-full animate-ping rounded-full opacity-60" />
+            <span className="status-dot relative inline-flex size-2 rounded-full" />
           </span>
           {t(config.badgeKey)}
         </motion.span>
@@ -241,7 +241,7 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
               onClick={onReload}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-gray-800"
             >
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className="size-4" />
               {t('routeError.reload')}
             </button>
           )}
@@ -257,7 +257,7 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
                   : 'border border-gray-200 bg-white text-gray-700 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700',
               )}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className="size-4" />
               {label}
             </Link>
           ))}

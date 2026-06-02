@@ -71,10 +71,11 @@ export function InterventionDetailEditForm({
       </h4>
       {isManagement ? (
         <div>
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+          <label htmlFor="ie-type" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
             {t('company.fsm.interventions.detail.editForm.type')}
           </label>
           <input
+            id="ie-type"
             type="text"
             value={editType}
             onChange={(e) => setEditType(e.target.value)}
@@ -83,10 +84,11 @@ export function InterventionDetailEditForm({
         </div>
       ) : null}
       <div>
-        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+        <label htmlFor="ie-address" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
           {t('company.fsm.interventions.detail.editForm.address')}
         </label>
         <input
+          id="ie-address"
           type="text"
           value={editAddress}
           onChange={(e) => setEditAddress(e.target.value)}
@@ -95,10 +97,11 @@ export function InterventionDetailEditForm({
       </div>
       {isManagement ? (
         <div>
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+          <label htmlFor="ie-description" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
             {t('company.fsm.interventions.detail.editForm.description')}
           </label>
           <textarea
+            id="ie-description"
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
             rows={3}
@@ -121,10 +124,11 @@ export function InterventionDetailEditForm({
               />
             </div>
             <div>
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+              <label htmlFor="ie-schedule" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
                 {t('company.fsm.interventions.detail.editForm.schedule')}
               </label>
               <input
+                id="ie-schedule"
                 type="datetime-local"
                 value={editScheduledAt}
                 onChange={(e) => setEditScheduledAt(e.target.value)}
@@ -137,10 +141,11 @@ export function InterventionDetailEditForm({
       {isManagement ? (
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+            <label htmlFor="ie-estimated-price" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
               {t('company.fsm.interventions.detail.editForm.estimatedPrice')}
             </label>
             <input
+              id="ie-estimated-price"
               type="number"
               value={editEstimatedPrice}
               onChange={(e) => setEditEstimatedPrice(e.target.value)}
@@ -148,10 +153,11 @@ export function InterventionDetailEditForm({
             />
           </div>
           <div>
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+            <label htmlFor="ie-final-price" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
               {t('company.fsm.interventions.detail.editForm.finalPrice')}
             </label>
             <input
+              id="ie-final-price"
               type="number"
               value={editFinalPrice}
               onChange={(e) => setEditFinalPrice(e.target.value)}
@@ -162,10 +168,11 @@ export function InterventionDetailEditForm({
       ) : null}
       {isManagement ? (
         <div>
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+          <label htmlFor="ie-internal-notes" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
             {t('company.fsm.interventions.detail.editForm.internalNotes')}
           </label>
           <input
+            id="ie-internal-notes"
             type="text"
             value={editInternalNotes}
             onChange={(e) => setEditInternalNotes(e.target.value)}

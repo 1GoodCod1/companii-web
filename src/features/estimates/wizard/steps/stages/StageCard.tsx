@@ -84,7 +84,13 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                 <th className={`py-2 ${estimateLineColTotal} text-right`}>{t('company.estimateWizard.stagesStep.colTotal')}</th>
                 <th className="py-2">{t('company.estimateWizard.stagesStep.colStore')}</th>
                 <th className="py-2 text-right">{t('company.estimateWizard.stagesStep.colReceipt')}</th>
-                {!isReadOnly && <th className="py-2 w-10"></th>}
+                {!isReadOnly && (
+                  <th className="py-2 w-10">
+                    <span className="sr-only">
+                      {t('company.estimateWizard.stagesStep.colActions', { defaultValue: 'Acțiuni' })}
+                    </span>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100/50">
@@ -105,6 +111,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                             type="text"
                             defaultValue={line.description}
                             disabled={isReadOnly}
+                            aria-label={t('company.estimateWizard.stagesStep.colDescription')}
                             onBlur={(e) => {
                               const val = e.target.value.trim();
                               if (val && val !== line.description) {
@@ -139,6 +146,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                         type="number"
                         defaultValue={Number(line.qty)}
                         disabled={isReadOnly}
+                        aria-label={t('company.estimateWizard.stagesStep.colQty')}
                         onBlur={(e) =>
                           handleUpdateLineQtyOrPrice(
                             line.id,
@@ -164,6 +172,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                           type="number"
                           defaultValue={Number(line.unitPrice)}
                           disabled={isReadOnly}
+                          aria-label={t('company.estimateWizard.stagesStep.colUnitPrice')}
                           onBlur={(e) =>
                             handleUpdateLineQtyOrPrice(
                               line.id,
@@ -190,6 +199,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                           <input
                             type="text"
                             placeholder={t('company.estimateWizard.stagesStep.storePlaceholder')}
+                            aria-label={t('company.estimateWizard.stagesStep.colStore')}
                             disabled={isReadOnly}
                             value={
                               editingStore?.lineId === line.id

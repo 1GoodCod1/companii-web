@@ -290,7 +290,7 @@ export function InvoiceDetailView({ hookData }: Props) {
             {t('company.fsm.invoices.detail.fields.intervention')}
           </span>
           <span className="font-semibold text-xs text-gray-800">
-            {detail.intervention?.number} — {detail.intervention?.type}
+            {detail.intervention?.number}: {detail.intervention?.type}
           </span>
         </div>
 

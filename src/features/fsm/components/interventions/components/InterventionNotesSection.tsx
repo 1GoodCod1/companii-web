@@ -33,6 +33,7 @@ export function InterventionNotesSection({
           type="text"
           required
           placeholder={t('company.fsm.interventions.detail.notes.placeholder')}
+          aria-label={t('company.fsm.interventions.detail.notes.placeholder')}
           value={noteBody}
           onChange={(e) => setNoteBody(e.target.value)}
           className="flex-1 border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-3 py-2 text-xs outline-none transition-all bg-white"

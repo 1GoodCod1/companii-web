@@ -56,7 +56,7 @@ export function EstimateWorkSheetPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <Link to="/company/lucrari" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-violet-600">
-        <ArrowLeft className="w-4 h-4" /> {t('company.workSheetPage.backToJobs')}
+        <ArrowLeft className="size-4" /> {t('company.workSheetPage.backToJobs')}
       </Link>
 
       <PageHero
@@ -88,13 +88,13 @@ export function EstimateWorkSheetPage() {
             {t('company.workSheetPage.clientLabel')}
           </p>
           <div className="flex items-center gap-2 text-sm text-gray-700">
-            <User className="w-4 h-4 text-gray-400" /> {sheet.customer?.fullName}
+            <User className="size-4 text-gray-400" /> {sheet.customer?.fullName}
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-700">
-            <Phone className="w-4 h-4 text-gray-400" /> {sheet.customer?.phone}
+            <Phone className="size-4 text-gray-400" /> {sheet.customer?.phone}
           </div>
           <div className="flex items-start gap-2 text-sm text-gray-700">
-            <MapPin className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" /> {sheet.intervention?.address ?? sheet.customer?.address}
+            <MapPin className="size-4 text-gray-400 mt-0.5 shrink-0" /> {sheet.intervention?.address ?? sheet.customer?.address}
           </div>
         </Panel>
         <Panel className="p-5 space-y-2">
@@ -137,7 +137,7 @@ export function EstimateWorkSheetPage() {
         {sheet.stages.map((stage, index) => (
           <Panel key={stage.id} className="p-6">
             <div className="flex items-start gap-3 mb-4">
-              <span className="w-8 h-8 rounded-xl bg-emerald-600 text-white text-sm font-black flex items-center justify-center shrink-0">
+              <span className="size-8 rounded-xl bg-emerald-600 text-white text-sm font-black flex items-center justify-center shrink-0">
                 {index + 1}
               </span>
               <div>
@@ -157,7 +157,7 @@ export function EstimateWorkSheetPage() {
             {stage.checklist?.length ? (
               <div className="mb-4">
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 flex items-center gap-1">
-                  <ClipboardList className="w-3.5 h-3.5" /> {t('company.workSheetPage.checklist')}
+                  <ClipboardList className="size-3.5" /> {t('company.workSheetPage.checklist')}
                 </p>
                 <ul className="grid sm:grid-cols-2 gap-2">
                   {stage.checklist.map((item) => {
@@ -174,9 +174,9 @@ export function EstimateWorkSheetPage() {
                             onChange={(e) => handleToggleChecklist(key, e.target.checked)}
                           />
                           {checked ? (
-                            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                            <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
                           ) : (
-                            <Circle className="w-4 h-4 text-gray-300 shrink-0" />
+                            <Circle className="size-4 text-gray-300 shrink-0" />
                           )}
                           <span className={checked ? 'line-through text-gray-400' : ''}>{item}</span>
                         </label>

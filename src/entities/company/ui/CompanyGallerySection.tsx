@@ -105,6 +105,7 @@ export function CompanyGallerySection({
             className="hidden"
             disabled={disabled}
             onChange={(e) => handleGalleryChange(e.target.files)}
+            aria-label={t('company.branding.addGallery')}
           />
           <button
             type="button"
@@ -240,6 +241,7 @@ export function CompanyGallerySection({
                   disabled={disabled}
                   onChange={(e) => onPendingGalleryCaptionChange(item.id, e.target.value)}
                   placeholder={t('company.branding.captionPlaceholder')}
+                  aria-label={t('company.branding.captionPlaceholder')}
                   className={`${cabinetFieldClass} text-xs py-2`}
                 />
               </div>

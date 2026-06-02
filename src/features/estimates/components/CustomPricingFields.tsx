@@ -96,6 +96,8 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
               type="button"
               onClick={toggleUnitPrice}
               disabled={disabled}
+              aria-pressed={showUnitPrice}
+              aria-label={unitLabel || t('company.estimateWizard.customPricing.unitPriceDefault')}
               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none ${
                 showUnitPrice ? 'bg-violet-600 shadow-[0_0_8px_rgba(124,58,237,0.3)]' : 'bg-slate-200'
               } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
@@ -112,6 +114,7 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
             min={0}
             step={1}
             disabled={disabled || !showUnitPrice}
+            aria-label={unitLabel || t('company.estimateWizard.customPricing.unitPriceDefault')}
             placeholder={showUnitPrice ? t('company.estimateWizard.customPricing.unitPricePlaceholder') : t('company.estimateWizard.customPricing.inactivePlaceholder')}
             value={showUnitPrice ? (values.customUnitPriceSqm ?? '') : ''}
             onChange={(e) =>
@@ -139,6 +142,8 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
               type="button"
               onClick={toggleLaborTotal}
               disabled={disabled}
+              aria-pressed={showLaborTotal}
+              aria-label={t('company.estimateWizard.customPricing.labor')}
               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none ${
                 showLaborTotal ? 'bg-violet-600 shadow-[0_0_8px_rgba(124,58,237,0.3)]' : 'bg-slate-200'
               } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
@@ -155,6 +160,7 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
             min={0}
             step={1}
             disabled={disabled || !showLaborTotal}
+            aria-label={t('company.estimateWizard.customPricing.labor')}
             placeholder={showLaborTotal ? t('company.estimateWizard.customPricing.laborPlaceholder') : t('company.estimateWizard.customPricing.inactivePlaceholder')}
             value={showLaborTotal ? (values.customLaborTotal ?? '') : ''}
             onChange={(e) =>
@@ -182,6 +188,8 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
               type="button"
               onClick={toggleDuration}
               disabled={disabled}
+              aria-pressed={showDuration}
+              aria-label={t('company.estimateWizard.customPricing.duration')}
               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none ${
                 showDuration ? 'bg-violet-600 shadow-[0_0_8px_rgba(124,58,237,0.3)]' : 'bg-slate-200'
               } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
@@ -198,6 +206,7 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
             min={0}
             step={1}
             disabled={disabled || !showDuration}
+            aria-label={t('company.estimateWizard.customPricing.duration')}
             placeholder={showDuration ? t('company.estimateWizard.customPricing.durationPlaceholder') : t('company.estimateWizard.customPricing.inactivePlaceholder')}
             value={showDuration ? (values.customDurationDays ?? '') : ''}
             onChange={(e) =>
@@ -225,6 +234,8 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
               type="button"
               onClick={toggleLaborHours}
               disabled={disabled}
+              aria-pressed={showLaborHours}
+              aria-label={t('company.estimateWizard.customPricing.laborHours')}
               className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 ease-in-out focus:outline-none ${
                 showLaborHours ? 'bg-violet-600 shadow-[0_0_8px_rgba(124,58,237,0.3)]' : 'bg-slate-200'
               } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
@@ -241,6 +252,7 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
             min={0}
             step={0.5}
             disabled={disabled || !showLaborHours}
+            aria-label={t('company.estimateWizard.customPricing.laborHours')}
             placeholder={showLaborHours ? t('company.estimateWizard.customPricing.laborHoursPlaceholder') : t('company.estimateWizard.customPricing.inactivePlaceholder')}
             value={showLaborHours ? (values.customLaborHours ?? '') : ''}
             onChange={(e) =>

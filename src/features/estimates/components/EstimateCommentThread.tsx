@@ -97,6 +97,7 @@ export function EstimateCommentThread({ projectId, isPortal = false }: Props) {
         <textarea
           className="flex-1 border rounded px-3 py-2 text-sm resize-none"
           rows={2}
+          aria-label={t('comments.placeholder', 'Write a comment...')}
           placeholder={t('comments.placeholder', 'Write a comment...')}
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}

@@ -117,7 +117,7 @@ export function StagesStep({ wizard }: Props) {
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             {!isReadOnly && templates && templates.length > 0 && (
-              <label className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
                 <Tag className="w-3.5 h-3.5 text-indigo-500" />
                 <AppSelect
                   value=""
@@ -130,7 +130,7 @@ export function StagesStep({ wizard }: Props) {
                   maxVisibleItems={8}
                   disabled={applyTemplate.isPending}
                 />
-              </label>
+              </div>
             )}
             <div className="flex rounded-xl bg-slate-100 p-0.5">
               {(['brief', 'detailed'] as const).map((mode) => (

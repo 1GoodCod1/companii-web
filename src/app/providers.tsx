@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
@@ -35,31 +36,33 @@ export function AppProviders({ children }: { children: ReactNode }) {
   }, [queryClient]);
 
   return (
-    <HelmetProvider>
-      <PersistQueryClientProvider
-        client={queryClient}
-        persistOptions={{ ...queryPersistOptions, persister }}
-      >
-        <AuthBootstrap>{children}</AuthBootstrap>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: 'rgba(255, 255, 255, 0.9)',
-              backdropFilter: 'blur(12px)',
-              color: '#111827',
-              border: '1px solid rgba(99, 102, 241, 0.15)',
-              borderRadius: '1rem',
-              boxShadow: '0 10px 30px rgba(99, 102, 241, 0.08)',
-              fontSize: '0.8125rem',
-              fontWeight: '700',
-              padding: '0.75rem 1rem',
-            },
-          }}
-        />
-        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
-      </PersistQueryClientProvider>
-    </HelmetProvider>
+    <MotionConfig reducedMotion="user">
+      <HelmetProvider>
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={{ ...queryPersistOptions, persister }}
+        >
+          <AuthBootstrap>{children}</AuthBootstrap>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(12px)',
+                color: '#111827',
+                border: '1px solid rgba(99, 102, 241, 0.15)',
+                borderRadius: '1rem',
+                boxShadow: '0 10px 30px rgba(99, 102, 241, 0.08)',
+                fontSize: '0.8125rem',
+                fontWeight: '700',
+                padding: '0.75rem 1rem',
+              },
+            }}
+          />
+          {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+        </PersistQueryClientProvider>
+      </HelmetProvider>
+    </MotionConfig>
   );
 }

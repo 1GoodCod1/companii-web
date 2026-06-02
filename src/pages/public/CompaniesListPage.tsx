@@ -93,12 +93,13 @@ export function CompaniesListPage() {
         <section className="border border-slate-200 bg-white p-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="relative md:col-span-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={t('companies.searchPlaceholder')}
+                aria-label={t('companies.searchPlaceholder')}
                 className={`${cabinetFieldClass} pl-10 border-slate-200 bg-white focus:border-violet-400`}
               />
             </div>
@@ -131,7 +132,7 @@ export function CompaniesListPage() {
           </div>
         ) : isEmptyCatalog || isEmptyFiltered ? (
           <div className="border border-slate-200 bg-white px-6 py-12 text-center">
-            <Building2 className="h-8 w-8 text-slate-300 mx-auto mb-4" strokeWidth={1.5} />
+            <Building2 className="size-8 text-slate-300 mx-auto mb-4" strokeWidth={1.5} />
             <p className="text-sm font-medium text-slate-700">
               {isEmptyCatalog ? t('companies.emptyNone') : t('companies.emptyFiltered')}
             </p>

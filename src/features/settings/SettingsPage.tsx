@@ -125,10 +125,11 @@ export function SettingsPage() {
             </div>
           )}
           <div className="space-y-1">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+            <label htmlFor="settings-current-password" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
               {t('cabinet.shell.currentPassword')}
             </label>
             <input
+              id="settings-current-password"
               type="password"
               required
               placeholder="••••••••"
@@ -138,10 +139,11 @@ export function SettingsPage() {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+            <label htmlFor="settings-new-password" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
               {t('cabinet.shell.newPassword')}
             </label>
             <input
+              id="settings-new-password"
               type="password"
               required
               placeholder="••••••••"
@@ -151,10 +153,11 @@ export function SettingsPage() {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+            <label htmlFor="settings-confirm-password" className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
               {t('cabinet.shell.confirmNewPassword')}
             </label>
             <input
+              id="settings-confirm-password"
               type="password"
               required
               placeholder="••••••••"

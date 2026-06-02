@@ -35,7 +35,7 @@ export function LandingCta() {
           <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 py-2">
             {perks.map((perk) => (
               <li key={perk} className="flex items-center gap-2 text-sm text-gray-500">
-                <CheckCircle2 className="h-4 w-4 text-violet-500 shrink-0" />
+                <CheckCircle2 className="size-4 text-violet-500 shrink-0" />
                 {perk}
               </li>
             ))}
@@ -47,7 +47,7 @@ export function LandingCta() {
               className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl transition-all"
             >
               {signupCta.label}
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="size-4" />
             </Link>
             <Link
               to={lp(`/${PUBLIC_ROUTE.SUBSCRIPTIONS}`)}

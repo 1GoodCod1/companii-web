@@ -73,7 +73,7 @@ export function MediaLightbox({
               className="pointer-events-auto cursor-pointer inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-2 text-sm font-medium text-white hover:bg-black/55 transition-colors backdrop-blur-md"
               aria-label={labels.closeGallery}
             >
-              <X className="h-4 w-4" />
+              <X className="size-4" />
               {labels.close}
             </button>
           </div>
@@ -83,18 +83,18 @@ export function MediaLightbox({
               <button
                 type="button"
                 onClick={onPrev}
-                className="absolute left-3 sm:left-6 top-1/2 z-20 flex h-11 w-11 sm:h-12 sm:w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/45 text-white hover:bg-black/60 transition-colors backdrop-blur-md"
+                className="absolute left-3 sm:left-6 top-1/2 z-20 flex size-11 sm:size-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/45 text-white hover:bg-black/60 transition-colors backdrop-blur-md"
                 aria-label={labels.prev}
               >
-                <ChevronLeft className="h-6 w-6" />
+                <ChevronLeft className="size-6" />
               </button>
               <button
                 type="button"
                 onClick={onNext}
-                className="absolute right-3 sm:right-6 top-1/2 z-20 flex h-11 w-11 sm:h-12 sm:w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/45 text-white hover:bg-black/60 transition-colors backdrop-blur-md"
+                className="absolute right-3 sm:right-6 top-1/2 z-20 flex size-11 sm:size-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/45 text-white hover:bg-black/60 transition-colors backdrop-blur-md"
                 aria-label={labels.next}
               >
-                <ChevronRight className="h-6 w-6" />
+                <ChevronRight className="size-6" />
               </button>
             </>
           ) : null}
@@ -128,8 +128,8 @@ export function MediaLightbox({
                       exit={{ opacity: 0, scale: 0.8 }}
                       className="absolute inset-0 flex items-center justify-center"
                     >
-                      <div className="w-20 h-20 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-violet-600/30">
-                        <Play className="h-9 w-9 text-white ml-1" fill="white" />
+                      <div className="size-20 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-violet-600/30">
+                        <Play className="size-9 text-white ml-1" fill="white" />
                       </div>
                     </motion.div>
                   )}

@@ -77,6 +77,7 @@ export function PortalInvoicesSection({ data }: { data: PortalDashboardDto }) {
         accept="image/*,application/pdf"
         className="hidden"
         onChange={handleFileSelected}
+        aria-label={t('portal.invoicesSection.uploadProof', { defaultValue: 'Încarcă dovada plății' })}
       />
       <PanelHeader
         title={t('portal.invoicesSection.title')}

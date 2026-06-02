@@ -156,6 +156,9 @@ export function InterventionDetailView({
                 href={fileDownloadPath(photo.fileKey)}
                 target="_blank"
                 rel="noreferrer"
+                aria-label={t('company.fsm.interventions.detail.photos.viewPhoto', {
+                  defaultValue: 'Vezi fotografia',
+                })}
                 className="aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200"
               >
                 <img src={fileDownloadPath(photo.fileKey)} alt="" className="w-full h-full object-cover" />

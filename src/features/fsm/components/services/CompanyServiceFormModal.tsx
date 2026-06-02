@@ -80,6 +80,7 @@ export function CompanyServiceFormModal({
             className={`${cabinetFieldClass} bg-gray-50 text-gray-600 cursor-not-allowed`}
             readOnly
             tabIndex={-1}
+            aria-label={t('company.fsm.services.form.fields.category')}
           />
           <p className="text-[11px] font-medium text-gray-400 mt-1">
             {t('company.fsm.services.form.fields.categoryHint')}
@@ -108,6 +109,7 @@ export function CompanyServiceFormModal({
               onChange={(e) => onFormChange((f) => ({ ...f, durationValue: e.target.value }))}
               className={cabinetFieldClass}
               placeholder={t('company.fsm.services.form.fields.durationPlaceholder')}
+              aria-label={t('company.fsm.services.form.fields.duration')}
             />
             <AppSelect
               value={form.durationUnit}

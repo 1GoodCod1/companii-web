@@ -263,7 +263,7 @@ export function AppSelect({
                       )}
                     >
                       <span className="min-w-0 truncate">{option.label}</span>
-                      {isSelected ? <Check className="h-4 w-4 shrink-0 text-violet-600" /> : null}
+                      {isSelected ? <Check className="size-4 shrink-0 text-violet-600" /> : null}
                     </li>
                   );
                 })}

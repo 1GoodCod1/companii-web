@@ -447,7 +447,7 @@ export function PlanRoofGeometryPanel({
               />
             </label>
 
-            <label className="space-y-1">
+            <div className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
                 <Layers className="h-3.5 w-3.5" />
                 Formă
@@ -461,9 +461,9 @@ export function PlanRoofGeometryPanel({
                 disabled={readOnly}
                 aria-label="Formă"
               />
-            </label>
+            </div>
 
-            <label className="space-y-1">
+            <div className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
                 <Sparkles className="h-3.5 w-3.5" />
                 Tip
@@ -477,9 +477,9 @@ export function PlanRoofGeometryPanel({
                 disabled={readOnly}
                 aria-label="Tip"
               />
-            </label>
+            </div>
 
-            <label className="space-y-1">
+            <div className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
                 <Ruler className="h-3.5 w-3.5" />
                 Surplombă
@@ -499,7 +499,7 @@ export function PlanRoofGeometryPanel({
                 disabled={readOnly}
                 aria-label="Surplombă"
               />
-            </label>
+            </div>
           </div>
 
           <div className="rounded-3xl border border-slate-100 bg-white p-4">
@@ -629,6 +629,7 @@ export function PlanRoofGeometryPanel({
                     disabled={readOnly}
                     value={room.name}
                     onChange={(event) => updateRoom(room.id, { name: event.target.value })}
+                    aria-label="Denumire"
                     className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-slate-850 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                   />
                   <label className="space-y-1">

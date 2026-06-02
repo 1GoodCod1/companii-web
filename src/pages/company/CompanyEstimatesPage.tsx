@@ -104,7 +104,11 @@ export function CompanyEstimatesPage() {
                     <th className="px-6 py-3 text-left">{t('company.estimatesPage.colCategory')}</th>
                     <th className="px-6 py-3 text-left">{t('company.estimatesPage.colStatus')}</th>
                     <th className="px-6 py-3 text-right">{t('company.estimatesPage.colTotal')}</th>
-                    <th className="px-6 py-3" />
+                    <th className="px-6 py-3">
+                      <span className="sr-only">
+                        {t('company.estimatesPage.colActions', { defaultValue: 'Acțiuni' })}
+                      </span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">

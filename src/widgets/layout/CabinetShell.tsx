@@ -61,7 +61,7 @@ function SidebarContent({
               onClick={onNavClick}
               className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors lg:hidden"
             >
-              <X className="h-5 w-5" />
+              <X className="size-5" />
             </button>
           )}
         </Link>
@@ -170,14 +170,14 @@ export function CabinetShell({
   const openMobileMenu = useCallback(() => setMobileMenuOpen(true), []);
   const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
 
-  // Close mobile menu on route change
   const prevPathRef = useRef(location.pathname);
   useEffect(() => {
-    if (prevPathRef.current !== location.pathname) {
-      prevPathRef.current = location.pathname;
+    const pathname = location.pathname;
+    if (prevPathRef.current !== pathname) {
+      prevPathRef.current = pathname;
       closeMobileMenu();
     }
-  }, [location.pathname, closeMobileMenu]);
+  }, [location, closeMobileMenu]);
 
   const handleLogout = async () => {
     try {
@@ -225,7 +225,7 @@ export function CabinetShell({
           className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 transition-colors"
           aria-label="Menu"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="size-5" />
         </button>
       </div>
       <MobileSheet open={mobileMenuOpen} onClose={closeMobileMenu}>

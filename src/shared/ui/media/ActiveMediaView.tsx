@@ -40,8 +40,8 @@ export function ActiveMediaView({
               exit={{ opacity: 0, scale: 0.8 }}
               className="absolute inset-0 flex items-center justify-center"
             >
-              <div className="w-16 h-16 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-violet-600/30 transition-transform hover:scale-110">
-                <Play className="h-7 w-7 text-white ml-1" fill="white" />
+              <div className="size-16 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-violet-600/30 transition-transform hover:scale-110">
+                <Play className="size-7 text-white ml-1" fill="white" />
               </div>
             </motion.div>
           )}

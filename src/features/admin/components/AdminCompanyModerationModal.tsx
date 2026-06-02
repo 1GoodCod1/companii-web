@@ -235,8 +235,9 @@ function CompanyModerationContent({
       ) : null}
 
       <div>
-        <label className={cabinetLabelClass}>{t('admin.moderation.moderationNote')}</label>
+        <label htmlFor="moderation-note" className={cabinetLabelClass}>{t('admin.moderation.moderationNote')}</label>
         <textarea
+          id="moderation-note"
           value={note}
           onChange={(e) => setNote(e.target.value)}
           rows={2}

@@ -41,7 +41,7 @@ export function PageHero({
       )}
     >
       {!flat ? (
-        <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-violet-400/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-violet-400/10 blur-3xl" />
       ) : null}
       <div className="relative flex flex-wrap items-center justify-between gap-4">
         <div className="max-w-2xl">
@@ -187,7 +187,7 @@ export function SkeletonCard({ className }: { className?: string }) {
 export function SkeletonRow({ className }: { className?: string }) {
   return (
     <div className={cn('flex items-center gap-4 py-3 px-4 animate-pulse', className)}>
-      <div className="h-10 w-10 rounded-full bg-slate-200 shrink-0" />
+      <div className="size-10 rounded-full bg-slate-200 shrink-0" />
       <div className="flex-1 space-y-2">
         <div className="h-4 w-1/3 bg-slate-200 rounded" />
         <div className="h-3 w-1/2 bg-slate-100 rounded" />
@@ -207,7 +207,7 @@ export function SkeletonPage({ rows = 5 }: { rows?: number }) {
         {Array.from({ length: rows }).map((_, i) => (
           <div key={i} className="rounded-2xl bg-white p-5 border border-slate-100 animate-pulse">
             <div className="flex items-center gap-3 mb-3">
-              <div className="h-4 w-4 bg-slate-200 rounded" />
+              <div className="size-4 bg-slate-200 rounded" />
               <div className="h-4 w-40 bg-slate-200 rounded" />
             </div>
             <div className="h-3 w-full bg-slate-100 rounded mb-2" />

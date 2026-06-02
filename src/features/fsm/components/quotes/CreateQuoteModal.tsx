@@ -80,10 +80,11 @@ function CreateQuoteForm({ onClose }: Pick<Props, 'onClose'>) {
           />
         </div>
         <div>
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+          <label htmlFor="quote-valid-until" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
             {t('company.fsm.quotes.createModal.fields.validUntil')}
           </label>
           <input
+            id="quote-valid-until"
             type="date"
             value={validUntil}
             onChange={(e) => setValidUntil(e.target.value)}
@@ -134,6 +135,7 @@ function CreateQuoteForm({ onClose }: Pick<Props, 'onClose'>) {
                 type="text"
                 required
                 placeholder={t('company.fsm.quotes.createModal.lines.descriptionPlaceholder')}
+                aria-label={t('company.fsm.quotes.createModal.lines.descriptionPlaceholder')}
                 value={line.description}
                 onChange={(e) => handleLineChange(index, 'description', e.target.value)}
                 className="flex-1 border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-3 py-2 text-xs outline-none transition-all bg-white"
@@ -142,19 +144,21 @@ function CreateQuoteForm({ onClose }: Pick<Props, 'onClose'>) {
                 type="number"
                 required
                 placeholder={t('company.fsm.quotes.createModal.lines.qtyPlaceholder')}
+                aria-label={t('company.fsm.quotes.createModal.lines.qtyPlaceholder')}
                 min={1}
                 value={line.qty}
                 onChange={(e) => handleLineChange(index, 'qty', Number(e.target.value))}
-                className="w-16 border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-2 py-2 text-xs outline-none transition-all bg-white text-center font-bold"
+                className="w-16 border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl p-2 text-xs outline-none transition-all bg-white text-center font-bold"
               />
               <input
                 type="number"
                 required
                 placeholder={t('company.fsm.quotes.createModal.lines.unitPricePlaceholder')}
+                aria-label={t('company.fsm.quotes.createModal.lines.unitPricePlaceholder')}
                 min={0}
                 value={line.unitPrice}
                 onChange={(e) => handleLineChange(index, 'unitPrice', Number(e.target.value))}
-                className="w-28 border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-2 py-2 text-xs outline-none transition-all bg-white text-right font-bold"
+                className="w-28 border border-gray-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl p-2 text-xs outline-none transition-all bg-white text-right font-bold"
               />
               <button
                 type="button"

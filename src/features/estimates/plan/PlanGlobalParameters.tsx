@@ -54,10 +54,11 @@ function FacadeAreaCalculator({
       </p>
       <div className="grid grid-cols-3 gap-2.5">
         <div>
-          <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+          <label htmlFor="plan-gp-perimeter" className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">
             {t(`${ns}.perimeter`, { defaultValue: 'Perimetru' })} (m)
           </label>
           <input
+            id="plan-gp-perimeter"
             type="number"
             min={0}
             step={0.1}
@@ -72,10 +73,11 @@ function FacadeAreaCalculator({
           />
         </div>
         <div>
-          <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+          <label htmlFor="plan-gp-height" className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">
             {t(`${ns}.height`, { defaultValue: 'Înălțime' })} (m)
           </label>
           <input
+            id="plan-gp-height"
             type="number"
             min={0}
             step={0.1}
@@ -90,10 +92,11 @@ function FacadeAreaCalculator({
           />
         </div>
         <div>
-          <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+          <label htmlFor="plan-gp-openings" className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">
             {t(`${ns}.openings`, { defaultValue: 'Ferestre & uși' })} (%)
           </label>
           <input
+            id="plan-gp-openings"
             type="number"
             min={0}
             max={50}
@@ -167,11 +170,12 @@ export function PlanGlobalParameters({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5 relative z-10">
         {!isFacade && (
           <div className={isRoof ? 'space-y-1 col-span-2' : 'space-y-1'}>
-            <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+            <label htmlFor="plan-gp-base-area" className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
               <Home className="w-3.5 h-3.5 text-slate-400" />
               {t(`${ns}.baseArea`)}
             </label>
             <input
+              id="plan-gp-base-area"
               type="number"
               min={0}
               disabled={readOnly}
@@ -197,11 +201,12 @@ export function PlanGlobalParameters({
         {!isRoof && (
           <>
             <div className="space-y-1">
-              <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+              <label htmlFor="plan-gp-wall-height" className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
                 <Ruler className="w-3.5 h-3.5 text-slate-400" />
                 {t(`${ns}.wallHeight`)}
               </label>
               <input
+                id="plan-gp-wall-height"
                 type="number"
                 min={1}
                 max={10}
@@ -217,11 +222,12 @@ export function PlanGlobalParameters({
             </div>
 
             <div className="space-y-1">
-              <label className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+              <label htmlFor="plan-gp-floors" className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
                 <Layers className="w-3.5 h-3.5 text-slate-400" />
                 {t(`${ns}.floors`)}
               </label>
               <input
+                id="plan-gp-floors"
                 type="number"
                 min={1}
                 disabled={readOnly}
@@ -238,11 +244,12 @@ export function PlanGlobalParameters({
 
         {isRoof && !isFlatRoof && (
           <div className="space-y-1 animate-fade-in col-span-2">
-            <label className="block text-[9px] font-black text-rose-600 uppercase tracking-widest flex items-center gap-1">
+            <label htmlFor="plan-gp-roof-slope" className="block text-[9px] font-black text-rose-600 uppercase tracking-widest flex items-center gap-1">
               <Compass className="w-3.5 h-3.5 text-rose-500 animate-pulse" />
               {t(`${ns}.roofSlope`)}
             </label>
             <input
+              id="plan-gp-roof-slope"
               type="number"
               min={0}
               max={90}
@@ -267,12 +274,13 @@ export function PlanGlobalParameters({
 
         {isFacade && (
           <div className="space-y-1 animate-fade-in col-span-2">
-            <label className="block text-[9px] font-black text-sky-600 uppercase tracking-widest flex items-center gap-1">
+            <label htmlFor="plan-gp-facade-area" className="block text-[9px] font-black text-sky-600 uppercase tracking-widest flex items-center gap-1">
               <Maximize className="w-3.5 h-3.5 text-sky-500 animate-pulse" />
               {t(`${ns}.facadeArea`)}
             </label>
             <div className="flex items-center gap-2">
               <input
+                id="plan-gp-facade-area"
                 type="number"
                 min={0}
                 disabled={readOnly}

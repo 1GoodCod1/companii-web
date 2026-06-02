@@ -76,18 +76,18 @@ export function LandingTimeline() {
                   className="relative md:pl-16"
                 >
                   <div
-                    className={`hidden md:flex absolute left-0 top-5 h-14 w-14 items-center justify-center rounded-2xl border-2 ${tone} shadow-sm`}
+                    className={`hidden md:flex absolute left-0 top-5 size-14 items-center justify-center rounded-2xl border-2 ${tone} shadow-sm`}
                   >
-                    <Icon className="h-6 w-6" />
+                    <Icon className="size-6" />
                   </div>
 
                   <div className="rounded-3xl glass-panel p-6 sm:p-7">
                     <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3 md:hidden">
                         <div
-                          className={`flex h-11 w-11 items-center justify-center rounded-xl border ${tone}`}
+                          className={`flex size-11 items-center justify-center rounded-xl border ${tone}`}
                         >
-                          <Icon className="h-5 w-5" />
+                          <Icon className="size-5" />
                         </div>
                         <span className="text-xs font-bold text-gray-300">{step.step}</span>
                       </div>

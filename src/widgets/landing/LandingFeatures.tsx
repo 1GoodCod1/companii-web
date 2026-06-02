@@ -57,8 +57,8 @@ export function LandingFeatures() {
                 transition={{ delay: index * 0.08, duration: 0.5 }}
                 className="rounded-3xl glass-panel p-6"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 text-violet-600 mb-4">
-                  <Icon className="h-6 w-6" />
+                <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 text-violet-600 mb-4">
+                  <Icon className="size-6" />
                 </div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">{feature.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{feature.text}</p>

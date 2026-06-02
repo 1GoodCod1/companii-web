@@ -69,7 +69,7 @@ export function AppModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-10 w-10 items-center justify-center rounded-none text-xl font-medium text-gray-400 transition-colors hover:bg-slate-100 hover:text-gray-700"
+            className="flex size-10 items-center justify-center rounded-none text-xl font-medium text-gray-400 transition-colors hover:bg-slate-100 hover:text-gray-700"
           >
             ✕
           </button>

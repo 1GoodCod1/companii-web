@@ -55,13 +55,14 @@ export function SEOHead({
 
   const hreflangUrls = useMemo(() => {
     if (!hreflang) return null;
+    const path = stripLocalePrefix(location.pathname);
     const search = location.search;
     const urls = {} as Record<AppLanguage, string>;
     for (const lng of LOCALES) {
-      urls[lng] = `${SITE_URL}${localizePath(pathWithoutLocale, lng)}${search}`;
+      urls[lng] = `${SITE_URL}${localizePath(path, lng)}${search}`;
     }
     return urls;
-  }, [hreflang, pathWithoutLocale, location.search]);
+  }, [hreflang, location]);
 
   const ogLocale = getOgLocale(locale);
   const ogLocaleAlternates = getOgLocaleAlternates(locale);

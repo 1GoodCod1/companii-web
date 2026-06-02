@@ -101,8 +101,9 @@ export function AdminBlueprintModal({
         {/* Visual Category & Name Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className={cabinetLabelClass}>{t('admin.blueprintsPage.nameLabel')}</label>
+            <label htmlFor="bp-name" className={cabinetLabelClass}>{t('admin.blueprintsPage.nameLabel')}</label>
             <input
+              id="bp-name"
               type="text"
               required
               value={name}
@@ -125,8 +126,9 @@ export function AdminBlueprintModal({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
           <div>
-            <label className={cabinetLabelClass}>{t('admin.blueprintsPage.versionLabel')}</label>
+            <label htmlFor="bp-version" className={cabinetLabelClass}>{t('admin.blueprintsPage.versionLabel')}</label>
             <input
+              id="bp-version"
               type="number"
               required
               min={1}
@@ -183,8 +185,9 @@ export function AdminBlueprintModal({
             <div className="space-y-4 p-1">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className={cabinetLabelClass}>{t('admin.blueprintsPage.marginLabel')}</label>
+                  <label htmlFor="bp-margin" className={cabinetLabelClass}>{t('admin.blueprintsPage.marginLabel')}</label>
                   <input
+                    id="bp-margin"
                     type="number"
                     value={defaultMarginPct}
                     onChange={(e) => onVisualChange('defaultMarginPct', Number(e.target.value))}
@@ -192,8 +195,9 @@ export function AdminBlueprintModal({
                   />
                 </div>
                 <div>
-                  <label className={cabinetLabelClass}>{t('admin.blueprintsPage.laborRateLabel')}</label>
+                  <label htmlFor="bp-labor-rate" className={cabinetLabelClass}>{t('admin.blueprintsPage.laborRateLabel')}</label>
                   <input
+                    id="bp-labor-rate"
                     type="number"
                     value={defaultLaborRate}
                     onChange={(e) => onVisualChange('defaultLaborRate', Number(e.target.value))}
@@ -209,10 +213,11 @@ export function AdminBlueprintModal({
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-wider text-gray-500">
+                    <label htmlFor="bp-diff-easy" className="text-[10px] font-black uppercase tracking-wider text-gray-500">
                       {t('admin.blueprintsPage.easyLabel')}
                     </label>
                     <input
+                      id="bp-diff-easy"
                       type="number"
                       step={0.05}
                       value={diffEasy}
@@ -221,10 +226,11 @@ export function AdminBlueprintModal({
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-wider text-gray-500">
+                    <label htmlFor="bp-diff-medium" className="text-[10px] font-black uppercase tracking-wider text-gray-500">
                       {t('admin.blueprintsPage.mediumLabel')}
                     </label>
                     <input
+                      id="bp-diff-medium"
                       type="number"
                       step={0.05}
                       value={diffMedium}
@@ -233,10 +239,11 @@ export function AdminBlueprintModal({
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-wider text-gray-500">
+                    <label htmlFor="bp-diff-difficult" className="text-[10px] font-black uppercase tracking-wider text-gray-500">
                       {t('admin.blueprintsPage.difficultLabel')}
                     </label>
                     <input
+                      id="bp-diff-difficult"
                       type="number"
                       step={0.05}
                       value={diffDifficult}
@@ -266,10 +273,11 @@ export function AdminBlueprintModal({
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-wider text-gray-500">
+                    <label htmlFor="bp-urg-urgent" className="text-[10px] font-black uppercase tracking-wider text-gray-500">
                       {t('admin.blueprintsPage.urgentLabel')}
                     </label>
                     <input
+                      id="bp-urg-urgent"
                       type="number"
                       step={0.05}
                       value={urgUrgent}
@@ -278,10 +286,11 @@ export function AdminBlueprintModal({
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black uppercase tracking-wider text-gray-500">
+                    <label htmlFor="bp-urg-emergency" className="text-[10px] font-black uppercase tracking-wider text-gray-500">
                       {t('admin.blueprintsPage.emergencyLabel')}
                     </label>
                     <input
+                      id="bp-urg-emergency"
                       type="number"
                       step={0.05}
                       value={urgEmergency}
@@ -329,6 +338,7 @@ export function AdminBlueprintModal({
                   value={configJsonStr}
                   onChange={(e) => onJsonChange(e.target.value)}
                   rows={16}
+                  aria-label="Blueprint config JSON"
                   className="w-full p-4 font-mono text-[11px] bg-gray-900 text-emerald-400 border border-gray-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-inner leading-relaxed"
                 />
                 {jsonError && (

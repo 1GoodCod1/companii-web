@@ -31,7 +31,7 @@ export function ReviewInterventions({ project }: ReviewInterventionsProps) {
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {project.interventions.map((intervention) => (
-          <div key={intervention.id} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-2xs space-y-3 flex flex-col justify-between hover:shadow-xs transition-shadow">
+          <div key={intervention.id} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-2xs flex flex-col justify-between gap-3 hover:shadow-xs transition-shadow">
             <div>
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-black text-slate-900">#{intervention.number}</span>

@@ -156,9 +156,10 @@ export function CustomerImportModal({ open, onClose }: Props) {
 
         <div className="space-y-3">
           <p className="text-sm font-semibold text-gray-900">{t('company.fsm.customers.import.step2.title')}</p>
-          <label className={cabinetLabelClass}>{t('company.fsm.customers.import.step2.fileLabel')}</label>
+          <label htmlFor="import-file" className={cabinetLabelClass}>{t('company.fsm.customers.import.step2.fileLabel')}</label>
           <div className="flex flex-wrap items-center gap-3">
             <input
+              id="import-file"
               ref={fileInputRef}
               type="file"
               accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"

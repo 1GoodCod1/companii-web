@@ -36,6 +36,7 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
             value={tempNotes}
             onChange={(e) => setTempNotes(e.target.value)}
             placeholder={t('company.fsm.leads.inbox.notesPlaceholder', 'Adăugați link rezervare / master / detalii...')}
+            aria-label={t('company.fsm.leads.inbox.notesPlaceholder', 'Adăugați link rezervare / master / detalii...')}
             className="w-full rounded-lg border border-gray-200 px-3 py-2 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
             rows={2}
             disabled={savingNotes}

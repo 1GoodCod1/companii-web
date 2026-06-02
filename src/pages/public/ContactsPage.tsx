@@ -91,10 +91,11 @@ export function ContactsPage() {
           </h2>
 
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+            <label htmlFor="contacts-name" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
               {t('contacts.nameLabel')}
             </label>
             <input
+              id="contacts-name"
               type="text"
               required
               placeholder={t('contacts.namePlaceholder')}
@@ -105,10 +106,11 @@ export function ContactsPage() {
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+            <label htmlFor="contacts-email" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
               {t('contacts.emailFieldLabel')}
             </label>
             <input
+              id="contacts-email"
               type="email"
               required
               placeholder={t('contacts.emailPlaceholder')}
@@ -119,10 +121,11 @@ export function ContactsPage() {
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+            <label htmlFor="contacts-message" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
               {t('contacts.messageLabel')}
             </label>
             <textarea
+              id="contacts-message"
               required
               rows={4}
               placeholder={t('contacts.messagePlaceholder')}

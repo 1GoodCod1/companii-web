@@ -49,8 +49,9 @@ export function FiscalSection({
 
       {isTvaPayer ? (
         <div className="max-w-sm animate-fade-in">
-          <label className={cabinetLabelClass}>{t('company.profileEditor.form.tvaCode')}</label>
+          <label htmlFor="fiscal-tva-code" className={cabinetLabelClass}>{t('company.profileEditor.form.tvaCode')}</label>
           <input
+            id="fiscal-tva-code"
             type="text"
             required={!legalReadOnly}
             readOnly={legalReadOnly}

@@ -106,6 +106,7 @@ export function SitePhotoGallery({ projectId, photos, readOnly }: Props) {
           multiple
           className="hidden"
           onChange={(e) => void handleFiles(e.target.files)}
+          aria-label={t('company.estimateWizard.sitePhotos.upload')}
         />
       </div>
 
@@ -142,6 +143,9 @@ export function SitePhotoGallery({ projectId, photos, readOnly }: Props) {
                   <input
                     type="text"
                     autoFocus
+                    aria-label={t('company.estimateWizard.sitePhotos.captionLabel', {
+                      defaultValue: 'Descriere fotografie',
+                    })}
                     value={editingCaption.value}
                     onChange={(e) =>
                       setEditingCaption({ id: photo.id, value: e.target.value })

@@ -403,8 +403,9 @@ export function CompanyTeamPage() {
               />
             </div>
             <div>
-              <label className={cabinetLabelClass}>{t('company.teamPage.colleagueEmailLabel')}</label>
+              <label htmlFor="team-colleague-email" className={cabinetLabelClass}>{t('company.teamPage.colleagueEmailLabel')}</label>
               <input
+                id="team-colleague-email"
                 type="email"
                 value={restrictEmail}
                 onChange={(e) => setRestrictEmail(e.target.value)}
@@ -417,9 +418,10 @@ export function CompanyTeamPage() {
             </div>
             {generatedLink ? (
               <div className="space-y-2">
-                <label className={cabinetLabelClass}>{t('company.teamPage.inviteLinkLabel')}</label>
+                <label htmlFor="team-invite-link" className={cabinetLabelClass}>{t('company.teamPage.inviteLinkLabel')}</label>
                 <div className="flex gap-2">
                   <input
+                    id="team-invite-link"
                     type="text"
                     readOnly
                     value={generatedLink.url}
@@ -459,8 +461,9 @@ export function CompanyTeamPage() {
               {t('company.teamPage.directAddNotice')}
             </div>
             <div>
-              <label className={cabinetLabelClass}>{t('company.teamPage.contactLabel')}</label>
+              <label htmlFor="team-contact" className={cabinetLabelClass}>{t('company.teamPage.contactLabel')}</label>
               <input
+                id="team-contact"
                 type="text"
                 required
                 value={contact}

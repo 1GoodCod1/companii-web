@@ -184,8 +184,9 @@ export function AdminCategoriesPage() {
       >
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
           <div>
-            <label className={cabinetLabelClass}>{t('admin.categoriesPage.nameLabel')}</label>
+            <label htmlFor="cat-name" className={cabinetLabelClass}>{t('admin.categoriesPage.nameLabel')}</label>
             <input
+              id="cat-name"
               type="text"
               required
               value={name}
@@ -194,8 +195,9 @@ export function AdminCategoriesPage() {
             />
           </div>
           <div>
-            <label className={cabinetLabelClass}>{t('admin.categoriesPage.nameRuLabel')}</label>
+            <label htmlFor="cat-name-ru" className={cabinetLabelClass}>{t('admin.categoriesPage.nameRuLabel')}</label>
             <input
+              id="cat-name-ru"
               type="text"
               placeholder="ex: Сантехника"
               value={nameRu}
@@ -204,8 +206,9 @@ export function AdminCategoriesPage() {
             />
           </div>
           <div>
-            <label className={cabinetLabelClass}>{t('admin.categoriesPage.slugLabel')}</label>
+            <label htmlFor="cat-slug" className={cabinetLabelClass}>{t('admin.categoriesPage.slugLabel')}</label>
             <input
+              id="cat-slug"
               type="text"
               placeholder="ex: santehnika"
               value={slug}

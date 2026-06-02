@@ -88,6 +88,7 @@ export function CustomFieldInput({ field, value, onChange, error, warning, disab
         min={field.validation?.min}
         max={field.validation?.max}
         disabled={disabled}
+        aria-label={field.label}
         className={cabinetFieldClass}
       />
     );
@@ -99,6 +100,7 @@ export function CustomFieldInput({ field, value, onChange, error, warning, disab
         onChange={(e) => onChange(e.target.value || undefined)}
         placeholder={field.placeholder}
         disabled={disabled}
+        aria-label={field.label}
         className={cabinetFieldClass}
       />
     );

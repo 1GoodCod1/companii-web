@@ -36,8 +36,8 @@ export function MediaThumb({ item, isActive, onClick, index }: MediaThumbProps) 
       {isVideo ? (
         <div className="relative h-full w-full bg-gradient-to-br from-slate-700 to-slate-900">
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-7 h-7 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-              <Film className="h-3.5 w-3.5 text-white" />
+            <div className="size-7 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+              <Film className="size-3.5 text-white" />
             </div>
           </div>
         </div>

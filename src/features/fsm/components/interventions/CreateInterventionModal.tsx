@@ -97,10 +97,11 @@ function CreateInterventionForm({
           />
         </div>
         <div>
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+          <label htmlFor="ci-type" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
             {t('company.fsm.interventions.createModal.fields.type')}
           </label>
           <input
+            id="ci-type"
             type="text"
             required
             value={type}
@@ -112,10 +113,11 @@ function CreateInterventionForm({
       </div>
 
       <div>
-        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+        <label htmlFor="ci-description" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
           {t('company.fsm.interventions.createModal.fields.description')}
         </label>
         <textarea
+          id="ci-description"
           required
           rows={3}
           value={description}
@@ -126,10 +128,11 @@ function CreateInterventionForm({
       </div>
 
       <div>
-        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+        <label htmlFor="ci-address" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
           {t('company.fsm.interventions.createModal.fields.address')}
         </label>
         <input
+          id="ci-address"
           type="text"
           required
           value={address}
@@ -153,10 +156,11 @@ function CreateInterventionForm({
       />
 
       <div>
-        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+        <label htmlFor="ci-scheduled-at" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
           {t('company.fsm.interventions.createModal.fields.scheduledAt')}
         </label>
         <input
+          id="ci-scheduled-at"
           type="datetime-local"
           value={scheduledAt}
           onChange={(e) => setScheduledAt(e.target.value)}
@@ -166,10 +170,11 @@ function CreateInterventionForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+          <label htmlFor="ci-estimated-price" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
             {t('company.fsm.interventions.createModal.fields.estimatedPrice')}
           </label>
           <input
+            id="ci-estimated-price"
             type="number"
             value={estimatedPrice}
             onChange={(e) => setEstimatedPrice(e.target.value)}
@@ -178,10 +183,11 @@ function CreateInterventionForm({
           />
         </div>
         <div>
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+          <label htmlFor="ci-internal-notes" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
             {t('company.fsm.interventions.createModal.fields.internalNotes')}
           </label>
           <input
+            id="ci-internal-notes"
             type="text"
             value={internalNotes}
             onChange={(e) => setInternalNotes(e.target.value)}

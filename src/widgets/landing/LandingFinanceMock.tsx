@@ -57,9 +57,9 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
 
       <div className="rounded-[1.5rem] border border-gray-200/80 bg-white shadow-[0_32px_80px_-16px_rgba(15,23,42,0.12)] overflow-hidden">
         <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-100 bg-slate-50/90">
-          <span className="h-2 w-2 rounded-full bg-red-400/90" />
-          <span className="h-2 w-2 rounded-full bg-amber-400/90" />
-          <span className="h-2 w-2 rounded-full bg-emerald-400/90" />
+          <span className="size-2 rounded-full bg-red-400/90" />
+          <span className="size-2 rounded-full bg-amber-400/90" />
+          <span className="size-2 rounded-full bg-emerald-400/90" />
           <span className="ml-2 text-[10px] font-medium text-gray-400 truncate">
             {t('landingMocks.finance.windowTitle')}
           </span>
@@ -71,13 +71,13 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
               <span
                 key={i}
                 className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
+                  'flex size-8 items-center justify-center rounded-lg transition-colors',
                   i === ACTIVE_SIDEBAR_INDEX
                     ? 'bg-violet-50 text-violet-600 shadow-xs'
                     : 'text-gray-400',
                 )}
               >
-                <Icon className="h-4 w-4" strokeWidth={1.75} />
+                <Icon className="size-4" strokeWidth={1.75} />
               </span>
             ))}
           </aside>
@@ -98,7 +98,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
                     {t('landingMocks.finance.filterAll')}
                   </span>
                   <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-1 text-[9px] font-semibold text-gray-600">
-                    <Download className="h-3 w-3" />
+                    <Download className="size-3" />
                     {t('landingMocks.finance.exportBtn')}
                   </span>
                   <span className="rounded-lg bg-gray-900 px-2 py-1 text-[9px] font-black uppercase tracking-wider text-white">
@@ -126,7 +126,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
                       {card.value}
                     </p>
                     <p className={cn('text-[9px] font-semibold mt-0.5 flex items-center gap-0.5', accent.hintClass)}>
-                      {i === 0 ? <TrendingUp className="h-3 w-3 shrink-0" /> : null}
+                      {i === 0 ? <TrendingUp className="size-3 shrink-0" /> : null}
                       {card.hint}
                     </p>
                   </article>
@@ -195,7 +195,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
                 </p>
                 <span className="text-[9px] font-semibold text-violet-600 flex items-center gap-0.5">
                   {t('landingMocks.finance.viewAll')}
-                  <ArrowUpRight className="h-2.5 w-2.5" />
+                  <ArrowUpRight className="size-2.5" />
                 </span>
               </div>
               <div className="flex items-end gap-1.5 h-16 sm:h-20">

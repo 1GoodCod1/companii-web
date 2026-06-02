@@ -105,6 +105,7 @@ export function PlanRoomsTable({
                         disabled={readOnly}
                         value={room.name}
                         onChange={(e) => onUpdateRoom(room.id, { name: e.target.value })}
+                        aria-label={t(`${ns}.colName`)}
                         className="w-full rounded-lg border border-slate-200 bg-transparent px-2.5 py-1.5 text-xs font-bold focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
                       />
                     </td>
@@ -118,6 +119,7 @@ export function PlanRoomsTable({
                         onChange={(e) =>
                           onUpdateRoom(room.id, { width: Number(e.target.value) || 1 })
                         }
+                        aria-label={t(`${ns}.colWidth`)}
                         className="w-24 rounded-lg border border-slate-200 bg-transparent px-2.5 py-1.5 text-xs font-bold focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
                       />
                     </td>
@@ -131,6 +133,7 @@ export function PlanRoomsTable({
                         onChange={(e) =>
                           onUpdateRoom(room.id, { height: Number(e.target.value) || 1 })
                         }
+                        aria-label={t(`${ns}.colLength`)}
                         className="w-24 rounded-lg border border-slate-200 bg-transparent px-2.5 py-1.5 text-xs font-bold focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
                       />
                     </td>
@@ -180,17 +183,16 @@ export function PlanRoomsTable({
             </tbody>
             <tfoot>
               <tr className="border-t border-slate-200 bg-slate-50/50 font-black text-slate-850">
-                <td className="py-3 px-3 rounded-l-xl">{t(`${ns}.totalZones`)}</td>
-                <td className="py-3 px-3"></td>
-                <td className="py-3 px-3"></td>
-                <td className="py-3 px-3"></td>
-                <td className="py-3 px-3 text-right text-[10px] font-black uppercase text-slate-400">
+                <td className="p-3 rounded-l-xl" colSpan={4}>{t(`${ns}.totalZones`)}</td>
+                <td className="p-3 text-right text-[10px] font-black uppercase text-slate-400">
                   {t(`${ns}.totalArea`)}
                 </td>
-                <td className="py-3 px-3 text-right text-sm font-black text-indigo-750">
+                <td
+                  className="p-3 text-right text-sm font-black text-indigo-750 rounded-r-xl"
+                  colSpan={!readOnly ? 2 : undefined}
+                >
                   {summaryArea.toFixed(1)} m²
                 </td>
-                {!readOnly && <td className="py-3 px-3 rounded-r-xl"></td>}
               </tr>
             </tfoot>
           </table>

@@ -84,6 +84,7 @@ export function CompanyBrandingSection({
           className="hidden"
           disabled={disabled}
           onChange={(e) => handleLogoChange(e.target.files)}
+          aria-label={t('company.branding.uploadLogo')}
         />
         <button
           type="button"

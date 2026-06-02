@@ -40,8 +40,9 @@ export function LegalInfoSection({
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className={cabinetLabelClass}>{t('company.profileEditor.form.tradeName')}</label>
+          <label htmlFor="legal-trade-name" className={cabinetLabelClass}>{t('company.profileEditor.form.tradeName')}</label>
           <input
+            id="legal-trade-name"
             type="text"
             required={!legalReadOnly}
             readOnly={legalReadOnly}
@@ -52,8 +53,9 @@ export function LegalInfoSection({
           />
         </div>
         <div>
-          <label className={cabinetLabelClass}>{t('company.profileEditor.form.legalName')}</label>
+          <label htmlFor="legal-name" className={cabinetLabelClass}>{t('company.profileEditor.form.legalName')}</label>
           <input
+            id="legal-name"
             type="text"
             required={!legalReadOnly}
             readOnly={legalReadOnly}
@@ -67,8 +69,9 @@ export function LegalInfoSection({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className={cabinetLabelClass}>{t('company.profileEditor.form.idno')}</label>
+          <label htmlFor="legal-idno" className={cabinetLabelClass}>{t('company.profileEditor.form.idno')}</label>
           <input
+            id="legal-idno"
             type="text"
             required={!legalReadOnly}
             readOnly={legalReadOnly}
@@ -80,8 +83,9 @@ export function LegalInfoSection({
           />
         </div>
         <div>
-          <label className={cabinetLabelClass}>{t('company.profileEditor.form.legalAddress')}</label>
+          <label htmlFor="legal-address" className={cabinetLabelClass}>{t('company.profileEditor.form.legalAddress')}</label>
           <input
+            id="legal-address"
             type="text"
             required={!legalReadOnly}
             readOnly={legalReadOnly}

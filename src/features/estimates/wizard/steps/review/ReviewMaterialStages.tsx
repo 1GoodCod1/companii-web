@@ -123,6 +123,9 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                               type="number"
                               defaultValue={Number(line.qty)}
                               disabled={isReadOnly}
+                              aria-label={t('company.estimateWizard.reviewStep.qtyLabel', {
+                                defaultValue: 'Cantitate',
+                              })}
                               onBlur={(e) =>
                                 handleUpdateLineQtyOrPrice(
                                   line.id,
@@ -148,6 +151,9 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                                 type="number"
                                 defaultValue={Number(line.unitPrice)}
                                 disabled={isReadOnly}
+                                aria-label={t('company.estimateWizard.reviewStep.unitPriceLabel', {
+                                  defaultValue: 'Preț unitar',
+                                })}
                                 onBlur={(e) =>
                                   handleUpdateLineQtyOrPrice(
                                     line.id,
@@ -174,6 +180,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                                 <input
                                   type="text"
                                   placeholder={t('company.estimateWizard.reviewStep.storePlaceholder')}
+                                  aria-label={t('company.estimateWizard.reviewStep.storePlaceholder')}
                                   disabled={isReadOnly}
                                   value={
                                     editingStore?.lineId === line.id

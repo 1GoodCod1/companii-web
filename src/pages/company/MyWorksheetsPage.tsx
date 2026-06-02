@@ -86,7 +86,7 @@ export function MyWorksheetsPage() {
                     {item.customer && (
                       <>
                         <div className="flex items-center gap-1.5">
-                          <User className="w-3.5 h-3.5 text-gray-400" />
+                          <User className="size-3.5 text-gray-400" />
                           {item.customer.fullName}
                         </div>
                         <a
@@ -94,26 +94,26 @@ export function MyWorksheetsPage() {
                           onClick={(e) => e.stopPropagation()}
                           className="flex items-center gap-1.5 text-violet-700 hover:underline"
                         >
-                          <Phone className="w-3.5 h-3.5 text-violet-500" />
+                          <Phone className="size-3.5 text-violet-500" />
                           {item.customer.phone}
                         </a>
                       </>
                     )}
                     {item.intervention.address && (
                       <div className="flex items-start gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-gray-400 mt-0.5 shrink-0" />
+                        <MapPin className="size-3.5 text-gray-400 mt-0.5 shrink-0" />
                         <span>{item.intervention.address}</span>
                       </div>
                     )}
                     {scheduled && (
                       <div className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                        <Calendar className="size-3.5 text-gray-400" />
                         {scheduled}
                       </div>
                     )}
                     {item.stage && (
                       <div className="flex items-center gap-1.5 text-violet-700">
-                        <Hammer className="w-3.5 h-3.5" />
+                        <Hammer className="size-3.5" />
                         {item.stage.name}
                       </div>
                     )}
@@ -121,7 +121,7 @@ export function MyWorksheetsPage() {
 
                   <div className="flex items-center justify-end text-[11px] font-bold text-violet-700">
                     {t('company.myWorksheets.open')}
-                    <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                    <ArrowRight className="size-3.5 ml-1" />
                   </div>
                 </Panel>
               </Link>

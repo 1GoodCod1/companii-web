@@ -45,12 +45,12 @@ export function LandingStats() {
                   </p>
                   <span
                     className={cn(
-                      'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl',
+                      'flex size-10 shrink-0 items-center justify-center rounded-xl',
                       style.iconBg,
                       style.iconClass,
                     )}
                   >
-                    <Icon className="h-5 w-5" strokeWidth={1.75} />
+                    <Icon className="size-5" strokeWidth={1.75} />
                   </span>
                 </div>
                 <p className="text-sm font-semibold text-gray-800 mt-4 leading-snug">{stat.label}</p>

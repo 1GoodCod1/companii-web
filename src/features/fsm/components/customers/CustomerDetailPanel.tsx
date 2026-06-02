@@ -169,11 +169,12 @@ export function CustomerDetailPanel({ customer, onEdit, onDelete }: Props) {
                 </button>
                 {activePortalInviteLink && (
                   <div className="space-y-2">
-                    <label className={cabinetLabelClass}>
+                    <label htmlFor="customer-portal-link" className={cabinetLabelClass}>
                       {t('company.fsm.customers.detail.portal.linkLabel')}
                     </label>
                     <div className="flex gap-2">
                       <input
+                        id="customer-portal-link"
                         type="text"
                         readOnly
                         value={activePortalInviteLink.url}

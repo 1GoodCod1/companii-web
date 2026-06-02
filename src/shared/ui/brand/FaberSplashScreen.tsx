@@ -38,8 +38,8 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
       className="fixed inset-0 z-[9999] bg-gradient-to-tr from-[#fafbfc] via-[#ffffff] to-[#fafbfc] flex flex-col items-center justify-center overflow-hidden"
     >
       {/* Soft, glowing decorative radial circles behind the logo */}
-      <div className="absolute w-[400px] h-[400px] rounded-full bg-violet-100/30 blur-[80px] pointer-events-none" />
-      <div className="absolute w-[300px] h-[300px] rounded-full bg-indigo-100/20 blur-[60px] pointer-events-none translate-x-12 translate-y-12" />
+      <div className="absolute size-[400px] rounded-full bg-violet-100/30 blur-[80px] pointer-events-none" />
+      <div className="absolute size-[300px] rounded-full bg-indigo-100/20 blur-[60px] pointer-events-none translate-x-12 translate-y-12" />
 
       <div className="relative flex flex-col items-center gap-6">
         {/* LOGO ASSEMBLY & INTERACTIVE DRAW ANIMATION */}

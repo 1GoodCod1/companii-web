@@ -37,8 +37,9 @@ export function ContactSection({
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className={cabinetLabelClass}>{t('company.profileEditor.form.contactPhone')}</label>
+          <label htmlFor="contact-phone" className={cabinetLabelClass}>{t('company.profileEditor.form.contactPhone')}</label>
           <input
+            id="contact-phone"
             type="text"
             placeholder={t('company.profileEditor.form.contactPhonePlaceholder')}
             value={contactPhone}
@@ -47,8 +48,9 @@ export function ContactSection({
           />
         </div>
         <div>
-          <label className={cabinetLabelClass}>{t('company.profileEditor.form.contactEmail')}</label>
+          <label htmlFor="contact-email" className={cabinetLabelClass}>{t('company.profileEditor.form.contactEmail')}</label>
           <input
+            id="contact-email"
             type="email"
             placeholder={t('company.profileEditor.form.contactEmailPlaceholder')}
             value={contactEmail}
@@ -86,8 +88,9 @@ export function ContactSection({
       </div>
 
       <div>
-        <label className={cabinetLabelClass}>{t('company.profileEditor.form.description')}</label>
+        <label htmlFor="contact-description" className={cabinetLabelClass}>{t('company.profileEditor.form.description')}</label>
         <textarea
+          id="contact-description"
           placeholder={t('company.profileEditor.form.descriptionPlaceholder')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}

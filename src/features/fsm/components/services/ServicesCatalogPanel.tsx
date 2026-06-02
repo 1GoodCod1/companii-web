@@ -45,7 +45,7 @@ export function ServicesCatalogPanel({
       {services.map((service) => {
         const durationLabel = formatServiceDurationI18n(t, service.durationMinutes);
         return (
-          <div key={service.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-4">
+          <div key={service.id} className="flex flex-wrap items-center justify-between gap-3 p-4">
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="font-semibold text-gray-900">{service.name}</p>

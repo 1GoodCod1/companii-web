@@ -98,10 +98,11 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
           )}
         </div>
         <div>
-          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+          <label htmlFor="invoice-due-date" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
             {t('company.fsm.invoices.createModal.fields.dueDate')}
           </label>
           <input
+            id="invoice-due-date"
             type="date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}

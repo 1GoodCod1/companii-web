@@ -152,6 +152,7 @@ export function PlanWorkItemsPanel({
             <input
               type="text"
               placeholder={t('company.estimateWizard.workItems.customPlaceholder')}
+              aria-label={t('company.estimateWizard.workItems.customPlaceholder')}
               value={newCustomLabel}
               onChange={(e) => setNewCustomLabel(e.target.value)}
               className="flex-1 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition-all shadow-xs"

@@ -111,7 +111,7 @@ export function PortalCereriPage() {
 
       <Panel>
         <div className="flex items-start gap-3 px-4 py-5 sm:px-6">
-          <ClipboardList className="h-5 w-5 text-violet-600 shrink-0 mt-0.5" />
+          <ClipboardList className="size-5 text-violet-600 shrink-0 mt-0.5" />
           <div className="space-y-1 text-xs text-gray-500 leading-relaxed">
             <p className="font-semibold text-gray-700">{t('portal.cereriPage.complexProjectsTitle')}</p>
             <p>{t('portal.cereriPage.complexProjectsBody')}</p>

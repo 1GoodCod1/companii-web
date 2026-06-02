@@ -128,7 +128,7 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
             {estimates.map((item: EstimateProjectListDto) => (
               <li
                 key={item.id}
-                className="rounded-2xl bg-white/60 px-4 py-4 hover:bg-violet-50/30 transition-colors space-y-3"
+                className="rounded-2xl bg-white/60 p-4 hover:bg-violet-50/30 transition-colors space-y-3"
               >
                 <div className="flex justify-between items-start gap-3">
                   <div>
@@ -191,6 +191,7 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
                       placeholder={t('portal.estimatesSection.commentPlaceholder', 'Descrieți modificările dorite...')}
+                      aria-label={t('portal.estimatesSection.commentPlaceholder', 'Descrieți modificările dorite...')}
                       className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 bg-white focus:border-violet-600 focus:outline-none focus:ring-1 focus:ring-violet-600"
                     />
                     <div className="flex gap-2 justify-end">

@@ -54,7 +54,7 @@ export function HowItWorksPage() {
           </span>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-none text-slate-900">
             {t('howItWorks.title')}{' '}
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+            <span className="text-violet-600">
               {t('howItWorks.titleHighlight')}
             </span>
           </h1>

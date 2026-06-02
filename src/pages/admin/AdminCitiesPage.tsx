@@ -178,8 +178,9 @@ export function AdminCitiesPage() {
       >
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
           <div>
-            <label className={cabinetLabelClass}>{t('admin.citiesPage.nameLabel')}</label>
+            <label htmlFor="city-name" className={cabinetLabelClass}>{t('admin.citiesPage.nameLabel')}</label>
             <input
+              id="city-name"
               type="text"
               required
               value={name}
@@ -188,8 +189,9 @@ export function AdminCitiesPage() {
             />
           </div>
           <div>
-            <label className={cabinetLabelClass}>{t('admin.citiesPage.nameRuLabel')}</label>
+            <label htmlFor="city-name-ru" className={cabinetLabelClass}>{t('admin.citiesPage.nameRuLabel')}</label>
             <input
+              id="city-name-ru"
               type="text"
               placeholder="ex: Кишинёв"
               value={nameRu}
@@ -198,8 +200,9 @@ export function AdminCitiesPage() {
             />
           </div>
           <div>
-            <label className={cabinetLabelClass}>{t('admin.citiesPage.slugLabel')}</label>
+            <label htmlFor="city-slug" className={cabinetLabelClass}>{t('admin.citiesPage.slugLabel')}</label>
             <input
+              id="city-slug"
               type="text"
               placeholder="ex: chisinau"
               value={slug}
