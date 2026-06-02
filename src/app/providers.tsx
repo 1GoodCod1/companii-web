@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { MotionConfig } from 'framer-motion';
+import { LazyMotion, MotionConfig, domAnimation } from 'framer-motion';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
@@ -36,8 +36,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
   }, [queryClient]);
 
   return (
-    <MotionConfig reducedMotion="user">
-      <HelmetProvider>
+    <LazyMotion features={domAnimation} strict>
+      <MotionConfig reducedMotion="user">
+        <HelmetProvider>
         <PersistQueryClientProvider
           client={queryClient}
           persistOptions={{ ...queryPersistOptions, persister }}
@@ -63,6 +64,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
           {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
         </PersistQueryClientProvider>
       </HelmetProvider>
-    </MotionConfig>
+      </MotionConfig>
+    </LazyMotion>
   );
 }

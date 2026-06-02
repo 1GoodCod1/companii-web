@@ -126,8 +126,8 @@ export function LegalParagraph({ children }: { children: ReactNode }) {
 export function LegalList({ items }: { items: Array<{ label?: string; text: string }> }) {
   return (
     <ul className="legal-list list-disc pl-5 space-y-2">
-      {items.map((item, index) => (
-        <li key={`${item.label ?? 'item'}-${index}`}>
+      {items.map((item) => (
+        <li key={item.text}>
           {item.label ? <strong className="text-gray-800">{item.label}</strong> : null}
           {item.label ? ' ' : null}
           {item.text}

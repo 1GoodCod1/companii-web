@@ -16,6 +16,8 @@ import { statusTone } from '@/entities/fsm/model/calendar';
 import { formatTimeLocalized } from '@/shared/utils/date';
 import { useCrewsQuery } from '@/features/fsm/api/useCrews';
 
+const EMPTY_SCHEDULE_MEMBER_IDS: string[] = [];
+
 export function InterventionCard({
   item,
   onSchedule,
@@ -23,7 +25,7 @@ export function InterventionCard({
   scheduleAt,
   scheduleTechnicianId,
   assignMode = 'single',
-  scheduleMemberIds = [],
+  scheduleMemberIds = EMPTY_SCHEDULE_MEMBER_IDS,
   scheduleCrewId = '',
   onScheduleAtChange,
   onScheduleTechnicianChange,
@@ -62,7 +64,7 @@ export function InterventionCard({
 
   const techniciansSorted = useMemo(
     () =>
-      [...(technicians ?? [])].sort((a, b) =>
+      (technicians ?? []).toSorted((a, b) =>
         memberDisplayName(a).localeCompare(memberDisplayName(b)),
       ),
     [technicians],
@@ -193,7 +195,7 @@ export function InterventionCard({
                           type="checkbox"
                           checked={scheduleMemberIds.includes(m.id)}
                           onChange={() => toggleMember(m.id)}
-                          className="w-3.5 h-3.5 accent-violet-600 cursor-pointer"
+                          className="size-3.5 accent-violet-600 cursor-pointer"
                         />
                         <span className="font-semibold text-gray-800">{memberDisplayName(m)}</span>
                         {scheduleMemberIds.indexOf(m.id) === 0 && scheduleMemberIds.length > 1 && (

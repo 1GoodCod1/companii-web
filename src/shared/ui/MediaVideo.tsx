@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { resolveMediaUrl } from '@/lib/media';
 
@@ -6,19 +6,18 @@ type MediaVideoProps = Omit<React.VideoHTMLAttributes<HTMLVideoElement>, 'src'> 
   src: string | null | undefined;
   lazy?: boolean;
   fallbackClassName?: string;
+  ref?: React.Ref<HTMLVideoElement>;
 };
 
-export const MediaVideo = forwardRef<HTMLVideoElement, MediaVideoProps>(function MediaVideo(
-  {
-    src,
-    className,
-    lazy = false,
-    fallbackClassName,
-    preload,
-    ...props
-  },
+export function MediaVideo({
+  src,
+  className,
+  lazy = false,
+  fallbackClassName,
+  preload,
   ref,
-) {
+  ...props
+}: MediaVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(!lazy);
   const resolved = resolveMediaUrl(src);
@@ -65,6 +64,8 @@ export const MediaVideo = forwardRef<HTMLVideoElement, MediaVideoProps>(function
       src={resolved}
       className={className}
       preload={preload ?? 'metadata'}
-    />
+    >
+      <track kind="captions" src="" />
+    </video>
   );
-});
+}

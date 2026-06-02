@@ -117,7 +117,7 @@ export function AssignmentSection({
                   type="checkbox"
                   checked={memberIds.includes(m.id)}
                   onChange={() => toggleMember(m.id)}
-                  className="w-3.5 h-3.5 accent-violet-600"
+                  className="size-3.5 accent-violet-600"
                 />
                 <span className="font-medium text-gray-800">{memberDisplayName(m)}</span>
                 {memberIds.indexOf(m.id) === 0 && memberIds.length > 1 && (

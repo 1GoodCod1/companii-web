@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import type { CompanyGalleryImageDto } from '@/entities/company/model/companies.types';
 import { MediaImage } from '@/shared/ui/MediaImage';
@@ -44,16 +44,17 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
     const isSoloVideo = isVideoUrl(solo.url);
     return (
       <>
-        <div
-          className="relative rounded-2xl overflow-hidden bg-slate-100 aspect-[16/10] cursor-pointer group"
+        <button
+          type="button"
+          className="relative block w-full rounded-2xl overflow-hidden bg-slate-100 aspect-[16/10] cursor-pointer group border-0 p-0 text-left"
           onClick={() => gallery.openLightbox(0)}
         >
           {isSoloVideo ? (
-            <div className="relative w-full h-full">
-              <MediaVideo src={solo.url} className="h-full w-full object-cover" muted playsInline preload="metadata" />
+            <div className="relative size-full">
+              <MediaVideo src={solo.url} className="size-full object-cover" muted playsInline preload="metadata" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-14 h-14 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-xl transition-transform group-hover:scale-110">
-                  <Play className="h-6 w-6 text-white ml-0.5" fill="white" />
+                <div className="size-14 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-xl transition-transform group-hover:scale-110">
+                  <Play className="size-6 text-white ml-0.5" fill="white" />
                 </div>
               </div>
             </div>
@@ -61,11 +62,11 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
             <MediaImage
               src={solo.url}
               alt={solo.caption ?? t(`${g}.photoAlt`)}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              fallbackClassName="h-full w-full bg-slate-200"
+              className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+              fallbackClassName="size-full bg-slate-200"
             />
           )}
-        </div>
+        </button>
         <MediaLightbox
           item={gallery.lightboxActive}
           index={gallery.lightboxIndex}
@@ -116,32 +117,54 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
           })}
         </div>
 
-        <div
-          className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-100 cursor-pointer group"
-          onClick={() => {
-            if (!isVideoUrl(gallery.active!.url)) {
-              gallery.openLightbox(gallery.activeIndex);
-            }
-          }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={gallery.active!.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="h-full w-full"
+        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-100 group min-h-[320px] sm:min-h-[400px] md:min-h-[440px]">
+          {isVideoUrl(gallery.active!.url) ? (
+            <div className="relative size-full">
+              <AnimatePresence mode="wait">
+                <m.div
+                  key={gallery.active!.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="size-full"
+                >
+                  <ActiveMediaView
+                    item={gallery.active!}
+                    videoRef={gallery.videoRef}
+                    onPlayToggle={gallery.handlePlayToggle}
+                    isPlaying={gallery.isPlaying}
+                    photoAlt={t(`${g}.photoAlt`)}
+                  />
+                </m.div>
+              </AnimatePresence>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="relative block size-full cursor-pointer border-0 bg-transparent p-0 text-left outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 rounded-2xl sm:rounded-3xl"
+              onClick={() => gallery.openLightbox(gallery.activeIndex)}
             >
-              <ActiveMediaView
-                item={gallery.active!}
-                videoRef={gallery.videoRef}
-                onPlayToggle={gallery.handlePlayToggle}
-                isPlaying={gallery.isPlaying}
-                photoAlt={t(`${g}.photoAlt`)}
-              />
-            </motion.div>
-          </AnimatePresence>
+              <AnimatePresence mode="wait">
+                <m.div
+                  key={gallery.active!.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="size-full"
+                >
+                  <ActiveMediaView
+                    item={gallery.active!}
+                    videoRef={gallery.videoRef}
+                    onPlayToggle={gallery.handlePlayToggle}
+                    isPlaying={gallery.isPlaying}
+                    photoAlt={t(`${g}.photoAlt`)}
+                  />
+                </m.div>
+              </AnimatePresence>
+            </button>
+          )}
 
           {gallery.active!.caption && (
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent px-5 pb-4 pt-8 pointer-events-none">
@@ -160,18 +183,18 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); gallery.goPrev(); }}
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-white"
+                className="absolute left-2 top-1/2 -translate-y-1/2 size-9 rounded-full bg-white/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-white"
                 aria-label={t(`${g}.prev`)}
               >
-                <ChevronLeft className="h-5 w-5 text-slate-700" />
+                <ChevronLeft className="size-5 text-slate-700" />
               </button>
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); gallery.goNext(); }}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-white"
+                className="absolute right-2 top-1/2 -translate-y-1/2 size-9 rounded-full bg-white/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-white"
                 aria-label={t(`${g}.next`)}
               >
-                <ChevronRight className="h-5 w-5 text-slate-700" />
+                <ChevronRight className="size-5 text-slate-700" />
               </button>
             </>
           )}

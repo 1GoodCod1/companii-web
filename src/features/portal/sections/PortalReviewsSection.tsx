@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 import {
   Panel,
   PanelHeader,
@@ -11,11 +12,16 @@ export function PortalReviewsSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();
   const { reviews } = data;
 
+  const reviewsMeta = useMemo(
+    () => <span className="text-xs text-gray-400">{reviews.length}</span>,
+    [reviews.length],
+  );
+
   return (
     <Panel>
       <PanelHeader
         title={t('portal.reviewsSection.title')}
-        meta={<span className="text-xs text-gray-400">{reviews.length}</span>}
+        meta={reviewsMeta}
       />
       {reviews.length === 0 ? (
         <EmptyState message={t('portal.reviewsSection.empty')} />

@@ -105,7 +105,7 @@ export function useWizardDerivations(project: EstimateProjectDto, formState: Wiz
         config,
         extractMeasurementsFromDiagnostic(
           persistDiagnostic(formState.diagnostic),
-          project.category?.slug ?? undefined,
+          project.category.slug,
           pricingOverrides,
           formState.plan2d,
         ),
@@ -115,8 +115,7 @@ export function useWizardDerivations(project: EstimateProjectDto, formState: Wiz
         formState.diagnostic.materialIncluded !== false,
         formState.diagnostic,
       ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [config, formState.diagnostic, formState.plan2d, enabledWorkModules, formState.accessDifficulty, formState.urgency, persistDiagnostic, pricingOverrides],
+    [config, formState.diagnostic, formState.plan2d, enabledWorkModules, formState.accessDifficulty, formState.urgency, persistDiagnostic, pricingOverrides, project.category.slug],
   );
 
   const previewTotals = useMemo(

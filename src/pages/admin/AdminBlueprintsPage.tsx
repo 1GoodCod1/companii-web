@@ -94,14 +94,14 @@ export function AdminBlueprintsPage() {
               onClick={() => void refetch()}
               className={`${cabinetBtnSecondary} flex items-center gap-1.5`}
             >
-              <RefreshCw className="h-3.5 w-3.5" />
+              <RefreshCw className="size-3.5" />
             </button>
             <button
               type="button"
               onClick={handleOpenCreate}
               className={`${cabinetBtnPrimary} flex items-center gap-1.5`}
             >
-              <Sliders className="h-3.5 w-3.5" />
+              <Sliders className="size-3.5" />
               {t('admin.blueprintsPage.createBtn')}
             </button>
           </div>
@@ -117,7 +117,7 @@ export function AdminBlueprintsPage() {
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-          <RefreshCw className="h-8 w-8 animate-spin mb-2 text-primary/60" />
+          <RefreshCw className="size-8 animate-spin mb-2 text-primary/60" />
           <p className="text-sm font-semibold">{t('cabinet.common.loading')}</p>
         </div>
       ) : filteredBlueprints.length === 0 ? (

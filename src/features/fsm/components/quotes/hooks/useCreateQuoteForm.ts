@@ -11,6 +11,12 @@ interface UseCreateQuoteFormProps {
   onClose: () => void;
 }
 
+type QuoteFormLine = { id: string; description: string; qty: number; unitPrice: number };
+
+function createLine(partial: Partial<Omit<QuoteFormLine, 'id'>> = {}): QuoteFormLine {
+  return { id: crypto.randomUUID(), description: '', qty: 1, unitPrice: 0, ...partial };
+}
+
 export function useCreateQuoteForm({ onClose }: UseCreateQuoteFormProps) {
   const { t } = useTranslation();
   const { data: customers } = useCustomersQuery();
@@ -19,20 +25,18 @@ export function useCreateQuoteForm({ onClose }: UseCreateQuoteFormProps) {
 
   const [customerId, setCustomerId] = useState('');
   const [validUntil, setValidUntil] = useState('');
-  const [lines, setLines] = useState<{ description: string; qty: number; unitPrice: number }[]>([
-    { description: '', qty: 1, unitPrice: 0 },
-  ]);
+  const [lines, setLines] = useState<QuoteFormLine[]>([createLine()]);
   const [catalogServiceId, setCatalogServiceId] = useState('');
 
   const resetForm = () => {
     setCustomerId('');
     setValidUntil('');
-    setLines([{ description: '', qty: 1, unitPrice: 0 }]);
+    setLines([createLine()]);
     setCatalogServiceId('');
   };
 
   const handleAddLine = () => {
-    setLines([...lines, { description: '', qty: 1, unitPrice: 0 }]);
+    setLines([...lines, createLine()]);
   };
 
   const handleAddFromCatalog = () => {
@@ -43,11 +47,10 @@ export function useCreateQuoteForm({ onClose }: UseCreateQuoteFormProps) {
     }
     setLines([
       ...lines,
-      {
+      createLine({
         description: service.name,
-        qty: 1,
         unitPrice: Number(service.defaultPrice),
-      },
+      }),
     ]);
     setCatalogServiceId('');
   };
@@ -78,7 +81,7 @@ export function useCreateQuoteForm({ onClose }: UseCreateQuoteFormProps) {
       await createQuote.mutateAsync({
         customerId,
         validUntil: validUntil || undefined,
-        lines,
+        lines: lines.map(({ id: _id, ...rest }) => rest),
       });
       toast.success(t('company.fsm.quotes.createModal.toast.created'));
       onClose();

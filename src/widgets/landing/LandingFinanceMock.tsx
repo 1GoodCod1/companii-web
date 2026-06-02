@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   ArrowUpRight,
@@ -46,7 +46,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
   }>;
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
@@ -69,7 +69,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
           <aside className="hidden sm:flex w-11 shrink-0 flex-col items-center gap-1 border-r border-gray-100 bg-white py-3">
             {SIDEBAR_ICONS.map((Icon, i) => (
               <span
-                key={i}
+                key={Icon.displayName}
                 className={cn(
                   'flex size-8 items-center justify-center rounded-lg transition-colors',
                   i === ACTIVE_SIDEBAR_INDEX
@@ -212,7 +212,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
         </div>
       </div>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -221,7 +221,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
       >
         <p className="text-[9px] text-gray-400">{t('landingMocks.finance.vatBadge')}</p>
         <p className="text-[11px] font-bold text-gray-800">{t('landingMocks.finance.vatValue')}</p>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }

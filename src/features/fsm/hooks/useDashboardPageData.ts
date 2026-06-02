@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import i18n from '@/shared/config/i18n';
 import {
   useCustomersCountQuery,
   useInterventionsQuery,
@@ -21,6 +21,7 @@ import { isActiveInterventionStatus } from '@/entities/fsm/model/interventionSta
 import { isPaidPaymentStatus } from '@/entities/fsm/model/invoicePaymentStatus';
 
 export function useDashboardPageData() {
+  const { t } = useTranslation();
   const { isManagement, activeCompanyId } = useCompanyPermissions();
   const { data: meData } = useCompanyMeQuery();
   const { data: subData } = useMySubscriptionQuery();
@@ -69,30 +70,30 @@ export function useDashboardPageData() {
     if (isManagement) {
       return [
         {
-          label: i18n.t('company.dashboard.kpi.totalCustomers.label'),
+          label: t('company.dashboard.kpi.totalCustomers.label'),
           value: String(customersTotal ?? 0),
-          hint: i18n.t('company.dashboard.kpi.totalCustomers.hint'),
+          hint: t('company.dashboard.kpi.totalCustomers.hint'),
           hintClass: 'text-emerald-600',
           accent: KPI_ACCENTS[0],
         },
         {
-          label: i18n.t('company.dashboard.kpi.activeInterventions.label'),
+          label: t('company.dashboard.kpi.activeInterventions.label'),
           value: String(activeInterventions.length),
-          hint: i18n.t('company.dashboard.kpi.activeInterventions.hint'),
+          hint: t('company.dashboard.kpi.activeInterventions.hint'),
           hintClass: 'text-amber-600',
           accent: KPI_ACCENTS[1],
         },
         {
-          label: i18n.t('company.dashboard.kpi.totalInvoiced.label'),
+          label: t('company.dashboard.kpi.totalInvoiced.label'),
           value: totalInvoiced.toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' }),
-          hint: i18n.t('company.dashboard.kpi.totalInvoiced.hint'),
+          hint: t('company.dashboard.kpi.totalInvoiced.hint'),
           hintClass: 'text-gray-400',
           accent: KPI_ACCENTS[2],
         },
         {
-          label: i18n.t('company.dashboard.kpi.confirmedPayments.label'),
+          label: t('company.dashboard.kpi.confirmedPayments.label'),
           value: totalPaid.toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' }),
-          hint: i18n.t('company.dashboard.kpi.confirmedPayments.hint'),
+          hint: t('company.dashboard.kpi.confirmedPayments.hint'),
           hintClass: 'text-emerald-600',
           accent: KPI_ACCENTS[3],
           valueClass: 'text-emerald-600',
@@ -102,21 +103,21 @@ export function useDashboardPageData() {
 
     return [
       {
-        label: i18n.t('company.dashboard.kpi.myJobs.label'),
+        label: t('company.dashboard.kpi.myJobs.label'),
         value: String(interventions?.length ?? 0),
-        hint: i18n.t('company.dashboard.kpi.myJobs.hint'),
+        hint: t('company.dashboard.kpi.myJobs.hint'),
         hintClass: 'text-violet-600',
         accent: KPI_ACCENTS[1],
       },
       {
-        label: i18n.t('company.dashboard.kpi.activeJobs.label'),
+        label: t('company.dashboard.kpi.activeJobs.label'),
         value: String(activeInterventions.length),
-        hint: i18n.t('company.dashboard.kpi.activeJobs.hint'),
+        hint: t('company.dashboard.kpi.activeJobs.hint'),
         hintClass: 'text-amber-600',
         accent: KPI_ACCENTS[0],
       },
       {
-        label: i18n.t('company.dashboard.kpi.scheduledToday.label'),
+        label: t('company.dashboard.kpi.scheduledToday.label'),
         value: String(
           interventions?.filter((i: InterventionDto) => {
             if (!i.scheduledAt) return false;
@@ -129,12 +130,12 @@ export function useDashboardPageData() {
             );
           }).length ?? 0,
         ),
-        hint: i18n.t('company.dashboard.kpi.scheduledToday.hint'),
+        hint: t('company.dashboard.kpi.scheduledToday.hint'),
         hintClass: 'text-blue-600',
         accent: KPI_ACCENTS[2],
       },
       {
-        label: i18n.t('company.dashboard.kpi.completed.label'),
+        label: t('company.dashboard.kpi.completed.label'),
         value: String(
           interventions?.filter(
             (i) =>
@@ -142,14 +143,13 @@ export function useDashboardPageData() {
               i.status === INTERVENTION_STATUS.PAID,
           ).length ?? 0,
         ),
-        hint: i18n.t('company.dashboard.kpi.completed.hint'),
+        hint: t('company.dashboard.kpi.completed.hint'),
         hintClass: 'text-emerald-600',
         accent: KPI_ACCENTS[3],
         valueClass: 'text-emerald-600',
       },
     ];
   },
-    /* eslint-disable react-hooks/exhaustive-deps */
     [
       isManagement,
       customersTotal,
@@ -157,7 +157,7 @@ export function useDashboardPageData() {
       totalInvoiced,
       totalPaid,
       interventions,
-      i18n.language,
+      t,
     ]);
 
   const handleConvertLead = async (leadId: string, mode: 'intervention' | 'estimate') => {
@@ -165,11 +165,11 @@ export function useDashboardPageData() {
       await convertLead.mutateAsync({ id: leadId, mode });
       toast.success(
         mode === 'intervention'
-          ? i18n.t('company.dashboard.toasts.leadConvertedIntervention')
-          : i18n.t('company.dashboard.toasts.leadConvertedEstimate'),
+          ? t('company.dashboard.toasts.leadConvertedIntervention')
+          : t('company.dashboard.toasts.leadConvertedEstimate'),
       );
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, i18n.t('company.dashboard.toasts.convertLeadFailed')));
+      toast.error(getErrorMessage(err, t('company.dashboard.toasts.convertLeadFailed')));
     }
   };
 

@@ -1,9 +1,10 @@
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, Play } from 'lucide-react';
 import { MediaImage } from '@/shared/ui/MediaImage';
 import { MediaVideo } from '@/shared/ui/MediaVideo';
-import { isMediaItemVideo, type MediaThumbItem } from './MediaThumb';
+import type { MediaThumbItem } from './MediaThumb';
+import { isMediaItemVideo } from './mediaItem';
 
 interface MediaLightboxProps {
   item: MediaThumbItem | null;
@@ -46,7 +47,7 @@ export function MediaLightbox({
   return createPortal(
     <AnimatePresence>
       {item && index !== null ? (
-        <motion.div
+        <m.div
           key="gallery-lightbox"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -99,7 +100,7 @@ export function MediaLightbox({
             </>
           ) : null}
 
-          <motion.div
+          <m.div
             key={item.id}
             initial={{ scale: 0.96, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -108,9 +109,11 @@ export function MediaLightbox({
             className="relative z-10 w-fit max-w-[min(100vw-7rem,80rem)]"
           >
             {isMediaItemVideo(item) ? (
-              <div
-                className="relative cursor-pointer mx-auto"
+              <button
+                type="button"
+                className="relative cursor-pointer mx-auto block border-0 bg-transparent p-0"
                 onClick={onPlayToggle}
+                aria-label={isPlaying ? labels.close : labels.photoAlt}
               >
                 <MediaVideo
                   ref={videoRef}
@@ -122,7 +125,7 @@ export function MediaLightbox({
                 />
                 <AnimatePresence>
                   {!isPlaying && (
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
@@ -131,10 +134,10 @@ export function MediaLightbox({
                       <div className="size-20 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-violet-600/30">
                         <Play className="size-9 text-white ml-1" fill="white" />
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </button>
             ) : (
               <MediaImage
                 src={item.url}
@@ -147,12 +150,12 @@ export function MediaLightbox({
                 {item.caption}
               </p>
             ) : null}
-          </motion.div>
+          </m.div>
 
           <p className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 text-[11px] text-white/55 pointer-events-none">
             {hasMultiple ? labels.hintMultiple : labels.hintSingle}
           </p>
-        </motion.div>
+        </m.div>
       ) : null}
     </AnimatePresence>,
     document.body,

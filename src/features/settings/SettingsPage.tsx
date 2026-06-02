@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Globe, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -9,26 +9,84 @@ import { AppModal } from '@/shared/ui/AppModal';
 import { useChangePasswordMutation } from '@/features/auth';
 import { getAuthErrorMessage } from '@/features/auth';
 
+interface ChangePasswordState {
+  isOpen: boolean;
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+  error: string | null;
+}
+
+const initialPasswordState: ChangePasswordState = {
+  isOpen: false,
+  currentPassword: '',
+  newPassword: '',
+  confirmNewPassword: '',
+  error: null,
+};
+
+type ChangePasswordAction =
+  | { type: 'OPEN_MODAL' }
+  | { type: 'CLOSE_MODAL' }
+  | { type: 'SET_CURRENT_PASSWORD'; payload: string }
+  | { type: 'SET_NEW_PASSWORD'; payload: string }
+  | { type: 'SET_CONFIRM_NEW_PASSWORD'; payload: string }
+  | { type: 'SET_ERROR'; payload: string | null }
+  | { type: 'RESET_FORM' };
+
+function changePasswordReducer(
+  state: ChangePasswordState,
+  action: ChangePasswordAction,
+): ChangePasswordState {
+  switch (action.type) {
+    case 'OPEN_MODAL':
+      return { ...state, isOpen: true };
+    case 'CLOSE_MODAL':
+      return initialPasswordState;
+    case 'SET_CURRENT_PASSWORD':
+      return { ...state, currentPassword: action.payload };
+    case 'SET_NEW_PASSWORD':
+      return { ...state, newPassword: action.payload };
+    case 'SET_CONFIRM_NEW_PASSWORD':
+      return { ...state, confirmNewPassword: action.payload };
+    case 'SET_ERROR':
+      return { ...state, error: action.payload };
+    case 'RESET_FORM':
+      return {
+        ...state,
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: '',
+        error: null,
+      };
+    default:
+      return state;
+  }
+}
+
 export function SettingsPage() {
   const { t } = useTranslation();
   const changePasswordMutation = useChangePasswordMutation();
-  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [modalError, setModalError] = useState<string | null>(null);
+  const [passwordState, passwordDispatch] = useReducer(changePasswordReducer, initialPasswordState);
+  const {
+    isOpen: isChangePasswordOpen,
+    currentPassword,
+    newPassword,
+    confirmNewPassword,
+    error: modalError,
+  } = passwordState;
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    setModalError(null);
+    passwordDispatch({ type: 'SET_ERROR', payload: null });
 
     if (newPassword.length < 8) {
-      setModalError(t('cabinet.shell.passwordMinLength'));
+      passwordDispatch({ type: 'SET_ERROR', payload: t('cabinet.shell.passwordMinLength') });
       return;
     }
 
     if (newPassword !== confirmNewPassword) {
-      setModalError(t('cabinet.shell.passwordMismatch'));
+      passwordDispatch({ type: 'SET_ERROR', payload: t('cabinet.shell.passwordMismatch') });
       return;
     }
 
@@ -38,13 +96,10 @@ export function SettingsPage() {
         newPassword,
       });
       toast.success(t('cabinet.shell.passwordChanged'));
-      setIsChangePasswordOpen(false);
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmNewPassword('');
+      passwordDispatch({ type: 'CLOSE_MODAL' });
     } catch (err) {
       const message = getAuthErrorMessage(err);
-      setModalError(message);
+      passwordDispatch({ type: 'SET_ERROR', payload: message });
       toast.error(message);
     }
   };
@@ -59,8 +114,8 @@ export function SettingsPage() {
       {/* Language */}
       <Panel className="p-5 sm:p-6">
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
-            <Globe className="h-5 w-5" />
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+            <Globe className="size-5" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-bold text-gray-900">
@@ -79,8 +134,8 @@ export function SettingsPage() {
       {/* Password */}
       <Panel className="p-5 sm:p-6">
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
-            <Lock className="h-5 w-5" />
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+            <Lock className="size-5" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-bold text-gray-900">
@@ -91,7 +146,7 @@ export function SettingsPage() {
             </p>
             <button
               type="button"
-              onClick={() => setIsChangePasswordOpen(true)}
+              onClick={() => passwordDispatch({ type: 'OPEN_MODAL' })}
               className={cn(
                 'mt-4 inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5',
                 'text-xs font-bold uppercase tracking-wider text-gray-600 transition-colors',
@@ -108,13 +163,7 @@ export function SettingsPage() {
       {/* Change Password Modal */}
       <AppModal
         open={isChangePasswordOpen}
-        onClose={() => {
-          setIsChangePasswordOpen(false);
-          setCurrentPassword('');
-          setNewPassword('');
-          setConfirmNewPassword('');
-          setModalError(null);
-        }}
+        onClose={() => passwordDispatch({ type: 'CLOSE_MODAL' })}
         title={t('cabinet.shell.changePasswordTitle')}
         size="md"
       >
@@ -135,7 +184,7 @@ export function SettingsPage() {
               placeholder="••••••••"
               className="w-full border border-slate-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-xs font-semibold outline-none transition-all bg-white text-slate-850"
               value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
+              onChange={(e) => passwordDispatch({ type: 'SET_CURRENT_PASSWORD', payload: e.target.value })}
             />
           </div>
           <div className="space-y-1">
@@ -149,7 +198,7 @@ export function SettingsPage() {
               placeholder="••••••••"
               className="w-full border border-slate-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-xs font-semibold outline-none transition-all bg-white text-slate-850"
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={(e) => passwordDispatch({ type: 'SET_NEW_PASSWORD', payload: e.target.value })}
             />
           </div>
           <div className="space-y-1">
@@ -163,19 +212,13 @@ export function SettingsPage() {
               placeholder="••••••••"
               className="w-full border border-slate-200 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 rounded-xl px-4 py-2.5 text-xs font-semibold outline-none transition-all bg-white text-slate-850"
               value={confirmNewPassword}
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
+              onChange={(e) => passwordDispatch({ type: 'SET_CONFIRM_NEW_PASSWORD', payload: e.target.value })}
             />
           </div>
           <div className="flex gap-3 pt-2">
             <button
               type="button"
-              onClick={() => {
-                setIsChangePasswordOpen(false);
-                setCurrentPassword('');
-                setNewPassword('');
-                setConfirmNewPassword('');
-                setModalError(null);
-              }}
+              onClick={() => passwordDispatch({ type: 'CLOSE_MODAL' })}
               className="flex-1 border border-slate-200 hover:bg-slate-50 text-slate-700 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
             >
               {t('cabinet.common.cancel')}

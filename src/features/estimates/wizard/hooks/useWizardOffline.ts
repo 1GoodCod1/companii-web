@@ -1,16 +1,39 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react';
 import { useEstimateOfflineCache } from '@/features/estimates/offline/useEstimateOfflineCache';
 import { useSaveSitePlanMutation, useUpdateEstimateProjectMutation } from '@/features/estimates/api/useEstimates';
 import type { Plan2dData } from '@/entities/estimate/model/estimates';
 import type { WizardFormState } from './useWizardFormState';
 
+type SaveAction =
+  | { type: 'SET_SAVING' }
+  | { type: 'SET_SAVED'; lastSavedAt: number | null }
+  | { type: 'RESET_IDLE' };
+
+interface SaveState {
+  status: 'idle' | 'saving' | 'saved';
+  lastSavedAt: number | null;
+}
+
+function saveReducer(state: SaveState, action: SaveAction): SaveState {
+  switch (action.type) {
+    case 'SET_SAVING':
+      return { ...state, status: 'saving' };
+    case 'SET_SAVED':
+      return { status: 'saved', lastSavedAt: action.lastSavedAt };
+    case 'RESET_IDLE':
+      return { ...state, status: 'idle' };
+    default:
+      return state;
+  }
+}
+
 export function useWizardOffline(projectId: string, formState: WizardFormState) {
   const updateProject = useUpdateEstimateProjectMutation();
   const savePlan = useSaveSitePlanMutation();
-  const offline = useEstimateOfflineCache(projectId);
+  const syncHandlerRef = useRef<(() => Promise<void>) | null>(null);
+  const offline = useEstimateOfflineCache(projectId, { syncHandlerRef });
 
-  const [savingStatus, setSavingStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
-  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
+  const [saveState, saveDispatch] = useReducer(saveReducer, { status: 'idle', lastSavedAt: null });
   const [syncing, setSyncing] = useState(false);
 
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -26,6 +49,11 @@ export function useWizardOffline(projectId: string, formState: WizardFormState) 
     diagnostic: formState.diagnostic,
     customPricing: formState.customPricing,
     plan2d: formState.plan2d,
+  });
+
+  const offlineRef = useRef(offline);
+  useEffect(() => {
+    offlineRef.current = offline;
   });
 
   useEffect(() => {
@@ -44,25 +72,38 @@ export function useWizardOffline(projectId: string, formState: WizardFormState) 
     };
   }, [formState]);
 
+  const {
+    title,
+    siteType,
+    address,
+    marginPct,
+    riskReservePct,
+    siteFloor,
+    accessDifficulty,
+    urgency,
+    diagnostic,
+    customPricing,
+    plan2d,
+  } = formState;
+
   useEffect(() => {
-    queueMicrotask(() => setSavingStatus('saving'));
-    offline.saveDraft({
-      title: formState.title,
-      siteType: formState.siteType,
-      address: formState.address,
-      marginPct: formState.marginPct,
-      riskReservePct: formState.riskReservePct,
-      siteFloor: formState.siteFloor,
-      accessDifficulty: formState.accessDifficulty,
-      urgency: formState.urgency,
-      diagnostic: formState.diagnostic,
-      customPricing: formState.customPricing,
-      plan2d: formState.plan2d,
+    queueMicrotask(() => saveDispatch({ type: 'SET_SAVING' }));
+    offlineRef.current.saveDraft({
+      title,
+      siteType,
+      address,
+      marginPct,
+      riskReservePct,
+      siteFloor,
+      accessDifficulty,
+      urgency,
+      diagnostic,
+      customPricing,
+      plan2d,
     });
     const id = setTimeout(() => {
-      setSavingStatus('saved');
-      setLastSavedAt(offline.lastSavedAt ?? null);
-      const resetId = setTimeout(() => setSavingStatus('idle'), 2000);
+      saveDispatch({ type: 'SET_SAVED', lastSavedAt: offlineRef.current.lastSavedAt ?? null });
+      const resetId = setTimeout(() => saveDispatch({ type: 'RESET_IDLE' }), 2000);
       resetTimerRef.current = resetId;
     }, 700);
     return () => {
@@ -72,28 +113,28 @@ export function useWizardOffline(projectId: string, formState: WizardFormState) 
         resetTimerRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    formState.title,
-    formState.siteType,
-    formState.address,
-    formState.marginPct,
-    formState.riskReservePct,
-    formState.siteFloor,
-    formState.accessDifficulty,
-    formState.urgency,
-    formState.diagnostic,
-    formState.customPricing,
-    formState.plan2d,
+    title,
+    siteType,
+    address,
+    marginPct,
+    riskReservePct,
+    siteFloor,
+    accessDifficulty,
+    urgency,
+    diagnostic,
+    customPricing,
+    plan2d,
+    saveDispatch,
+    offlineRef,
   ]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      void offline.flushAutosave(snapshotRef.current);
+      void offlineRef.current.flushAutosave(snapshotRef.current);
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSyncNow = useCallback(async () => {
@@ -132,43 +173,43 @@ export function useWizardOffline(projectId: string, formState: WizardFormState) 
   }, [offline, syncing, updateProject, savePlan]);
 
   const handleDiscardLocalChanges = useCallback(async () => {
-    await offline.dropDraft();
-    const { clearOfflineQueue } = await import('@/features/estimates/offline/mutationQueue');
-    await clearOfflineQueue();
+    await Promise.all([
+      offline.dropDraft(),
+      import('@/features/estimates/offline/mutationQueue').then(({ clearOfflineQueue }) =>
+        clearOfflineQueue(),
+      ),
+    ]);
     offline.acknowledgeConflict();
     await offline.refresh();
   }, [offline]);
 
   const handleKeepLocalChanges = useCallback(async () => {
     offline.acknowledgeConflict();
-    const { readMutationQueue, idbPut } = await Promise.all([
+    const [mq, idb] = await Promise.all([
       import('@/features/estimates/offline/mutationQueue'),
       import('@/entities/estimate/model/idb'),
-    ]).then(([mq, idb]) => ({ readMutationQueue: mq.readMutationQueue, idbPut: idb.idbPut }));
+    ]);
+    const { readMutationQueue } = mq;
+    const { idbPut } = idb;
     const queue = await readMutationQueue(projectId);
-    for (const record of queue) {
-      const payload = { ...(record.payload as Record<string, unknown>) };
-      delete payload.expectedVersion;
-      await idbPut('estimate_mutation_queue', { ...record, payload });
-    }
+    await Promise.all(
+      queue.map((record) => {
+        const payload = { ...(record.payload as Record<string, unknown>) };
+        delete payload.expectedVersion;
+        return idbPut('estimate_mutation_queue', { ...record, payload });
+      }),
+    );
     void handleSyncNow();
   }, [offline, projectId, handleSyncNow]);
 
-  const handleSyncNowRef = useRef(handleSyncNow);
-  useEffect(() => {
-    handleSyncNowRef.current = handleSyncNow;
-  });
-
-  useEffect(() => {
-    if (offline.online && offline.pendingMutations > 0 && !syncing) {
-      queueMicrotask(() => void handleSyncNowRef.current());
-    }
-  }, [offline.online, offline.pendingMutations, syncing]);
+  useLayoutEffect(() => {
+    syncHandlerRef.current = handleSyncNow;
+  }, [handleSyncNow]);
 
   return {
     offline,
-    savingStatus,
-    lastSavedAt,
+    savingStatus: saveState.status,
+    lastSavedAt: saveState.lastSavedAt,
     syncing,
     handleSyncNow,
     handleDiscardLocalChanges,

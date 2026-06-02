@@ -256,7 +256,7 @@ export function RegisterPage() {
           <label className="flex items-start gap-2.5 text-sm text-slate-600 leading-snug cursor-pointer select-none py-0.5">
             <input
               type="checkbox"
-              className="mt-0.5 rounded text-violet-600 focus:ring-violet-500/20 border-slate-200 w-3.5 h-3.5 cursor-pointer"
+              className="mt-0.5 rounded text-violet-600 focus:ring-violet-500/20 border-slate-200 size-3.5 cursor-pointer"
               {...register('acceptTerms')}
             />
             <span>

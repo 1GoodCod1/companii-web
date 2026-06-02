@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/shared/ui/AppModal';
@@ -21,7 +21,13 @@ export function SaveTemplateModal({ open, onClose, projectId }: Props) {
   const { t } = useTranslation();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const createTemplate = useCreateEstimateTemplateMutation();
+
+  useEffect(() => {
+    if (!open) return;
+    nameInputRef.current?.focus();
+  }, [open]);
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -77,11 +83,11 @@ export function SaveTemplateModal({ open, onClose, projectId }: Props) {
         <label className={cabinetLabelClass}>
           {t('company.estimatesTemplatesPage.templateName')}
           <input
+            ref={nameInputRef}
             value={name}
             onChange={(e) => setName(e.target.value)}
             className={cabinetFieldClass}
             placeholder="Ex: Baie standard 5 m²"
-            autoFocus
           />
         </label>
 

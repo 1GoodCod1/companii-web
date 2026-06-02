@@ -101,7 +101,7 @@ function TeamMemberCard({
     <li className="rounded-2xl border border-gray-100/80 bg-white/70 p-4 shadow-xs">
       <div className="flex items-start gap-4">
         <div
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${config.avatarClass} text-sm font-black text-white shadow-sm`}
+          className={`flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${config.avatarClass} text-sm font-black text-white shadow-sm`}
         >
           {memberInitials(name)}
         </div>

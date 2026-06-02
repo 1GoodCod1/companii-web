@@ -178,6 +178,7 @@ export function QuoteDetailPanel({ selectedId, onClearSelection }: Props) {
               <div className="flex flex-wrap gap-2">
                 {([QUOTE_STATUS.DRAFT, QUOTE_STATUS.ACCEPTED, QUOTE_STATUS.REJECTED] as QuoteStatus[]).map((st) => (
                   <button
+                    type="button"
                     key={st}
                     onClick={() => handleStatusChange(st)}
                     className={`px-2.5 py-1.5 rounded-xl text-[10px] font-black border transition-all cursor-pointer ${
@@ -217,6 +218,7 @@ export function QuoteDetailPanel({ selectedId, onClearSelection }: Props) {
 
               {detail.status === QUOTE_STATUS.ACCEPTED && (
                 <button
+                  type="button"
                   onClick={handleConvert}
                   className="w-full mt-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-3 rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
                 >

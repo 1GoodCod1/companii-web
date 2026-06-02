@@ -47,8 +47,24 @@ export function useCompanyGalleryForm(ownedCompany: OwnedCompanyDto | null) {
 
       let videoCount = existingVideos;
       const next: PendingGalleryItem[] = [];
+      const fileArray = Array.from(fileList).slice(0, room);
 
-      for (const file of Array.from(fileList).slice(0, room)) {
+      const durations = await Promise.all(
+        fileArray.map(async (file) => {
+          if (isVideoFile(file)) {
+            try {
+              const d = await getVideoDuration(file);
+              return { ok: true, duration: d };
+            } catch {
+              return { ok: false };
+            }
+          }
+          return null;
+        })
+      );
+
+      for (let i = 0; i < fileArray.length; i += 1) {
+        const file = fileArray[i]!;
         const err = validateMediaFile(file);
         if (err) {
           toast.error(
@@ -66,18 +82,18 @@ export function useCompanyGalleryForm(ownedCompany: OwnedCompanyDto | null) {
             toast.error(t('company.profileEditor.form.videoMax', { count: MAX_VIDEO_COUNT }));
             continue;
           }
-          try {
-            const duration = await getVideoDuration(file);
-            if (duration > MAX_VIDEO_DURATION) {
-              toast.error(
-                t('company.profileEditor.form.videoDurationMax', {
-                  minutes: MAX_VIDEO_DURATION / 60,
-                }),
-              );
-              continue;
-            }
-          } catch {
+          const durationInfo = durations[i];
+          if (!durationInfo) continue;
+          if (!durationInfo.ok || durationInfo.duration === undefined) {
             toast.error(t('company.profileEditor.form.videoDurationCheckFailed'));
+            continue;
+          }
+          if (durationInfo.duration > MAX_VIDEO_DURATION) {
+            toast.error(
+              t('company.profileEditor.form.videoDurationMax', {
+                minutes: MAX_VIDEO_DURATION / 60,
+              }),
+            );
             continue;
           }
           videoCount += 1;
@@ -133,19 +149,23 @@ export function useCompanyGalleryForm(ownedCompany: OwnedCompanyDto | null) {
           ? [await uploadFile(files[0]!, { visibility: 'PUBLIC' })]
           : await uploadFiles(files, { visibility: 'PUBLIC' });
 
-      for (let i = 0; i < uploaded.length; i += 1) {
-        const pendingItem = snapshot[i];
-        if (!pendingItem) continue;
+      const images = await Promise.all(
+        uploaded.map((upload, i) => {
+          const pendingItem = snapshot[i]!;
+          return addGalleryImageApi(ownedCompany.id, {
+            url: upload.url,
+            caption: pendingItem.caption.trim() || undefined,
+          });
+        })
+      );
 
-        const image = await addGalleryImageApi(ownedCompany.id, {
-          url: uploaded[i]!.url,
-          caption: pendingItem.caption.trim() || undefined,
-        });
-
-        appendGalleryImagesToCache(queryClient, ownedCompany.id, [image]);
+      appendGalleryImagesToCache(queryClient, ownedCompany.id, images);
+      for (let i = 0; i < snapshot.length; i += 1) {
+        const pendingItem = snapshot[i]!;
         URL.revokeObjectURL(pendingItem.preview);
-        setPendingGallery((prev) => prev.filter((item) => item.id !== pendingItem.id));
       }
+      const pendingIds = new Set(snapshot.map((item) => item.id));
+      setPendingGallery((prev) => prev.filter((item) => !pendingIds.has(item.id)));
 
       toast.success(t('company.galleryPage.toastSaved'));
     } catch (err: unknown) {

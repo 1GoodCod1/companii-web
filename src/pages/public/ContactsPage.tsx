@@ -12,10 +12,10 @@ export function ContactsPage() {
   const pendingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    const timer = pendingTimerRef;
     return () => {
-      if (pendingTimerRef.current) {
-        clearTimeout(pendingTimerRef.current);
-        pendingTimerRef.current = null;
+      if (timer.current) {
+        clearTimeout(timer.current);
       }
     };
   }, []);
@@ -79,7 +79,7 @@ export function ContactsPage() {
             </div>
           </div>
 
-          <div className="bg-violet-50/20 p-4 rounded-2xl border border-violet-100 text-xs text-gray-500 leading-relaxed font-semibold">
+          <div className="bg-violet-50/20 p-4 rounded-2xl border border-violet-100 text-xs text-violet-900 leading-relaxed font-semibold">
             🕒 {t('contacts.hoursNote')}
           </div>
         </div>

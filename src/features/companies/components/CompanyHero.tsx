@@ -39,7 +39,7 @@ export function CompanyHero({ company }: CompanyHeroProps) {
         }}
       />
       <div className="absolute top-10 right-12 w-32 h-16 rounded-2xl bg-white/[0.06] backdrop-blur-md border border-white/[0.08] hidden md:block" />
-      <div className="absolute top-24 right-28 w-12 h-12 rounded-full bg-white/[0.04] backdrop-blur-lg border border-white/[0.06] hidden md:block" />
+      <div className="absolute top-24 right-28 size-12 rounded-full bg-white/[0.04] backdrop-blur-lg border border-white/[0.06] hidden md:block" />
 
       <div className="relative pt-24 sm:pt-32 px-6 sm:px-10 pb-8">
         <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-8">
@@ -61,7 +61,7 @@ export function CompanyHero({ company }: CompanyHeroProps) {
                 {company.name}
               </h1>
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-[10px] font-bold text-emerald-700 shadow-xs">
-                <BadgeCheck className="h-3.5 w-3.5 fill-emerald-100" />
+                <BadgeCheck className="size-3.5 fill-emerald-100" />
                 {t('companyDetail.verified')}
               </span>
             </div>
@@ -76,20 +76,20 @@ export function CompanyHero({ company }: CompanyHeroProps) {
               {company.city ? (
                 <span className="inline-flex items-center gap-2 font-medium">
                   <div className="p-1 rounded-lg bg-slate-100 text-slate-500">
-                    <MapPin className="h-4 w-4" />
+                    <MapPin className="size-4" />
                   </div>
                   {getTranslatedCityName(t, company.city)}
                 </span>
               ) : null}
               <span className="inline-flex items-center gap-2 font-medium">
                 <div className="p-1 rounded-lg bg-slate-100 text-slate-500">
-                  <Users className="h-4 w-4" />
+                  <Users className="size-4" />
                 </div>
                 {t('companyDetail.teamMembers', { count: company.teamSize })}
               </span>
               <span className="inline-flex items-center gap-2 font-medium">
                 <div className="p-1 rounded-lg bg-amber-50 text-amber-500 border border-amber-100/50">
-                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                  <Star className="size-4 fill-amber-400 text-amber-400" />
                 </div>
                 <span className="font-extrabold text-slate-800">{rating.toFixed(1)}</span>
                 <span className="text-slate-400">

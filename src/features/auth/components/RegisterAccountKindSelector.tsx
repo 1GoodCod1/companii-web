@@ -41,7 +41,7 @@ export function RegisterAccountKindSelector({
                 : 'text-slate-600 hover:text-slate-800'
             }`}
           >
-            <Icon className="w-3.5 h-3.5" strokeWidth={2} />
+            <Icon className="size-3.5" strokeWidth={2} />
             {t(labelKey)}
           </button>
         );

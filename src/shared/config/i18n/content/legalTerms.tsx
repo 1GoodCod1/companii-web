@@ -549,6 +549,12 @@ function renderTermsContentRu(privacyPath: string): ReactNode {
   );
 }
 
-export function renderTermsContent(locale: AppLanguage, privacyPath: string): ReactNode {
+export function TermsContent({
+  locale,
+  privacyPath,
+}: {
+  locale: AppLanguage;
+  privacyPath: string;
+}): ReactNode {
   return locale === 'ru' ? renderTermsContentRu(privacyPath) : renderTermsContentRo(privacyPath);
 }

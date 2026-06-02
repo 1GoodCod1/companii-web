@@ -125,27 +125,40 @@ export async function flushMutationQueue(
   const records = await readMutationQueue(options.projectId);
   const maxAttempts = options.maxAttempts ?? 8;
   const now = options.now ?? Date.now();
-  const blockedByProject = new Set<string>();
+
+  const filtered = records.filter(
+    (r) => r.attempts < maxAttempts && isReady(r, now),
+  );
+
+  const grouped = new Map<string, EstimateMutationRecord[]>();
+  for (const record of filtered) {
+    const list = grouped.get(record.projectId) || [];
+    list.push(record);
+    grouped.set(record.projectId, list);
+  }
+
   let attempted = 0;
   let succeeded = 0;
   let failed = 0;
 
-  for (const record of records) {
-    if (blockedByProject.has(record.projectId)) continue;
-    if (record.attempts >= maxAttempts) continue;
-    if (!isReady(record, now)) continue;
-
-    attempted += 1;
-    try {
-      await handler(record);
-      if (record.id != null) await removeMutation(record.id);
-      succeeded += 1;
-    } catch {
-      await markMutationFailed(record);
-      blockedByProject.add(record.projectId);
-      failed += 1;
-    }
-  }
+  await Promise.all(
+    Array.from(grouped).map(async ([_projectId, group]) => {
+      let blocked = false;
+      for (const record of group) {
+        if (blocked) break;
+        attempted += 1;
+        try {
+          await handler(record);
+          if (record.id != null) await removeMutation(record.id);
+          succeeded += 1;
+        } catch {
+          await markMutationFailed(record);
+          blocked = true;
+          failed += 1;
+        }
+      }
+    }),
+  );
 
   const remaining = (await readMutationQueue(options.projectId)).length;
   return { attempted, succeeded, failed, remaining };

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Building2, ClipboardCheck, FileSpreadsheet, Users, Wrench } from 'lucide-react';
 
@@ -36,7 +36,7 @@ export function LandingTimeline() {
   return (
     <section className="relative py-24 sm:py-32">
       <div className="max-w-6xl mx-auto px-6">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
@@ -53,9 +53,9 @@ export function LandingTimeline() {
           <p className="mt-4 text-gray-500 text-base leading-relaxed">
             {t('landing.timeline.description')}
           </p>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           variants={container}
           initial="hidden"
           whileInView="show"
@@ -70,7 +70,7 @@ export function LandingTimeline() {
               const tone = STEP_TONES[index] ?? STEP_TONES[0];
 
               return (
-                <motion.article
+                <m.article
                   key={step.step}
                   variants={item}
                   className="relative md:pl-16"
@@ -96,11 +96,11 @@ export function LandingTimeline() {
                     </div>
                     <p className="text-sm text-gray-500 leading-relaxed max-w-2xl">{step.description}</p>
                   </div>
-                </motion.article>
+                </m.article>
               );
             })}
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

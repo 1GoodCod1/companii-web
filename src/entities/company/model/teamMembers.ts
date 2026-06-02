@@ -61,7 +61,11 @@ export function groupMembersByRole(
     items.sort((a, b) => memberDisplayName(a).localeCompare(memberDisplayName(b), 'ro'));
   }
 
-  return TEAM_ROLE_ORDER.map((role) => ({ role, items: buckets.get(role)! })).filter(
-    (group) => group.items.length > 0,
-  );
+  return TEAM_ROLE_ORDER.reduce<Array<{ role: TeamRoleKey; items: CompanyMemberDto[] }>>((acc, role) => {
+    const items = buckets.get(role)!;
+    if (items.length > 0) {
+      acc.push({ role, items });
+    }
+    return acc;
+  }, []);
 }

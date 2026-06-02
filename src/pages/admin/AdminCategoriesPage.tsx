@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/shared/ui/AppModal';
@@ -26,6 +26,44 @@ import {
 } from '@/features/admin';
 import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
+type CategoryForm = {
+  modalOpen: boolean;
+  editing: AdminCategoryDto | null;
+  name: string;
+  nameRu: string;
+  slug: string;
+};
+
+type CategoryFormAction =
+  | { type: 'openCreate' }
+  | { type: 'openEdit'; category: AdminCategoryDto }
+  | { type: 'close' }
+  | { type: 'field'; field: 'name' | 'nameRu' | 'slug'; value: string };
+
+const EMPTY_CATEGORY_FORM: CategoryForm = { modalOpen: false, editing: null, name: '', nameRu: '', slug: '' };
+
+function categoryFormReducer(state: CategoryForm, action: CategoryFormAction): CategoryForm {
+  switch (action.type) {
+    case 'openCreate':
+      return { ...EMPTY_CATEGORY_FORM, modalOpen: true };
+    case 'openEdit':
+      return {
+        modalOpen: true,
+        editing: action.category,
+        name: action.category.name,
+        nameRu: readCatalogRuName(action.category.translations),
+        slug: action.category.slug,
+      };
+    case 'close':
+      return { ...state, modalOpen: false };
+    case 'field':
+      return { ...state, [action.field]: action.value };
+  }
+}
+
+const inUseCount = (category: AdminCategoryDto) =>
+  (category._count?.companies ?? 0) + (category._count?.companyServices ?? 0);
+
 export function AdminCategoriesPage() {
   const { t } = useTranslation();
   const { data: categories, isLoading } = useAdminCategoriesQuery();
@@ -34,27 +72,11 @@ export function AdminCategoriesPage() {
   const deleteCategory = useDeleteAdminCategoryMutation();
   const { ask, dialog } = useCabinetConfirmDialog();
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<AdminCategoryDto | null>(null);
-  const [name, setName] = useState('');
-  const [nameRu, setNameRu] = useState('');
-  const [slug, setSlug] = useState('');
+  const [form, dispatch] = useReducer(categoryFormReducer, EMPTY_CATEGORY_FORM);
+  const { modalOpen, editing, name, nameRu, slug } = form;
 
-  const openCreate = () => {
-    setEditing(null);
-    setName('');
-    setNameRu('');
-    setSlug('');
-    setModalOpen(true);
-  };
-
-  const openEdit = (category: AdminCategoryDto) => {
-    setEditing(category);
-    setName(category.name);
-    setNameRu(readCatalogRuName(category.translations));
-    setSlug(category.slug);
-    setModalOpen(true);
-  };
+  const openCreate = () => dispatch({ type: 'openCreate' });
+  const openEdit = (category: AdminCategoryDto) => dispatch({ type: 'openEdit', category });
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -81,7 +103,7 @@ export function AdminCategoriesPage() {
         await createCategory.mutateAsync(payload);
         toast.success(t('admin.categoriesPage.toastCreated'));
       }
-      setModalOpen(false);
+      dispatch({ type: 'close' });
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
     }
@@ -102,8 +124,6 @@ export function AdminCategoriesPage() {
     });
   };
 
-  const inUseCount = (category: AdminCategoryDto) =>
-    (category._count?.companies ?? 0) + (category._count?.companyServices ?? 0);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -179,7 +199,7 @@ export function AdminCategoriesPage() {
 
       <AppModal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => dispatch({ type: 'close' })}
         title={editing ? t('admin.categoriesPage.modalEdit') : t('admin.categoriesPage.modalCreate')}
       >
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
@@ -190,7 +210,7 @@ export function AdminCategoriesPage() {
               type="text"
               required
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => dispatch({ type: 'field', field: 'name', value: e.target.value })}
               className={cabinetFieldClass}
             />
           </div>
@@ -201,7 +221,7 @@ export function AdminCategoriesPage() {
               type="text"
               placeholder="ex: Сантехника"
               value={nameRu}
-              onChange={(e) => setNameRu(e.target.value)}
+              onChange={(e) => dispatch({ type: 'field', field: 'nameRu', value: e.target.value })}
               className={cabinetFieldClass}
             />
           </div>
@@ -212,12 +232,12 @@ export function AdminCategoriesPage() {
               type="text"
               placeholder="ex: santehnika"
               value={slug}
-              onChange={(e) => setSlug(e.target.value)}
+              onChange={(e) => dispatch({ type: 'field', field: 'slug', value: e.target.value })}
               className={cabinetFieldClass}
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button type="button" onClick={() => setModalOpen(false)} className={cabinetBtnSecondary}>
+            <button type="button" onClick={() => dispatch({ type: 'close' })} className={cabinetBtnSecondary}>
               {t('cabinet.common.cancel')}
             </button>
             <button

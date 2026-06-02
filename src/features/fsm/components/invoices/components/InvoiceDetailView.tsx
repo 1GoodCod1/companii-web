@@ -9,7 +9,11 @@ type Props = {
   hookData: ReturnType<typeof useInvoiceDetail>;
 };
 
-export function InvoiceDetailView({ hookData }: Props) {
+export function InvoiceDetailView(props: Props) {
+  return useInvoiceDetailView(props);
+}
+
+function useInvoiceDetailView({ hookData }: Props) {
   const { t } = useTranslation();
   const {
     detail,
@@ -241,8 +245,7 @@ export function InvoiceDetailView({ hookData }: Props) {
           if (detail.paymentStatus !== 'PAID') return null;
           return (
             <div className="flex gap-2">
-              {[detail.paymentStatus, ...allowed]
-                .filter((st, idx, arr) => arr.indexOf(st) === idx)
+              {Array.from(new Set([detail.paymentStatus, ...allowed]))
                 .map((st) => {
                   const isCurrent = detail.paymentStatus === st;
                   const isAction = allowed.includes(st);

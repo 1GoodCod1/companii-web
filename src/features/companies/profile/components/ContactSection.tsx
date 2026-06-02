@@ -64,7 +64,7 @@ export function ContactSection({
             <label className="flex items-center gap-2.5 px-3.5 py-2.5 bg-slate-50/60 hover:bg-slate-100/80 transition-colors border border-slate-100 rounded-2xl cursor-pointer">
               <input
                 type="checkbox"
-                className="rounded text-violet-600 focus:ring-violet-500/20 w-4 h-4 cursor-pointer"
+                className="rounded text-violet-600 focus:ring-violet-500/20 size-4 cursor-pointer"
                 checked={showPublicPhone}
                 onChange={(e) => setShowPublicPhone(e.target.checked)}
               />
@@ -75,7 +75,7 @@ export function ContactSection({
             <label className="flex items-center gap-2.5 px-3.5 py-2.5 bg-slate-50/60 hover:bg-slate-100/80 transition-colors border border-slate-100 rounded-2xl cursor-pointer">
               <input
                 type="checkbox"
-                className="rounded text-violet-600 focus:ring-violet-500/20 w-4 h-4 cursor-pointer"
+                className="rounded text-violet-600 focus:ring-violet-500/20 size-4 cursor-pointer"
                 checked={showPublicEmail}
                 onChange={(e) => setShowPublicEmail(e.target.checked)}
               />

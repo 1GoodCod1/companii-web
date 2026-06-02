@@ -37,15 +37,17 @@ export function WorkModulesPicker({ config, enabled, onToggle, disabled }: Props
       buckets.get(sec.key)!.push(module);
     }
 
-    // Respect predefined order, then append any unknown sections
     const ordered = new Set([...MODULE_SECTIONS, ...order]);
-    return [...ordered]
-      .filter((key) => buckets.has(key))
-      .map((key) => ({
-        key,
-        label: sectionLabels.get(key) ?? getModuleSection(key).label,
-        modules: buckets.get(key)!,
-      }));
+    return Array.from(ordered).reduce<ModuleSection[]>((acc, key) => {
+      if (buckets.has(key)) {
+        acc.push({
+          key,
+          label: sectionLabels.get(key) ?? getModuleSection(key).label,
+          modules: buckets.get(key)!,
+        });
+      }
+      return acc;
+    }, []);
   }, [allModules]);
 
   if (!allModules.length) return null;
@@ -76,7 +78,7 @@ export function WorkModulesPicker({ config, enabled, onToggle, disabled }: Props
                     checked={isOn}
                     disabled={disabled}
                     onChange={(e) => onToggle(module.key, e.target.checked)}
-                    className="mt-1 h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                    className="mt-1 size-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
                   />
                   <span className="min-w-0">
                     <span className="block text-sm font-semibold text-gray-900">{module.label}</span>

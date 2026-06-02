@@ -3,6 +3,13 @@ import { cn } from '@/lib/utils';
 import { companyInitials } from '@/entities/company/model/companies.types';
 import { MediaImage } from '@/shared/ui/MediaImage';
 
+const sizes = {
+  sm: 'size-10 text-xs rounded-xl',
+  md: 'size-14 text-sm rounded-2xl',
+  lg: 'size-20 text-lg rounded-2xl',
+  xl: 'size-28 text-2xl rounded-3xl',
+};
+
 export function CompanyLogo({
   name,
   logoUrl,
@@ -15,12 +22,6 @@ export function CompanyLogo({
   className?: string;
 }) {
   const [imageFailed, setImageFailed] = useState(false);
-  const sizes = {
-    sm: 'h-10 w-10 text-xs rounded-xl',
-    md: 'h-14 w-14 text-sm rounded-2xl',
-    lg: 'h-20 w-20 text-lg rounded-2xl',
-    xl: 'h-28 w-28 text-2xl rounded-3xl',
-  };
 
   if (logoUrl && !imageFailed) {
     return (

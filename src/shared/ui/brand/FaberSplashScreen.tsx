@@ -1,33 +1,58 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useReducer, useRef } from 'react';
+import { m } from 'framer-motion';
 import { FaberLogo } from './FaberLogo';
 
 type FaberSplashScreenProps = {
   onComplete: () => void;
 };
 
+type SplashState = 'visible' | 'fading' | 'complete';
+
+type SplashAction = { type: 'FADE' } | { type: 'COMPLETE' };
+
+function splashReducer(state: SplashState, action: SplashAction): SplashState {
+  switch (action.type) {
+    case 'FADE':
+      return state === 'visible' ? 'fading' : state;
+    case 'COMPLETE':
+      return state === 'fading' ? 'complete' : state;
+    default:
+      return state;
+  }
+}
+
 export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
-  const [isFadingOut, setIsFadingOut] = useState(false);
+  const [state, dispatch] = useReducer(splashReducer, 'visible');
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  });
 
   useEffect(() => {
     sessionStorage.setItem('faber_splash_played', 'true');
+  }, []);
 
-    const fadeTimer = setTimeout(() => {
-      setIsFadingOut(true);
-    }, 2000);
-
-    const completeTimer = setTimeout(() => {
-      onComplete();
-    }, 2650);
+  useEffect(() => {
+    const fadeTimer = setTimeout(() => dispatch({ type: 'FADE' }), 2000);
+    const completeTimer = setTimeout(() => dispatch({ type: 'COMPLETE' }), 2650);
 
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(completeTimer);
     };
-  }, [onComplete]);
+  }, []);
+
+  useEffect(() => {
+    if (state === 'complete') {
+      onCompleteRef.current();
+    }
+  }, [state]);
+
+  const isFadingOut = state === 'fading' || state === 'complete';
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 1 }}
       animate={{ 
         opacity: isFadingOut ? 0 : 1,
@@ -43,7 +68,7 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
 
       <div className="relative flex flex-col items-center gap-6">
         {/* LOGO ASSEMBLY & INTERACTIVE DRAW ANIMATION */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.7, rotate: -25 }}
           animate={{ 
             opacity: 1, 
@@ -53,9 +78,9 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
           }}
         >
           <FaberLogo size="xl" showText={false} />
-        </motion.div>
+        </m.div>
         <div className="overflow-hidden py-2 text-center">
-          <motion.div
+          <m.div
             initial={{ y: 50, opacity: 0 }}
             animate={{ 
               y: 0, 
@@ -72,7 +97,7 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
             
             <div className="relative mt-2.5">
               {/* Micro-bar loader animation */}
-              <motion.div 
+              <m.div 
                 initial={{ width: 0 }}
                 animate={{ 
                   width: '100%', 
@@ -81,7 +106,7 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
                 className="h-[1.5px] bg-gradient-to-r from-violet-500 via-indigo-500 to-rose-400 rounded-full mx-auto" 
               />
               
-              <motion.span 
+              <m.span 
                 initial={{ opacity: 0 }}
                 animate={{ 
                   opacity: 1, 
@@ -90,19 +115,19 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
                 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] leading-none mt-2 block"
               >
                 Field Service CRM · SaaS Platform
-              </motion.span>
+              </m.span>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
-      <motion.div 
+      <m.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.6 }}
         transition={{ delay: 1.2, duration: 0.8 }}
         className="absolute bottom-10 text-[9px] font-bold text-slate-450 uppercase tracking-widest"
       >
         Secured Enterprise Operational Platform · Moldova
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }

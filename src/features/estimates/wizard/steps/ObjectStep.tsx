@@ -166,7 +166,7 @@ export function ObjectStep({ wizard }: Props) {
       )}
 
       <button type="button" onClick={handleSaveObject} className={cabinetBtnPrimary}>
-        <Save className="w-4 h-4" /> {t('company.estimateWizard.objectStep.saveAndContinue')}
+        <Save className="size-4" /> {t('company.estimateWizard.objectStep.saveAndContinue')}
       </button>
     </Panel>
   );

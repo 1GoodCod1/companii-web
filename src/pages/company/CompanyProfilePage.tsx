@@ -40,10 +40,12 @@ export function CompanyProfilePage() {
       <CompanyProfileEditor
         key="new"
         ownedCompany={null}
-        isLegalOwner={false}
-        canRegisterCompany
-        canEditLegalProfile
-        canPublishCompany={false}
+        permissions={{
+          isLegalOwner: false,
+          canRegisterCompany,
+          canEditLegalProfile,
+          canPublishCompany: false,
+        }}
         cities={cities}
         categories={categories}
         userDefaults={userDefaults}
@@ -63,9 +65,11 @@ export function CompanyProfilePage() {
     <CompanyProfileEditor
       key={activeCompany.id}
       ownedCompany={activeCompany}
-      isLegalOwner={isLegalOwner}
-      canEditLegalProfile={canEditLegalProfile}
-      canPublishCompany={canPublishCompany}
+      permissions={{
+        isLegalOwner,
+        canEditLegalProfile,
+        canPublishCompany,
+      }}
       cities={cities}
       categories={categories}
       userDefaults={userDefaults}

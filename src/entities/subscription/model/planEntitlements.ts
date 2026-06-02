@@ -59,7 +59,7 @@ export function plansForDisplay(
   plans: CompanyPlanDto[],
   currentPlanCode?: CompanySubscriptionPlanCode,
 ): CompanyPlanDto[] {
-  const sorted = [...plans].sort((a, b) => Number(a.price) - Number(b.price));
+  const sorted = plans.toSorted((a, b) => Number(a.price) - Number(b.price));
   if (isOnFreePlan(currentPlanCode)) return sorted;
   return sorted.filter((plan) => plan.code === currentPlanCode);
 };

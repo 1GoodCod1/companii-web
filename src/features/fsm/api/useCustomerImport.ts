@@ -40,6 +40,7 @@ export function downloadCustomerImportTemplate(format: 'xlsx' | 'csv') {
 }
 
 export function usePreviewCustomerImportMutation() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (file: File) => {
       const formData = new FormData();
@@ -48,6 +49,9 @@ export function usePreviewCustomerImportMutation() {
         method: 'POST',
         body: formData,
       });
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customersRoot });
     },
   });
 }

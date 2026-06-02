@@ -165,7 +165,7 @@ export function EstimateWorkSheetPage() {
                     const checked = !!checklistProgress[key];
                     return (
                       <li key={key}>
-                        <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer rounded-xl px-2 py-1.5 hover:bg-violet-50/40 transition-colors">
+                        <label className="flex items-center gap-2 text-sm text-gray-800 cursor-pointer rounded-xl px-2 py-1.5 hover:text-violet-800 transition-colors">
                           <input
                             type="checkbox"
                             className="sr-only"
@@ -176,9 +176,9 @@ export function EstimateWorkSheetPage() {
                           {checked ? (
                             <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
                           ) : (
-                            <Circle className="size-4 text-gray-300 shrink-0" />
+                            <Circle className="size-4 text-violet-300 shrink-0" />
                           )}
-                          <span className={checked ? 'line-through text-gray-400' : ''}>{item}</span>
+                          <span className={checked ? 'line-through text-violet-500' : ''}>{item}</span>
                         </label>
                       </li>
                     );

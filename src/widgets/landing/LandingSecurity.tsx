@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, KeyRound, History, Database } from 'lucide-react';
 
@@ -13,7 +13,7 @@ export function LandingSecurity() {
   return (
     <section className="py-24 sm:py-28 border-y border-gray-100/60 bg-white">
       <div className="max-w-6xl mx-auto px-6">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -28,13 +28,13 @@ export function LandingSecurity() {
           <p className="mt-4 text-gray-500 leading-relaxed">
             {t('landing.security.description')}
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {items.map((item, index) => {
             const Icon = SECURITY_ICONS[index] ?? ShieldCheck;
             return (
-              <motion.div
+              <m.div
                 key={item.title}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -47,7 +47,7 @@ export function LandingSecurity() {
                 </div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">{item.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{item.text}</p>
-              </motion.div>
+              </m.div>
             );
           })}
         </div>

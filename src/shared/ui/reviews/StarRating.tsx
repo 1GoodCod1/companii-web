@@ -10,9 +10,9 @@ type StarRatingProps = {
 };
 
 const sizeClass = {
-  sm: 'h-3.5 w-3.5',
-  md: 'h-4 w-4',
-  lg: 'h-5 w-5',
+  sm: 'size-3.5',
+  md: 'size-4',
+  lg: 'size-5',
 } as const;
 
 export function StarRating({ value, max = 5, size = 'md', className }: StarRatingProps) {
@@ -60,7 +60,7 @@ export function InteractiveStarRating({ value, onChange, disabled }: Interactive
           >
             <Star
               className={cn(
-                'h-8 w-8 transition',
+                'size-8 transition',
                 star <= value ? 'fill-amber-400 text-amber-400' : 'text-gray-300',
               )}
             />

@@ -81,6 +81,7 @@ export function InterventionStatusTransition({
       })()}
       {isManagement && detail.status === INTERVENTION_STATUS.COMPLETED && (
         <button
+          type="button"
           onClick={() => void handleGenerateInvoice()}
           className="w-full mt-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
         >

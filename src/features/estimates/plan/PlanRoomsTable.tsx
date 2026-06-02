@@ -61,14 +61,14 @@ export function PlanRoomsTable({
               onClick={onApplyCategoryTemplate}
               className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/50 px-3.5 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition-all cursor-pointer shadow-xs active:scale-95"
             >
-              <LayoutTemplate className="w-4 h-4" /> {t(`${ns}.defaultTemplate`)}
+              <LayoutTemplate className="size-4" /> {t(`${ns}.defaultTemplate`)}
             </button>
             <button
               type="button"
               onClick={onAddRoom}
               className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition-all cursor-pointer shadow-md active:scale-95"
             >
-              <Plus className="w-4 h-4" /> {t(`${ns}.addRoom`)}
+              <Plus className="size-4" /> {t(`${ns}.addRoom`)}
             </button>
           </div>
         )}
@@ -171,9 +171,9 @@ export function PlanRoomsTable({
                         <button
                           type="button"
                           onClick={() => onRemoveRoom(room.id)}
-                          className="p-1.5 text-slate-400 hover:text-red-650 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
+                          className="p-1.5 text-gray-800 hover:text-red-600 rounded-lg transition-colors cursor-pointer"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="size-4" />
                         </button>
                       </td>
                     )}

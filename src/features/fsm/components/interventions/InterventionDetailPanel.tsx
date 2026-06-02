@@ -14,26 +14,31 @@ import { getInterventionStatusStyle } from '@/entities/fsm/model/interventionSta
 type Props = {
   selectedId: string | null;
   onClearSelection: () => void;
-  isManagement: boolean;
+  permissions: {
+    isManagement: boolean;
+    canEditAssignedInterventionFields: boolean;
+    canDeleteAnyNote: boolean;
+    canDeleteOwnNotes: boolean;
+  };
   role: CompanyRole | undefined;
   memberId: string | undefined;
-  canEditAssignedInterventionFields: boolean;
-  canDeleteAnyNote: boolean;
-  canDeleteOwnNotes: boolean;
   assignableTechnicians: CompanyMemberDto[];
 };
 
 export function InterventionDetailPanel({
   selectedId,
   onClearSelection,
-  isManagement,
+  permissions,
   role,
   memberId,
-  canEditAssignedInterventionFields,
-  canDeleteAnyNote,
-  canDeleteOwnNotes,
   assignableTechnicians,
 }: Props) {
+  const {
+    isManagement,
+    canEditAssignedInterventionFields,
+    canDeleteAnyNote,
+    canDeleteOwnNotes,
+  } = permissions;
   const { t } = useTranslation();
 
   const {

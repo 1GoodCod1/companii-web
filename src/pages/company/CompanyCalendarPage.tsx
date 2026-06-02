@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useReducer } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
@@ -18,6 +18,57 @@ import { formatWeekRangeLabel } from '@/shared/utils/date';
 import { useLocale } from '@/shared/hooks/useLocale';
 import { getErrorMessage } from '@/shared/utils/errors';
 
+interface CalendarScheduleState {
+  schedulingId: string | null;
+  scheduleAt: string;
+  scheduleTechnicianId: string;
+  assignMode: 'single' | 'multiple' | 'crew';
+  scheduleMemberIds: string[];
+  scheduleCrewId: string;
+}
+
+const initialScheduleState: CalendarScheduleState = {
+  schedulingId: null,
+  scheduleAt: '',
+  scheduleTechnicianId: '',
+  assignMode: 'single',
+  scheduleMemberIds: [],
+  scheduleCrewId: '',
+};
+
+type CalendarScheduleAction =
+  | { type: 'SET_SCHEDULING_ID'; payload: string | null }
+  | { type: 'SET_SCHEDULE_AT'; payload: string }
+  | { type: 'SET_SCHEDULE_TECHNICIAN_ID'; payload: string }
+  | { type: 'SET_ASSIGN_MODE'; payload: 'single' | 'multiple' | 'crew' }
+  | { type: 'SET_SCHEDULE_MEMBER_IDS'; payload: string[] }
+  | { type: 'SET_SCHEDULE_CREW_ID'; payload: string }
+  | { type: 'RESET' };
+
+function calendarScheduleReducer(
+  state: CalendarScheduleState,
+  action: CalendarScheduleAction,
+): CalendarScheduleState {
+  switch (action.type) {
+    case 'SET_SCHEDULING_ID':
+      return { ...state, schedulingId: action.payload };
+    case 'SET_SCHEDULE_AT':
+      return { ...state, scheduleAt: action.payload };
+    case 'SET_SCHEDULE_TECHNICIAN_ID':
+      return { ...state, scheduleTechnicianId: action.payload };
+    case 'SET_ASSIGN_MODE':
+      return { ...state, assignMode: action.payload };
+    case 'SET_SCHEDULE_MEMBER_IDS':
+      return { ...state, scheduleMemberIds: action.payload };
+    case 'SET_SCHEDULE_CREW_ID':
+      return { ...state, scheduleCrewId: action.payload };
+    case 'RESET':
+      return initialScheduleState;
+    default:
+      return state;
+  }
+}
+
 export function CompanyCalendarPage() {
   const { t } = useTranslation();
   const locale = useLocale();
@@ -29,12 +80,15 @@ export function CompanyCalendarPage() {
   const convertLead = useConvertLeadMutation();
   const qc = useQueryClient();
 
-  const [schedulingId, setSchedulingId] = useState<string | null>(null);
-  const [scheduleAt, setScheduleAt] = useState('');
-  const [scheduleTechnicianId, setScheduleTechnicianId] = useState('');
-  const [assignMode, setAssignMode] = useState<'single' | 'multiple' | 'crew'>('single');
-  const [scheduleMemberIds, setScheduleMemberIds] = useState<string[]>([]);
-  const [scheduleCrewId, setScheduleCrewId] = useState<string>('');
+  const [scheduleState, scheduleDispatch] = useReducer(calendarScheduleReducer, initialScheduleState);
+  const {
+    schedulingId,
+    scheduleAt,
+    scheduleTechnicianId,
+    assignMode,
+    scheduleMemberIds,
+    scheduleCrewId,
+  } = scheduleState;
 
   const technicians = useMemo(() => filterAssignableTechnicians(members), [members]);
   const weekLabel = useMemo(() => formatWeekRangeLabel(from, to, locale), [from, to, locale]);
@@ -73,12 +127,7 @@ export function CompanyCalendarPage() {
         ...assignFields,
       });
       toast.success(t('company.calendarPage.toastScheduled'));
-      setSchedulingId(null);
-      setScheduleAt('');
-      setScheduleTechnicianId('');
-      setAssignMode('single');
-      setScheduleMemberIds([]);
-      setScheduleCrewId('');
+      scheduleDispatch({ type: 'RESET' });
       refreshBoard();
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('company.calendarPage.toastScheduleFailed')));
@@ -119,21 +168,14 @@ export function CompanyCalendarPage() {
           assignMode={assignMode}
           scheduleMemberIds={scheduleMemberIds}
           scheduleCrewId={scheduleCrewId}
-          onScheduleIdChange={setSchedulingId}
-          onScheduleAtChange={setScheduleAt}
-          onScheduleTechnicianChange={setScheduleTechnicianId}
-          onAssignModeChange={setAssignMode}
-          onScheduleMemberIdsChange={setScheduleMemberIds}
-          onScheduleCrewIdChange={setScheduleCrewId}
+          onScheduleIdChange={(val) => scheduleDispatch({ type: 'SET_SCHEDULING_ID', payload: val })}
+          onScheduleAtChange={(val) => scheduleDispatch({ type: 'SET_SCHEDULE_AT', payload: val })}
+          onScheduleTechnicianChange={(val) => scheduleDispatch({ type: 'SET_SCHEDULE_TECHNICIAN_ID', payload: val })}
+          onAssignModeChange={(val) => scheduleDispatch({ type: 'SET_ASSIGN_MODE', payload: val })}
+          onScheduleMemberIdsChange={(val) => scheduleDispatch({ type: 'SET_SCHEDULE_MEMBER_IDS', payload: val })}
+          onScheduleCrewIdChange={(val) => scheduleDispatch({ type: 'SET_SCHEDULE_CREW_ID', payload: val })}
           onSubmitSchedule={handleSchedule}
-          onCancelSchedule={() => {
-            setSchedulingId(null);
-            setScheduleAt('');
-            setScheduleTechnicianId('');
-            setAssignMode('single');
-            setScheduleMemberIds([]);
-            setScheduleCrewId('');
-          }}
+          onCancelSchedule={() => scheduleDispatch({ type: 'RESET' })}
           onConvertLead={handleConvertLead}
         />
       )}

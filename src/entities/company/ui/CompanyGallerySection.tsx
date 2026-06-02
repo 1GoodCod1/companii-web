@@ -113,7 +113,7 @@ export function CompanyGallerySection({
             onClick={() => galleryInputRef.current?.click()}
             className={`${cabinetBtnSecondary} gap-2`}
           >
-            <ImagePlus className="h-4 w-4" />
+            <ImagePlus className="size-4" />
             {t('company.branding.addGallery')}
           </button>
         </div>
@@ -138,22 +138,22 @@ export function CompanyGallerySection({
               >
                 <button
                   type="button"
-                  className="relative h-full w-full cursor-pointer"
+                  className="relative size-full cursor-pointer"
                   onClick={() => openPreview(image.id)}
                   aria-label={t(`${g}.viewMedia`)}
                 >
                   {isVideo ? (
-                    <div className="relative h-full w-full">
+                    <div className="relative size-full">
                       <MediaVideo
                         src={image.url}
-                        className="h-full w-full object-cover"
+                        className="size-full object-cover"
                         muted
                         playsInline
                         preload="metadata"
                       />
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                          <Play className="h-5 w-5 text-white ml-0.5" fill="white" />
+                        <div className="size-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                          <Play className="size-5 text-white ml-0.5" fill="white" />
                         </div>
                       </div>
                     </div>
@@ -161,9 +161,9 @@ export function CompanyGallerySection({
                     <MediaImage
                       src={image.url}
                       alt={image.caption ?? t('company.branding.galleryPhotoAlt')}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                      className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                       loading="lazy"
-                      fallbackClassName="h-full w-full bg-slate-200"
+                      fallbackClassName="size-full bg-slate-200"
                     />
                   )}
                 </button>
@@ -174,10 +174,10 @@ export function CompanyGallerySection({
                     e.stopPropagation();
                     onGalleryRemove(image.id);
                   }}
-                  className="absolute top-2 right-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-2 right-2 z-10 inline-flex size-8 items-center justify-center rounded-full bg-black/55 text-white opacity-0 group-hover:opacity-100 transition-opacity"
                   aria-label={t('company.branding.deletePhoto')}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="size-4" />
                 </button>
                 {image.caption ? (
                   <p className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 text-[11px] text-white pointer-events-none">
@@ -195,22 +195,22 @@ export function CompanyGallerySection({
                 <div className="group relative overflow-hidden rounded-2xl bg-slate-100 aspect-[4/3]">
                   <button
                     type="button"
-                    className="relative h-full w-full cursor-pointer"
+                    className="relative size-full cursor-pointer"
                     onClick={() => openPreview(item.id)}
                     aria-label={t(`${g}.viewMedia`)}
                   >
                     {isVideo ? (
-                      <div className="relative h-full w-full">
+                      <div className="relative size-full">
                         <MediaVideo
                           src={item.preview}
-                          className="h-full w-full object-cover"
+                          className="size-full object-cover"
                           muted
                           playsInline
                           preload="metadata"
                         />
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                            <Play className="h-5 w-5 text-white ml-0.5" fill="white" />
+                          <div className="size-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                            <Play className="size-5 text-white ml-0.5" fill="white" />
                           </div>
                         </div>
                       </div>
@@ -218,7 +218,7 @@ export function CompanyGallerySection({
                       <img
                         src={item.preview}
                         alt={t('company.branding.previewAlt')}
-                        className="h-full w-full object-cover"
+                        className="size-full object-cover"
                       />
                     )}
                   </button>
@@ -229,10 +229,10 @@ export function CompanyGallerySection({
                       e.stopPropagation();
                       onPendingGalleryRemove(item.id);
                     }}
-                    className="absolute top-2 right-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-white"
+                    className="absolute top-2 right-2 z-10 inline-flex size-8 items-center justify-center rounded-full bg-black/55 text-white"
                     aria-label={t('company.branding.removeFromList')}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="size-4" />
                   </button>
                 </div>
                 <input

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { m, useScroll, useTransform } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, Building2, PlayCircle } from 'lucide-react';
@@ -58,12 +58,12 @@ export function LandingPage() {
 
         <div className="relative max-w-6xl mx-auto px-6 w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             >
-              <motion.span
+              <m.span
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 }}
@@ -74,7 +74,7 @@ export function LandingPage() {
                   <span className="relative inline-flex size-2 rounded-full bg-violet-600" />
                 </span>
                 {t('landing.hero.badge')}
-              </motion.span>
+              </m.span>
 
               <h1 className="font-black text-gray-900 tracking-tight leading-[1.05]">
                 {t('landing.hero.title')}{' '}
@@ -112,14 +112,14 @@ export function LandingPage() {
                   {t('landing.hero.howItWorksLink')}
                 </Link>
               </div>
-            </motion.div>
+            </m.div>
 
-            <motion.div
+            <m.div
               style={{ y: dashboardY, opacity: dashboardOpacity }}
               className="landing-perspective lg:mt-0 mt-4"
             >
               <LandingHeroMock />
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </section>
@@ -130,7 +130,7 @@ export function LandingPage() {
       {/* Product preview section */}
       <section className="py-24 sm:py-32">
         <div className="max-w-6xl mx-auto px-6">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -145,7 +145,7 @@ export function LandingPage() {
             <p className="mt-4 text-gray-500 leading-relaxed">
               {t('landing.finance.description')}
             </p>
-          </motion.div>
+          </m.div>
 
           <div className="landing-perspective">
             <LandingFinanceMock />

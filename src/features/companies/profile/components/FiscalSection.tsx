@@ -9,6 +9,9 @@ interface FiscalSectionProps {
   legalReadOnly: boolean;
 }
 
+const getFieldClass = (readOnly: boolean) =>
+  readOnly ? `${cabinetFieldClass} bg-gray-50 text-gray-600 cursor-not-allowed` : cabinetFieldClass;
+
 export function FiscalSection({
   isTvaPayer,
   setIsTvaPayer,
@@ -17,9 +20,6 @@ export function FiscalSection({
   legalReadOnly,
 }: FiscalSectionProps) {
   const { t } = useTranslation();
-
-  const getFieldClass = (readOnly: boolean) =>
-    readOnly ? `${cabinetFieldClass} bg-gray-50 text-gray-600 cursor-not-allowed` : cabinetFieldClass;
 
   return (
     <FormSection
@@ -38,7 +38,7 @@ export function FiscalSection({
         <input
           type="checkbox"
           disabled={legalReadOnly}
-          className="mt-0.5 rounded text-violet-600 focus:ring-violet-500/20 w-4 h-4 cursor-pointer disabled:cursor-not-allowed"
+          className="mt-0.5 rounded text-violet-600 focus:ring-violet-500/20 size-4 cursor-pointer disabled:cursor-not-allowed"
           checked={isTvaPayer}
           onChange={(e) => setIsTvaPayer(e.target.checked)}
         />

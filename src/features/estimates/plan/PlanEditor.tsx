@@ -24,7 +24,11 @@ const ALL_TABS: { key: PlanEditorTab; icon: React.FC<{ className?: string }> }[]
   { key: 'preview', icon: LayoutGrid },
 ];
 
-export function PlanEditor({
+export function PlanEditor(props: PlanEditorProps) {
+  return usePlanEditorView(props);
+}
+
+function usePlanEditorView({
   value,
   config,
   categoryName,
@@ -227,7 +231,7 @@ export function PlanEditor({
                 : 'text-slate-500 hover:text-slate-700'
             }`}
           >
-            <tab.icon className="w-3.5 h-3.5" />
+            <tab.icon className="size-3.5" />
             {t(`company.estimateWizard.planEditor.tab.${tab.key}`)}
           </button>
         ))}
@@ -314,7 +318,7 @@ export function PlanEditor({
                   <div key={pt.type} className="flex justify-between">
                     <span className="flex items-center gap-1">
                       <span
-                        className="inline-block w-2 h-2 rounded-full"
+                        className="inline-block size-2 rounded-full"
                         style={{ backgroundColor: pt.color }}
                       />
                       {pt.label}

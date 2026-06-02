@@ -1,6 +1,27 @@
 import { useTranslation } from 'react-i18next';
 import { Target } from 'lucide-react';
 
+const toneClasses = {
+  emerald: {
+    bar: 'bg-emerald-500',
+    text: 'text-emerald-700',
+    bg: 'bg-emerald-50/60',
+    border: 'border-emerald-200',
+  },
+  amber: {
+    bar: 'bg-amber-500',
+    text: 'text-amber-800',
+    bg: 'bg-amber-50/60',
+    border: 'border-amber-200',
+  },
+  rose: {
+    bar: 'bg-rose-500',
+    text: 'text-rose-700',
+    bg: 'bg-rose-50/60',
+    border: 'border-rose-200',
+  },
+};
+
 type Props = {
   budget: number | string | null | undefined;
   currentTotal: number;
@@ -17,27 +38,6 @@ export function LeadBudgetGauge({ budget, currentTotal, compact }: Props) {
   const over = pct > 100;
   const tone = over ? 'rose' : pct > 80 ? 'amber' : 'emerald';
 
-  const toneClasses: Record<typeof tone, { bar: string; text: string; bg: string; border: string }> = {
-    emerald: {
-      bar: 'bg-emerald-500',
-      text: 'text-emerald-700',
-      bg: 'bg-emerald-50/60',
-      border: 'border-emerald-200',
-    },
-    amber: {
-      bar: 'bg-amber-500',
-      text: 'text-amber-800',
-      bg: 'bg-amber-50/60',
-      border: 'border-amber-200',
-    },
-    rose: {
-      bar: 'bg-rose-500',
-      text: 'text-rose-700',
-      bg: 'bg-rose-50/60',
-      border: 'border-rose-200',
-    },
-  };
-
   const c = toneClasses[tone];
   const ns = 'company.estimateWizard.leadBudget';
 
@@ -47,7 +47,7 @@ export function LeadBudgetGauge({ budget, currentTotal, compact }: Props) {
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Target className={`w-4 h-4 ${c.text} shrink-0`} />
+          <Target className={`size-4 ${c.text} shrink-0`} />
           <span className={`text-[10px] font-black uppercase tracking-wider ${c.text}`}>
             {t(`${ns}.label`, { defaultValue: 'Buget client' })}
           </span>

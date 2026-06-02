@@ -41,7 +41,7 @@ export function FaqPage() {
             <a
               key={section.id}
               href={`#faq-${section.id}`}
-              className="border border-gray-200 bg-white/80 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-600 hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+              className="border border-gray-200 bg-white/80 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-800 hover:border-violet-200 hover:text-violet-800 transition-colors"
             >
               {section.title}
             </a>
@@ -70,7 +70,7 @@ export function FaqPage() {
                         type="button"
                         onClick={() => setOpenKey(isOpen ? null : key)}
                         aria-expanded={isOpen}
-                        className="w-full text-left p-5 flex justify-between items-start gap-4 font-black text-gray-800 text-sm tracking-tight cursor-pointer hover:bg-violet-50/10 transition-colors"
+                        className="w-full text-left p-5 flex justify-between items-start gap-4 font-black text-gray-900 text-sm tracking-tight cursor-pointer hover:text-violet-800 transition-colors"
                       >
                         <span>{faq.q}</span>
                         <span

@@ -71,7 +71,7 @@ export function PlanWorkItemsPanel({
       {/* I-05: Quick template buttons */}
       {templates.length > 0 && onSetPointCounts && !readOnly && (
         <div className="flex flex-wrap gap-2">
-          <LayoutTemplate className="w-4 h-4 text-amber-500 my-auto" />
+          <LayoutTemplate className="size-4 text-amber-500 my-auto" />
           {templates.map((tpl) => (
             <button
               key={tpl.key}
@@ -101,7 +101,7 @@ export function PlanWorkItemsPanel({
               >
                 <div className="flex items-start gap-2">
                   <span
-                    className={`h-2.5 w-2.5 rounded-full mt-1 shrink-0 ${isActive ? 'animate-pulse' : ''}`}
+                    className={`size-2.5 rounded-full mt-1 shrink-0 ${isActive ? 'animate-pulse' : ''}`}
                     style={{ backgroundColor: pointType.color }}
                   />
                   <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider leading-tight">
@@ -118,9 +118,9 @@ export function PlanWorkItemsPanel({
                       type="button"
                       disabled={readOnly || currentCount <= 0}
                       onClick={() => onAdjustPointCount(pointType.type, -1)}
-                      className="w-6 h-6 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent flex items-center justify-center cursor-pointer transition-colors"
+                      className="size-6 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent flex items-center justify-center cursor-pointer transition-colors"
                     >
-                      <Minus className="w-3.5 h-3.5" />
+                      <Minus className="size-3.5" />
                     </button>
                     <span className={`w-8 text-center text-xs font-black ${isActive ? 'text-indigo-700' : 'text-slate-850'}`}>
                       {currentCount}
@@ -129,9 +129,9 @@ export function PlanWorkItemsPanel({
                       type="button"
                       disabled={readOnly}
                       onClick={() => onAdjustPointCount(pointType.type, 1)}
-                      className="w-6 h-6 rounded-lg text-slate-500 hover:bg-slate-100 flex items-center justify-center cursor-pointer transition-colors"
+                      className="size-6 rounded-lg text-slate-500 hover:bg-slate-100 flex items-center justify-center cursor-pointer transition-colors"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="size-3.5" />
                     </button>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export function PlanWorkItemsPanel({
 
       <div className="border-t border-slate-100 pt-5 space-y-4">
         <div className="flex items-center gap-2 text-slate-800 font-black text-xs uppercase tracking-widest">
-          <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+          <Sparkles className="size-4 text-amber-500 animate-pulse" />
           <span>{t('company.estimateWizard.workItems.customSection')}</span>
         </div>
 
@@ -162,7 +162,7 @@ export function PlanWorkItemsPanel({
               onClick={handleAddCustomCounter}
               className="rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-xs font-bold text-white transition-all shadow-md cursor-pointer flex items-center gap-1 active:scale-95"
             >
-              <PlusCircle className="w-4 h-4" /> {t('cabinet.common.add')}
+              <PlusCircle className="size-4" /> {t('cabinet.common.add')}
             </button>
           </div>
         )}
@@ -185,7 +185,7 @@ export function PlanWorkItemsPanel({
                   }`}
                 >
                   <div className="flex items-start gap-2">
-                    <span className={`h-2.5 w-2.5 rounded-full bg-violet-500 mt-1 shrink-0 ${isActive ? 'animate-pulse' : ''}`} />
+                    <span className={`size-2.5 rounded-full bg-violet-500 mt-1 shrink-0 ${isActive ? 'animate-pulse' : ''}`} />
                     <h4 className="font-bold text-violet-950 text-xs uppercase tracking-wider leading-tight truncate">
                       {item.label}
                     </h4>
@@ -200,9 +200,9 @@ export function PlanWorkItemsPanel({
                         type="button"
                         disabled={readOnly || item.count <= 0}
                         onClick={() => onAdjustCustomCount(item.label, -1)}
-                        className="w-6 h-6 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent flex items-center justify-center cursor-pointer transition-colors"
+                        className="size-6 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent flex items-center justify-center cursor-pointer transition-colors"
                       >
-                        <Minus className="w-3.5 h-3.5" />
+                        <Minus className="size-3.5" />
                       </button>
                       <span className={`w-8 text-center text-xs font-black ${isActive ? 'text-violet-750' : 'text-slate-800'}`}>
                         {item.count}
@@ -211,9 +211,9 @@ export function PlanWorkItemsPanel({
                         type="button"
                         disabled={readOnly}
                         onClick={() => onAdjustCustomCount(item.label, 1)}
-                        className="w-6 h-6 rounded-lg text-slate-500 hover:bg-slate-100 flex items-center justify-center cursor-pointer transition-colors"
+                        className="size-6 rounded-lg text-slate-500 hover:bg-slate-100 flex items-center justify-center cursor-pointer transition-colors"
                       >
-                        <Plus className="w-3.5 h-3.5" />
+                        <Plus className="size-3.5" />
                       </button>
                     </div>
                   </div>

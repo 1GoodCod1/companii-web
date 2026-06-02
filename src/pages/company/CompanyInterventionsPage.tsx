@@ -41,6 +41,25 @@ export function CompanyInterventionsPage() {
   const { data: members } = useCompanyMembersQuery({ enabled: isManagement });
   const assignableTechnicians = useMemo(() => filterAssignableTechnicians(members), [members]);
 
+  const detailPanel = useMemo(
+    () => (
+      <InterventionDetailPanel
+        selectedId={selectedId}
+        onClearSelection={clear}
+        permissions={{
+          isManagement,
+          canEditAssignedInterventionFields,
+          canDeleteAnyNote,
+          canDeleteOwnNotes,
+        }}
+        role={role}
+        memberId={memberId}
+        assignableTechnicians={assignableTechnicians}
+      />
+    ),
+    [selectedId, clear, isManagement, canEditAssignedInterventionFields, canDeleteAnyNote, canDeleteOwnNotes, role, memberId, assignableTechnicians],
+  );
+
   const handleOpenDetail = (item: InterventionDto) => {
     select(item.id);
   };
@@ -74,19 +93,7 @@ export function CompanyInterventionsPage() {
             onSelect={handleOpenDetail}
           />
         }
-        detail={
-          <InterventionDetailPanel
-            selectedId={selectedId}
-            onClearSelection={clear}
-            isManagement={isManagement}
-            role={role}
-            memberId={memberId}
-            canEditAssignedInterventionFields={canEditAssignedInterventionFields}
-            canDeleteAnyNote={canDeleteAnyNote}
-            canDeleteOwnNotes={canDeleteOwnNotes}
-            assignableTechnicians={assignableTechnicians}
-          />
-        }
+        detail={detailPanel}
       />
 
       {isManagement && (

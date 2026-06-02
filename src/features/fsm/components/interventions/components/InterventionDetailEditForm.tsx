@@ -182,12 +182,14 @@ export function InterventionDetailEditForm({
       ) : null}
       <div className="flex gap-2 justify-end pt-3 border-t border-gray-100">
         <button
+          type="button"
           onClick={() => setIsEditingDetail(false)}
           className="px-3.5 py-2 border border-gray-200 hover:bg-gray-100 rounded-xl text-[10px] font-bold uppercase tracking-wider text-gray-500 cursor-pointer bg-white"
         >
           {t('cabinet.common.cancel')}
         </button>
         <button
+          type="button"
           onClick={() => void handleSaveEdit()}
           className="px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider cursor-pointer"
         >

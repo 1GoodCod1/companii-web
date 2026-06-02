@@ -50,7 +50,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
   return (
     <Panel className="p-6">
       <h3 className="font-extrabold text-gray-900 text-base flex items-center gap-2 mb-1">
-        <Paperclip className="w-5 h-5 text-violet-600 animate-pulse" /> {t('company.estimateWizard.reviewStep.materialsTitle')}
+        <Paperclip className="size-5 text-violet-600 animate-pulse" /> {t('company.estimateWizard.reviewStep.materialsTitle')}
       </h3>
       <p className="text-xs text-gray-500 mb-6 leading-relaxed">
         {t('company.estimateWizard.reviewStep.materialsDescription')}
@@ -199,7 +199,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                                     onMouseDown={() => handleSaveStore(line.id, stage.id)}
                                     className="rounded-md bg-emerald-100 p-1 text-emerald-700 hover:bg-emerald-200 transition-colors"
                                   >
-                                    <Check className="w-3.5 h-3.5" />
+                                    <Check className="size-3.5" />
                                   </button>
                                 )}
                               </div>
@@ -220,7 +220,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                                       }
                                       className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100 px-2 py-1 text-[10px] font-bold text-violet-700 hover:bg-violet-100 transition-colors"
                                     >
-                                      <Eye className="w-3.5 h-3.5" /> {t('company.estimateWizard.reviewStep.viewReceipt')}
+                                      <Eye className="size-3.5" /> {t('company.estimateWizard.reviewStep.viewReceipt')}
                                     </button>
                                     {!isReadOnly && (
                                       <button
@@ -228,7 +228,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                                         onClick={() => handleDeleteReceipt(line.id, stage.id)}
                                         className="rounded-xl bg-red-50 border border-red-100 p-1 text-red-600 hover:bg-red-100 transition-colors"
                                       >
-                                        <Trash2 className="w-3.5 h-3.5" />
+                                        <Trash2 className="size-3.5" />
                                       </button>
                                     )}
                                   </>
@@ -238,7 +238,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                                       <span className="animate-pulse">{t('cabinet.common.loading')}</span>
                                     ) : (
                                       <>
-                                        <Plus className="w-3 h-3" /> {t('company.estimateWizard.reviewStep.attachReceipt')}
+                                        <Plus className="size-3" /> {t('company.estimateWizard.reviewStep.attachReceipt')}
                                       </>
                                     )}
                                     <input

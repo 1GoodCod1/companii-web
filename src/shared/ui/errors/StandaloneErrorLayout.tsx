@@ -5,6 +5,8 @@ import { LanguageSwitcher } from '@/shared/ui/i18n/LanguageSwitcher';
 import { FaberLogo } from '@/shared/ui/brand/FaberLogo';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 export function StandaloneErrorLayout({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
   const lp = useLocalizedPath();
@@ -29,7 +31,7 @@ export function StandaloneErrorLayout({ children }: { children: ReactNode }) {
       <footer className="border-t border-gray-100 bg-white py-8">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-            © {new Date().getFullYear()} {t('footer.copyright')}
+            © {CURRENT_YEAR} {t('footer.copyright')}
           </p>
         </div>
       </footer>

@@ -11,6 +11,8 @@ import { PUBLIC_ROUTE } from '@/shared/constants/routes.constants';
 import { stripLocalePrefix } from '@/lib/i18n/localeRoutes';
 import { cn } from '@/lib/utils';
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 const NAV_LINK_CLASS =
   'text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap';
 
@@ -122,7 +124,7 @@ export function PublicLayout() {
                 key={item.path}
                 to={lp(item.path)}
                 onClick={closeMobileMenu}
-                className="flex items-center rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                className="flex items-center rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-800 hover:text-violet-800 transition-colors"
               >
                 {t(item.labelKey)}
               </Link>
@@ -189,7 +191,7 @@ export function PublicLayout() {
               {t('footer.tagline')}
             </p>
             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-              © {new Date().getFullYear()} {t('footer.copyright')}
+              © {CURRENT_YEAR} {t('footer.copyright')}
             </p>
           </div>
 

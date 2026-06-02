@@ -65,11 +65,13 @@ export async function downloadApiBlob(
     if (useStreaming) {
       const chunks: BlobPart[] = [];
       const reader = res.body!.getReader();
-      while (true) {
+      const read = async (): Promise<void> => {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) return;
         if (value) chunks.push(value);
-      }
+        return read();
+      };
+      await read();
       triggerBlobDownload(
         new Blob(chunks, {
           type: res.headers.get('content-type') ?? 'application/octet-stream',

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHero, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
 import { EntityListDetailLayout } from '@/widgets/cabinet/EntityListDetailLayout';
@@ -14,6 +15,11 @@ export function CompanyQuotesPage() {
   const { data: quotes, isLoading } = useQuotesQuery();
   const createModal = useEntityModal();
   const { selectedId, select, clear } = useEntitySelection();
+
+  const detailPanel = useMemo(
+    () => <QuoteDetailPanel selectedId={selectedId} onClearSelection={clear} />,
+    [selectedId, clear],
+  );
 
   return (
     <CompanyManagementGate>
@@ -37,7 +43,7 @@ export function CompanyQuotesPage() {
               onSelect={select}
             />
           }
-          detail={<QuoteDetailPanel selectedId={selectedId} onClearSelection={clear} />}
+          detail={detailPanel}
         />
 
         <CreateQuoteModal open={createModal.open} onClose={createModal.closeModal} />

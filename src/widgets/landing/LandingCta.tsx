@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { PUBLIC_ROUTE } from '@/shared/constants/routes.constants';
@@ -15,7 +15,7 @@ export function LandingCta() {
   return (
     <section className="py-24 sm:py-28">
       <div className="max-w-6xl mx-auto px-6">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -56,7 +56,7 @@ export function LandingCta() {
               {t('landing.cta.viewPlansLink')}
             </Link>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

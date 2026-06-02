@@ -91,7 +91,7 @@ export function InterventionDetailView({
                 {detail.crew && (
                   <div className="mt-1.5 inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">
                     <span
-                      className="w-1.5 h-1.5 rounded-full"
+                      className="size-1.5 rounded-full"
                       style={{ backgroundColor: detail.crew.color || '#6366f1' }}
                     />
                     {detail.crew.name}
@@ -129,7 +129,7 @@ export function InterventionDetailView({
             </div>
           </div>
         ) : detail.estimateProjectId ? (
-          <p className="text-xs text-gray-500 bg-violet-50/60 border border-violet-100 rounded-xl px-3 py-2.5 leading-relaxed">
+          <p className="text-xs text-violet-900 bg-violet-50/60 border border-violet-100 rounded-xl px-3 py-2.5 leading-relaxed">
             {t('company.fsm.interventions.detail.fields.executionSheetHint')}
           </p>
         ) : null}
@@ -161,7 +161,7 @@ export function InterventionDetailView({
                 })}
                 className="aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200"
               >
-                <img src={fileDownloadPath(photo.fileKey)} alt="" className="w-full h-full object-cover" />
+                <img src={fileDownloadPath(photo.fileKey)} alt="" className="size-full object-cover" />
               </a>
             ))}
           </div>
@@ -186,6 +186,7 @@ export function InterventionDetailView({
 
       {isManagement || canEditAssignedInterventionFields ? (
         <button
+          type="button"
           onClick={handleStartEdit}
           className="w-full border border-gray-200 hover:bg-gray-50 text-gray-600 font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer"
         >

@@ -36,7 +36,7 @@ export function OfflineBanner({
     if (!lastSavedAt) return null;
     return (
       <div className="inline-flex items-center gap-1.5 text-[11px] text-emerald-700">
-        <CheckCircle2 className="w-3.5 h-3.5" />
+        <CheckCircle2 className="size-3.5" />
         <span>
           {t('company.estimateWizard.offline.savedAt', { time: formatTime(lastSavedAt) })}
         </span>
@@ -69,7 +69,7 @@ export function OfflineBanner({
   return (
     <div className={`flex flex-wrap items-center justify-between gap-2 rounded-xl border px-3 py-2 text-xs ${tone}`}>
       <div className="inline-flex items-center gap-2">
-        <Icon className={`w-4 h-4 ${syncState === 'syncing' ? 'animate-spin' : ''}`} />
+        <Icon className={`size-4 ${syncState === 'syncing' ? 'animate-spin' : ''}`} />
         <span className="font-semibold">{message}</span>
         {lastSyncedAt && !offline && (
           <span className="opacity-70">
@@ -84,7 +84,7 @@ export function OfflineBanner({
           disabled={syncing}
           className="inline-flex items-center gap-1 rounded-lg border border-current/30 px-2 py-1 text-[11px] font-semibold transition-colors hover:bg-white/40 disabled:opacity-60"
         >
-          <RefreshCw className={`w-3 h-3 ${syncing ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`size-3 ${syncing ? 'animate-spin' : ''}`} />
           {t('company.estimateWizard.offline.syncNow')}
         </button>
       )}

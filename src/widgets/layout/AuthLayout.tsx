@@ -7,6 +7,7 @@ import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { FaberLogo } from '@/shared/ui/brand/FaberLogo';
 
 const SLIDE_COUNT = 3;
+const CURRENT_YEAR = new Date().getFullYear();
 
 export function AuthLayout() {
   const { t } = useTranslation();
@@ -67,7 +68,7 @@ export function AuthLayout() {
 
         <footer className="mt-6 pt-4 border-t border-slate-100 shrink-0 text-center lg:text-left">
           <p className="text-xs text-slate-500">
-            © {new Date().getFullYear()} Faber
+            © {CURRENT_YEAR} Faber
           </p>
           <p className="text-xs text-slate-400 mt-0.5">
             {t('auth.layout.footerSecure')}
@@ -240,7 +241,7 @@ export function AuthLayout() {
               const isActive = index === slideIndex;
               return (
                 <div
-                  key={index}
+                  key={slide.badge}
                   className={`transition-all duration-700 w-full flex flex-col gap-1.5 ${
                     isActive
                       ? 'relative z-10 opacity-100 translate-y-0'
@@ -262,9 +263,9 @@ export function AuthLayout() {
           </div>
 
           <div className="flex gap-2 mt-4 relative z-20">
-            {slides.map((_, index) => (
+            {slides.map((slide, index) => (
               <button
-                key={index}
+                key={slide.badge}
                 type="button"
                 onClick={() => setSlideIndex(index)}
                 className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${

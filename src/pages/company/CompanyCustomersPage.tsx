@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
@@ -50,16 +50,6 @@ export function CompanyCustomersPage() {
   const pageCount = Math.max(1, Math.ceil(filtered.length / CUSTOMERS_LIST_PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
 
-  useEffect(() => {
-    setPage(1);
-  }, [search]);
-
-  useEffect(() => {
-    if (page > pageCount) {
-      setPage(pageCount);
-    }
-  }, [page, pageCount]);
-
   const paginatedCustomers = useMemo(
     () =>
       filtered.slice(
@@ -69,7 +59,7 @@ export function CompanyCustomersPage() {
     [filtered, safePage],
   );
 
-  const handleDelete = (id: string) => {
+  const handleDelete = useCallback((id: string) => {
     ask({
       title: t('cabinet.common.delete'),
       message: (
@@ -88,7 +78,18 @@ export function CompanyCustomersPage() {
         }
       },
     });
-  };
+  }, [ask, t, deleteCustomer, viewCustomer]);
+
+  const detailPanel = useMemo(
+    () => (
+      <CustomerDetailPanel
+        customer={selectedCustomer}
+        onEdit={formModal.openEdit}
+        onDelete={handleDelete}
+      />
+    ),
+    [selectedCustomer, formModal.openEdit, handleDelete],
+  );
 
   return (
     <CompanyManagementGate>
@@ -114,7 +115,10 @@ export function CompanyCustomersPage() {
             placeholder={t('company.customersPage.searchPlaceholder')}
             aria-label={t('company.customersPage.searchPlaceholder')}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
             className={cabinetFieldClass}
           />
         </Panel>
@@ -132,13 +136,7 @@ export function CompanyCustomersPage() {
               onPageChange={setPage}
             />
           }
-          detail={
-            <CustomerDetailPanel
-              customer={selectedCustomer}
-              onEdit={formModal.openEdit}
-              onDelete={handleDelete}
-            />
-          }
+          detail={detailPanel}
         />
 
         <CustomerFormModal

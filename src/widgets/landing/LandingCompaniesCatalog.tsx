@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, Building2, MapPin, Search, Star } from 'lucide-react';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
@@ -18,7 +18,7 @@ export function LandingCompaniesCatalog() {
   return (
     <section className="py-20 sm:py-24">
       <div className="max-w-6xl mx-auto px-6">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -64,7 +64,7 @@ export function LandingCompaniesCatalog() {
             <div className="relative mx-auto w-full max-w-md lg:max-w-none">
               <div className="space-y-3">
                 {previewCards.map((card, index) => (
-                  <motion.div
+                  <m.div
                     key={card.name}
                     initial={{ opacity: 0, x: 16 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -91,7 +91,7 @@ export function LandingCompaniesCatalog() {
                         </p>
                       </div>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
 
@@ -100,7 +100,7 @@ export function LandingCompaniesCatalog() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

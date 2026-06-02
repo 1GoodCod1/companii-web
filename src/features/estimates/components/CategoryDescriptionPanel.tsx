@@ -52,7 +52,7 @@ export function CategoryDescriptionPanel({ blueprint }: Props) {
           <ul className="space-y-1">
             {requiredFields.slice(0, 6).map((f) => (
               <li key={f.key} className="flex items-start gap-2 text-xs text-gray-700">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0 mt-0.5" />
                 <span>
                   <span className="font-medium">{f.label}</span>
                   {f.unit && <span className="text-gray-400 ml-1">({f.unit})</span>}

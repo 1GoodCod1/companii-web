@@ -38,7 +38,7 @@ export function PlanStep({ wizard }: Props) {
         ) : (
           <>
             <button type="button" onClick={handleSavePlan} className={cabinetBtnPrimary}>
-              <Save className="w-4 h-4" /> {t('company.estimateWizard.planStep.saveDimensions')}
+              <Save className="size-4" /> {t('company.estimateWizard.planStep.saveDimensions')}
             </button>
             <button type="button" onClick={() => setStepIndex((i) => i + 1)} className={cabinetBtnSecondary}>
               {t('company.estimateWizard.planStep.continueWithoutSave')}

@@ -61,6 +61,7 @@ export function CompanyTemplatesPage() {
           description={t('company.estimatesTemplatesPage.description')}
           action={
             <button
+              type="button"
               onClick={() => navigate('/company/smete/new')}
               className={cabinetBtnPrimary}
             >
@@ -93,6 +94,7 @@ export function CompanyTemplatesPage() {
               message={t('company.estimatesTemplatesPage.empty')}
               action={
                 <button
+                  type="button"
                   onClick={() => navigate('/company/smete')}
                   className={cabinetBtnPrimary}
                 >
@@ -127,7 +129,7 @@ export function CompanyTemplatesPage() {
                         <button
                           type="button"
                           onClick={() => handleDeleteClick(template.id, template.name)}
-                          className="rounded-xl p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          className="rounded-xl p-1.5 text-violet-500 hover:bg-red-100 hover:text-red-700 transition-colors"
                         >
                           <Trash2 className="size-4" />
                         </button>
@@ -166,6 +168,7 @@ export function CompanyTemplatesPage() {
                       </div>
 
                       <button
+                        type="button"
                         onClick={() => navigate(`/company/smete/new?templateId=${template.id}`)}
                         className={`${cabinetBtnPrimary} w-full text-xs font-bold py-2`}
                       >

@@ -216,31 +216,43 @@ export async function refreshAuthSession(): Promise<void> {
 }
 
 export function useForgotPasswordMutation() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: { email: string }) =>
       apiFetch<{ message: string }>('/auth/forgot-password', {
         method: 'POST',
         body: JSON.stringify(body),
       }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.auth.me });
+    },
   });
 }
 
 export function useResetPasswordMutation() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: { token: string; password: string }) =>
       apiFetch<{ message: string }>('/auth/reset-password', {
         method: 'POST',
         body: JSON.stringify(body),
       }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.auth.me });
+    },
   });
 }
 
 export function useChangePasswordMutation() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: { currentPassword: string; newPassword: string }) =>
       apiFetch<{ message: string }>('/auth/change-password', {
         method: 'POST',
         body: JSON.stringify(body),
       }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.auth.me });
+    },
   });
 }

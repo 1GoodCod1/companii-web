@@ -15,6 +15,9 @@ import {
   normalizeRoofShape,
 } from '@/features/estimates/derivations/roofGeometry';
 import { uid } from './utils';
+import { DetailQty } from './PlanRoofGeometryControls';
+import { SelectControl } from './SelectControl';
+import { CounterCard } from './CounterCard';
 
 type GlobalParams = NonNullable<Plan2dData['globalParameters']>;
 
@@ -168,7 +171,11 @@ function RoofSketch({
   );
 }
 
-export function PlanRoofGeometryPanel({
+export function PlanRoofGeometryPanel(props: Props) {
+  return usePlanRoofGeometryPanelView(props);
+}
+
+function usePlanRoofGeometryPanelView({
   value,
   globalParams,
   setGlobalParams,
@@ -371,7 +378,7 @@ export function PlanRoofGeometryPanel({
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-orange-100/70 pb-4">
         <div>
           <div className="flex items-center gap-2 text-orange-700 font-black text-[10px] uppercase tracking-widest">
-            <Home className="h-4 w-4" />
+            <Home className="size-4" />
             <span>{t('company.estimateWizard.roofGeometry.title', { defaultValue: 'Schemă acoperiș' })}</span>
           </div>
           <p className="mt-1 max-w-2xl text-xs font-medium leading-relaxed text-slate-500">
@@ -383,7 +390,7 @@ export function PlanRoofGeometryPanel({
         </div>
         {needsReview && (
           <div className="flex max-w-md items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-850">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+            <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-600" />
             <span>
               Necesită verificare: {drawingReasons.map(reasonLabel).join(', ')}.
             </span>
@@ -416,7 +423,7 @@ export function PlanRoofGeometryPanel({
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <label className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                <Ruler className="h-3.5 w-3.5" />
+                <Ruler className="size-3.5" />
                 Amprentă
               </span>
               <input
@@ -432,7 +439,7 @@ export function PlanRoofGeometryPanel({
 
             <label className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                <Gauge className="h-3.5 w-3.5" />
+                <Gauge className="size-3.5" />
                 Pantă
               </span>
               <input
@@ -449,7 +456,7 @@ export function PlanRoofGeometryPanel({
 
             <div className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                <Layers className="h-3.5 w-3.5" />
+                <Layers className="size-3.5" />
                 Formă
               </span>
               <AppSelect
@@ -465,7 +472,7 @@ export function PlanRoofGeometryPanel({
 
             <div className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                <Sparkles className="h-3.5 w-3.5" />
+                <Sparkles className="size-3.5" />
                 Tip
               </span>
               <AppSelect
@@ -481,7 +488,7 @@ export function PlanRoofGeometryPanel({
 
             <div className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                <Ruler className="h-3.5 w-3.5" />
+                <Ruler className="size-3.5" />
                 Surplombă
               </span>
               <AppSelect
@@ -565,7 +572,7 @@ export function PlanRoofGeometryPanel({
                   disabled={readOnly}
                   checked={Boolean(globalParams.scaffoldingRequired)}
                   onChange={(event) => diagnosticPatch({ scaffoldingRequired: event.target.checked })}
-                  className="h-4 w-4 accent-orange-600"
+                  className="size-4 accent-orange-600"
                 />
               </label>
               <label className="space-y-1">
@@ -767,84 +774,3 @@ export function PlanRoofGeometryPanel({
   );
 }
 
-function DetailQty({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl bg-slate-50 px-3 py-2">
-      <p className="text-[9px] font-black uppercase tracking-wider text-slate-400">{label}</p>
-      <p className="mt-0.5 font-black text-slate-900">{value}</p>
-    </div>
-  );
-}
-
-function SelectControl({
-  label,
-  value,
-  options,
-  disabled,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: Array<[value: string, label: string]>;
-  disabled?: boolean;
-  onChange: (value: string) => void;
-}) {
-  const appOptions = useMemo(
-    () => options.map(([optionValue, optionLabel]) => ({ value: optionValue, label: optionLabel })),
-    [options],
-  );
-
-  return (
-    <label className="space-y-1">
-      <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">{label}</span>
-      <AppSelect
-        value={value}
-        onChange={onChange}
-        options={appOptions}
-        disabled={disabled}
-        aria-label={label}
-      />
-    </label>
-  );
-}
-
-function CounterCard({
-  label,
-  value,
-  readOnly,
-  suffix,
-  onChange,
-}: {
-  label: string;
-  value: number;
-  readOnly?: boolean;
-  suffix?: string;
-  onChange: (next: number) => void;
-}) {
-  return (
-    <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-      <p className="text-[10px] font-black uppercase tracking-wider text-slate-500">{label}</p>
-      <div className="mt-3 flex items-center justify-between rounded-xl border border-slate-200 bg-white p-1">
-        <button
-          type="button"
-          disabled={readOnly || value <= 0}
-          onClick={() => onChange(value - 1)}
-          className="h-7 w-7 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30"
-        >
-          -
-        </button>
-        <span className="text-sm font-black text-slate-900">
-          {value}{suffix ? ` ${suffix}` : ''}
-        </span>
-        <button
-          type="button"
-          disabled={readOnly}
-          onClick={() => onChange(value + 1)}
-          className="h-7 w-7 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30"
-        >
-          +
-        </button>
-      </div>
-    </div>
-  );
-}

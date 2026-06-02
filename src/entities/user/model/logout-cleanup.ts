@@ -10,13 +10,8 @@ export function registerLogoutCleanup(cleanup: LogoutCleanup): () => void {
 }
 
 export async function runLogoutCleanup(): Promise<void> {
-  for (const cleanup of Array.from(cleanups)) {
-    try {
-      await cleanup();
-    } catch {
-      /* never let one failure block the others */
-    }
-  }
+  // Run all cleanups in parallel; allSettled means one failure never blocks the others.
+  await Promise.allSettled(Array.from(cleanups, (cleanup) => cleanup()));
 }
 
 export function bindLogoutCleanup(

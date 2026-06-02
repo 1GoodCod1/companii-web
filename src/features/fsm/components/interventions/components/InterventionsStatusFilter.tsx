@@ -15,6 +15,7 @@ export function InterventionsStatusFilter({ value, onChange }: StatusFilterProps
     <div className="flex flex-wrap gap-1.5 pb-2">
       {INTERVENTION_STATUS_TABS.map((tab) => (
         <button
+          type="button"
           key={tab.value}
           onClick={() => onChange(tab.value as InterventionStatus | '')}
           className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${

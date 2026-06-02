@@ -61,8 +61,8 @@ export async function apiFetch<T>(
     }
   }
 
-  await throwIfNotOk(res);
   if (res.status === 204) return undefined as T;
+  await throwIfNotOk(res);
 
   let json: unknown;
   try {

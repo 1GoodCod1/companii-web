@@ -215,7 +215,7 @@ export function NewEstimateForm({ activeCompany }: Props) {
           disabled={createProject.isPending || !activeBlueprint || isExcluded}
           className={cabinetBtnPrimary}
         >
-          {t('company.estimateWizard.newForm.createEstimate')} <ArrowRight className="w-4 h-4" />
+          {t('company.estimateWizard.newForm.createEstimate')} <ArrowRight className="size-4" />
         </button>
       </div>
     </Panel>

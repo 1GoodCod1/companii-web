@@ -21,7 +21,7 @@ export function MediaGridCell({ item, index, onClick, photoAlt }: MediaGridCellP
       className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100 border border-slate-100 hover:border-violet-200/80 shadow-[0_4px_20px_-4px_rgba(99,102,241,0.04)] hover:shadow-[0_8px_30px_-6px_rgba(99,102,241,0.12)] transition-all cursor-pointer"
     >
       {isVideo ? (
-        <div className="relative h-full w-full bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950">
+        <div className="relative size-full bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950">
           <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_30%_20%,rgba(99,102,241,0.35)_0%,transparent_55%)]" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="size-12 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-xl transition-transform group-hover:scale-110">
@@ -33,9 +33,9 @@ export function MediaGridCell({ item, index, onClick, photoAlt }: MediaGridCellP
         <MediaImage
           src={item.url}
           alt={item.caption ?? photoAlt}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
-          fallbackClassName="h-full w-full bg-slate-200"
+          fallbackClassName="size-full bg-slate-200"
         />
       )}
 

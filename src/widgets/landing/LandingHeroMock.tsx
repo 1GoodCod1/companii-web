@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   ArrowUpRight,
@@ -49,7 +49,7 @@ export function LandingHeroMock() {
   };
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
@@ -71,7 +71,7 @@ export function LandingHeroMock() {
           <aside className="hidden sm:flex w-11 shrink-0 flex-col items-center gap-1 border-r border-gray-100 bg-white py-3">
             {SIDEBAR_ICONS.map((Icon, i) => (
               <span
-                key={i}
+                key={Icon.displayName}
                 className={cn(
                   'flex size-8 items-center justify-center rounded-lg transition-colors',
                   i === 0
@@ -106,7 +106,7 @@ export function LandingHeroMock() {
                 const accent = KPI_ACCENTS[i];
                 const Icon = KPI_ICONS[i];
                 return (
-                  <motion.article
+                  <m.article
                     key={kpi.label}
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -133,7 +133,7 @@ export function LandingHeroMock() {
                       {kpi.value}
                     </p>
                     <p className={cn('text-[9px] font-bold mt-0.5', accent.hintClass)}>{kpi.hint}</p>
-                  </motion.article>
+                  </m.article>
                 );
               })}
             </div>
@@ -212,7 +212,7 @@ export function LandingHeroMock() {
         </div>
       </div>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.75, duration: 0.5 }}
@@ -220,7 +220,7 @@ export function LandingHeroMock() {
       >
         <p className="text-[9px] text-gray-400">{t('landingMocks.hero.statusUpdated')}</p>
         <p className="text-[11px] font-bold text-emerald-600">{t('landingMocks.hero.statusExample')}</p>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }

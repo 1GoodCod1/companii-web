@@ -13,6 +13,10 @@ import { CompanyServiceRequestModal } from '@/features/companies/components/Comp
 import { CompanyProjectRequestModal } from '@/features/companies/components/CompanyProjectRequestModal';
 
 export function CompanyDetailPage() {
+  return useCompanyDetailPageView();
+}
+
+function useCompanyDetailPageView() {
   const lp = useLocalizedPath();
   const {
     t,
@@ -100,7 +104,7 @@ export function CompanyDetailPage() {
           to={lp('/companies')}
           className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-violet-600 transition-colors"
         >
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
           {t('companyDetail.backLink')}
         </Link>
 
@@ -115,7 +119,7 @@ export function CompanyDetailPage() {
             {company.description ? (
               <section className="glass-panel rounded-[28px] p-6 sm:p-8 border border-white/40">
                 <div className="flex items-center gap-2 mb-4">
-                  <Sparkles className="h-5 w-5 text-violet-600" />
+                  <Sparkles className="size-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
                     {t('companyDetail.about')}
                   </h2>
@@ -141,7 +145,7 @@ export function CompanyDetailPage() {
             {(company.services?.length ?? 0) > 0 ? (
               <section className="glass-panel rounded-[28px] p-6 sm:p-8 border border-white/40">
                 <div className="flex items-center gap-2 mb-2">
-                  <Clock className="h-5 w-5 text-violet-600" />
+                  <Clock className="size-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
                     {t('companyDetail.servicesTitle')}
                   </h2>
@@ -201,12 +205,12 @@ export function CompanyDetailPage() {
                             </span>
                             {durationLabel ? (
                               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-[10px] font-bold text-slate-600 rounded-xl">
-                                <Clock className="h-3 w-3 text-slate-400" />
+                                <Clock className="size-3 text-slate-400" />
                                 {durationLabel}
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-[10px] font-bold text-slate-400 rounded-xl">
-                                <Clock className="h-3 w-3 text-slate-300" />
+                                <Clock className="size-3 text-slate-300" />
                                 {t('companyDetail.variableDuration')}
                               </span>
                             )}
@@ -232,14 +236,14 @@ export function CompanyDetailPage() {
             {showRequestActions ? (
               <section className="relative rounded-[32px] overflow-hidden border border-violet-100/60 bg-gradient-to-br from-violet-50/50 via-indigo-50/20 to-white p-6 sm:p-8 glass-panel">
                 {/* Visual Glow Decorators */}
-                <div className="absolute -right-20 -bottom-20 w-64 h-64 rounded-full bg-violet-600/5 blur-3xl pointer-events-none" />
-                <div className="absolute top-0 left-0 w-48 h-48 rounded-full bg-indigo-500/5 blur-2xl pointer-events-none" />
+                <div className="absolute -right-20 -bottom-20 size-64 rounded-full bg-violet-600/5 blur-3xl pointer-events-none" />
+                <div className="absolute top-0 left-0 size-48 rounded-full bg-indigo-500/5 blur-2xl pointer-events-none" />
 
                 <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 rounded-xl bg-violet-100 text-violet-700 shrink-0">
-                        <HardHat className="h-5 w-5" />
+                        <HardHat className="size-5" />
                       </div>
                       <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
                         {t('companyDetail.projectTitle')}
@@ -256,7 +260,7 @@ export function CompanyDetailPage() {
                     onClick={openProjectRequest}
                     className="shrink-0 inline-flex items-center justify-center gap-2 py-4 px-8 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                   >
-                    <Sparkles className="w-4 h-4" /> {t('companyDetail.projectCta')}
+                    <Sparkles className="size-4" /> {t('companyDetail.projectCta')}
                   </button>
                 </div>
               </section>

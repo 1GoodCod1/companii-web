@@ -71,7 +71,7 @@ export function AdminBlueprintCard({
                 onChange={() => void onToggleActive(bp)}
                 className="sr-only peer"
               />
-              <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+              <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:size-4 after:transition-all peer-checked:bg-emerald-500"></div>
             </label>
             <span className={`text-[10px] font-black uppercase tracking-wider ${bp.isActive ? 'text-emerald-600' : 'text-gray-400'}`}>
               {bp.isActive ? 'Active' : 'Disabled'}
@@ -84,7 +84,7 @@ export function AdminBlueprintCard({
               onClick={() => onEdit(bp)}
               className="p-2 text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition-all"
             >
-              <Edit2 className="h-4 w-4" />
+              <Edit2 className="size-4" />
             </button>
             <button
               type="button"
@@ -92,7 +92,7 @@ export function AdminBlueprintCard({
               disabled={projectsCount > 0}
               className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-all disabled:opacity-30 disabled:hover:bg-transparent"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="size-4" />
             </button>
           </div>
         </div>

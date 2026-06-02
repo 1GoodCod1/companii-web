@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { AppModal } from '@/shared/ui/AppModal';
@@ -26,6 +26,41 @@ import {
 } from '@/features/admin';
 import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
+type CityForm = {
+  modalOpen: boolean;
+  editing: AdminCityDto | null;
+  name: string;
+  nameRu: string;
+  slug: string;
+};
+
+type CityFormAction =
+  | { type: 'openCreate' }
+  | { type: 'openEdit'; city: AdminCityDto }
+  | { type: 'close' }
+  | { type: 'field'; field: 'name' | 'nameRu' | 'slug'; value: string };
+
+const EMPTY_CITY_FORM: CityForm = { modalOpen: false, editing: null, name: '', nameRu: '', slug: '' };
+
+function cityFormReducer(state: CityForm, action: CityFormAction): CityForm {
+  switch (action.type) {
+    case 'openCreate':
+      return { ...EMPTY_CITY_FORM, modalOpen: true };
+    case 'openEdit':
+      return {
+        modalOpen: true,
+        editing: action.city,
+        name: action.city.name,
+        nameRu: readCatalogRuName(action.city.translations),
+        slug: action.city.slug,
+      };
+    case 'close':
+      return { ...state, modalOpen: false };
+    case 'field':
+      return { ...state, [action.field]: action.value };
+  }
+}
+
 export function AdminCitiesPage() {
   const { t } = useTranslation();
   const { data: cities, isLoading } = useAdminCitiesQuery();
@@ -34,27 +69,11 @@ export function AdminCitiesPage() {
   const updateCity = useUpdateAdminCityMutation();
   const deleteCity = useDeleteAdminCityMutation();
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<AdminCityDto | null>(null);
-  const [name, setName] = useState('');
-  const [nameRu, setNameRu] = useState('');
-  const [slug, setSlug] = useState('');
+  const [form, dispatch] = useReducer(cityFormReducer, EMPTY_CITY_FORM);
+  const { modalOpen, editing, name, nameRu, slug } = form;
 
-  const openCreate = () => {
-    setEditing(null);
-    setName('');
-    setNameRu('');
-    setSlug('');
-    setModalOpen(true);
-  };
-
-  const openEdit = (city: AdminCityDto) => {
-    setEditing(city);
-    setName(city.name);
-    setNameRu(readCatalogRuName(city.translations));
-    setSlug(city.slug);
-    setModalOpen(true);
-  };
+  const openCreate = () => dispatch({ type: 'openCreate' });
+  const openEdit = (city: AdminCityDto) => dispatch({ type: 'openEdit', city });
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -81,7 +100,7 @@ export function AdminCitiesPage() {
         await createCity.mutateAsync(payload);
         toast.success(t('admin.citiesPage.toastCreated'));
       }
-      setModalOpen(false);
+      dispatch({ type: 'close' });
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('cabinet.common.operationFailed')));
     }
@@ -173,7 +192,7 @@ export function AdminCitiesPage() {
 
       <AppModal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => dispatch({ type: 'close' })}
         title={editing ? t('admin.citiesPage.modalEdit') : t('admin.citiesPage.modalCreate')}
       >
         <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
@@ -184,7 +203,7 @@ export function AdminCitiesPage() {
               type="text"
               required
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => dispatch({ type: 'field', field: 'name', value: e.target.value })}
               className={cabinetFieldClass}
             />
           </div>
@@ -195,7 +214,7 @@ export function AdminCitiesPage() {
               type="text"
               placeholder="ex: Кишинёв"
               value={nameRu}
-              onChange={(e) => setNameRu(e.target.value)}
+              onChange={(e) => dispatch({ type: 'field', field: 'nameRu', value: e.target.value })}
               className={cabinetFieldClass}
             />
           </div>
@@ -206,12 +225,12 @@ export function AdminCitiesPage() {
               type="text"
               placeholder="ex: chisinau"
               value={slug}
-              onChange={(e) => setSlug(e.target.value)}
+              onChange={(e) => dispatch({ type: 'field', field: 'slug', value: e.target.value })}
               className={cabinetFieldClass}
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button type="button" onClick={() => setModalOpen(false)} className={cabinetBtnSecondary}>
+            <button type="button" onClick={() => dispatch({ type: 'close' })} className={cabinetBtnSecondary}>
               {t('cabinet.common.cancel')}
             </button>
             <button

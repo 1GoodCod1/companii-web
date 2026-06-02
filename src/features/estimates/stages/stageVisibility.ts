@@ -51,9 +51,12 @@ export function getVisibleStages(
   config: EstimateBlueprintConfig | null | undefined,
   enabledModules: string[],
 ): EstimateStageDto[] {
-  return computeStageVisibility(stages, config, enabledModules)
-    .filter((s) => !s.hidden)
-    .map((s) => s.stage);
+  return computeStageVisibility(stages, config, enabledModules).reduce<EstimateStageDto[]>((acc, s) => {
+    if (!s.hidden) {
+      acc.push(s.stage);
+    }
+    return acc;
+  }, []);
 }
 
 export function getHiddenStagesCount(

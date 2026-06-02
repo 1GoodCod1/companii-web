@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -54,12 +55,29 @@ export function CalendarBoardView({
 }) {
   const { t } = useTranslation();
 
+  const scheduledMeta = useMemo(
+    () => <span className="text-xs text-gray-400">{board?.scheduled.length ?? 0}</span>,
+    [board?.scheduled.length],
+  );
+  const backlogMeta = useMemo(
+    () => <span className="text-xs text-gray-400">{board?.unscheduled.length ?? 0}</span>,
+    [board?.unscheduled.length],
+  );
+  const leadsMeta = useMemo(
+    () => (
+      <Link to="/company/cereri" className="text-xs font-semibold text-violet-600 hover:text-violet-700">
+        {t('company.fsm.calendar.board.leads.inboxLink')}
+      </Link>
+    ),
+    [t],
+  );
+
   return (
     <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
       <Panel>
         <PanelHeader
           title={t('company.fsm.calendar.board.scheduled.title')}
-          meta={<span className="text-xs text-gray-400">{board?.scheduled.length ?? 0}</span>}
+          meta={scheduledMeta}
         />
         <ScheduledColumn scheduled={board?.scheduled ?? []} />
       </Panel>
@@ -67,7 +85,7 @@ export function CalendarBoardView({
       <Panel>
         <PanelHeader
           title={t('company.fsm.calendar.board.backlog.title')}
-          meta={<span className="text-xs text-gray-400">{board?.unscheduled.length ?? 0}</span>}
+          meta={backlogMeta}
         />
         {!board?.unscheduled.length ? (
           <EmptyState message={t('company.fsm.calendar.board.backlog.empty')} compact />
@@ -102,11 +120,7 @@ export function CalendarBoardView({
       <Panel>
         <PanelHeader
           title={t('company.fsm.calendar.board.leads.title')}
-          meta={
-            <Link to="/company/cereri" className="text-xs font-semibold text-violet-600 hover:text-violet-700">
-              {t('company.fsm.calendar.board.leads.inboxLink')}
-            </Link>
-          }
+          meta={leadsMeta}
         />
         {!board?.openLeads.length ? (
           <EmptyState message={t('company.fsm.calendar.board.leads.empty')} compact />

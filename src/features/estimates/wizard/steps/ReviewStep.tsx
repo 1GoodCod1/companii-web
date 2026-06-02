@@ -130,8 +130,8 @@ export function ReviewStep({ wizard }: Props) {
           activeCustomPricing.customDurationDays ||
           activeCustomPricing.customLaborHours ||
           activeCustomPricing.customLaborTotal) && (
-          <div className="mb-6 rounded-2xl border border-amber-100 bg-amber-50/50 p-4 text-sm text-gray-700 space-y-1">
-            <p className="font-bold text-gray-900">{t('company.estimateWizard.reviewStep.customPricingApplied')}</p>
+          <div className="mb-6 rounded-2xl border border-amber-100 bg-amber-50/50 p-4 text-sm text-amber-950 space-y-1">
+            <p className="font-bold text-amber-950">{t('company.estimateWizard.reviewStep.customPricingApplied')}</p>
             {activeCustomPricing.customUnitPriceSqm ? (
               <p>{t('company.estimateWizard.reviewStep.pricePerSqm', { value: activeCustomPricing.customUnitPriceSqm.toLocaleString('ro-MD') })}</p>
             ) : null}
@@ -209,7 +209,7 @@ export function ReviewStep({ wizard }: Props) {
                 disabled={sendEstimate.isPending}
                 className={cabinetBtnPrimary}
               >
-                <Send className="w-4 h-4 flex-shrink-0" />{' '}
+                <Send className="size-4 flex-shrink-0" />{' '}
                 <span className="truncate">
                   {sendEstimate.isPending
                     ? t('company.estimateWizard.reviewStep.sending')
@@ -224,7 +224,7 @@ export function ReviewStep({ wizard }: Props) {
                 disabled={!!project.quote || generateQuote.isPending}
                 className={cabinetBtnPrimary}
               >
-                <FileText className="w-4 h-4 flex-shrink-0" />{' '}
+                <FileText className="size-4 flex-shrink-0" />{' '}
                 <span className="truncate">{t('company.estimateWizard.reviewStep.generateQuote')}</span>
               </button>
             )}
@@ -236,11 +236,11 @@ export function ReviewStep({ wizard }: Props) {
                 {canConvertEstimate ? (
                   <>
                     <button type="button" onClick={() => handleConvert('single')} className={cabinetBtnSecondary}>
-                      <Hammer className="w-4 h-4 flex-shrink-0" />{' '}
+                      <Hammer className="size-4 flex-shrink-0" />{' '}
                       <span className="truncate">{t('company.estimateWizard.reviewStep.convertSingle')}</span>
                     </button>
                     <button type="button" onClick={() => handleConvert('by-stage')} className={cabinetBtnSecondary}>
-                      <Send className="w-4 h-4 flex-shrink-0" />{' '}
+                      <Send className="size-4 flex-shrink-0" />{' '}
                       <span className="truncate">{t('company.estimateWizard.reviewStep.convertByStage')}</span>
                     </button>
                   </>
@@ -261,7 +261,7 @@ export function ReviewStep({ wizard }: Props) {
               onClick={() => setSaveTemplateOpen(true)}
               className={cabinetBtnSecondary}
             >
-              <Copy className="w-4 h-4 flex-shrink-0 text-violet-500" />{' '}
+              <Copy className="size-4 flex-shrink-0 text-violet-500" />{' '}
               <span className="truncate">{t('company.estimatesTemplatesPage.saveAsTemplate')}</span>
             </button>
           </div>
@@ -289,7 +289,7 @@ export function ReviewStep({ wizard }: Props) {
               disabled={downloadPdf.isDownloading}
               className={cn(cabinetBtnSecondary, 'flex-1 sm:flex-none')}
             >
-              <Download className="w-4 h-4 flex-shrink-0" />{' '}
+              <Download className="size-4 flex-shrink-0" />{' '}
               {downloadPdf.isDownloading
                 ? t('company.estimateWizard.wizard.toasts.pdfDownloading', 'Se descarcă...')
                 : t('company.estimateWizard.reviewStep.downloadEstimatePdf', 'Descarcă PDF')}

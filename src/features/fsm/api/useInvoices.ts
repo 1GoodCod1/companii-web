@@ -56,7 +56,6 @@ export function useUpdateInvoiceMutation() {
       id: string;
       paymentStatus?: InvoicePaymentStatus;
       dueDate?: string | null;
-      /** Required when reversing a PAID invoice back to UNPAID. */
       paymentReversalReason?: string;
     }) =>
       apiFetch<InvoiceDto>(`${FSM_BASE}/invoices/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
@@ -81,7 +80,6 @@ export function useDeleteInvoiceMutation() {
   });
 }
 
-/** P2.#3 — Cancel an invoice with a mandatory reason. */
 export function useCancelInvoiceMutation() {
   const qc = useQueryClient();
   return useMutation({
@@ -98,7 +96,6 @@ export function useCancelInvoiceMutation() {
   });
 }
 
-/** P2.#16 — Record a partial (or final) payment. */
 export function useRecordInvoicePaymentMutation() {
   const qc = useQueryClient();
   return useMutation({
@@ -115,14 +112,18 @@ export function useRecordInvoicePaymentMutation() {
   });
 }
 
-/** P2.#17 — Send the invoice (with PDF attachment) to the customer by email. */
 export function useSendInvoiceEmailMutation() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, customMessage }: { id: string; customMessage?: string }) =>
       apiFetch<{ sent: boolean; recipient: string }>(
         `${FSM_BASE}/invoices/${id}/send-email`,
         { method: 'POST', body: JSON.stringify({ customMessage }) },
       ),
+    onSuccess: (_, { id }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoice(id) });
+    },
   });
 }
 

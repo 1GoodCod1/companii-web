@@ -130,7 +130,7 @@ function CreateQuoteForm({ onClose }: Pick<Props, 'onClose'>) {
 
         <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
           {lines.map((line, index) => (
-            <div key={index} className="flex gap-2 items-center">
+            <div key={line.id} className="flex gap-2 items-center">
               <input
                 type="text"
                 required

@@ -16,7 +16,7 @@ export function AdminBlueprintControlPanel({
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-4 bg-white/70 backdrop-blur-md p-4 rounded-2xl border border-gray-100 shadow-sm">
       <div className="relative flex-1">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
         <input
           type="text"
           value={search}
@@ -28,6 +28,7 @@ export function AdminBlueprintControlPanel({
       </div>
       <div className="flex items-center gap-2">
         <button
+          type="button"
           onClick={() => onStatusFilterChange('all')}
           className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
             statusFilter === 'all'
@@ -38,6 +39,7 @@ export function AdminBlueprintControlPanel({
           All
         </button>
         <button
+          type="button"
           onClick={() => onStatusFilterChange('active')}
           className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
             statusFilter === 'active'
@@ -48,6 +50,7 @@ export function AdminBlueprintControlPanel({
           Active
         </button>
         <button
+          type="button"
           onClick={() => onStatusFilterChange('inactive')}
           className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
             statusFilter === 'inactive'

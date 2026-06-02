@@ -38,7 +38,7 @@ export function useCreateInterventionForm({
 
   const techniciansSorted = useMemo(
     () =>
-      [...assignableTechnicians].sort((a, b) =>
+      assignableTechnicians.toSorted((a, b) =>
         memberDisplayName(a).localeCompare(memberDisplayName(b)),
       ),
     [assignableTechnicians],

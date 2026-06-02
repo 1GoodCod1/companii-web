@@ -156,7 +156,7 @@ export function PlanCards({
             <ul className="space-y-2.5 flex-1 mb-6 border-t border-slate-100 pt-5">
               {planFeatures(plan, t).map((feature) => (
                 <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-600">
-                  <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" strokeWidth={2.5} />
+                  <Check className="size-4 text-emerald-500 mt-0.5 shrink-0" strokeWidth={2.5} />
                   <span>{feature}</span>
                 </li>
               ))}

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
@@ -19,11 +19,24 @@ import { useLocale } from '@/shared/hooks/useLocale';
 import { paymentStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 import { getErrorMessage } from '@/shared/utils/errors';
 
+const canUploadProof = (inv: InvoiceDto) =>
+  inv.paymentStatus === INVOICE_PAYMENT_STATUS.UNPAID ||
+  inv.paymentStatus === INVOICE_PAYMENT_STATUS.OVERDUE;
+
 export function PortalInvoicesSection({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();
   const locale = useLocale();
   const { invoices } = data;
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const invoicesMeta = useMemo(
+    () => (
+      <span className="text-xs text-gray-400">
+        {t('portal.invoicesSection.meta', { count: invoices.length })}
+      </span>
+    ),
+    [invoices.length, t],
+  );
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pendingUploadInvoiceId = useRef<string | null>(null);
@@ -65,9 +78,6 @@ export function PortalInvoicesSection({ data }: { data: PortalDashboardDto }) {
     }
   };
 
-  const canUploadProof = (inv: InvoiceDto) =>
-    inv.paymentStatus === INVOICE_PAYMENT_STATUS.UNPAID ||
-    inv.paymentStatus === INVOICE_PAYMENT_STATUS.OVERDUE;
 
   return (
     <Panel>
@@ -82,11 +92,7 @@ export function PortalInvoicesSection({ data }: { data: PortalDashboardDto }) {
       <PanelHeader
         title={t('portal.invoicesSection.title')}
         description={t('portal.invoicesSection.description')}
-        meta={
-          <span className="text-xs text-gray-400">
-            {t('portal.invoicesSection.meta', { count: invoices.length })}
-          </span>
-        }
+        meta={invoicesMeta}
       />
       {invoices.length === 0 ? (
         <EmptyState message={t('portal.invoicesSection.empty')} />

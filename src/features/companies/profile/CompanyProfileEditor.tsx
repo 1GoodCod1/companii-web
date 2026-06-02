@@ -15,23 +15,28 @@ type OwnedCompany = OwnedCompanyDto;
 
 export function CompanyProfileEditor({
   ownedCompany,
-  isLegalOwner,
-  canRegisterCompany = false,
-  canEditLegalProfile,
-  canPublishCompany,
+  permissions,
   cities,
   categories,
   userDefaults,
 }: {
   ownedCompany: OwnedCompany | null;
-  isLegalOwner: boolean;
-  canRegisterCompany?: boolean;
-  canEditLegalProfile: boolean;
-  canPublishCompany: boolean;
+  permissions: {
+    isLegalOwner: boolean;
+    canRegisterCompany?: boolean;
+    canEditLegalProfile: boolean;
+    canPublishCompany: boolean;
+  };
   cities: CatalogOptionDto[] | undefined;
   categories: CatalogOptionDto[] | undefined;
   userDefaults?: { email?: string; phone?: string | null };
 }) {
+  const {
+    isLegalOwner,
+    canRegisterCompany = false,
+    canEditLegalProfile,
+    canPublishCompany,
+  } = permissions;
   const { t } = useTranslation();
   const manageGalleryLink = ownedCompany
     ? `${ROUTE_ABS.COMPANY}${COMPANY_CABINET_PATH.GALLERY}`

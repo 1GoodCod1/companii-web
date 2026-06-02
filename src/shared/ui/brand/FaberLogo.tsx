@@ -1,5 +1,12 @@
 import { cn } from '@/lib/utils';
 
+const iconSizes = {
+  sm: 24,
+  md: 36,
+  lg: 48,
+  xl: 80,
+};
+
 type FaberLogoProps = {
   className?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -13,13 +20,6 @@ export function FaberLogo({
   showText = true,
   animated = false,
 }: FaberLogoProps) {
-  const iconSizes = {
-    sm: 24,
-    md: 36,
-    lg: 48,
-    xl: 80,
-  };
-
   const currentSize = iconSizes[size];
 
   return (

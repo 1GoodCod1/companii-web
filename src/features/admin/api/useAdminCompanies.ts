@@ -93,18 +93,6 @@ export function useAdminCompanyQuery(
   });
 }
 
-function invalidateCompanyModeration(qc: ReturnType<typeof useQueryClient>, companyId?: string) {
-  void qc.invalidateQueries({ queryKey: queryKeys.admin.pending });
-  void qc.invalidateQueries({ queryKey: queryKeys.admin.companies });
-  void qc.invalidateQueries({ queryKey: queryKeys.admin.stats });
-  if (companyId) {
-    void qc.invalidateQueries({ queryKey: queryKeys.admin.company(companyId) });
-    void qc.invalidateQueries({
-      queryKey: queryKeys.admin.audit({ entityType: 'Company', entityId: companyId }),
-    });
-  }
-}
-
 export function useVerifyCompanyMutation() {
   const qc = useQueryClient();
   return useMutation({
@@ -113,7 +101,15 @@ export function useVerifyCompanyMutation() {
         method: 'PATCH',
         body: JSON.stringify({ note }),
       }),
-    onSuccess: (_data, vars) => invalidateCompanyModeration(qc, vars.companyId),
+    onSuccess: (_data, vars) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.pending });
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.companies });
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.stats });
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.company(vars.companyId) });
+      void qc.invalidateQueries({
+        queryKey: queryKeys.admin.audit({ entityType: 'Company', entityId: vars.companyId }),
+      });
+    },
   });
 }
 
@@ -125,7 +121,15 @@ export function useRejectCompanyMutation() {
         method: 'PATCH',
         body: JSON.stringify({ note }),
       }),
-    onSuccess: (_data, vars) => invalidateCompanyModeration(qc, vars.companyId),
+    onSuccess: (_data, vars) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.pending });
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.companies });
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.stats });
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.company(vars.companyId) });
+      void qc.invalidateQueries({
+        queryKey: queryKeys.admin.audit({ entityType: 'Company', entityId: vars.companyId }),
+      });
+    },
   });
 }
 
@@ -137,6 +141,14 @@ export function useUnpublishCompanyMutation() {
         method: 'PATCH',
         body: JSON.stringify({ note }),
       }),
-    onSuccess: (_data, vars) => invalidateCompanyModeration(qc, vars.companyId),
+    onSuccess: (_data, vars) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.pending });
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.companies });
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.stats });
+      void qc.invalidateQueries({ queryKey: queryKeys.admin.company(vars.companyId) });
+      void qc.invalidateQueries({
+        queryKey: queryKeys.admin.audit({ entityType: 'Company', entityId: vars.companyId }),
+      });
+    },
   });
 }

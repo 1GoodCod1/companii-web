@@ -40,7 +40,7 @@ export function EstimateCommentThread({ projectId, isPortal = false }: Props) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-        <MessageCircle className="w-4 h-4" />
+        <MessageCircle className="size-4" />
         {t('comments.title', 'Comments')}
       </div>
 
@@ -105,11 +105,12 @@ export function EstimateCommentThread({ projectId, isPortal = false }: Props) {
           maxLength={2000}
         />
         <button
-          className="btn-primary flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0"
+          type="button"
+          className="btn-primary flex items-center justify-center size-10 rounded-lg flex-shrink-0"
           onClick={handleSend}
           disabled={!newComment.trim() || addComment.isPending}
         >
-          <Send className="w-4 h-4" />
+          <Send className="size-4" />
         </button>
       </div>
       <div className="text-xs text-muted-foreground text-right">

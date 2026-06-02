@@ -88,7 +88,7 @@ export function CustomersListTable({
               disabled={page <= 1}
               className={`${cabinetBtnSecondary} inline-flex items-center gap-1 px-3 py-1.5 text-xs disabled:opacity-40`}
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="size-4" />
               {t('company.customersPage.paginationPrev')}
             </button>
             <span className="text-xs font-medium text-gray-500 tabular-nums">
@@ -101,7 +101,7 @@ export function CustomersListTable({
               className={`${cabinetBtnSecondary} inline-flex items-center gap-1 px-3 py-1.5 text-xs disabled:opacity-40`}
             >
               {t('company.customersPage.paginationNext')}
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="size-4" />
             </button>
           </div>
         </div>

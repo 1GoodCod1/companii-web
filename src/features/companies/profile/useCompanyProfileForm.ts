@@ -137,22 +137,31 @@ export function useCompanyProfileForm({
     };
 
     const managerPayload = Object.fromEntries(
-      MANAGER_PROFILE_FIELDS.filter((field) => field !== 'logoUrl').map((field) => {
-        switch (field) {
-          case 'cityId':
-            return [field, cityId];
-          case 'categoryId':
-            return [field, categoryId || undefined];
-          case 'contactPhone':
-            return [field, contactPhone.trim() || undefined];
-          case 'contactEmail':
-            return [field, contactEmail.trim() || undefined];
-          case 'description':
-            return [field, description.trim() || undefined];
-          default:
-            return [field, undefined];
+      MANAGER_PROFILE_FIELDS.reduce<Array<[string, unknown]>>((acc, field) => {
+        if (field !== 'logoUrl') {
+          switch (field) {
+            case 'cityId':
+              acc.push([field, cityId]);
+              break;
+            case 'categoryId':
+              acc.push([field, categoryId || undefined]);
+              break;
+            case 'contactPhone':
+              acc.push([field, contactPhone.trim() || undefined]);
+              break;
+            case 'contactEmail':
+              acc.push([field, contactEmail.trim() || undefined]);
+              break;
+            case 'description':
+              acc.push([field, description.trim() || undefined]);
+              break;
+            default:
+              acc.push([field, undefined]);
+              break;
+          }
         }
-      }),
+        return acc;
+      }, []),
     );
 
     const payload = !ownedCompany || isLegalOwner ? ownerPayload : managerPayload;

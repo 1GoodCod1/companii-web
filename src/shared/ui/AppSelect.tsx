@@ -33,8 +33,8 @@ type AppSelectProps = {
   name?: string;
   'aria-label'?: string;
   maxVisibleItems?: number;
-  /** Render dropdown in a portal so it is not clipped by overflow-hidden ancestors */
   menuPortal?: boolean;
+  menuMinWidth?: number;
 };
 
 export function AppSelect({
@@ -49,13 +49,14 @@ export function AppSelect({
   'aria-label': ariaLabel,
   maxVisibleItems = 6,
   menuPortal = false,
+  menuMinWidth = 0,
 }: AppSelectProps) {
   const generatedId = useId();
   const triggerId = id ?? generatedId;
   const listboxId = `${triggerId}-listbox`;
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [menuStyle, setMenuStyle] = useState<{ top: number; left: number; width: number } | null>(
@@ -70,10 +71,21 @@ export function AppSelect({
   const selectedLabel = selectedOption?.label;
   const listMaxHeight = Math.min(options.length, maxVisibleItems) * ITEM_HEIGHT_PX;
 
+  const selectedIndex = useMemo(() => {
+    const idx = options.findIndex((option) => option.value === value && !option.disabled);
+    return idx >= 0 ? idx : 0;
+  }, [options, value]);
+
+  const currentActiveIndex = activeIndex >= 0 ? activeIndex : (open ? selectedIndex : -1);
+
   const close = useCallback(() => {
     setOpen(false);
     setActiveIndex(-1);
   }, []);
+  const closeRef = useRef(close);
+  useEffect(() => {
+    closeRef.current = close;
+  }, [close]);
 
   const selectOption = useCallback(
     (option: AppSelectOption) => {
@@ -91,11 +103,11 @@ export function AppSelect({
       const target = event.target as Node;
       if (rootRef.current?.contains(target)) return;
       if (listRef.current?.contains(target)) return;
-      close();
+      closeRef.current();
     };
 
     const handleEscape = (event: Event) => {
-      if (event instanceof KeyboardEvent && event.key === 'Escape') close();
+      if (event instanceof KeyboardEvent && event.key === 'Escape') closeRef.current();
     };
 
     document.addEventListener('mousedown', handlePointerDown);
@@ -105,16 +117,13 @@ export function AppSelect({
       document.removeEventListener('mousedown', handlePointerDown);
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [close, open]);
+  }, [open]);
 
   useEffect(() => {
     if (!open || !listRef.current) return;
-    const selectedIndex = options.findIndex((option) => option.value === value && !option.disabled);
-    const index = selectedIndex >= 0 ? selectedIndex : 0;
-    setActiveIndex(index);
-    const node = listRef.current.children[index] as HTMLElement | undefined;
+    const node = listRef.current.children[selectedIndex] as HTMLElement | undefined;
     node?.scrollIntoView({ block: 'nearest' });
-  }, [open, options, value]);
+  }, [open, selectedIndex]);
 
   useLayoutEffect(() => {
     if (!open || !menuPortal || !triggerRef.current) {
@@ -129,7 +138,7 @@ export function AppSelect({
       setMenuStyle({
         top: rect.bottom + 4,
         left: rect.left,
-        width: rect.width,
+        width: Math.max(rect.width, menuMinWidth),
       });
     };
 
@@ -140,13 +149,24 @@ export function AppSelect({
       window.removeEventListener('scroll', updatePosition, true);
       window.removeEventListener('resize', updatePosition);
     };
-  }, [menuPortal, open]);
+  }, [menuPortal, menuMinWidth, open]);
 
   const handleTriggerKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (disabled) return;
 
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === ' ') {
       event.preventDefault();
+      setOpen((prev) => !prev);
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (open && currentActiveIndex >= 0) {
+        const option = options[currentActiveIndex];
+        if (option) selectOption(option);
+        return;
+      }
       setOpen((prev) => !prev);
       return;
     }
@@ -159,23 +179,15 @@ export function AppSelect({
       }
 
       const direction = event.key === 'ArrowDown' ? 1 : -1;
-      let next = activeIndex;
+      let next = currentActiveIndex;
 
       do {
         next = (next + direction + options.length) % options.length;
-      } while (options[next]?.disabled && next !== activeIndex);
+      } while (options[next]?.disabled && next !== currentActiveIndex);
 
       setActiveIndex(next);
       const node = listRef.current?.children[next] as HTMLElement | undefined;
       node?.scrollIntoView({ block: 'nearest' });
-    }
-  };
-
-  const handleListKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
-    if (event.key === 'Enter' && activeIndex >= 0) {
-      event.preventDefault();
-      const option = options[activeIndex];
-      if (option) selectOption(option);
     }
   };
 
@@ -207,7 +219,7 @@ export function AppSelect({
         </span>
         <ChevronDown
           className={cn(
-            'h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200',
+            'size-4 shrink-0 text-gray-400 transition-transform duration-200',
             open && 'rotate-180 text-gray-600',
           )}
           aria-hidden
@@ -217,13 +229,10 @@ export function AppSelect({
       {open
         ? (() => {
             const listbox = (
-              <ul
+              <div
                 ref={listRef}
                 id={listboxId}
-                role="listbox"
                 aria-labelledby={triggerId}
-                tabIndex={-1}
-                onKeyDown={handleListKeyDown}
                 style={{
                   maxHeight: listMaxHeight,
                   ...(menuPortal && menuStyle
@@ -243,19 +252,19 @@ export function AppSelect({
               >
                 {options.map((option, index) => {
                   const isSelected = option.value === value;
-                  const isActive = index === activeIndex;
+                  const isActive = index === currentActiveIndex;
 
                   return (
-                    <li
+                    <button
                       key={`${option.value}-${index}`}
-                      role="option"
-                      aria-selected={isSelected}
-                      aria-disabled={option.disabled || undefined}
+                      type="button"
+                      aria-current={isSelected ? 'true' : undefined}
+                      disabled={option.disabled}
                       onMouseEnter={() => !option.disabled && setActiveIndex(index)}
                       onClick={() => selectOption(option)}
                       title={option.title}
                       className={cn(
-                        'flex cursor-pointer items-center justify-between gap-3 px-3.5 py-2.5 text-sm transition-colors',
+                        'flex w-full cursor-pointer items-center justify-between gap-3 px-3.5 py-2.5 text-left text-sm transition-colors',
                         option.disabled && 'cursor-not-allowed opacity-50',
                         isSelected && 'bg-violet-50 font-semibold text-violet-900',
                         !isSelected && isActive && 'bg-slate-50 text-gray-900',
@@ -264,10 +273,10 @@ export function AppSelect({
                     >
                       <span className="min-w-0 truncate">{option.label}</span>
                       {isSelected ? <Check className="size-4 shrink-0 text-violet-600" /> : null}
-                    </li>
+                    </button>
                   );
                 })}
-              </ul>
+              </div>
             );
 
             return menuPortal && typeof document !== 'undefined'

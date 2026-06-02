@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { MessageSquarePlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -27,6 +27,15 @@ export function PortalInterventionsSection({ data }: { data: PortalDashboardDto 
   const [reviewTarget, setReviewTarget] = useState<ReviewTarget | null>(null);
   const { interventions } = data;
   const pendingReviews = interventions.filter((i) => i.canReview);
+
+  const interventionsMeta = useMemo(
+    () => (
+      <span className="text-xs text-gray-400">
+        {t('portal.interventionsSection.meta', { count: interventions.length })}
+      </span>
+    ),
+    [interventions.length, t],
+  );
 
   const openReviewModal = (item: PortalInterventionDto) => {
     setReviewTarget({
@@ -69,11 +78,7 @@ export function PortalInterventionsSection({ data }: { data: PortalDashboardDto 
       <Panel>
         <PanelHeader
           title={t('portal.interventionsSection.title')}
-          meta={
-            <span className="text-xs text-gray-400">
-              {t('portal.interventionsSection.meta', { count: interventions.length })}
-            </span>
-          }
+          meta={interventionsMeta}
         />
         {interventions.length === 0 ? (
           <EmptyState message={t('portal.interventionsSection.empty')} />
@@ -125,7 +130,7 @@ export function PortalInterventionsSection({ data }: { data: PortalDashboardDto 
                     onClick={() => openReviewModal(item)}
                     className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-3 py-2 text-xs font-bold text-white hover:bg-amber-600 transition-colors"
                   >
-                    <MessageSquarePlus className="h-4 w-4" />
+                    <MessageSquarePlus className="size-4" />
                     {t('portal.interventionsSection.leaveReview')}
                   </button>
                 ) : null}

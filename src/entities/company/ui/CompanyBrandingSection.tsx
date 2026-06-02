@@ -71,7 +71,7 @@ export function CompanyBrandingSection({
             to={manageGalleryLink}
             className="inline-flex min-w-[11rem] items-center justify-center gap-2 rounded-2xl border border-violet-100 bg-violet-50/80 px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-violet-700 transition-colors hover:border-violet-200 hover:bg-violet-100"
           >
-            <Images className="h-3.5 w-3.5 shrink-0" />
+            <Images className="size-3.5 shrink-0" />
             {t('company.branding.manageGallery')}
           </Link>
         ) : null}
@@ -92,7 +92,7 @@ export function CompanyBrandingSection({
           onClick={() => logoInputRef.current?.click()}
           className={`${cabinetBtnSecondary} gap-2 ${isSidebar ? 'w-full justify-center' : ''}`}
         >
-          <Upload className="h-4 w-4" />
+          <Upload className="size-4" />
           {displayLogo ? t('company.branding.changeLogo') : t('company.branding.uploadLogo')}
         </button>
         {displayLogo ? (

@@ -20,13 +20,19 @@ export function CompanySwitcher() {
       label: company.name,
       role: COMPANY_ROLE.OWNER,
     }));
-    const memberships = companyMe.memberships
-      .filter((membership) => !companyMe.owned.some((owned) => owned.id === membership.companyId))
-      .map((membership) => ({
-        id: membership.companyId,
-        label: membership.company.name,
-        role: membership.role ?? COMPANY_ROLE.MEMBER,
-      }));
+    const ownedIds = new Set(companyMe.owned.map((owned) => owned.id));
+    const memberships = companyMe.memberships.reduce<
+      Array<{ id: string; label: string; role: string }>
+    >((acc, membership) => {
+      if (!ownedIds.has(membership.companyId)) {
+        acc.push({
+          id: membership.companyId,
+          label: membership.company.name,
+          role: membership.role ?? COMPANY_ROLE.MEMBER,
+        });
+      }
+      return acc;
+    }, []);
     return [...owned, ...memberships];
   }, [companyMe]);
 

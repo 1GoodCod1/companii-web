@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Cloud, Clock, Gift, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ export function LandingStats() {
             const style = STAT_STYLES[i];
 
             return (
-              <motion.article
+              <m.article
                 key={stat.label}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -57,7 +57,7 @@ export function LandingStats() {
                 {stat.hint ? (
                   <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{stat.hint}</p>
                 ) : null}
-              </motion.article>
+              </m.article>
             );
           })}
         </div>

@@ -52,9 +52,15 @@ export function EstimateLineUnitSelect({
       }}
       options={options}
       disabled={disabled}
-      className={cn(estimateLineFieldWrap, className)}
+      className={cn(
+        estimateLineFieldWrap,
+        '[&>button]:h-8 [&>button]:min-h-8 [&>button]:gap-0.5 [&>button]:rounded-lg [&>button]:border-gray-200 [&>button]:bg-white [&>button]:px-1.5 [&>button]:py-0 [&>button]:text-xs [&>button]:font-medium [&>button]:text-center [&>button]:shadow-xs [&>button]:focus:border-violet-500 [&>button]:focus:ring-2 [&>button]:focus:ring-violet-500/15 [&>button_span]:flex-1 [&_svg]:size-3',
+        className,
+      )}
       aria-label={ariaLabel ?? t('company.estimateWizard.stagesStep.colUnit')}
       maxVisibleItems={8}
+      menuPortal
+      menuMinWidth={112}
     />
   );
 }

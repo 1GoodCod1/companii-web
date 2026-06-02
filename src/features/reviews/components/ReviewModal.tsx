@@ -46,12 +46,12 @@ export function ReviewModal({
           className="absolute right-4 top-4 rounded-lg p-1 text-gray-400 hover:text-gray-700"
           aria-label={t('company.reviewsUi.closeModal')}
         >
-          <X className="h-5 w-5" />
+          <X className="size-5" />
         </button>
 
         <div className="mb-5 flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
-            <MessageSquarePlus className="h-5 w-5" />
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+            <MessageSquarePlus className="size-5" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-gray-900">{t('company.reviewsUi.modalTitle')}</h2>

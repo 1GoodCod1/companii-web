@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus';
 import type { Plan2dData } from '@/entities/estimate/model/estimate-plan2d.types';
 import type { CustomPricingValues } from '../utils/customPricing';
@@ -55,7 +55,13 @@ export type WizardSnapshot = {
   plan2d?: Plan2dData;
 };
 
-export function useEstimateOfflineCache(projectId: string | undefined) {
+export function useEstimateOfflineCache(
+  projectId: string | undefined,
+  options?: {
+    /** Updated each render; invoked when the cache requests a background sync. */
+    syncHandlerRef?: RefObject<(() => void | Promise<void>) | null>;
+  },
+) {
   const online = useOnlineStatus();
   const [state, setState] = useState<OfflineCacheState>({
     online,
@@ -68,6 +74,30 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
   const draftIdRef = useRef<string | undefined>(undefined);
   const draftVersionRef = useRef<number>(0);
 
+  const listenersRef = useRef<Set<() => void> | null>(null);
+  if (listenersRef.current === null) {
+    listenersRef.current = new Set();
+  }
+  const externalSyncHandlerRef = options?.syncHandlerRef;
+
+  const subscribeSync = useCallback((listener: () => void) => {
+    listenersRef.current!.add(listener);
+    return () => {
+      listenersRef.current!.delete(listener);
+    };
+  }, []);
+
+  const triggerSyncNeeded = useCallback(() => {
+    for (const listener of Array.from(listenersRef.current!)) {
+      listener();
+    }
+  }, []);
+
+  const stateRef = useRef(state);
+  useEffect(() => {
+    stateRef.current = state;
+  });
+
   const ensureDraftId = useCallback(async (): Promise<string | undefined> => {
     if (!projectId) return undefined;
     if (draftIdRef.current) return draftIdRef.current;
@@ -78,8 +108,10 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
 
   const refreshPending = useCallback(async () => {
     if (!projectId) return;
-    const queue = await readMutationQueue(projectId);
-    const meta = await getProjectMeta(projectId);
+    const [queue, meta] = await Promise.all([
+      readMutationQueue(projectId),
+      getProjectMeta(projectId),
+    ]);
     if (meta?.clientDraftId) draftIdRef.current = meta.clientDraftId;
     if (typeof meta?.draftVersion === 'number') draftVersionRef.current = meta.draftVersion;
     setState((prev) => ({
@@ -90,25 +122,37 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
       clientDraftId: meta?.clientDraftId ?? prev.clientDraftId,
       draftVersion: meta?.draftVersion ?? prev.draftVersion,
     }));
-  }, [projectId]);
+    if (online && queue.length > 0) {
+      triggerSyncNeeded();
+    }
+  }, [projectId, online, triggerSyncNeeded]);
 
   const prevOnlineRef = useRef(online);
   useEffect(() => {
     if (online !== prevOnlineRef.current) {
       prevOnlineRef.current = online;
-      queueMicrotask(() =>
+      queueMicrotask(() => {
         setState((prev) => ({
           ...prev,
           online,
           syncState: online ? (prev.pendingMutations > 0 ? 'syncing' : 'idle') : 'offline',
-        })),
-      );
+        }));
+        if (online && stateRef.current.pendingMutations > 0) {
+          triggerSyncNeeded();
+        }
+      });
     }
-  }, [online]);
+  }, [online, triggerSyncNeeded]);
 
   useEffect(() => {
     queueMicrotask(() => void refreshPending());
   }, [refreshPending]);
+
+  useEffect(() => {
+    return subscribeSync(() => {
+      queueMicrotask(() => void externalSyncHandlerRef?.current?.());
+    });
+  }, [subscribeSync, externalSyncHandlerRef]);
 
   const saveDraft = useCallback(
     (snapshot: WizardSnapshot) => {
@@ -188,9 +232,12 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
         draftVersion: draftVersionRef.current,
       });
       await refreshPending();
+      if (online) {
+        triggerSyncNeeded();
+      }
       return id;
     },
-    [projectId, refreshPending],
+    [projectId, refreshPending, online, triggerSyncNeeded],
   );
 
   const acknowledgeConflict = useCallback(() => {
@@ -220,8 +267,10 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
           draftVersion: draftVersionRef.current,
         });
       }
-      const remainingQueue = await readMutationQueue(projectId);
-      const meta = await getProjectMeta(projectId);
+      const [remainingQueue, meta] = await Promise.all([
+        readMutationQueue(projectId),
+        getProjectMeta(projectId),
+      ]);
       setState((prev) => ({
         ...prev,
         pendingMutations: remainingQueue.length,
@@ -249,6 +298,7 @@ export function useEstimateOfflineCache(projectId: string | undefined) {
     flush,
     refresh: refreshPending,
     acknowledgeConflict,
+    subscribeSync,
   };
 }
 

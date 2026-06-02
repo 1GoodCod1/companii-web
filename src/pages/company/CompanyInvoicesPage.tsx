@@ -23,6 +23,11 @@ export function CompanyInvoicesPage() {
   const createModal = useEntityModal();
   const { selectedId, select, clear } = useEntitySelection();
 
+  const detailPanel = useMemo(
+    () => <InvoiceDetailPanel selectedId={selectedId} onClearSelection={clear} />,
+    [selectedId, clear],
+  );
+
   const statusFilterOptions = useMemo(
     () => [
       { value: 'ALL', label: t('company.invoicesPage.filter.all', { defaultValue: 'Toate' }) },
@@ -77,7 +82,7 @@ export function CompanyInvoicesPage() {
               onSelect={select}
             />
           }
-          detail={<InvoiceDetailPanel selectedId={selectedId} onClearSelection={clear} />}
+          detail={detailPanel}
         />
 
         <CreateInvoiceModal open={createModal.open} onClose={createModal.closeModal} />

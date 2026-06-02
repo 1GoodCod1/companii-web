@@ -43,13 +43,13 @@ export function HowItWorksPage() {
 
       <div className="max-w-6xl mx-auto space-y-16 py-12 px-4 animate-fade-in">
         {/* Dynamic Background Glow Elements */}
-        <div className="absolute top-24 left-1/4 w-96 h-96 bg-violet-200/10 blur-3xl pointer-events-none" />
-        <div className="absolute top-48 right-1/4 w-96 h-96 bg-indigo-200/10 blur-3xl pointer-events-none" />
+        <div className="absolute top-24 left-1/4 size-96 bg-violet-200/10 blur-3xl pointer-events-none" />
+        <div className="absolute top-48 right-1/4 size-96 bg-indigo-200/10 blur-3xl pointer-events-none" />
 
         {/* Hero Header Section */}
         <section className="text-center space-y-5 relative z-10">
           <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-violet-700 bg-violet-50 border border-violet-100/60 px-4 py-2 rounded-none">
-            <Sparkles className="w-3.5 h-3.5 text-violet-600 animate-pulse" />
+            <Sparkles className="size-3.5 text-violet-600 animate-pulse" />
             {t('howItWorks.badge')}
           </span>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-none text-slate-900">
@@ -82,7 +82,7 @@ export function HowItWorksPage() {
             </div>
             <div className="col-span-1 flex flex-col items-center justify-center self-center">
               <div className="p-2 bg-slate-100 text-slate-400 border border-slate-200/60">
-                <ArrowLeftRight className="w-4 h-4" />
+                <ArrowLeftRight className="size-4" />
               </div>
             </div>
             <div className="col-span-5 text-left space-y-2 border-b border-indigo-100/80 pb-3">
@@ -110,8 +110,8 @@ export function HowItWorksPage() {
                 <div className="col-span-5 bg-white/70 p-6 border border-slate-100/80 shadow-xs relative flex flex-col justify-between group hover:border-violet-250 hover:bg-white transition-all duration-300">
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 bg-violet-50 text-violet-750 w-10 h-10 flex items-center justify-center">
-                        <CompanyIcon className="w-5 h-5" />
+                      <div className="p-2.5 bg-violet-50 text-violet-750 size-10 flex items-center justify-center">
+                        <CompanyIcon className="size-5" />
                       </div>
                       <h3 className="text-xs font-black text-slate-900 tracking-wider uppercase">
                         {companyStep.title}
@@ -125,7 +125,7 @@ export function HowItWorksPage() {
 
                 {/* CENTER: Interactive Step Sync Connection Axis Node */}
                 <div className="col-span-1 flex flex-col items-center justify-center relative z-10 self-center">
-                  <div className="w-10 h-10 bg-slate-950 text-white font-mono font-bold text-sm flex items-center justify-center border-4 border-slate-50 shadow-sm">
+                  <div className="size-10 bg-slate-950 text-white font-mono font-bold text-sm flex items-center justify-center border-4 border-slate-50 shadow-sm">
                     0{stepNum}
                   </div>
                 </div>
@@ -134,8 +134,8 @@ export function HowItWorksPage() {
                 <div className="col-span-5 bg-white/70 p-6 border border-slate-100/80 shadow-xs relative flex flex-col justify-between group hover:border-indigo-250 hover:bg-white transition-all duration-300">
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 bg-indigo-50 text-indigo-750 w-10 h-10 flex items-center justify-center">
-                        <ClientIcon className="w-5 h-5" />
+                      <div className="p-2.5 bg-indigo-50 text-indigo-750 size-10 flex items-center justify-center">
+                        <ClientIcon className="size-5" />
                       </div>
                       <h3 className="text-xs font-black text-slate-900 tracking-wider uppercase">
                         {clientStep.title}
@@ -168,7 +168,7 @@ export function HowItWorksPage() {
                   : 'text-slate-500 hover:text-slate-800'
                 }`}
             >
-              <Building2 className={`w-4 h-4 ${activeRole === 'company' ? 'text-violet-600' : 'text-slate-400'}`} />
+              <Building2 className={`size-4 ${activeRole === 'company' ? 'text-violet-600' : 'text-slate-400'}`} />
               {t('howItWorks.roles.company')}
             </button>
             <button
@@ -180,7 +180,7 @@ export function HowItWorksPage() {
                   : 'text-slate-550 hover:text-slate-850'
                 }`}
             >
-              <HeartHandshake className={`w-4 h-4 ${activeRole === 'client' ? 'text-indigo-650' : 'text-slate-400'}`} />
+              <HeartHandshake className={`size-4 ${activeRole === 'client' ? 'text-indigo-650' : 'text-slate-400'}`} />
               {t('howItWorks.roles.client')}
             </button>
           </section>
@@ -202,12 +202,12 @@ export function HowItWorksPage() {
                   {companySteps.map((step, idx) => {
                     const CompanyIcon = COMPANY_STEP_ICONS[idx] ?? Building2;
                     return (
-                      <div key={idx} className="bg-white p-5 border border-slate-100 space-y-3 relative">
+                      <div key={step.title} className="bg-white p-5 border border-slate-100 space-y-3 relative">
                         <span className="absolute top-4 right-4 font-mono font-bold text-slate-100 text-5xl select-none">
                           0{idx + 1}
                         </span>
-                        <div className="p-2.5 bg-violet-50 text-violet-750 w-9 h-9 flex items-center justify-center">
-                          <CompanyIcon className="w-4.5 h-4.5" />
+                        <div className="p-2.5 bg-violet-50 text-violet-750 size-9 flex items-center justify-center">
+                          <CompanyIcon className="size-4.5" />
                         </div>
                         <h3 className="text-xs font-black text-slate-900 tracking-wider uppercase pt-1">
                           {step.title}
@@ -235,12 +235,12 @@ export function HowItWorksPage() {
                   {clientSteps.map((step, idx) => {
                     const ClientIcon = CLIENT_STEP_ICONS[idx] ?? KeyRound;
                     return (
-                      <div key={idx} className="bg-white p-5 border border-slate-100 space-y-3 relative">
+                      <div key={step.title} className="bg-white p-5 border border-slate-100 space-y-3 relative">
                         <span className="absolute top-4 right-4 font-mono font-bold text-slate-100 text-5xl select-none">
                           0{idx + 1}
                         </span>
-                        <div className="p-2.5 bg-indigo-50 text-indigo-750 w-9 h-9 flex items-center justify-center">
-                          <ClientIcon className="w-4.5 h-4.5" />
+                        <div className="p-2.5 bg-indigo-50 text-indigo-750 size-9 flex items-center justify-center">
+                          <ClientIcon className="size-4.5" />
                         </div>
                         <h3 className="text-xs font-black text-slate-900 tracking-wider uppercase pt-1">
                           {step.title}
@@ -271,7 +271,7 @@ export function HowItWorksPage() {
             className="inline-flex items-center gap-2 mt-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl transition-all"
           >
             {primaryCta.label}
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="size-4" />
           </Link>
         </section>
       </div>

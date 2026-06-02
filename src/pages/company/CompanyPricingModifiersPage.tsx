@@ -78,7 +78,7 @@ export function CompanyPricingModifiersPage() {
     <div className="space-y-4 max-w-3xl">
       <Panel className="p-6 space-y-2">
         <h2 className="flex items-center gap-2 font-bold text-gray-900">
-          <Percent className="w-5 h-5 text-violet-600" />
+          <Percent className="size-5 text-violet-600" />
           {t('company.pricingModifiers.title', { defaultValue: 'Coeficienți de preț' })}
         </h2>
         <p className="text-sm text-gray-500 leading-relaxed">

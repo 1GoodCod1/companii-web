@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   Calendar,
   Calculator,
@@ -184,9 +184,26 @@ function buildCompanySections(
   });
 
   return COMPANY_NAV_SECTION_ORDER.flatMap((sectionKey) => {
-    const items = visible
-      .filter((item) => item.sectionKey === sectionKey)
-      .map(({ key, to, labelKey, icon, badge }) => ({ key, to, labelKey, icon, badge }));
+    const items = visible.reduce<
+      Array<{
+        key: string;
+        to: string;
+        labelKey: string;
+        icon: React.ReactNode;
+        badge?: string | number;
+      }>
+    >((acc, item) => {
+      if (item.sectionKey === sectionKey) {
+        acc.push({
+          key: item.key,
+          to: item.to,
+          labelKey: item.labelKey,
+          icon: item.icon,
+          badge: item.badge,
+        });
+      }
+      return acc;
+    }, []);
 
     if (items.length === 0) return [];
 
@@ -259,6 +276,8 @@ export function CompanyLayout() {
     ),
   }));
 
+  const sidebarExtras = useMemo(() => <CompanySwitcher />, []);
+
   return (
     <CabinetShell
       basePath="/company"
@@ -266,7 +285,7 @@ export function CompanyLayout() {
       currentPlanCode={currentPlan}
       profileAvatarUrl={activeCompany?.logoUrl}
       profileRole={profileRole}
-      sidebarExtras={<CompanySwitcher />}
+      sidebarExtras={sidebarExtras}
     />
   );
 }

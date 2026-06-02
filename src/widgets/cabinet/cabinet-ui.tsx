@@ -12,12 +12,8 @@ export const cabinetBtnPrimary =
 export const cabinetBtnSecondary =
   'inline-flex items-center justify-center px-5 py-2.5 rounded-none text-sm font-medium text-gray-600 hover:bg-slate-100 transition-colors cursor-pointer';
 export const cabinetPanelClass = 'glass-panel rounded-none';
-
-/** Content area inset below panel header (30px from panel edges). */
 export const cabinetPanelContentInsetClass =
   'flex min-h-0 flex-1 flex-col px-[30px] pb-[30px]';
-
-/** Full inset when panel has no header row. */
 export const cabinetPanelFillInsetClass = 'flex min-h-0 flex-1 flex-col p-[30px]';
 
 export function PageHero({
@@ -104,9 +100,7 @@ export function EmptyState({
 }: {
   message: string;
   action?: ReactNode;
-  /** Stretch gray background to fill the panel content area. */
   fill?: boolean;
-  /** Fixed compact block for dense layouts (e.g. calendar columns). */
   compact?: boolean;
 }) {
   return (
@@ -126,6 +120,14 @@ export function EmptyState({
   );
 }
 
+const softBadgeTones = {
+  violet: 'bg-violet-50 text-violet-700',
+  emerald: 'bg-emerald-50 text-emerald-700',
+  amber: 'bg-amber-50 text-amber-700',
+  blue: 'bg-blue-50 text-blue-700',
+  gray: 'bg-slate-100 text-gray-600',
+};
+
 export function SoftBadge({
   children,
   tone = 'violet',
@@ -133,18 +135,11 @@ export function SoftBadge({
   children: ReactNode;
   tone?: 'violet' | 'emerald' | 'amber' | 'blue' | 'gray';
 }) {
-  const tones = {
-    violet: 'bg-violet-50 text-violet-700',
-    emerald: 'bg-emerald-50 text-emerald-700',
-    amber: 'bg-amber-50 text-amber-700',
-    blue: 'bg-blue-50 text-blue-700',
-    gray: 'bg-slate-100 text-gray-600',
-  };
   return (
     <span
       className={cn(
         'inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide',
-        tones[tone],
+        softBadgeTones[tone],
       )}
     >
       {children}

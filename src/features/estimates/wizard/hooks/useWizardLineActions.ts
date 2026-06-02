@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
+import { uploadFile } from '@/shared/api/files';
 import {
   useUpdateEstimateLineMutation,
   useAddEstimateLineMutation,
@@ -21,7 +22,6 @@ export function useWizardLineActions(projectId: string, askConfirm: AskCabinetCo
   const handleUploadReceipt = async (lineId: string, stageId: string, file: File) => {
     setUploadingLineId(lineId);
     try {
-      const { uploadFile } = await import('@/shared/api/files');
       const uploaded = await uploadFile(file);
       await updateLine.mutateAsync({
         projectId,

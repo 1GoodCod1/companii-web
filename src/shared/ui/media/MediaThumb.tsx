@@ -1,16 +1,12 @@
 import { Film } from 'lucide-react';
 import { MediaImage } from '@/shared/ui/MediaImage';
-import { isVideoUrl } from '@/shared/utils/validateFile';
+import { isMediaItemVideo } from './mediaItem';
 
 export interface MediaThumbItem {
   id: string;
   url: string;
   caption?: string | null;
   kind?: 'video' | 'image';
-}
-
-export function isMediaItemVideo(item: MediaThumbItem): boolean {
-  return item.kind === 'video' || isVideoUrl(item.url);
 }
 
 interface MediaThumbProps {
@@ -34,7 +30,7 @@ export function MediaThumb({ item, isActive, onClick, index }: MediaThumbProps) 
       }`}
     >
       {isVideo ? (
-        <div className="relative h-full w-full bg-gradient-to-br from-slate-700 to-slate-900">
+        <div className="relative size-full bg-gradient-to-br from-slate-700 to-slate-900">
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="size-7 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
               <Film className="size-3.5 text-white" />
@@ -45,9 +41,9 @@ export function MediaThumb({ item, isActive, onClick, index }: MediaThumbProps) 
         <MediaImage
           src={item.url}
           alt={item.caption ?? `Foto ${index + 1}`}
-          className="h-full w-full object-cover"
+          className="size-full object-cover"
           loading="lazy"
-          fallbackClassName="h-full w-full bg-slate-200"
+          fallbackClassName="size-full bg-slate-200"
         />
       )}
     </button>

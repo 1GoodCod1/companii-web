@@ -584,6 +584,12 @@ function renderPrivacyContentRu(termsPath: string): ReactNode {
   );
 }
 
-export function renderPrivacyContent(locale: AppLanguage, termsPath: string): ReactNode {
+export function PrivacyContent({
+  locale,
+  termsPath,
+}: {
+  locale: AppLanguage;
+  termsPath: string;
+}): ReactNode {
   return locale === 'ru' ? renderPrivacyContentRu(termsPath) : renderPrivacyContentRo(termsPath);
 }

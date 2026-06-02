@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 import toast from 'react-hot-toast';
 import {
   Panel,
@@ -23,6 +24,15 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
   const updateQuote = useUpdatePortalQuoteMutation();
   const { ask, dialog } = useCabinetConfirmDialog();
   const { quotes } = data;
+
+  const quotesMeta = useMemo(
+    () => (
+      <span className="text-xs text-gray-400">
+        {t('portal.quotesSection.meta', { count: quotes.length })}
+      </span>
+    ),
+    [quotes.length, t],
+  );
 
   const handleQuoteStatus = (quoteId: string, status: PortalQuoteActionStatus) => {
     const confirmKey =
@@ -54,11 +64,7 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
       <PanelHeader
         title={t('portal.quotesSection.title')}
         description={t('portal.quotesSection.description')}
-        meta={
-          <span className="text-xs text-gray-400">
-            {t('portal.quotesSection.meta', { count: quotes.length })}
-          </span>
-        }
+        meta={quotesMeta}
       />
       {quotes.length === 0 ? (
         <EmptyState message={t('portal.quotesSection.empty')} />

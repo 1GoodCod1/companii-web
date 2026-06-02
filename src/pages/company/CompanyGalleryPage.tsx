@@ -48,7 +48,7 @@ export function CompanyGalleryPage() {
         to={`${ROUTE_ABS.COMPANY}${COMPANY_CABINET_PATH.PROFILE}`}
         className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-violet-600 transition-colors"
       >
-        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+        <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
         {t('company.galleryPage.backToProfile')}
       </Link>
 

@@ -28,7 +28,7 @@ export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD
   const [estimateTitle, setEstimateTitle] = useState('');
 
   const sortedLeads = useMemo(
-    () => [...(leads ?? [])].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
+    () => (leads ?? []).toSorted((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
     [leads],
   );
 

@@ -55,14 +55,10 @@ export function RouteErrorBoundary() {
     }
   }, [chunkError]);
 
-  const handleReload = () => {
-    void purgeAndReload();
-  };
-
   return (
     <StandaloneErrorLayout>
       <SEOHead title={t('routeError.seoTitle')} noindex />
-      <StatusPage variant="error" onReload={handleReload} />
+      <StatusPage variant="error" onReload={purgeAndReload} />
       {!chunkError && (
         <p className="mx-auto mt-2 max-w-md text-center text-xs italic text-gray-400">
           {errorMessage}

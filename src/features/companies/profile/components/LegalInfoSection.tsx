@@ -13,6 +13,9 @@ interface LegalInfoSectionProps {
   legalReadOnly: boolean;
 }
 
+const getFieldClass = (readOnly: boolean) =>
+  readOnly ? `${cabinetFieldClass} bg-gray-50 text-gray-600 cursor-not-allowed` : cabinetFieldClass;
+
 export function LegalInfoSection({
   name,
   setName,
@@ -25,9 +28,6 @@ export function LegalInfoSection({
   legalReadOnly,
 }: LegalInfoSectionProps) {
   const { t } = useTranslation();
-
-  const getFieldClass = (readOnly: boolean) =>
-    readOnly ? `${cabinetFieldClass} bg-gray-50 text-gray-600 cursor-not-allowed` : cabinetFieldClass;
 
   return (
     <FormSection

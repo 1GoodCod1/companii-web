@@ -54,8 +54,8 @@ export function ForgotPasswordPage() {
   if (submitted) {
     return (
       <div className="w-full animate-fade-in py-2 space-y-5 text-center lg:text-left">
-        <div className="mx-auto lg:mx-0 p-3 bg-emerald-50 text-emerald-600 rounded-xl w-12 h-12 flex items-center justify-center border border-emerald-100">
-          <CheckCircle2 className="w-6 h-6" />
+        <div className="mx-auto lg:mx-0 p-3 bg-emerald-50 text-emerald-600 rounded-xl size-12 flex items-center justify-center border border-emerald-100">
+          <CheckCircle2 className="size-6" />
         </div>
         <div>
           <h2 className="text-2xl font-semibold text-slate-900">
@@ -69,7 +69,7 @@ export function ForgotPasswordPage() {
           to="/login"
           className="inline-flex items-center justify-center gap-2 w-full border border-slate-200 hover:bg-slate-50 text-slate-700 py-2.5 rounded-lg font-semibold text-sm transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="size-4" />
           {t('auth.forgotPasswordPage.backToLogin')}
         </Link>
       </div>
@@ -118,7 +118,7 @@ export function ForgotPasswordPage() {
           to="/login"
           className="inline-flex items-center gap-1.5 text-violet-600 hover:text-violet-700 font-medium transition-colors"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
+          <ArrowLeft className="size-3.5" />
           {t('auth.forgotPasswordPage.backToLogin')}
         </Link>
       </p>

@@ -70,7 +70,7 @@ export function LoginPage() {
           <label className="flex items-center gap-2.5 text-sm text-slate-600 cursor-pointer select-none">
             <input
               type="checkbox"
-              className="rounded text-violet-600 focus:ring-violet-500/20 border-slate-200 w-4 h-4 cursor-pointer"
+              className="rounded text-violet-600 focus:ring-violet-500/20 border-slate-200 size-4 cursor-pointer"
               {...register('rememberMe')}
             />
             {t('auth.rememberMe')}

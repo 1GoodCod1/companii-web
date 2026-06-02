@@ -10,7 +10,7 @@ export function DashboardKpiGrid({ kpis }: { kpis: DashboardKpi[] }) {
         >
           <div className="flex items-start justify-between gap-3">
             <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">{kpi.label}</span>
-            <span className={`flex h-10 w-10 items-center justify-center rounded-none text-lg ${kpi.accent.iconBg}`}>
+            <span className={`flex size-10 items-center justify-center rounded-none text-lg ${kpi.accent.iconBg}`}>
               {kpi.accent.icon}
             </span>
           </div>

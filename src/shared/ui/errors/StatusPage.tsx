@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
   ArrowLeft,
   Building2,
@@ -111,7 +111,7 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
 
       <div
         className={cn(
-          'pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px]',
+          'pointer-events-none absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px]',
           config.glow,
         )}
         aria-hidden
@@ -119,8 +119,8 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
 
       {!compact &&
         FLOATING_ICONS.map(({ Icon, className, delay }, index) => (
-          <motion.div
-            key={index}
+          <m.div
+            key={className}
             className={cn('pointer-events-none absolute hidden md:block', className)}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: [0, -10, 0] }}
@@ -131,16 +131,16 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
             aria-hidden
           >
             <Icon className="size-8" strokeWidth={1.5} />
-          </motion.div>
+          </m.div>
         ))}
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 mx-auto w-full max-w-2xl px-4 text-center"
       >
-        <motion.span
+        <m.span
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.05 }}
@@ -154,26 +154,26 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
             <span className="status-dot relative inline-flex size-2 rounded-full" />
           </span>
           {t(config.badgeKey)}
-        </motion.span>
+        </m.span>
 
         <div className="mt-8 mb-6 flex justify-center">
           {variant === 'error' ? (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.15, type: 'spring', stiffness: 220, damping: 18 }}
               className={cn(
                 'flex items-center justify-center rounded-2xl border bg-white shadow-lg backdrop-blur-sm',
                 config.iconRing,
-                compact ? 'h-24 w-24' : 'h-28 w-28 sm:h-32 sm:w-32',
+                compact ? 'size-24' : 'size-28 sm:size-32',
               )}
               aria-hidden
             >
               <HeroIcon
-                className={cn(config.iconColor, compact ? 'h-10 w-10' : 'h-11 w-11 sm:h-12 sm:w-12')}
+                className={cn(config.iconColor, compact ? 'size-10' : 'size-11 sm:size-12')}
                 strokeWidth={1.75}
               />
-            </motion.div>
+            </m.div>
           ) : (
             <div
               className="flex items-center justify-center gap-1 sm:gap-3"
@@ -190,25 +190,25 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
                 {config.leftDigit}
               </span>
 
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.15, type: 'spring', stiffness: 220, damping: 18 }}
                 className={cn(
                   'mx-1 flex shrink-0 items-center justify-center rounded-2xl border bg-white shadow-lg backdrop-blur-sm',
                   config.iconRing,
-                  compact ? 'h-[4.5rem] w-[4.5rem] sm:h-20 sm:w-20' : 'h-20 w-20 sm:h-24 sm:w-24',
+                  compact ? 'size-[4.5rem] sm:size-20' : 'size-20 sm:size-24',
                 )}
                 aria-hidden
               >
                 <HeroIcon
                   className={cn(
                     config.iconColor,
-                    compact ? 'h-8 w-8 sm:h-9 sm:w-9' : 'h-9 w-9 sm:h-10 sm:w-10',
+                    compact ? 'size-8 sm:size-9' : 'size-9 sm:size-10',
                   )}
                   strokeWidth={1.75}
                 />
-              </motion.div>
+              </m.div>
 
               <span
                 className={cn(
@@ -262,7 +262,7 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
             </Link>
           ))}
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

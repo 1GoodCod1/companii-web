@@ -36,12 +36,15 @@ export function EstimateVersionHistory({ projectId }: Props) {
   );
 
   const versionBSelectOptions = useMemo(
-    () => [
-      { value: '', label: t('versions.select', 'Select...') },
-      ...versionOptions
-        .filter((opt) => opt.value !== selectedA)
-        .map((opt) => ({ value: String(opt.value), label: opt.label })),
-    ],
+    () => {
+      const initial = [{ value: '', label: t('versions.select', 'Select...') }];
+      return versionOptions.reduce((acc, opt) => {
+        if (opt.value !== selectedA) {
+          acc.push({ value: String(opt.value), label: opt.label });
+        }
+        return acc;
+      }, initial);
+    },
     [versionOptions, selectedA, t],
   );
 
@@ -70,7 +73,7 @@ export function EstimateVersionHistory({ projectId }: Props) {
               maxVisibleItems={8}
             />
 
-            <ArrowRightLeft className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+            <ArrowRightLeft className="size-4 text-muted-foreground flex-shrink-0" />
 
             <AppSelect
               value={selectedB != null ? String(selectedB) : ''}
@@ -92,15 +95,15 @@ export function EstimateVersionHistory({ projectId }: Props) {
                   </span>
                   {diff.lineCountDelta === 0 ? (
                     <span className="flex items-center gap-1">
-                      <Minus className="w-3 h-3" /> 0
+                      <Minus className="size-3" /> 0
                     </span>
                   ) : diff.lineCountDelta > 0 ? (
                     <span className="flex items-center gap-1 text-green-600">
-                      <TrendingUp className="w-3 h-3" />+{diff.lineCountDelta}
+                      <TrendingUp className="size-3" />+{diff.lineCountDelta}
                     </span>
                   ) : (
                     <span className="flex items-center gap-1 text-red-600">
-                      <TrendingDown className="w-3 h-3" />
+                      <TrendingDown className="size-3" />
                       {diff.lineCountDelta}
                     </span>
                   )}
@@ -113,12 +116,12 @@ export function EstimateVersionHistory({ projectId }: Props) {
                     <span className="flex items-center gap-1">0 MDL</span>
                   ) : diff.grandTotalDelta > 0 ? (
                     <span className="flex items-center gap-1 text-green-600">
-                      <TrendingUp className="w-3 h-3" />+
+                      <TrendingUp className="size-3" />+
                       {diff.grandTotalDelta.toLocaleString()} MDL
                     </span>
                   ) : (
                     <span className="flex items-center gap-1 text-red-600">
-                      <TrendingDown className="w-3 h-3" />
+                      <TrendingDown className="size-3" />
                       {diff.grandTotalDelta.toLocaleString()} MDL
                     </span>
                   )}
@@ -131,9 +134,9 @@ export function EstimateVersionHistory({ projectId }: Props) {
                     {t('versions.removedLines', 'Removed lines')} ({diff.removedLines.length})
                   </div>
                   <ul className="space-y-1">
-                    {diff.removedLines.map((name: string, i: number) => (
+                    {diff.removedLines.map((name: string) => (
                       <li
-                        key={i}
+                        key={name}
                         className="text-xs text-red-700 bg-red-50 rounded px-2 py-1"
                       >
                         {name}
@@ -149,9 +152,9 @@ export function EstimateVersionHistory({ projectId }: Props) {
                     {t('versions.addedLines', 'Added lines')} ({diff.addedLines.length})
                   </div>
                   <ul className="space-y-1">
-                    {diff.addedLines.map((name: string, i: number) => (
+                    {diff.addedLines.map((name: string) => (
                       <li
-                        key={i}
+                        key={name}
                         className="text-xs text-green-700 bg-green-50 rounded px-2 py-1"
                       >
                         {name}

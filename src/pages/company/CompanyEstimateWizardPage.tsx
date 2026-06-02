@@ -33,7 +33,7 @@ export function CompanyEstimateWizardPage() {
       <div className="space-y-6 animate-fade-in">
         <div className="flex items-center gap-3">
           <Link to="/company/smete" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-violet-600">
-            <ArrowLeft className="w-4 h-4" /> {t('company.estimateWizardPage.backToList')}
+            <ArrowLeft className="size-4" /> {t('company.estimateWizardPage.backToList')}
           </Link>
         </div>
 

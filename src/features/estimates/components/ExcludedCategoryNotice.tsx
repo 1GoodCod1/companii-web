@@ -39,7 +39,7 @@ export function ExcludedCategoryNotice({ slug, categoryName }: Props) {
     <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50/50 p-5 shadow-xs">
       <div className="flex items-start gap-4">
         <div className="p-3 rounded-xl bg-amber-100 text-amber-800 shrink-0">
-          <Icon className="w-5 h-5" />
+          <Icon className="size-5" />
         </div>
         <div className="min-w-0 flex-1 space-y-2">
           <div>

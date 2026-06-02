@@ -3,7 +3,7 @@ import { SEOHead } from '@/shared/ui/seo/SEOHead';
 import { LegalDocumentLayout, type LegalTocItem } from '@/shared/ui/legal/LegalDocumentLayout';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { useLocale } from '@/shared/hooks/useLocale';
-import { renderTermsContent } from '@/shared/config/i18n/content/legalTerms';
+import { TermsContent } from '@/shared/config/i18n/content/legalTerms';
 
 export function TermsPage() {
   const { t } = useTranslation();
@@ -32,7 +32,7 @@ export function TermsPage() {
           label: t('legal.terms.relatedPrivacyLabel'),
         }}
       >
-        {renderTermsContent(locale, lp('/privacy'))}
+        <TermsContent locale={locale} privacyPath={lp('/privacy')} />
       </LegalDocumentLayout>
     </>
   );

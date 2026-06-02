@@ -85,17 +85,28 @@ export function CustomerImportModal({ open, onClose }: Props) {
   const handleConfirm = async () => {
     if (!preview) return;
 
-    const rows = preview.rows
-      .filter((row) => row.action === 'create' || row.action === 'update')
-      .map((row) => ({
-        action: row.action as 'create' | 'update',
-        fullName: row.fullName,
-        phone: row.phone,
-        email: row.email,
-        address: row.address,
-        notes: row.notes,
-        existingCustomerId: row.existingCustomerId,
-      }));
+    const rows = preview.rows.reduce<Array<{
+      action: 'create' | 'update';
+      fullName: string;
+      phone: string;
+      email?: string;
+      address: string;
+      notes?: string;
+      existingCustomerId?: string;
+    }>>((acc, row) => {
+      if (row.action === 'create' || row.action === 'update') {
+        acc.push({
+          action: row.action,
+          fullName: row.fullName,
+          phone: row.phone,
+          email: row.email ?? undefined,
+          address: row.address,
+          notes: row.notes ?? undefined,
+          existingCustomerId: row.existingCustomerId ?? undefined,
+        });
+      }
+      return acc;
+    }, []);
 
     if (!rows.length) {
       toast.error(t('company.fsm.customers.import.toast.noValidRows'));
@@ -136,7 +147,7 @@ export function CustomerImportModal({ open, onClose }: Props) {
               onClick={() => void handleDownload('xlsx')}
               className={`${cabinetBtnPrimary} inline-flex items-center gap-2`}
             >
-              <FileSpreadsheet className="h-4 w-4" />
+              <FileSpreadsheet className="size-4" />
               {t('company.fsm.customers.import.step1.downloadXlsx')}
             </button>
             <button
@@ -144,7 +155,7 @@ export function CustomerImportModal({ open, onClose }: Props) {
               onClick={() => void handleDownload('csv')}
               className={`${cabinetBtnSecondary} inline-flex items-center gap-2`}
             >
-              <Download className="h-4 w-4" />
+              <Download className="size-4" />
               {t('company.fsm.customers.import.step1.downloadCsv')}
             </button>
           </div>
@@ -172,7 +183,7 @@ export function CustomerImportModal({ open, onClose }: Props) {
               disabled={previewImport.isPending}
               className={`${cabinetBtnSecondary} inline-flex items-center gap-2`}
             >
-              <Upload className="h-4 w-4" />
+              <Upload className="size-4" />
               {previewImport.isPending
                 ? t('company.fsm.customers.import.step2.analyzing')
                 : t('company.fsm.customers.import.step2.selectFile')}

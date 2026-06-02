@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Eye, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -36,13 +36,26 @@ import {
   formatPricingRuleExplanation,
 } from '@/features/estimates';
 
-export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
+export function PortalEstimatesSection(props: { data: PortalDashboardDto }) {
+  return usePortalEstimatesSectionView(props);
+}
+
+function usePortalEstimatesSectionView({ data }: { data: PortalDashboardDto }) {
   const { t } = useTranslation();
   const updateEstimate = useUpdatePortalEstimateMutation();
   const requestChanges = useRequestPortalEstimateChangesMutation();
   const { ask, dialog } = useCabinetConfirmDialog();
   const { estimates } = data;
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const estimatesMeta = useMemo(
+    () => (
+      <span className="text-xs text-gray-400">
+        {t('portal.estimatesSection.meta', { count: estimates.length })}
+      </span>
+    ),
+    [estimates.length, t],
+  );
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [commentingId, setCommentingId] = useState<string | null>(null);
   const [commentText, setCommentText] = useState('');
@@ -115,11 +128,7 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
         <PanelHeader
           title={t('portal.estimatesSection.title')}
           description={t('portal.estimatesSection.description')}
-          meta={
-            <span className="text-xs text-gray-400">
-              {t('portal.estimatesSection.meta', { count: estimates.length })}
-            </span>
-          }
+          meta={estimatesMeta}
         />
         {estimates.length === 0 ? (
           <EmptyState message={t('portal.estimatesSection.empty')} />
@@ -312,7 +321,7 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                               </p>
                               <div className="bg-emerald-50/40 border border-emerald-100 rounded-xl p-3 space-y-1.5 shadow-xs">
                                 <p className="text-[10px] font-bold uppercase text-emerald-800 flex items-center gap-1">
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                                  <CheckCircle2 className="size-3.5 text-emerald-600" />
                                   {t('company.estimateWizard.scopeSummary.included', 'Inclus')}
                                 </p>
                                 <ul className="space-y-1 text-xs text-emerald-950 font-medium">
@@ -400,7 +409,7 @@ export function PortalEstimatesSection({ data }: { data: PortalDashboardDto }) {
                                             }
                                             className="inline-flex items-center gap-1 rounded-xl bg-violet-600 hover:bg-violet-700 px-2.5 py-1 text-[9px] font-extrabold text-white transition-all shadow-xs cursor-pointer"
                                           >
-                                            <Eye className="w-3.5 h-3.5" /> {t('portal.estimatesSection.receipt')}
+                                            <Eye className="size-3.5" /> {t('portal.estimatesSection.receipt')}
                                           </button>
                                         )}
                                       </div>

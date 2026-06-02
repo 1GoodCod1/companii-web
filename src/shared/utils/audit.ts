@@ -123,9 +123,11 @@ function extractReadableFields(data: Record<string, unknown>): string {
     .filter(([key, val]) => !SKIP.has(key) && val != null && val !== '')
     .slice(0, 3);
   if (entries.length === 0) return '';
-  return entries.map(([, val]) => {
-    if (typeof val === 'string') return val;
-    if (typeof val === 'number' || typeof val === 'boolean') return String(val);
-    return '';
-  }).filter(Boolean).join(' · ') || '';
+  return entries
+    .flatMap(([, val]) => {
+      if (typeof val === 'string') return [val];
+      if (typeof val === 'number' || typeof val === 'boolean') return [String(val)];
+      return [];
+    })
+    .join(' · ');
 }

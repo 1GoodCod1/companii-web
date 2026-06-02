@@ -32,14 +32,11 @@ export function CompanyServiceFormModal({
 }) {
   const { t } = useTranslation();
 
-  const durationUnitLabel = (value: ServiceFormState['durationUnit']) =>
-    t(`company.fsm.services.form.durationUnits.${value}`);
-
   const durationUnitOptions = useMemo(
     () =>
       DURATION_UNIT_OPTIONS.map((option) => ({
         value: option.value,
-        label: durationUnitLabel(option.value),
+        label: t(`company.fsm.services.form.durationUnits.${option.value}`),
       })),
     [t],
   );

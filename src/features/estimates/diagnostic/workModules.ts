@@ -9,9 +9,12 @@ export const ENABLED_WORK_MODULES_KEY = 'enabledWorkModules';
 
 export function getDefaultEnabledWorkModules(config: EstimateBlueprintConfig): string[] {
   if (!config.workModules?.length) return [];
-  return config.workModules
-    .filter((module) => module.defaultEnabled !== false)
-    .map((module) => module.key);
+  return config.workModules.reduce<string[]>((acc, module) => {
+    if (module.defaultEnabled !== false) {
+      acc.push(module.key);
+    }
+    return acc;
+  }, []);
 }
 
 export function readEnabledWorkModules(

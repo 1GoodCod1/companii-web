@@ -16,7 +16,7 @@ export function ObjectLeadInfo({ project }: ObjectLeadInfoProps) {
   return (
     <div className="rounded-2xl border border-violet-100 bg-gradient-to-r from-violet-50/50 to-indigo-50/50 p-5 mb-2 shadow-xs flex items-start gap-4">
       <div className="p-2.5 rounded-xl bg-violet-100 text-violet-700 shrink-0">
-        <Calculator className="w-5 h-5" />
+        <Calculator className="size-5" />
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-[10px] font-bold text-violet-800 uppercase tracking-wider">

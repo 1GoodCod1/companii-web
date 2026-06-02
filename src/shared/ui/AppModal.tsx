@@ -1,7 +1,8 @@
-import { useEffect, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
+import { useModalLockAndEscape } from '@/shared/hooks/useModalLockAndEscape';
 
 const SIZE_CLASSES = {
   md: 'max-w-xl',
@@ -28,27 +29,14 @@ export function AppModal({
 }) {
   const { t } = useTranslation();
 
-  useEffect(() => {
-    if (!open) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-    document.body.classList.add('modal-open');
-    window.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.body.classList.remove('modal-open');
-      window.removeEventListener('keydown', onKeyDown);
-    };
-  }, [open, onClose]);
+  useModalLockAndEscape(open, onClose);
 
   if (!open || typeof document === 'undefined') return null;
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8"
-      role="dialog"
-      aria-modal="true"
+    <dialog
       aria-label={title}
+      className="fixed inset-0 z-[200] m-0 flex size-full max-h-none max-w-none items-center justify-center border-0 bg-transparent p-4 sm:p-8"
     >
       <button
         type="button"
@@ -81,7 +69,7 @@ export function AppModal({
           <div className="shrink-0 border-t border-gray-100 bg-gray-50/80 px-6 py-4 sm:px-8">{footer}</div>
         ) : null}
       </div>
-    </div>,
+    </dialog>,
     document.body,
   );
 }

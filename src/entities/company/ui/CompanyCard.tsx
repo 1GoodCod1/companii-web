@@ -55,7 +55,7 @@ function CardCover({
         <MediaImage
           src={coverSrc}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
           onError={() => setImageFailed(true)}
         />
@@ -68,7 +68,7 @@ function CardCover({
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
       <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/95 backdrop-blur-sm px-2.5 py-1 text-[10px] font-semibold text-emerald-700 shadow-sm">
-        <BadgeCheck className="h-3.5 w-3.5" />
+        <BadgeCheck className="size-3.5" />
         {verifiedLabel}
       </span>
     </div>
@@ -107,7 +107,7 @@ export function CompanyCard({ company }: { company: PublicCompanyListItemDto }) 
             </p>
           </div>
           <div className="flex h-8 shrink-0 items-center gap-1 rounded-lg bg-amber-50 px-2.5">
-            <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
+            <Star className="size-3.5 text-amber-500 fill-amber-500" />
             <span className="text-xs font-bold text-gray-800 tabular-nums">{rating.toFixed(1)}</span>
           </div>
         </div>
@@ -119,11 +119,11 @@ export function CompanyCard({ company }: { company: PublicCompanyListItemDto }) 
         <div className="mt-auto pt-4 border-t border-gray-100/80">
           <div className="grid grid-cols-3 gap-2 text-[11px] text-gray-500">
             <span className="inline-flex items-center gap-1 min-w-0">
-              <MapPin className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+              <MapPin className="size-3.5 shrink-0 text-gray-400" />
               <span className="truncate">{company.city ? getTranslatedCityName(t, company.city) : '—'}</span>
             </span>
             <span className="inline-flex items-center justify-center gap-1 min-w-0">
-              <Users className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+              <Users className="size-3.5 shrink-0 text-gray-400" />
               <span className="truncate">{company.teamSize}</span>
             </span>
             <span className="text-right truncate tabular-nums">

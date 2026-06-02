@@ -100,7 +100,7 @@ export function CustomerDetailPanel({ customer, onEdit, onDelete }: Props) {
               <button
                 type="button"
                 onClick={() => onEdit?.(customer)}
-                className="p-2 hover:bg-violet-50 rounded-xl text-gray-500 hover:text-violet-600 border border-transparent hover:border-violet-100 transition-all cursor-pointer text-xs"
+                className="p-2 rounded-xl text-gray-800 hover:text-violet-700 border border-transparent transition-all cursor-pointer text-xs"
                 title={t('cabinet.common.edit')}
               >
                 ✏️
@@ -108,7 +108,7 @@ export function CustomerDetailPanel({ customer, onEdit, onDelete }: Props) {
               <button
                 type="button"
                 onClick={() => onDelete?.(customer.id)}
-                className="p-2 hover:bg-red-50 rounded-xl text-gray-500 hover:text-red-600 border border-transparent hover:border-red-100 transition-all cursor-pointer text-xs"
+                className="p-2 rounded-xl text-gray-800 hover:text-red-700 border border-transparent transition-all cursor-pointer text-xs"
                 title={t('cabinet.common.delete')}
               >
                 🗑️
@@ -222,7 +222,7 @@ export function CustomerDetailPanel({ customer, onEdit, onDelete }: Props) {
                   const statusLabel = timelineStatusLabel(item);
                   return (
                     <li key={item.id} className="ml-4">
-                      <span className="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-violet-400 ring-4 ring-white" />
+                      <span className="absolute -left-1.5 mt-1.5 size-3 rounded-full bg-violet-400 ring-4 ring-white" />
                       <div className="rounded-xl bg-slate-50/80 px-3 py-2.5 space-y-1">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex flex-wrap items-center gap-2">

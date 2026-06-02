@@ -60,11 +60,11 @@ export function CompanyEstimatesPage() {
                 to="/company/smete/coeficienti"
                 className="inline-flex items-center gap-1.5 rounded-none border border-violet-200 bg-white px-3 py-2 text-xs font-bold text-violet-700 hover:bg-violet-50 transition-colors"
               >
-                <Percent className="w-4 h-4" />
+                <Percent className="size-4" />
                 {t('company.estimatesPage.pricingModifiersBtn', { defaultValue: 'Coeficienți de preț' })}
               </Link>
               <Link to="/company/smete/new" className={cabinetBtnPrimary}>
-                <Plus className="w-4 h-4" />
+                <Plus className="size-4" />
                 {t('company.estimatesPage.newBtn')}
               </Link>
             </div>
@@ -73,17 +73,17 @@ export function CompanyEstimatesPage() {
 
         <div className="grid md:grid-cols-3 gap-4">
           <Panel className="p-5 bg-violet-50 border-violet-100">
-            <Sparkles className="w-5 h-5 text-violet-600 mb-2" />
+            <Sparkles className="size-5 text-violet-600 mb-2" />
             <p className="font-bold text-gray-900">{t('company.estimatesPage.featureCategories')}</p>
             <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureCategoriesHint')}</p>
           </Panel>
           <Panel className="p-5 bg-sky-50 border-sky-100">
-            <Calculator className="w-5 h-5 text-sky-600 mb-2" />
+            <Calculator className="size-5 text-sky-600 mb-2" />
             <p className="font-bold text-gray-900">{t('company.estimatesPage.featureAutoCalc')}</p>
             <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureAutoCalcHint')}</p>
           </Panel>
           <Panel className="p-5 bg-emerald-50 border-emerald-100">
-            <ChevronRight className="w-5 h-5 text-emerald-600 mb-2" />
+            <ChevronRight className="size-5 text-emerald-600 mb-2" />
             <p className="font-bold text-gray-900">{t('company.estimatesPage.featureExecution')}</p>
             <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureExecutionHint')}</p>
           </Panel>
@@ -138,16 +138,16 @@ export function CompanyEstimatesPage() {
                             to={`/company/smete/${project.id}`}
                             className="inline-flex items-center gap-1 text-violet-600 font-semibold hover:text-violet-700 transition-colors"
                           >
-                            {t('company.estimatesPage.open')} <ChevronRight className="w-4 h-4" />
+                            {t('company.estimatesPage.open')} <ChevronRight className="size-4" />
                           </Link>
                           {project.status !== 'IN_EXECUTION' && (
                             <button
                               type="button"
                               onClick={() => handleDeleteClick(project.id, project.number)}
-                              className="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition-all cursor-pointer"
+                              className="text-gray-800 hover:text-rose-700 p-1.5 rounded-lg transition-all cursor-pointer"
                               title={t('company.estimatesPage.confirmDeleteBtn')}
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="size-4" />
                             </button>
                           )}
                         </div>

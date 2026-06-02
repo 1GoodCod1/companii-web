@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CompanyManagementGate } from '@/features/companies';
 import { PageHero, Panel, PanelHeader, EmptyState } from '@/widgets/cabinet/cabinet-ui';
@@ -10,6 +11,15 @@ import { useLeadInbox } from '@/features/fsm';
 export function CompanyLeadsPage() {
   const { t } = useTranslation();
   const inbox = useLeadInbox(LEAD_STATUS.NEW);
+
+  const leadsMeta = useMemo(
+    () => (
+      <span className="text-xs text-gray-400">
+        {t('cabinet.common.records', { count: inbox.sortedLeads.length })}
+      </span>
+    ),
+    [inbox.sortedLeads.length, t],
+  );
 
   return (
     <CompanyManagementGate>
@@ -24,11 +34,7 @@ export function CompanyLeadsPage() {
         <Panel>
           <PanelHeader
             title={t('company.leadsPage.inboxTitle')}
-            meta={
-              <span className="text-xs text-gray-400">
-                {t('cabinet.common.records', { count: inbox.sortedLeads.length })}
-              </span>
-            }
+            meta={leadsMeta}
           />
           {inbox.isLoading ? (
             <p className="text-sm text-gray-400 p-4">{t('cabinet.common.loading')}</p>
