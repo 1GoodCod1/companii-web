@@ -204,7 +204,6 @@ export function CompanyTeamPage() {
       onConfirm: async () => {
         try {
           await transferOwnership.mutateAsync({
-            companyId: activeCompanyId,
             newOwnerUserId: transferTargetUserId,
           });
           toast.success(t('company.teamPage.toastOwnershipTransferred'));

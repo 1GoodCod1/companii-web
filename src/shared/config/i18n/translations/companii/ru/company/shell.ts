@@ -46,6 +46,8 @@ export const companiiRuCompanyShell = {
 
   profile: 'Профиль',
 
+  gallery: 'Галерея',
+
   team: 'Команда',
 
   servicii: 'Услуги и цены',

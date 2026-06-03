@@ -119,9 +119,14 @@ export function PortalInvoicesSection({ data }: { data: PortalDashboardDto }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-violet-50">
-              {invoices.map((inv: InvoiceDto) => (
+              {invoices.map((inv) => (
                 <tr key={inv.id} className="hover:bg-violet-50/20 transition-colors">
-                  <td className="p-3 font-bold text-gray-800">{inv.number}</td>
+                  <td className="p-3 font-bold text-gray-800">
+                    {inv.number}
+                    {inv.company?.name ? (
+                      <p className="text-[11px] text-violet-600 font-semibold">{inv.company.name}</p>
+                    ) : null}
+                  </td>
                   <td className="p-3 text-xs text-gray-500">
                     {formatDateLocalized(inv.issuedAt, locale)}
                   </td>

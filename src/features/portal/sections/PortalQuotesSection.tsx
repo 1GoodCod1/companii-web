@@ -14,7 +14,6 @@ import {
 } from '@/entities/fsm/model/quoteStatus.constants';
 import { quoteStatusTone } from '@/entities/fsm/model/portalStatus';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
-import type { QuoteDto } from '@/entities/fsm/model/types';
 import { getErrorMessage } from '@/shared/utils/errors';
 import { quoteStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
@@ -70,7 +69,7 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
         <EmptyState message={t('portal.quotesSection.empty')} />
       ) : (
         <ul className="space-y-3">
-          {quotes.map((item: QuoteDto) => (
+          {quotes.map((item) => (
             <li
               key={item.id}
               className="rounded-2xl bg-white/60 p-4 hover:bg-violet-50/30 transition-colors space-y-3"
@@ -80,6 +79,9 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                     {item.number}
                   </span>
+                  {item.company?.name ? (
+                    <p className="text-[11px] text-violet-600 font-semibold mt-0.5">{item.company.name}</p>
+                  ) : null}
                   <p className="font-black text-violet-700 text-lg mt-0.5 tracking-tight">
                     {Number(item.total).toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}
                   </p>

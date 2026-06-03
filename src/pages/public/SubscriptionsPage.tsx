@@ -25,7 +25,7 @@ export function SubscriptionsPage() {
   const { isAuthed, user, cabinetRoute, planCardCta } = usePublicAuthCta();
   const isEndClient = user?.accountKind === 'END_CLIENT';
   const hasCompany = user?.accountKind === 'COMPANY_STAFF' && !!user.activeCompanyId;
-  const { data: subData } = useMySubscriptionQuery();
+  const { data: subData, isLoading: isSubscriptionLoading } = useMySubscriptionQuery();
   const claimFree = useClaimFreePlanMutation();
   const [claimingPlanCode, setClaimingPlanCode] = useState<CompanySubscriptionPlanCode | null>(null);
 
@@ -39,6 +39,7 @@ export function SubscriptionsPage() {
   const subscription = subData as CompanySubscriptionDto | null | undefined;
   const currentPlanCode = hasCompany ? subscription?.plan?.code : undefined;
   const onFreePlan = isOnFreePlan(currentPlanCode);
+  const awaitingSubscription = hasCompany && isSubscriptionLoading;
 
   const handleClaimFree = async (planCode: ClaimableSubscriptionPlanCode) => {
     setClaimingPlanCode(planCode);
@@ -89,7 +90,7 @@ export function SubscriptionsPage() {
           </p>
         ) : null}
 
-        {isLoading && (
+        {(isLoading || awaitingSubscription) && (
           <p className="text-center text-sm text-gray-400 font-medium">{t('subscriptions.loading')}</p>
         )}
 
@@ -99,7 +100,7 @@ export function SubscriptionsPage() {
           </div>
         )}
 
-        {!isLoading && !isError && plans.length > 0 && (
+        {!isLoading && !awaitingSubscription && !isError && plans.length > 0 && (
           <div className="space-y-4">
             {hasCompany && !onFreePlan ? (
               <p className="text-center text-sm font-semibold text-emerald-700">

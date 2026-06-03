@@ -27,9 +27,16 @@ export function usePublicAuthCta() {
 
   const cabinet = user ? resolveCabinet(user, t) : null;
 
+  const needsCompanyRegistration =
+    isAuthed && user?.accountKind === 'COMPANY_STAFF' && !user.activeCompanyId;
+  const canPublishCompanyProfile =
+    isAuthed && user?.accountKind === 'COMPANY_STAFF' && !!user.activeCompanyId;
+
   return {
     isAuthed,
     user,
+    needsCompanyRegistration,
+    canPublishCompanyProfile,
     cabinetRoute: cabinet?.to ?? '/company',
     cabinetLabel: cabinet?.label ?? t('auth.cabinetCta.personal'),
     primaryCta: isAuthed && cabinet

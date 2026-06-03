@@ -7,6 +7,7 @@ import { MobileSheet } from '@/widgets/layout/MobileSheet';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth';
 import { FaberLogo } from '@/shared/ui/brand/FaberLogo';
+import { PublicHeaderAuth } from '@/widgets/layout/PublicHeaderAuth';
 import { PUBLIC_ROUTE } from '@/shared/constants/routes.constants';
 import { stripLocalePrefix } from '@/lib/i18n/localeRoutes';
 import { cn } from '@/lib/utils';
@@ -15,9 +16,6 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 const NAV_LINK_CLASS =
   'text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap';
-
-const NAV_CTA_CLASS =
-  'inline-flex h-8 items-center justify-center rounded-lg bg-gray-900 hover:bg-gray-800 px-3 text-[11px] font-black uppercase tracking-wide text-white transition-colors whitespace-nowrap';
 
 const PUBLIC_NAV_ITEMS = [
   { path: '/how-it-works', labelKey: 'nav.howItWorks' },
@@ -65,23 +63,15 @@ export function PublicLayout() {
           </nav>
 
           {/* Right side: auth + language + hamburger */}
-          <div className="flex shrink-0 items-center gap-2 border-l border-gray-200 pl-3">
+          <div className="flex shrink-0 items-center gap-2.5 border-l border-gray-200 pl-3">
             {/* Desktop auth */}
             <div className="hidden lg:contents">
-              {isAuthed ? (
-                <Link to={cabinetRoute} className={NAV_CTA_CLASS}>
-                  {cabinetLabel}
-                </Link>
-              ) : (
-                <>
-                  <Link to="/login" className={NAV_LINK_CLASS}>
-                    {t('nav.login')}
-                  </Link>
-                  <Link to="/register" className={NAV_CTA_CLASS}>
-                    {t('nav.register')}
-                  </Link>
-                </>
-              )}
+              <PublicHeaderAuth
+                isAuthed={isAuthed}
+                user={user}
+                cabinetRoute={cabinetRoute}
+                cabinetLabel={cabinetLabel}
+              />
             </div>
             <div className="hidden lg:contents">
               <LanguageSwitcher />
@@ -133,32 +123,14 @@ export function PublicLayout() {
 
           {/* Auth section */}
           <div className="border-t border-gray-100 pt-4 space-y-3">
-            {isAuthed ? (
-              <Link
-                to={cabinetRoute}
-                onClick={closeMobileMenu}
-                className="flex items-center justify-center w-full rounded-lg bg-gray-900 hover:bg-gray-800 px-4 py-2.5 text-sm font-black text-white transition-colors"
-              >
-                {cabinetLabel}
-              </Link>
-            ) : (
-              <div className="space-y-2">
-                <Link
-                  to="/login"
-                  onClick={closeMobileMenu}
-                  className="flex items-center justify-center w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  {t('nav.login')}
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={closeMobileMenu}
-                  className="flex items-center justify-center w-full rounded-lg bg-gray-900 hover:bg-gray-800 px-4 py-2.5 text-sm font-black text-white transition-colors"
-                >
-                  {t('nav.register')}
-                </Link>
-              </div>
-            )}
+            <PublicHeaderAuth
+              variant="mobile"
+              isAuthed={isAuthed}
+              user={user}
+              cabinetRoute={cabinetRoute}
+              cabinetLabel={cabinetLabel}
+              onNavigate={closeMobileMenu}
+            />
 
             <div className="pt-2 flex justify-center">
               <LanguageSwitcher />

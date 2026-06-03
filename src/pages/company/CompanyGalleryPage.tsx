@@ -1,12 +1,13 @@
+import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { useCompanyGalleryForm } from '@/features/companies/gallery/useCompanyGalleryForm';
 import { CompanyGallerySection } from '@/entities/company/ui/CompanyGallerySection';
-import { PageHero, cabinetBtnPrimary, EmptyState } from '@/widgets/cabinet/cabinet-ui';
+import { PageHero, cabinetBtnPrimary, cabinetBtnSecondary, EmptyState } from '@/widgets/cabinet/cabinet-ui';
 import { ROUTE_ABS, COMPANY_CABINET_PATH } from '@/shared/constants/routes.constants';
 
 export function CompanyGalleryPage() {
@@ -19,12 +20,32 @@ export function CompanyGalleryPage() {
     pendingGallery,
     setPendingGallery,
     isSaving,
+    uploadProgress,
     handleGalleryPick,
     handlePendingGalleryRemove,
     handleGalleryRemove,
     handleSave,
+    handleCancelUpload,
     hasPendingChanges,
   } = useCompanyGalleryForm(activeCompany);
+
+  const onCaptionChange = useCallback(
+    (id: string, caption: string) =>
+      setPendingGallery((prev) =>
+        prev.map((item) => (item.id === id ? { ...item, caption } : item)),
+      ),
+    [setPendingGallery],
+  );
+
+  const onGalleryRemove = useCallback(
+    (imageId: string) => void handleGalleryRemove(imageId),
+    [handleGalleryRemove],
+  );
+
+  const progressPct =
+    uploadProgress && uploadProgress.total > 0
+      ? Math.round((uploadProgress.current / uploadProgress.total) * 100)
+      : 0;
 
   if (isPending && !companyMe) {
     return (
@@ -64,25 +85,48 @@ export function CompanyGalleryPage() {
           galleryImages={activeCompany.galleryImages ?? []}
           pendingGallery={pendingGallery}
           onGalleryPick={handleGalleryPick}
-          onPendingGalleryCaptionChange={(id, caption) =>
-            setPendingGallery((prev) =>
-              prev.map((item) => (item.id === id ? { ...item, caption } : item)),
-            )
-          }
+          onPendingGalleryCaptionChange={onCaptionChange}
           onPendingGalleryRemove={handlePendingGalleryRemove}
-          onGalleryRemove={(imageId) => void handleGalleryRemove(imageId)}
-          disabled={false}
+          onGalleryRemove={onGalleryRemove}
+          disabled={isSaving}
         />
 
-        {hasPendingChanges ? (
+        {uploadProgress ? (
+          <div className="space-y-2 border-t border-slate-100 pt-4">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold text-slate-600">
+                {t('company.galleryPage.uploading', {
+                  current: Math.ceil(uploadProgress.current),
+                  total: uploadProgress.total,
+                })}
+              </span>
+              <span className="font-black text-violet-600">{progressPct}%</span>
+            </div>
+            <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-violet-600 transition-all duration-300"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleCancelUpload}
+              className={`${cabinetBtnSecondary} flex items-center gap-1.5 text-xs`}
+            >
+              <X className="size-3.5" />
+              {t('cabinet.common.cancel')}
+            </button>
+          </div>
+        ) : null}
+
+        {hasPendingChanges && !isSaving ? (
           <div className="flex justify-end border-t border-slate-100 pt-4">
             <button
               type="button"
-              disabled={isSaving}
               onClick={() => void handleSave()}
               className={`${cabinetBtnPrimary} min-w-[160px] justify-center py-3 text-sm`}
             >
-              {isSaving ? t('cabinet.common.saving') : t('company.galleryPage.saveChanges')}
+              {t('company.galleryPage.saveChanges')}
             </button>
           </div>
         ) : null}

@@ -219,6 +219,7 @@ export function CompanyGallerySection({
                         src={item.preview}
                         alt={t('company.branding.previewAlt')}
                         className="size-full object-cover"
+                        loading="lazy"
                       />
                     )}
                   </button>

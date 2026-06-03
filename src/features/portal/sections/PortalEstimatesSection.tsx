@@ -144,6 +144,9 @@ function usePortalEstimatesSectionView({ data }: { data: PortalDashboardDto }) {
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                       {item.number}
                     </span>
+                    {item.company?.name ? (
+                      <p className="text-[11px] text-violet-600 font-semibold mt-0.5">{item.company.name}</p>
+                    ) : null}
                     <p className="font-bold text-gray-800 text-sm mt-0.5">{item.title}</p>
                     <p className="text-xs text-gray-500 mt-0.5">
                       {getTranslatedCategoryName(t, item.category)}

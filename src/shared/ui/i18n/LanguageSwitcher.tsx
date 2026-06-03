@@ -28,21 +28,22 @@ export function LanguageSwitcher({ className }: Props) {
   return (
     <div
       className={cn(
-        'inline-flex h-8 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50/80 p-0.5 shrink-0',
+        'inline-flex h-8 shrink-0 border border-gray-200 bg-white',
         className,
       )}
     >
-      {(['ro', 'ru'] as const).map((lang) => (
+      {(['ro', 'ru'] as const).map((lang, index) => (
         <button
           key={lang}
           type="button"
           onClick={() => handleChange(lang)}
           aria-label={`${t('nav.language')}: ${lang === 'ro' ? 'Română' : 'Русский'}`}
           className={cn(
-            'min-w-[1.75rem] rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide transition-colors',
+            'min-w-[2rem] px-2 text-[10px] font-bold uppercase tracking-wide transition-colors',
+            index > 0 && 'border-l border-gray-200',
             i18n.language === lang
-              ? 'bg-white text-violet-700 shadow-xs'
-              : 'text-gray-500 hover:text-gray-800',
+              ? 'bg-violet-600 text-white'
+              : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800',
           )}
         >
           {lang}

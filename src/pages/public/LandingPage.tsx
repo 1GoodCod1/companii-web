@@ -92,21 +92,21 @@ export function LandingPage() {
               <div className="mt-10 flex flex-wrap gap-4">
                 <Link
                   to={primaryCta.to}
-                  className="inline-flex items-center gap-2 rounded-xl bg-gray-900 hover:bg-gray-800 px-7 py-3.5 text-sm font-black text-white transition-colors"
+                  className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 px-7 py-3.5 text-sm font-black text-white transition-colors"
                 >
                   {primaryCta.label}
                   <ArrowRight className="size-4" />
                 </Link>
                 <Link
                   to={lp('/companies')}
-                  className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-7 py-3.5 text-sm font-black text-violet-800 transition-colors hover:bg-violet-100"
+                  className="inline-flex items-center gap-2 border border-violet-200 bg-violet-50 px-7 py-3.5 text-sm font-black text-violet-800 transition-colors hover:bg-violet-100"
                 >
                   <Building2 className="size-4" />
                   {t('landing.hero.browseCatalogLink')}
                 </Link>
                 <Link
                   to={lp('/how-it-works')}
-                  className="inline-flex items-center gap-2 rounded-xl glass-panel px-7 py-3.5 text-sm font-semibold text-gray-700 hover:bg-white transition-colors"
+                  className="inline-flex items-center gap-2 glass-panel px-7 py-3.5 text-sm font-semibold text-gray-700 hover:bg-white transition-colors"
                 >
                   <PlayCircle className="size-4 text-violet-600" />
                   {t('landing.hero.howItWorksLink')}

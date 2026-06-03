@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react';
 import { useEstimateOfflineCache } from '@/features/estimates/offline/useEstimateOfflineCache';
+import { clearOfflineQueue, readMutationQueue } from '@/features/estimates/offline/mutationQueue';
+import { idbPut } from '@/entities/estimate/model/idb';
 import { useSaveSitePlanMutation, useUpdateEstimateProjectMutation } from '@/features/estimates/api/useEstimates';
 import type { Plan2dData } from '@/entities/estimate/model/estimates';
 import type { WizardFormState } from './useWizardFormState';
@@ -173,24 +175,13 @@ export function useWizardOffline(projectId: string, formState: WizardFormState) 
   }, [offline, syncing, updateProject, savePlan]);
 
   const handleDiscardLocalChanges = useCallback(async () => {
-    await Promise.all([
-      offline.dropDraft(),
-      import('@/features/estimates/offline/mutationQueue').then(({ clearOfflineQueue }) =>
-        clearOfflineQueue(),
-      ),
-    ]);
+    await Promise.all([offline.dropDraft(), clearOfflineQueue()]);
     offline.acknowledgeConflict();
     await offline.refresh();
   }, [offline]);
 
   const handleKeepLocalChanges = useCallback(async () => {
     offline.acknowledgeConflict();
-    const [mq, idb] = await Promise.all([
-      import('@/features/estimates/offline/mutationQueue'),
-      import('@/entities/estimate/model/idb'),
-    ]);
-    const { readMutationQueue } = mq;
-    const { idbPut } = idb;
     const queue = await readMutationQueue(projectId);
     await Promise.all(
       queue.map((record) => {

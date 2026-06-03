@@ -1,11 +1,14 @@
 import { PortalLayout } from '@/widgets/layout/PortalLayout';
 import { RequireAuth } from '@/features/auth';
-import { PortalCereriPage } from '@/pages/portal/PortalCereriPage';
-import { PortalDashboardPage } from '@/pages/portal/PortalDashboardPage';
-import { PortalLucrariPage } from '@/pages/portal/PortalLucrariPage';
-import { PortalOfertePage } from '@/pages/portal/PortalOfertePage';
-import { PortalFacturiPage } from '@/pages/portal/PortalFacturiPage';
-import { PortalSmetePage } from '@/pages/portal/PortalSmetePage';
+import { LazyPage } from './LazyPage';
+import {
+  PortalCereriPage,
+  PortalDashboardPage,
+  PortalLucrariPage,
+  PortalOfertePage,
+  PortalFacturiPage,
+  PortalSmetePage,
+} from './lazy-pages';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import { ROUTE_ROOT, ROUTE_ACCESS, PORTAL_ROUTE } from '@/shared/constants/routes.constants';
 
@@ -17,12 +20,12 @@ export const portalRoutesSection = {
     </RequireAuth>
   ),
   children: [
-    { index: true, element: <PortalDashboardPage /> },
-    { path: PORTAL_ROUTE.CERERI, element: <PortalCereriPage /> },
-    { path: PORTAL_ROUTE.LUCRARI, element: <PortalLucrariPage /> },
-    { path: PORTAL_ROUTE.OFERTE, element: <PortalOfertePage /> },
-    { path: PORTAL_ROUTE.SMETE, element: <PortalSmetePage /> },
-    { path: PORTAL_ROUTE.FACTURI, element: <PortalFacturiPage /> },
+    { index: true, element: <LazyPage><PortalDashboardPage /></LazyPage> },
+    { path: PORTAL_ROUTE.CERERI, element: <LazyPage><PortalCereriPage /></LazyPage> },
+    { path: PORTAL_ROUTE.LUCRARI, element: <LazyPage><PortalLucrariPage /></LazyPage> },
+    { path: PORTAL_ROUTE.OFERTE, element: <LazyPage><PortalOfertePage /></LazyPage> },
+    { path: PORTAL_ROUTE.SMETE, element: <LazyPage><PortalSmetePage /></LazyPage> },
+    { path: PORTAL_ROUTE.FACTURI, element: <LazyPage><PortalFacturiPage /></LazyPage> },
     { path: '*', element: <NotFoundPage compact /> },
   ],
 };

@@ -95,6 +95,7 @@ export type EstimateProjectListDto = {
   createdAt: string;
   customer: { id: string; fullName: string; phone: string };
   category: { id: string; name: string; slug: string };
+  company?: { id: string; name: string; slug: string | null };
   quote?: { id: string; number: string; status: string } | null;
   stages?: Array<{ id: string; name: string; sortOrder: number; stageTotal: number }>;
 };

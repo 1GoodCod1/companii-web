@@ -11,7 +11,6 @@ import {
   useCompaniesListQuery,
 } from '@/features/companies/api/useCompanies';
 import type { CatalogOptionDto } from '@/entities/company/model/companies.types';
-import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth';
 import { AppSelect, cabinetFieldClass } from '@/widgets/cabinet/cabinet-ui';
 import {
@@ -22,7 +21,6 @@ import {
 
 export function CompaniesListPage() {
   const { t } = useTranslation();
-  const lp = useLocalizedPath();
   const [cityId, setCityId] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [search, setSearch] = useState('');
@@ -38,7 +36,7 @@ export function CompaniesListPage() {
   const { data, isLoading, isError } = useCompaniesListQuery(filters);
   const { data: cities } = useCitiesQuery();
   const { data: categories } = useCategoriesQuery();
-  const { isAuthed, cabinetRoute } = usePublicAuthCta();
+  const { needsCompanyRegistration, canPublishCompanyProfile, cabinetRoute } = usePublicAuthCta();
 
   const items = data?.items ?? [];
 
@@ -136,23 +134,16 @@ export function CompaniesListPage() {
             <p className="text-sm font-medium text-slate-700">
               {isEmptyCatalog ? t('companies.emptyNone') : t('companies.emptyFiltered')}
             </p>
-            {isEmptyCatalog ? (
+            {isEmptyCatalog && (needsCompanyRegistration || canPublishCompanyProfile) ? (
               <div className="mt-5">
-                {isAuthed ? (
-                  <Link
-                    to={cabinetRoute}
-                    className="inline-flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-5 py-2.5"
-                  >
-                    {t('companies.emptyCtaAuthed')}
-                  </Link>
-                ) : (
-                  <Link
-                    to={lp('/register')}
-                    className="inline-flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-5 py-2.5"
-                  >
-                    {t('companies.emptyCtaGuest')}
-                  </Link>
-                )}
+                <Link
+                  to={needsCompanyRegistration ? '/company/profile' : cabinetRoute}
+                  className="inline-flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-5 py-2.5"
+                >
+                  {needsCompanyRegistration
+                    ? t('companies.emptyCtaGuest')
+                    : t('companies.emptyCtaAuthed')}
+                </Link>
               </div>
             ) : null}
           </div>

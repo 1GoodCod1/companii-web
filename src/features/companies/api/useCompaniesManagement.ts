@@ -45,8 +45,8 @@ export function useCreateCompanyMutation() {
 export function useUpdateCompanyMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, ...body }: { id: string; [key: string]: unknown }) =>
-      apiFetch(`/companies/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+    mutationFn: (body: Record<string, unknown>) =>
+      apiFetch(`/companies/me`, { method: 'PATCH', body: JSON.stringify(body) }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: queryKeys.companies.all });
@@ -57,8 +57,8 @@ export function useUpdateCompanyMutation() {
 export function usePublishCompanyMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (companyId: string) =>
-      apiFetch(`/companies/${companyId}/publish`, { method: 'PATCH' }),
+    mutationFn: () =>
+      apiFetch(`/companies/me/publish`, { method: 'PATCH' }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: queryKeys.companies.all });
@@ -70,14 +70,12 @@ export function useAddGalleryImageMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({
-      companyId,
       url,
       caption,
     }: {
-      companyId: string;
       url: string;
       caption?: string;
-    }) => addGalleryImageApi(companyId, { url, caption }),
+    }) => addGalleryImageApi({ url, caption }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: queryKeys.companies.all });
@@ -86,24 +84,23 @@ export function useAddGalleryImageMutation() {
 }
 
 export function addGalleryImageApi(
-  companyId: string,
   body: { url: string; caption?: string },
 ): Promise<CompanyGalleryImageDto> {
-  return apiFetch<CompanyGalleryImageDto>(`/companies/${companyId}/gallery`, {
+  return apiFetch<CompanyGalleryImageDto>(`/companies/me/gallery`, {
     method: 'POST',
     body: JSON.stringify({ url: body.url, caption: body.caption || undefined }),
   });
 }
 
-export function removeGalleryImageApi(companyId: string, imageId: string): Promise<void> {
-  return apiFetch(`/companies/${companyId}/gallery/${imageId}`, { method: 'DELETE' });
+export function removeGalleryImageApi(imageId: string): Promise<void> {
+  return apiFetch(`/companies/me/gallery/${imageId}`, { method: 'DELETE' });
 }
 
 export function useRemoveGalleryImageMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ companyId, imageId }: { companyId: string; imageId: string }) =>
-      removeGalleryImageApi(companyId, imageId),
+    mutationFn: ({ imageId }: { imageId: string }) =>
+      removeGalleryImageApi(imageId),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: queryKeys.companies.all });

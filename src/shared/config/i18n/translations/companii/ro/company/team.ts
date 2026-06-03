@@ -19,7 +19,7 @@ export const companiiRoCompanyTeam = {
       removeFromList: 'Elimină din listă',
       captionPlaceholder: 'Descriere scurtă (opțional)',
       sectionTitle: 'Logo companie',
-      sectionDescription: 'Logo-ul apare pe profilul public din catalog. Galeria media se gestionează separat.',
+      sectionDescription: 'Logo-ul apare pe profilul public din catalog.',
     },
 
   reviewsUi: {
@@ -184,8 +184,8 @@ export const companiiRoCompanyTeam = {
       titleNew: 'Înregistrare companie nouă',
       descOwner: 'Actualizați detaliile juridice, branding-ul și datele de contact.',
       descManager:
-        'Actualizați contactul public, descrierea și galeria. Datele juridice sunt gestionate de proprietar.',
-      descNew: 'Completați profilul juridic, logo-ul și galeria pentru catalogul public.',
+        'Actualizați contactul public și descrierea. Datele juridice sunt gestionate de proprietar.',
+      descNew: 'Completați profilul juridic și logo-ul pentru catalogul public.',
       verified: 'Verificată',
       pendingVerification: 'În așteptare verificare',
       published: 'Publicată',
@@ -202,10 +202,10 @@ export const companiiRoCompanyTeam = {
       toastLeft: 'Ați părăsit compania.',
       form: {
         managerHint:
-          'Ca manager puteți edita informațiile vizibile clienților (contact, descriere, logo, galerie). IDNO, denumirea juridică și publicarea în catalog rămân la proprietar.',
+          'Ca manager puteți edita informațiile vizibile clienților (contact, descriere, logo). IDNO, denumirea juridică și publicarea în catalog rămân la proprietar.',
         publicCatalogTitle: 'Profil public în catalog',
         publicCatalogDescription:
-          'Companiile apar pe pagina /companies doar după verificare de admin și publicare.',
+          'Profilul apare în catalogul public după verificare.',
         visibleInCatalog: 'Compania este vizibilă în catalogul public',
         viewProfile: 'vezi profilul',
         viewPublicProfile: 'Vezi profilul public',
@@ -241,7 +241,6 @@ export const companiiRoCompanyTeam = {
         showPublicPhone: 'Arată telefonul public pe pagina companiei',
         showPublicEmail: 'Arată emailul public pe pagina companiei',
         description: 'Descriere scurtă',
-        mediaHint: 'Logo-ul și galeria se salvează împreună cu datele companiei.',
         leaveTeamTitle: 'Părăsiți echipa',
         leaveTeamDesc:
           'Lucrările active vi se vor dezasigna. Veți pierde accesul la cabinetul acestei companii.',
@@ -298,8 +297,11 @@ export const companiiRoCompanyTeam = {
     title: 'Galerie lucrări',
     description:
       'Adaugă fotografii și videoclipuri cu lucrările companiei. Conținutul apare pe profilul public din catalog.',
+    uploading: 'Se încarcă {{current}} din {{total}}',
     saveChanges: 'Salvează galeria',
     toastSaved: 'Galeria a fost actualizată.',
+    toastUploadCancelled: 'Încărcarea a fost anulată.',
+    toastSaveFailed: 'Nu s-a putut salva galeria. Încearcă din nou.',
     viewMedia: 'Deschide previzualizarea',
     lightboxAria: 'Galerie media',
     closeGallery: 'Închide galeria',

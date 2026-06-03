@@ -20,7 +20,7 @@ export const companiiRuCompanyTeam = {
       captionPlaceholder: 'Краткое описание (необязательно)',
       sectionTitle: 'Логотип компании',
       sectionDescription:
-        'Логотип отображается в публичном профиле каталога. Медиагалерея управляется отдельно.',
+        'Логотип отображается в публичном профиле каталога.',
     },
 
   reviewsUi: {
@@ -242,7 +242,6 @@ export const companiiRuCompanyTeam = {
         showPublicPhone: 'Показывать телефон на странице компании',
         showPublicEmail: 'Показывать email на странице компании',
         description: 'Краткое описание',
-        mediaHint: 'Логотип и галерея сохраняются вместе с данными компании.',
         leaveTeamTitle: 'Покинуть команду',
         leaveTeamDesc:
           'Активные работы будут с вас сняты. Вы потеряете доступ к кабинету этой компании.',
@@ -299,8 +298,11 @@ export const companiiRuCompanyTeam = {
     title: 'Галерея работ',
     description:
       'Добавляйте фото и видео выполненных работ. Контент отображается в публичном профиле каталога.',
+    uploading: 'Загрузка {{current}} из {{total}}',
     saveChanges: 'Сохранить галерею',
     toastSaved: 'Галерея обновлена.',
+    toastUploadCancelled: 'Загрузка отменена.',
+    toastSaveFailed: 'Не удалось сохранить галерею. Попробуйте ещё раз.',
     viewMedia: 'Открыть просмотр',
     lightboxAria: 'Медиа-галерея',
     closeGallery: 'Закрыть галерею',

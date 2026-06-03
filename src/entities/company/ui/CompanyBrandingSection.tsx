@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Images, Upload } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { CompanyLogo } from '@/entities/company/ui/CompanyLogo';
 import {
   cabinetBtnSecondary,
@@ -14,7 +13,6 @@ type Props = {
   logoUrl: string | null;
   logoPreview: string | null;
   onLogoPick: (file: File | null) => void;
-  manageGalleryLink?: string;
   disabled?: boolean;
   variant?: 'default' | 'sidebar';
 };
@@ -24,7 +22,6 @@ export function CompanyBrandingSection({
   logoUrl,
   logoPreview,
   onLogoPick,
-  manageGalleryLink,
   disabled = false,
   variant = 'default',
 }: Props) {
@@ -66,15 +63,6 @@ export function CompanyBrandingSection({
           size={isSidebar ? 'lg' : 'xl'}
           className="shrink-0"
         />
-        {manageGalleryLink ? (
-          <Link
-            to={manageGalleryLink}
-            className="inline-flex min-w-[11rem] items-center justify-center gap-2 rounded-2xl border border-violet-100 bg-violet-50/80 px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-violet-700 transition-colors hover:border-violet-200 hover:bg-violet-100"
-          >
-            <Images className="size-3.5 shrink-0" />
-            {t('company.branding.manageGallery')}
-          </Link>
-        ) : null}
       </div>
       <div className={`space-y-2 ${isSidebar ? 'w-full' : ''}`}>
         <input

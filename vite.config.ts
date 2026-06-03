@@ -131,6 +131,7 @@ export default defineConfig(({ mode }) => {
               '@tanstack/react-query-devtools',
             ],
             'table-vendor': ['@tanstack/react-table'],
+            'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
             'motion-vendor': ['framer-motion'],
             icons: ['lucide-react'],
             i18n: ['i18next', 'react-i18next'],

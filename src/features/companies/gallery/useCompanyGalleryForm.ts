@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -9,7 +9,8 @@ import {
 import type { OwnedCompanyDto } from '@/entities/company/model/companies.types';
 import type { PendingGalleryItem } from '@/entities/company/ui/companyGallery.types';
 import { MAX_GALLERY } from '@/features/companies/profile/profileFormState';
-import { uploadFile, uploadFiles } from '@/shared/api/files';
+import { uploadFile } from '@/shared/api/files';
+import { queryKeys } from '@/shared/api/queryKeys';
 import { MAX_VIDEO_COUNT, MAX_VIDEO_DURATION } from '@/shared/constants/fileMedia.constants';
 import {
   isVideoFile,
@@ -18,7 +19,6 @@ import {
   getVideoDuration,
 } from '@/shared/utils/validateFile';
 import {
-  appendGalleryImagesToCache,
   removeGalleryImageFromCache,
   setGalleryImagesInCache,
 } from '@/features/companies/gallery/companyGalleryCache';
@@ -29,6 +29,21 @@ export function useCompanyGalleryForm(ownedCompany: OwnedCompanyDto | null) {
 
   const [pendingGallery, setPendingGallery] = useState<PendingGalleryItem[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{
+    current: number;
+    total: number;
+  } | null>(null);
+
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+      for (const item of pendingGallery) {
+        URL.revokeObjectURL(item.preview);
+      }
+    };
+  }, [pendingGallery]);
 
   const handleGalleryPick = useCallback(
     async (fileList: FileList | File[]) => {
@@ -60,7 +75,7 @@ export function useCompanyGalleryForm(ownedCompany: OwnedCompanyDto | null) {
             }
           }
           return null;
-        })
+        }),
       );
 
       for (let i = 0; i < fileArray.length; i += 1) {
@@ -127,7 +142,7 @@ export function useCompanyGalleryForm(ownedCompany: OwnedCompanyDto | null) {
     removeGalleryImageFromCache(queryClient, ownedCompany.id, imageId);
 
     try {
-      await removeGalleryImageApi(ownedCompany.id, imageId);
+      await removeGalleryImageApi(imageId);
       toast.success(t('company.profileEditor.form.photoDeleted'));
     } catch (err: unknown) {
       setGalleryImagesInCache(queryClient, ownedCompany.id, previousImages);
@@ -136,43 +151,78 @@ export function useCompanyGalleryForm(ownedCompany: OwnedCompanyDto | null) {
     }
   };
 
+  const handleCancelUpload = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setIsSaving(false);
+    setUploadProgress(null);
+    toast.error(t('company.galleryPage.toastUploadCancelled'));
+  }, [t]);
+
   const handleSave = async () => {
     if (!ownedCompany || pendingGallery.length === 0) return;
 
     setIsSaving(true);
+    setUploadProgress({ current: 0, total: pendingGallery.length });
     const snapshot = [...pendingGallery];
+    const controller = new AbortController();
+    abortRef.current = controller;
 
     try {
-      const files = snapshot.map((item) => item.file);
-      const uploaded =
-        files.length === 1
-          ? [await uploadFile(files[0]!, { visibility: 'PUBLIC' })]
-          : await uploadFiles(files, { visibility: 'PUBLIC' });
+      const uploaded: Array<{ url: string; id: string }> = [];
 
-      const images = await Promise.all(
+      for (let i = 0; i < snapshot.length; i += 1) {
+        const item = snapshot[i]!;
+        setUploadProgress({ current: i, total: snapshot.length });
+
+        const result = await uploadFile(item.file, {
+          visibility: 'PUBLIC',
+          signal: controller.signal,
+          onProgress: (pct) => {
+            setUploadProgress({ current: i + (pct / 100), total: snapshot.length });
+          },
+        });
+
+        uploaded.push({ url: result.url, id: result.id });
+      }
+
+      setUploadProgress({ current: snapshot.length, total: snapshot.length });
+
+      await Promise.all(
         uploaded.map((upload, i) => {
           const pendingItem = snapshot[i]!;
-          return addGalleryImageApi(ownedCompany.id, {
+          return addGalleryImageApi({
             url: upload.url,
             caption: pendingItem.caption.trim() || undefined,
           });
-        })
+        }),
       );
 
-      appendGalleryImagesToCache(queryClient, ownedCompany.id, images);
-      for (let i = 0; i < snapshot.length; i += 1) {
-        const pendingItem = snapshot[i]!;
-        URL.revokeObjectURL(pendingItem.preview);
+      for (const item of snapshot) {
+        URL.revokeObjectURL(item.preview);
       }
       const pendingIds = new Set(snapshot.map((item) => item.id));
       setPendingGallery((prev) => prev.filter((item) => !pendingIds.has(item.id)));
 
+      await queryClient.invalidateQueries({ queryKey: queryKeys.companies.me });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.companies.all });
+
       toast.success(t('company.galleryPage.toastSaved'));
     } catch (err: unknown) {
+      if (controller.signal.aborted) return;
       const error = err as Error;
-      toast.error(error.message || t('company.profileEditor.form.saveFailed'));
+      const pendingIds = new Set(snapshot.map((item) => item.id));
+      setPendingGallery((prev) => {
+        for (const item of prev) {
+          if (pendingIds.has(item.id)) URL.revokeObjectURL(item.preview);
+        }
+        return prev.filter((item) => !pendingIds.has(item.id));
+      });
+      toast.error(error.message || t('company.galleryPage.toastSaveFailed'));
     } finally {
       setIsSaving(false);
+      setUploadProgress(null);
+      abortRef.current = null;
     }
   };
 
@@ -180,10 +230,12 @@ export function useCompanyGalleryForm(ownedCompany: OwnedCompanyDto | null) {
     pendingGallery,
     setPendingGallery,
     isSaving,
+    uploadProgress,
     handleGalleryPick,
     handlePendingGalleryRemove,
     handleGalleryRemove,
     handleSave,
+    handleCancelUpload,
     hasPendingChanges: pendingGallery.length > 0,
   };
 }

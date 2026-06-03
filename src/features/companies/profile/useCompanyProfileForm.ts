@@ -173,7 +173,6 @@ export function useCompanyProfileForm({
 
       if (ownedCompany) {
         await updateCompany.mutateAsync({
-          id: ownedCompany.id,
           ...payload,
           ...(logoChanged ? { logoUrl: nextLogoUrl } : {}),
         });
@@ -202,7 +201,7 @@ export function useCompanyProfileForm({
   const handlePublish = async () => {
     if (!ownedCompany) return;
     try {
-      await publishCompany.mutateAsync(ownedCompany.id);
+      await publishCompany.mutateAsync();
       toast.success(t('company.profileEditor.toastPublished'));
     } catch (err: unknown) {
       const error = err as Error;

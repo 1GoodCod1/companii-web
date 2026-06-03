@@ -1,29 +1,29 @@
-import { Suspense } from 'react';
 import { CompanyLayout } from '@/widgets/layout/CompanyLayout';
 import { RequireAuth, RequireCompanyRole } from '@/features/auth';
+import { LazyPage } from './LazyPage';
 import {
+  CompanyDashboardPage,
+  CompanyProfilePage,
+  CompanyGalleryPage,
+  CompanyTeamPage,
+  CompanyCustomersPage,
+  CompanyLeadsPage,
+  CompanyInterventionsPage,
+  CompanyCalendarPage,
+  CompanyPricingModifiersPage,
+  CompanyQuotesPage,
+  CompanyServicesPage,
+  CompanyInvoicesPage,
+  CompanyReviewsPage,
+  CompanyAuditPage,
+  CompanySubscriptionPage,
+  SettingsPage,
   CompanyEstimatesPage,
   CompanyTemplatesPage,
   CompanyEstimateWizardPage,
   EstimateWorkSheetPage,
   MyWorksheetsPage,
 } from './lazy-pages';
-import { CompanyDashboardPage } from '@/pages/company/CompanyDashboardPage';
-import { CompanyProfilePage } from '@/pages/company/CompanyProfilePage';
-import { CompanyGalleryPage } from '@/pages/company/CompanyGalleryPage';
-import { CompanyTeamPage } from '@/pages/company/CompanyTeamPage';
-import { CompanyCustomersPage } from '@/pages/company/CompanyCustomersPage';
-import { CompanyLeadsPage } from '@/pages/company/CompanyLeadsPage';
-import { CompanyInterventionsPage } from '@/pages/company/CompanyInterventionsPage';
-import { CompanyCalendarPage } from '@/pages/company/CompanyCalendarPage';
-import { CompanyPricingModifiersPage } from '@/pages/company/CompanyPricingModifiersPage';
-import { CompanyQuotesPage } from '@/pages/company/CompanyQuotesPage';
-import { CompanyServicesPage } from '@/pages/company/CompanyServicesPage';
-import { CompanyInvoicesPage } from '@/pages/company/CompanyInvoicesPage';
-import { CompanyReviewsPage } from '@/pages/company/CompanyReviewsPage';
-import { CompanyAuditPage } from '@/pages/company/CompanyAuditPage';
-import { SettingsPage } from '@/features/settings';
-import { CompanySubscriptionPage } from '@/pages/company/CompanySubscriptionPage';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import {
   ROUTE_ROOT,
@@ -44,7 +44,7 @@ export const companyRoutesSection = {
       index: true,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.DASHBOARD}>
-          <CompanyDashboardPage />
+          <LazyPage><CompanyDashboardPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -52,7 +52,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.PROFILE,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.PROFILE}>
-          <CompanyProfilePage />
+          <LazyPage><CompanyProfilePage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -60,7 +60,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.GALLERY,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.GALLERY}>
-          <CompanyGalleryPage />
+          <LazyPage><CompanyGalleryPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -68,7 +68,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.TEAM,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.TEAM}>
-          <CompanyTeamPage />
+          <LazyPage><CompanyTeamPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -76,7 +76,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.CLIENTI,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.CLIENTI}>
-          <CompanyCustomersPage />
+          <LazyPage><CompanyCustomersPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -84,7 +84,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.CERERI,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.CERERI}>
-          <CompanyLeadsPage />
+          <LazyPage><CompanyLeadsPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -92,9 +92,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.LUCRARI_MY,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.LUCRARI_MY}>
-          <Suspense fallback={null}>
-            <MyWorksheetsPage />
-          </Suspense>
+          <LazyPage><MyWorksheetsPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -102,7 +100,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.LUCRARI,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.LUCRARI}>
-          <CompanyInterventionsPage />
+          <LazyPage><CompanyInterventionsPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -110,7 +108,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.CALENDAR,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.CALENDAR}>
-          <CompanyCalendarPage />
+          <LazyPage><CompanyCalendarPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -118,9 +116,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.LUCRARI_FISA,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.LUCRARI_FISA}>
-          <Suspense fallback={null}>
-            <EstimateWorkSheetPage />
-          </Suspense>
+          <LazyPage><EstimateWorkSheetPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -128,9 +124,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.SMETE,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
-          <Suspense fallback={null}>
-            <CompanyEstimatesPage />
-          </Suspense>
+          <LazyPage><CompanyEstimatesPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -138,9 +132,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.SMETE_TEMPLATES,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE_TEMPLATES}>
-          <Suspense fallback={null}>
-            <CompanyTemplatesPage />
-          </Suspense>
+          <LazyPage><CompanyTemplatesPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -148,7 +140,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.SMETE_PRICING,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
-          <CompanyPricingModifiersPage />
+          <LazyPage><CompanyPricingModifiersPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -156,9 +148,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.SMETE_NEW,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
-          <Suspense fallback={null}>
-            <CompanyEstimateWizardPage />
-          </Suspense>
+          <LazyPage><CompanyEstimateWizardPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -166,9 +156,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.SMETE_DETAIL,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SMETE}>
-          <Suspense fallback={null}>
-            <CompanyEstimateWizardPage />
-          </Suspense>
+          <LazyPage><CompanyEstimateWizardPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -176,7 +164,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.OFERTE,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.OFERTE}>
-          <CompanyQuotesPage />
+          <LazyPage><CompanyQuotesPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -184,7 +172,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.SERVICII,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SERVICII}>
-          <CompanyServicesPage />
+          <LazyPage><CompanyServicesPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -192,7 +180,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.FACTURI,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.FACTURI}>
-          <CompanyInvoicesPage />
+          <LazyPage><CompanyInvoicesPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -200,7 +188,7 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.RECENZII,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.RECENZII}>
-          <CompanyReviewsPage />
+          <LazyPage><CompanyReviewsPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
@@ -208,19 +196,19 @@ export const companyRoutesSection = {
       path: COMPANY_ROUTE.AUDIT,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.AUDIT}>
-          <CompanyAuditPage />
+          <LazyPage><CompanyAuditPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },
     {
       path: COMPANY_ROUTE.SETTINGS,
-      element: <SettingsPage />,
+      element: <LazyPage><SettingsPage /></LazyPage>,
     },
     {
       path: COMPANY_ROUTE.SUBSCRIPTION,
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.SUBSCRIPTION}>
-          <CompanySubscriptionPage />
+          <LazyPage><CompanySubscriptionPage /></LazyPage>
         </RequireCompanyRole>
       ),
     },

@@ -46,6 +46,8 @@ export const companiiRoCompanyShell = {
 
   profile: 'Profil',
 
+  gallery: 'Galerie',
+
   team: 'Echipă',
 
   servicii: 'Servicii & prețuri',

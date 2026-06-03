@@ -6,6 +6,7 @@ import {
   BookOpen,
   CreditCard,
   FileText,
+  Images,
   Inbox,
   LayoutDashboard,
   List,
@@ -55,6 +56,14 @@ const NAV_DEFS: Array<
       labelKey: 'company.profile',
       icon: <User />,
       minPlanKey: '/profile',
+    },
+    {
+      key: 'gallery',
+      sectionKey: 'main',
+      to: '/gallery',
+      labelKey: 'company.gallery',
+      icon: <Images />,
+      minPlanKey: '/gallery',
     },
     {
       key: 'clienti',

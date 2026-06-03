@@ -15,7 +15,7 @@ export function useCompanyAuditLogsQuery(
 
   return useQuery<AdminAuditLogDto[], Error>({
     queryKey: ['companies', companyId, 'audit', filters],
-    queryFn: () => apiFetch<AdminAuditLogDto[]>(`/companies/${companyId}/audit${suffix}`),
+    queryFn: () => apiFetch<AdminAuditLogDto[]>(`/companies/me/audit${suffix}`),
     ...cabinetQueryDefaults,
     enabled: !!companyId,
   });

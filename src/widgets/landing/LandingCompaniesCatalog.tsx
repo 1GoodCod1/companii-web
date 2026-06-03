@@ -53,7 +53,7 @@ export function LandingCompaniesCatalog() {
 
               <Link
                 to={lp('/companies')}
-                className="mt-8 inline-flex items-center gap-2 rounded-xl bg-gray-900 px-7 py-3.5 text-sm font-black text-white transition-colors hover:bg-gray-800"
+                className="mt-8 inline-flex items-center gap-2 bg-gray-900 px-7 py-3.5 text-sm font-black text-white transition-colors hover:bg-gray-800"
               >
                 <Building2 className="size-4" />
                 {t('landing.catalog.cta')}

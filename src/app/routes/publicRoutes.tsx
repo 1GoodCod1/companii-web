@@ -1,37 +1,32 @@
-import { Suspense } from 'react';
-import { Navigate } from 'react-router-dom';
 import { PublicLayout } from '@/widgets/layout/PublicLayout';
 import { RedirectToLocalized } from '@/shared/ui/i18n/RedirectToLocalized';
-import { RedirectLegacySubscriptionsPath } from '@/shared/ui/i18n/RedirectLegacySubscriptionsPath';
 import { LocaleOutlet } from '@/shared/ui/i18n/LocaleOutlet';
 import { PUBLIC_ROUTE } from '@/shared/constants/routes.constants';
-import { getInitialLanguage } from '@/shared/config/i18n';
-import { localizePath } from '@/lib/i18n/localeRoutes';
+import { LazyPage } from './LazyPage';
 import {
   LandingPage,
   CompaniesListPage,
   CompanyDetailPage,
+  HowItWorksPage,
+  FaqPage,
+  ContactsPage,
+  PrivacyPage,
+  TermsPage,
+  SubscriptionsPage,
 } from './lazy-pages';
-import { HowItWorksPage } from '@/pages/public/HowItWorksPage';
-import { FaqPage } from '@/pages/public/FaqPage';
-import { ContactsPage } from '@/pages/public/ContactsPage';
-import { PrivacyPage } from '@/pages/public/PrivacyPage';
-import { TermsPage } from '@/pages/public/TermsPage';
-import { SubscriptionsPage } from '@/pages/public/SubscriptionsPage';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 
 export const localizedPublicRoutes = [
-  { index: true, element: <LandingPage /> },
-  { path: PUBLIC_ROUTE.COMPANII, element: <LandingPage /> },
-  { path: PUBLIC_ROUTE.HOW_IT_WORKS, element: <HowItWorksPage /> },
-  { path: PUBLIC_ROUTE.FAQ, element: <FaqPage /> },
-  { path: PUBLIC_ROUTE.CONTACTS, element: <ContactsPage /> },
-  { path: PUBLIC_ROUTE.PRIVACY, element: <PrivacyPage /> },
-  { path: PUBLIC_ROUTE.TERMS, element: <TermsPage /> },
-  { path: 'subscriptions', element: <RedirectLegacySubscriptionsPath /> },
-  { path: PUBLIC_ROUTE.SUBSCRIPTIONS, element: <SubscriptionsPage /> },
-  { path: PUBLIC_ROUTE.COMPANIES, element: <CompaniesListPage /> },
-  { path: PUBLIC_ROUTE.COMPANY_DETAIL, element: <CompanyDetailPage /> },
+  { index: true, element: <LazyPage><LandingPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.COMPANII, element: <LazyPage><LandingPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.HOW_IT_WORKS, element: <LazyPage><HowItWorksPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.FAQ, element: <LazyPage><FaqPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.CONTACTS, element: <LazyPage><ContactsPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.PRIVACY, element: <LazyPage><PrivacyPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.TERMS, element: <LazyPage><TermsPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.SUBSCRIPTIONS, element: <LazyPage><SubscriptionsPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.COMPANIES, element: <LazyPage><CompaniesListPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.COMPANY_DETAIL, element: <LazyPage><CompanyDetailPage /></LazyPage> },
   { path: '*', element: <NotFoundPage /> },
 ];
 
@@ -56,26 +51,10 @@ export const publicRoutesSection = [
     element: <LocaleOutlet />,
     children: [
       {
-        element: (
-          <Suspense fallback={null}>
-            <PublicLayout />
-          </Suspense>
-        ),
+        element: <PublicLayout />,
         children: localizedPublicRoutes,
       },
     ],
   },
   ...legacyLocalizedRedirects,
-  {
-    path: 'subscriptions',
-    element: (
-      <Navigate to={localizePath(`/${PUBLIC_ROUTE.SUBSCRIPTIONS}`, getInitialLanguage())} replace />
-    ),
-  },
-  {
-    path: 'subscriptions/*',
-    element: (
-      <Navigate to={localizePath(`/${PUBLIC_ROUTE.SUBSCRIPTIONS}`, getInitialLanguage())} replace />
-    ),
-  },
 ];

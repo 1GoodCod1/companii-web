@@ -3,7 +3,6 @@ import { useCompanyProfileForm } from './useCompanyProfileForm';
 import { PageHero, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
 import { CompanyBrandingSection } from '@/entities/company/ui/CompanyBrandingSection';
 import type { CatalogOptionDto, OwnedCompanyDto } from '@/entities/company/model/companies.types';
-import { ROUTE_ABS, COMPANY_CABINET_PATH } from '@/shared/constants/routes.constants';
 import { CatalogPublishSection } from './components/CatalogPublishSection';
 import { LegalInfoSection } from './components/LegalInfoSection';
 import { LocationSection } from './components/LocationSection';
@@ -38,9 +37,6 @@ export function CompanyProfileEditor({
     canPublishCompany,
   } = permissions;
   const { t } = useTranslation();
-  const manageGalleryLink = ownedCompany
-    ? `${ROUTE_ABS.COMPANY}${COMPANY_CABINET_PATH.GALLERY}`
-    : undefined;
 
   const {
     name,
@@ -183,7 +179,6 @@ export function CompanyProfileEditor({
               logoUrl={logoUrl}
               logoPreview={logoPreview}
               onLogoPick={handleLogoPick}
-              manageGalleryLink={manageGalleryLink}
               disabled={isSaving}
             />
           </div>
@@ -200,9 +195,6 @@ export function CompanyProfileEditor({
                   ? t('company.profileEditor.saveChanges')
                   : t('company.profileEditor.createCompany')}
             </button>
-            <p className="mt-3 text-center text-xs text-gray-400">
-              {t('company.profileEditor.form.mediaHint')}
-            </p>
           </div>
         </aside>
       </form>

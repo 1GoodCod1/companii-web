@@ -4,14 +4,16 @@ import { RouterProvider } from 'react-router-dom';
 import { AppProviders } from '@/app/providers';
 import { router } from '@/app/routes/router';
 import { reportWebVitals } from '@/shared/utils/reportWebVitals';
-import '@/shared/config/i18n';
+import { initI18n } from '@/shared/config/i18n';
 import './index.css';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <AppProviders>
-      <RouterProvider router={router} />
-    </AppProviders>
-  </StrictMode>,
-);
-reportWebVitals();
+void initI18n().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <AppProviders>
+        <RouterProvider router={router} />
+      </AppProviders>
+    </StrictMode>,
+  );
+  reportWebVitals();
+});

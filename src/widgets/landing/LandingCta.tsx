@@ -44,14 +44,14 @@ export function LandingCta() {
           <div className="flex flex-wrap justify-center gap-3 pt-2">
             <Link
               to={signupCta.to}
-              className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl transition-all"
+              className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider px-6 py-3 transition-all"
             >
               {signupCta.label}
               <ArrowRight className="size-4" />
             </Link>
             <Link
               to={lp(`/${PUBLIC_ROUTE.SUBSCRIPTIONS}`)}
-              className="inline-flex items-center gap-2 border border-gray-200 bg-white text-gray-700 text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-xl hover:border-gray-300 transition-all"
+              className="inline-flex items-center gap-2 border border-gray-200 bg-white text-gray-700 text-xs font-semibold uppercase tracking-wider px-6 py-3 hover:border-gray-300 transition-all"
             >
               {t('landing.cta.viewPlansLink')}
             </Link>

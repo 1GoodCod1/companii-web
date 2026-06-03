@@ -1,47 +1,66 @@
-import { lazy } from 'react';
+export {
+  LandingPage,
+  CompaniesListPage,
+  CompanyDetailPage,
+  HowItWorksPage,
+  FaqPage,
+  ContactsPage,
+  PrivacyPage,
+  TermsPage,
+  SubscriptionsPage,
+} from './lazy-pages/public';
 
-export const LandingPage = lazy(() =>
-  import('@/pages/public/LandingPage').then((m) => ({ default: m.LandingPage })),
-);
+export {
+  LoginPage,
+  RegisterPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  PortalInvitePage,
+  TeamInvitePage,
+} from './lazy-pages/auth';
 
-export const CompaniesListPage = lazy(() =>
-  import('@/pages/public/CompaniesListPage').then((m) => ({
-    default: m.CompaniesListPage,
-  })),
-);
+export {
+  CompanyDashboardPage,
+  CompanyProfilePage,
+  CompanyGalleryPage,
+  CompanyTeamPage,
+  CompanyCustomersPage,
+  CompanyLeadsPage,
+  CompanyInterventionsPage,
+  CompanyCalendarPage,
+  CompanyPricingModifiersPage,
+  CompanyQuotesPage,
+  CompanyServicesPage,
+  CompanyInvoicesPage,
+  CompanyReviewsPage,
+  CompanyAuditPage,
+  CompanySubscriptionPage,
+  SettingsPage,
+  CompanyEstimatesPage,
+  CompanyTemplatesPage,
+  CompanyEstimateWizardPage,
+  EstimateWorkSheetPage,
+  MyWorksheetsPage,
+} from './lazy-pages/company';
 
-export const CompanyDetailPage = lazy(() =>
-  import('@/pages/public/CompanyDetailPage').then((m) => ({
-    default: m.CompanyDetailPage,
-  })),
-);
+export {
+  PortalDashboardPage,
+  PortalCereriPage,
+  PortalLucrariPage,
+  PortalOfertePage,
+  PortalSmetePage,
+  PortalFacturiPage,
+} from './lazy-pages/portal';
 
-export const CompanyEstimatesPage = lazy(() =>
-  import('@/pages/company/CompanyEstimatesPage').then((m) => ({
-    default: m.CompanyEstimatesPage,
-  })),
-);
-
-export const CompanyTemplatesPage = lazy(() =>
-  import('@/pages/company/CompanyTemplatesPage').then((m) => ({
-    default: m.CompanyTemplatesPage,
-  })),
-);
-
-export const CompanyEstimateWizardPage = lazy(() =>
-  import('@/pages/company/CompanyEstimateWizardPage').then((m) => ({
-    default: m.CompanyEstimateWizardPage,
-  })),
-);
-
-export const EstimateWorkSheetPage = lazy(() =>
-  import('@/pages/company/EstimateWorkSheetPage').then((m) => ({
-    default: m.EstimateWorkSheetPage,
-  })),
-);
-
-export const MyWorksheetsPage = lazy(() =>
-  import('@/pages/company/MyWorksheetsPage').then((m) => ({
-    default: m.MyWorksheetsPage,
-  })),
-);
+export {
+  AdminHomePage,
+  AdminCompaniesPage,
+  AdminSubscriptionsPage,
+  AdminCitiesPage,
+  AdminCategoriesPage,
+  AdminClientsPage,
+  AdminWaitlistPage,
+  AdminReviewsPage,
+  AdminAuditPage,
+  AdminBlueprintsPage,
+} from './lazy-pages/admin';

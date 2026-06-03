@@ -26,11 +26,13 @@ export type PortalLeadDto = Pick<
   company: { id: string; name: string; slug: string };
 };
 
+export type PortalCompanyRef = { id: string; name: string; slug: string | null };
+
 export interface PortalDashboardDto {
   customer: CustomerDto;
   interventions: PortalInterventionDto[];
-  quotes: QuoteDto[];
-  invoices: InvoiceDto[];
+  quotes: (QuoteDto & { company?: PortalCompanyRef })[];
+  invoices: (InvoiceDto & { company?: PortalCompanyRef })[];
   reviews: CompanyReviewDto[];
   estimates: EstimateProjectListDto[];
 }

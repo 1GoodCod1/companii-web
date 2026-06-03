@@ -20,7 +20,7 @@ export function usePricingModifiersQuery(
 ): UseQueryResult<PricingModifiersResponse, Error> {
   return useQuery<PricingModifiersResponse, Error>({
     queryKey: ['companies', companyId, 'pricing-modifiers'],
-    queryFn: () => apiFetch<PricingModifiersResponse>(`/companies/${companyId}/pricing-modifiers`),
+    queryFn: () => apiFetch<PricingModifiersResponse>(`/companies/me/pricing-modifiers`),
     ...cabinetQueryDefaults,
     enabled: !!companyId,
   });
@@ -30,7 +30,7 @@ export function useUpdatePricingModifiersMutation(companyId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (modifiers: Record<string, number | null>) =>
-      apiFetch<PricingModifiersResponse>(`/companies/${companyId}/pricing-modifiers`, {
+      apiFetch<PricingModifiersResponse>(`/companies/me/pricing-modifiers`, {
         method: 'PATCH',
         body: JSON.stringify({ modifiers }),
       }),

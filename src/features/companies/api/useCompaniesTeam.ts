@@ -156,14 +156,8 @@ export function useRevokeInvitationMutation() {
 export function useTransferOwnershipMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      companyId,
-      newOwnerUserId,
-    }: {
-      companyId: string;
-      newOwnerUserId: string;
-    }) =>
-      apiFetch(`/companies/${companyId}/transfer-ownership`, {
+    mutationFn: ({ newOwnerUserId }: { newOwnerUserId: string }) =>
+      apiFetch(`/companies/me/transfer-ownership`, {
         method: 'POST',
         body: JSON.stringify({ newOwnerUserId }),
       }),
