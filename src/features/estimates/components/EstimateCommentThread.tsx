@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Send, MessageCircle } from 'lucide-react';
+import { PaperPlaneRightIcon, ChatCircleIcon } from '@phosphor-icons/react';
 import { useAuthStore } from '@/entities/user/model/authStore';
 import { useEstimateComments, useAddComment } from '../api/useEstimateComments';
 import type { EstimateCommentDto } from '@/entities/estimate/model/estimates';
@@ -40,7 +40,7 @@ export function EstimateCommentThread({ projectId, isPortal = false }: Props) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-        <MessageCircle className="size-4" />
+        <ChatCircleIcon className="size-4" />
         {t('comments.title', 'Comments')}
       </div>
 
@@ -110,7 +110,7 @@ export function EstimateCommentThread({ projectId, isPortal = false }: Props) {
           onClick={handleSend}
           disabled={!newComment.trim() || addComment.isPending}
         >
-          <Send className="size-4" />
+          <PaperPlaneRightIcon className="size-4" />
         </button>
       </div>
       <div className="text-xs text-muted-foreground text-right">

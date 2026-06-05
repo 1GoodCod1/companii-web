@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import { useForgotPasswordMutation } from '@/features/auth';
 import { getAuthErrorMessage } from '@/features/auth';
-import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ArrowLeftIcon, CheckCircleIcon } from '@phosphor-icons/react';
 import { authFieldClass, authLabelClass } from '@/features/auth';
 import { FormFieldError } from '@/shared/ui/FormFieldError';
 import { fieldClassName } from '@/lib/forms/fieldClassName';
@@ -55,7 +55,7 @@ export function ForgotPasswordPage() {
     return (
       <div className="w-full animate-fade-in py-2 space-y-5 text-center lg:text-left">
         <div className="mx-auto lg:mx-0 p-3 bg-emerald-50 text-emerald-600 rounded-xl size-12 flex items-center justify-center border border-emerald-100">
-          <CheckCircle2 className="size-6" />
+          <CheckCircleIcon className="size-6" />
         </div>
         <div>
           <h2 className="text-2xl font-semibold text-slate-900">
@@ -69,7 +69,7 @@ export function ForgotPasswordPage() {
           to="/login"
           className="inline-flex items-center justify-center gap-2 w-full border border-slate-200 hover:bg-slate-50 text-slate-700 py-2.5 rounded-lg font-semibold text-sm transition-colors"
         >
-          <ArrowLeft className="size-4" />
+          <ArrowLeftIcon className="size-4" />
           {t('auth.forgotPasswordPage.backToLogin')}
         </Link>
       </div>
@@ -118,7 +118,7 @@ export function ForgotPasswordPage() {
           to="/login"
           className="inline-flex items-center gap-1.5 text-violet-600 hover:text-violet-700 font-medium transition-colors"
         >
-          <ArrowLeft className="size-3.5" />
+          <ArrowLeftIcon className="size-3.5" />
           {t('auth.forgotPasswordPage.backToLogin')}
         </Link>
       </p>

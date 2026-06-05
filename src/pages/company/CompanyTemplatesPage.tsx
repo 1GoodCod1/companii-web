@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, Calendar, Layers, ListTodo, Plus, Search, Trash2 } from 'lucide-react';
+import { BookOpenIcon, CalendarIcon, StackIcon, ListChecksIcon, PlusIcon, MagnifyingGlassIcon, TrashIcon } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import {
   PageHero,
@@ -65,16 +65,16 @@ export function CompanyTemplatesPage() {
               onClick={() => navigate('/company/smete/new')}
               className={cabinetBtnPrimary}
             >
-              <Plus className="size-4" />
+              <PlusIcon className="size-4" />
               {t('company.estimatesTemplatesPage.newBtn')}
             </button>
           }
         />
 
-        {/* Search bar */}
+        {/* MagnifyingGlass bar */}
         {templates && templates.length > 0 && (
           <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+            <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Căutare șablon..."
@@ -124,14 +124,14 @@ export function CompanyTemplatesPage() {
                     <div className="space-y-3">
                       <div className="flex items-start justify-between">
                         <div className="flex size-10 items-center justify-center rounded-2xl bg-violet-50 text-violet-600 group-hover:scale-105 transition-transform">
-                          <BookOpen className="size-5" />
+                          <BookOpenIcon className="size-5" />
                         </div>
                         <button
                           type="button"
                           onClick={() => handleDeleteClick(template.id, template.name)}
                           className="rounded-xl p-1.5 text-violet-500 hover:bg-red-100 hover:text-red-700 transition-colors"
                         >
-                          <Trash2 className="size-4" />
+                          <TrashIcon className="size-4" />
                         </button>
                       </div>
 
@@ -151,18 +151,18 @@ export function CompanyTemplatesPage() {
                       {/* Stats grid */}
                       <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-gray-600">
                         <div className="flex items-center gap-1.5 bg-gray-50/50 px-2.5 py-1.5 rounded-xl border border-gray-100/30">
-                          <Layers className="size-3.5 text-violet-500/80" />
+                          <StackIcon className="size-3.5 text-violet-500/80" />
                           <span>{t('company.estimatesTemplatesPage.stages', { count: stageCount })}</span>
                         </div>
                         <div className="flex items-center gap-1.5 bg-gray-50/50 px-2.5 py-1.5 rounded-xl border border-gray-100/30">
-                          <ListTodo className="size-3.5 text-violet-500/80" />
+                          <ListChecksIcon className="size-3.5 text-violet-500/80" />
                           <span>{t('company.estimatesTemplatesPage.lines', { count: lineCount })}</span>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider">
                         <span className="flex items-center gap-1">
-                          <Calendar className="size-3" />
+                          <CalendarIcon className="size-3" />
                           {new Date(template.createdAt).toLocaleDateString('ro-MD')}
                         </span>
                       </div>

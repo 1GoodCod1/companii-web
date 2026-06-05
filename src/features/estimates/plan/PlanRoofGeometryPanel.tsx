@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, Gauge, Home, Layers, Ruler, Sparkles } from 'lucide-react';
+import { WarningIcon, GaugeIcon, HouseIcon, StackIcon, RulerIcon, SparkleIcon } from '@phosphor-icons/react';
 import { AppSelect } from '@/widgets/cabinet/cabinet-ui';
 import type { Plan2dData, Plan2dRoom } from '@/entities/estimate/model/estimates';
 import {
@@ -378,7 +378,7 @@ function usePlanRoofGeometryPanelView({
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-orange-100/70 pb-4">
         <div>
           <div className="flex items-center gap-2 text-orange-700 font-black text-[10px] uppercase tracking-widest">
-            <Home className="size-4" />
+            <HouseIcon className="size-4" />
             <span>{t('company.estimateWizard.roofGeometry.title', { defaultValue: 'Schemă acoperiș' })}</span>
           </div>
           <p className="mt-1 max-w-2xl text-xs font-medium leading-relaxed text-slate-500">
@@ -390,7 +390,7 @@ function usePlanRoofGeometryPanelView({
         </div>
         {needsReview && (
           <div className="flex max-w-md items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-850">
-            <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-600" />
+            <WarningIcon className="mt-0.5 size-4 shrink-0 text-amber-600" />
             <span>
               Necesită verificare: {drawingReasons.map(reasonLabel).join(', ')}.
             </span>
@@ -423,7 +423,7 @@ function usePlanRoofGeometryPanelView({
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <label className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                <Ruler className="size-3.5" />
+                <RulerIcon className="size-3.5" />
                 Amprentă
               </span>
               <input
@@ -439,7 +439,7 @@ function usePlanRoofGeometryPanelView({
 
             <label className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                <Gauge className="size-3.5" />
+                <GaugeIcon className="size-3.5" />
                 Pantă
               </span>
               <input
@@ -456,7 +456,7 @@ function usePlanRoofGeometryPanelView({
 
             <div className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                <Layers className="size-3.5" />
+                <StackIcon className="size-3.5" />
                 Formă
               </span>
               <AppSelect
@@ -472,7 +472,7 @@ function usePlanRoofGeometryPanelView({
 
             <div className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                <Sparkles className="size-3.5" />
+                <SparkleIcon className="size-3.5" />
                 Tip
               </span>
               <AppSelect
@@ -488,7 +488,7 @@ function usePlanRoofGeometryPanelView({
 
             <div className="space-y-1">
               <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                <Ruler className="size-3.5" />
+                <RulerIcon className="size-3.5" />
                 Surplombă
               </span>
               <AppSelect

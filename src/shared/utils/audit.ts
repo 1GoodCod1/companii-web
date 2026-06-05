@@ -13,7 +13,7 @@ const ENTITY_TYPE_LABELS: Record<string, string> = {
   Company: 'Компания',
   CompanyMember: 'Сотрудник',
   User: 'Пользователь',
-  Estimate: 'Смета',
+  Estimate: 'Расчет стоимости',
   Intervention: 'Работа',
   Invoice: 'Счёт',
   Lead: 'Заявка',

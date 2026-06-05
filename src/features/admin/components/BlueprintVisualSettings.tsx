@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sliders, Play } from 'lucide-react';
+import { SlidersIcon, PlayIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { cabinetLabelClass, cabinetFieldClass } from '@/widgets/cabinet/cabinet-ui';
 import type { AdminBlueprintModalProps } from './AdminBlueprintModal';
@@ -131,7 +131,7 @@ export function BlueprintVisualSettings({
       </div>
 
       <BlueprintCoefficientGroup
-        icon={<Sliders className="size-3.5 text-primary/60" />}
+        icon={<SlidersIcon className="size-3.5 text-primary/60" />}
         title={t('admin.blueprintsPage.difficultySettings')}
         fields={[
           ['bp-diff-easy', t('admin.blueprintsPage.easyLabel'), diffEasy, 'diff_easy'],
@@ -145,7 +145,7 @@ export function BlueprintVisualSettings({
       />
 
       <BlueprintCoefficientGroup
-        icon={<Play className="size-3.5 text-primary/60" />}
+        icon={<PlayIcon className="size-3.5 text-primary/60" />}
         title={t('admin.blueprintsPage.urgencySettings')}
         fields={[
           ['bp-urg-urgent', t('admin.blueprintsPage.urgentLabel'), urgUrgent, 'urg_urgent'],

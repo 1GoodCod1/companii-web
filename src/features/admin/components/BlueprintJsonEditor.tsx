@@ -1,4 +1,4 @@
-import { FileCode, RefreshCw, AlertCircle } from 'lucide-react';
+import { FileCodeIcon, ArrowsCounterClockwiseIcon, WarningCircleIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import type { AdminBlueprintModalProps } from './AdminBlueprintModal';
 
@@ -14,7 +14,7 @@ export function BlueprintJsonEditor({
     <div className="space-y-2">
       <div className="flex justify-between items-center">
         <p className="text-[10px] font-black uppercase tracking-wider text-gray-400 flex items-center gap-1">
-          <FileCode className="size-3.5 text-primary/60" />
+          <FileCodeIcon className="size-3.5 text-primary/60" />
           Complete Blueprint Config Schema JSON
         </p>
         <button
@@ -22,7 +22,7 @@ export function BlueprintJsonEditor({
           onClick={onBeautify}
           className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-primary hover:text-primary-dark transition-colors"
         >
-          <RefreshCw className="size-3" />
+          <ArrowsCounterClockwiseIcon className="size-3" />
           {t('admin.blueprintsPage.beautifyBtn')}
         </button>
       </div>
@@ -37,7 +37,7 @@ export function BlueprintJsonEditor({
         />
         {jsonError && (
           <div className="absolute bottom-4 left-4 right-4 bg-red-950/80 backdrop-blur border border-red-800 text-red-200 px-3.5 py-2.5 rounded-xl flex items-start gap-2 text-xs shadow-lg">
-            <AlertCircle className="size-4 text-red-400 shrink-0 mt-0.5" />
+            <WarningCircleIcon className="size-4 text-red-400 shrink-0 mt-0.5" />
             <div>
               <p className="font-bold uppercase tracking-wider text-[9px] text-red-400">JSON Syntax Error</p>
               <p className="font-medium text-[11px] leading-relaxed">{jsonError}</p>

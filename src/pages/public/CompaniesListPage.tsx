@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { LoadingStatus } from '@/shared/ui/LoadingStatus';
 import { SEOHead } from '@/shared/ui/seo/SEOHead';
-import { Building2, Search } from 'lucide-react';
+import { BuildingsIcon, MagnifyingGlassIcon } from '@phosphor-icons/react';
 import { CompanyCard } from '@/entities/company/ui/CompanyCard';
 import { PublicPageHeader } from '@/shared/ui/PublicPageHeader';
 import {
@@ -12,7 +13,7 @@ import {
 } from '@/features/companies/api/useCompanies';
 import type { CatalogOptionDto } from '@/entities/company/model/companies.types';
 import { usePublicAuthCta } from '@/features/auth';
-import { AppSelect, cabinetFieldClass } from '@/widgets/cabinet/cabinet-ui';
+import { AppSelect, SkeletonCompanyCard, cabinetFieldClass } from '@/widgets/cabinet/cabinet-ui';
 import {
   getCatalogSearchText,
   getTranslatedCategoryName,
@@ -85,13 +86,13 @@ export function CompaniesListPage() {
         hreflang
       />
 
-      <div className="max-w-5xl mx-auto space-y-6 pb-8">
+      <div className="max-w-5xl mx-auto space-y-6 pb-8 animate-fade-in">
         <PublicPageHeader badge={t('companies.hero.badge')} title={t('companies.hero.title')} />
 
         <section className="border border-slate-200 bg-white p-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="relative md:col-span-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
               <input
                 type="text"
                 value={search}
@@ -119,18 +120,21 @@ export function CompaniesListPage() {
         </section>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <LoadingStatus
+            label={t('cabinet.common.loading')}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch"
+          >
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-72 border border-slate-200 bg-slate-50" />
+              <SkeletonCompanyCard key={i} />
             ))}
-          </div>
+          </LoadingStatus>
         ) : isError ? (
           <div className="border border-red-200 bg-red-50 px-6 py-10 text-center text-sm text-red-700">
             {t('companies.loadError')}
           </div>
         ) : isEmptyCatalog || isEmptyFiltered ? (
           <div className="border border-slate-200 bg-white px-6 py-12 text-center">
-            <Building2 className="size-8 text-slate-300 mx-auto mb-4" strokeWidth={1.5} />
+            <BuildingsIcon className="size-8 text-slate-300 mx-auto mb-4" weight="light" />
             <p className="text-sm font-medium text-slate-700">
               {isEmptyCatalog ? t('companies.emptyNone') : t('companies.emptyFiltered')}
             </p>

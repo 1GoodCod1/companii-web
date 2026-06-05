@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Camera, Trash2, Upload } from 'lucide-react';
+import { CameraIcon, TrashIcon, UploadIcon } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import { uploadFiles } from '@/shared/api/files';
 import { fileDownloadPath } from '@/shared/api/files';
@@ -87,7 +87,7 @@ export function SitePhotoGallery({ projectId, photos, readOnly }: Props) {
     <div className="rounded-3xl border border-slate-100 bg-white p-5 space-y-4">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div className="flex items-center gap-2">
-          <Camera className="size-4 text-slate-500" />
+          <CameraIcon className="size-4 text-slate-500" />
           <h3 className="font-extrabold text-slate-900 text-sm uppercase tracking-wider">
             {t('company.estimateWizard.sitePhotos.title')}
           </h3>
@@ -100,7 +100,7 @@ export function SitePhotoGallery({ projectId, photos, readOnly }: Props) {
             disabled={uploading}
             className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 transition-all cursor-pointer shadow-sm disabled:opacity-50"
           >
-            <Upload className="size-3.5" />
+            <UploadIcon className="size-3.5" />
             {uploading
               ? t('company.estimateWizard.sitePhotos.uploading')
               : t('company.estimateWizard.sitePhotos.upload')}
@@ -141,7 +141,7 @@ export function SitePhotoGallery({ projectId, photos, readOnly }: Props) {
                   className="absolute top-1.5 right-1.5 p-1.5 rounded-lg bg-white/90 text-rose-600 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm hover:bg-white"
                   title={t('company.estimateWizard.sitePhotos.delete')}
                 >
-                  <Trash2 className="size-3.5" />
+                  <TrashIcon className="size-3.5" />
                 </button>
               )}
 

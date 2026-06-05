@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Minus, Plus, PlusCircle, Sparkles, LayoutTemplate } from 'lucide-react';
+import { MinusIcon, PlusIcon, PlusCircleIcon, SparkleIcon, LayoutIcon } from '@phosphor-icons/react';
 import type { EstimateBlueprintConfig } from '@/entities/estimate/model/estimates';
 import { getTemplatesForCategory, type PointTemplate } from './planTemplates';
 
@@ -71,7 +71,7 @@ export function PlanWorkItemsPanel({
       {/* I-05: Quick template buttons */}
       {templates.length > 0 && onSetPointCounts && !readOnly && (
         <div className="flex flex-wrap gap-2">
-          <LayoutTemplate className="size-4 text-amber-500 my-auto" />
+          <LayoutIcon className="size-4 text-amber-500 my-auto" />
           {templates.map((tpl) => (
             <button
               key={tpl.key}
@@ -120,7 +120,7 @@ export function PlanWorkItemsPanel({
                       onClick={() => onAdjustPointCount(pointType.type, -1)}
                       className="size-6 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent flex items-center justify-center cursor-pointer transition-colors"
                     >
-                      <Minus className="size-3.5" />
+                      <MinusIcon className="size-3.5" />
                     </button>
                     <span className={`w-8 text-center text-xs font-black ${isActive ? 'text-indigo-700' : 'text-slate-850'}`}>
                       {currentCount}
@@ -131,7 +131,7 @@ export function PlanWorkItemsPanel({
                       onClick={() => onAdjustPointCount(pointType.type, 1)}
                       className="size-6 rounded-lg text-slate-500 hover:bg-slate-100 flex items-center justify-center cursor-pointer transition-colors"
                     >
-                      <Plus className="size-3.5" />
+                      <PlusIcon className="size-3.5" />
                     </button>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export function PlanWorkItemsPanel({
 
       <div className="border-t border-slate-100 pt-5 space-y-4">
         <div className="flex items-center gap-2 text-slate-800 font-black text-xs uppercase tracking-widest">
-          <Sparkles className="size-4 text-amber-500 animate-pulse" />
+          <SparkleIcon className="size-4 text-amber-500 animate-pulse" />
           <span>{t('company.estimateWizard.workItems.customSection')}</span>
         </div>
 
@@ -162,7 +162,7 @@ export function PlanWorkItemsPanel({
               onClick={handleAddCustomCounter}
               className="rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-xs font-bold text-white transition-all shadow-md cursor-pointer flex items-center gap-1 active:scale-95"
             >
-              <PlusCircle className="size-4" /> {t('cabinet.common.add')}
+              <PlusCircleIcon className="size-4" /> {t('cabinet.common.add')}
             </button>
           </div>
         )}
@@ -202,7 +202,7 @@ export function PlanWorkItemsPanel({
                         onClick={() => onAdjustCustomCount(item.label, -1)}
                         className="size-6 rounded-lg text-slate-500 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent flex items-center justify-center cursor-pointer transition-colors"
                       >
-                        <Minus className="size-3.5" />
+                        <MinusIcon className="size-3.5" />
                       </button>
                       <span className={`w-8 text-center text-xs font-black ${isActive ? 'text-violet-750' : 'text-slate-800'}`}>
                         {item.count}
@@ -213,7 +213,7 @@ export function PlanWorkItemsPanel({
                         onClick={() => onAdjustCustomCount(item.label, 1)}
                         className="size-6 rounded-lg text-slate-500 hover:bg-slate-100 flex items-center justify-center cursor-pointer transition-colors"
                       >
-                        <Plus className="size-3.5" />
+                        <PlusIcon className="size-3.5" />
                       </button>
                     </div>
                   </div>

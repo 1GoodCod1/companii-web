@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { CaretLeftIcon, CaretRightIcon, PlayIcon } from '@phosphor-icons/react';
 import { AnimatePresence, m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import type { CompanyGalleryImageDto } from '@/entities/company/model/companies.types';
@@ -54,7 +54,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
               <MediaVideo src={solo.url} className="size-full object-cover" muted playsInline preload="metadata" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="size-14 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-xl transition-transform group-hover:scale-110">
-                  <Play className="size-6 text-white ml-0.5" fill="white" />
+                  <PlayIcon className="size-6 text-white ml-0.5" fill="white" />
                 </div>
               </div>
             </div>
@@ -186,7 +186,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                 className="absolute left-2 top-1/2 -translate-y-1/2 size-9 rounded-full bg-white/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-white"
                 aria-label={t(`${g}.prev`)}
               >
-                <ChevronLeft className="size-5 text-slate-700" />
+                <CaretLeftIcon className="size-5 text-slate-700" />
               </button>
               <button
                 type="button"
@@ -194,7 +194,7 @@ export function CompanyGallery({ images }: { images: CompanyGalleryImageDto[] })
                 className="absolute right-2 top-1/2 -translate-y-1/2 size-9 rounded-full bg-white/80 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-white"
                 aria-label={t(`${g}.next`)}
               >
-                <ChevronRight className="size-5 text-slate-700" />
+                <CaretRightIcon className="size-5 text-slate-700" />
               </button>
             </>
           )}

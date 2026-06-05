@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Camera, ImagePlus, Loader2, Trash2 } from 'lucide-react';
+import { CameraIcon, ImageSquareIcon, CircleNotchIcon, TrashIcon } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import { downloadFile, uploadFile } from '@/shared/api/files';
 import {
@@ -62,16 +62,16 @@ export function WorksheetPhotos({ interventionId, photos, readOnly }: Props) {
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1">
-          <Camera className="size-3.5" /> {t('company.workSheetPage.photos')}
+          <CameraIcon className="size-3.5" /> {t('company.workSheetPage.photos')}
           <span className="ml-1 text-gray-300">({photos.length})</span>
         </p>
         {!readOnly && (
           <div className="flex items-center gap-2">
             <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-violet-200 bg-violet-50 px-3 py-1.5 text-[11px] font-bold text-violet-700 hover:bg-violet-100 transition-colors">
               {uploading ? (
-                <Loader2 className="size-3.5 animate-spin" />
+                <CircleNotchIcon className="size-3.5 animate-spin" />
               ) : (
-                <Camera className="size-3.5" />
+                <CameraIcon className="size-3.5" />
               )}
               {t('company.workSheetPage.takePhoto')}
               <input
@@ -84,7 +84,7 @@ export function WorksheetPhotos({ interventionId, photos, readOnly }: Props) {
               />
             </label>
             <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-bold text-gray-600 hover:bg-gray-50 transition-colors">
-              <ImagePlus className="size-3.5" />
+              <ImageSquareIcon className="size-3.5" />
               {t('company.workSheetPage.attachPhoto')}
               <input
                 type="file"
@@ -117,7 +117,7 @@ export function WorksheetPhotos({ interventionId, photos, readOnly }: Props) {
                 }
                 className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-gray-800 hover:text-violet-700 transition-colors"
               >
-                <Camera className="size-6" />
+                <CameraIcon className="size-6" />
               </button>
               {!readOnly && (
                 <button
@@ -126,7 +126,7 @@ export function WorksheetPhotos({ interventionId, photos, readOnly }: Props) {
                   className="absolute top-1 right-1 rounded-md bg-white/90 border border-red-100 p-1 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
                   title={t('company.workSheetPage.photoDelete')}
                 >
-                  <Trash2 className="size-3" />
+                  <TrashIcon className="size-3" />
                 </button>
               )}
             </div>

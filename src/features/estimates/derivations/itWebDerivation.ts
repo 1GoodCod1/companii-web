@@ -32,8 +32,8 @@ function resolveBackendComplexityUnits(backendComplexity: unknown): number {
 
   if (normalized.includes('fara') || normalized.includes('fără') || normalized === '') return 0;
   if (normalized.includes('simplu')) return 1;
-  if (normalized.includes('mediu')) return 1;
-  if (normalized.includes('complex')) return 2;
+  if (normalized.includes('mediu')) return 2;
+  if (normalized.includes('complex')) return 3;
   return 0;
 }
 
@@ -59,10 +59,14 @@ export function deriveItWebMeasurements(diagnostic: Record<string, unknown> | nu
 
   measurements.requiresManualReview = normalizeScope(diagnostic.projectScope) === 'enterprise' ? 1 : 0;
 
+  const customDesign = readBoolean(diagnostic, 'customDesign');
   const designPages = readNumber(diagnostic, 'designPagesCount') ?? 0;
-  const frontendPages = readNumber(diagnostic, 'frontendPagesCount') ?? 0;
-  measurements.designPageCount = designPages > 0 ? designPages : pagesCount;
-  measurements.frontendPageCount = frontendPages > 0 ? frontendPages : pagesCount;
+  measurements.designPageCount = customDesign
+    ? (designPages > 0 ? designPages : pagesCount)
+    : 0;
+
+  measurements.frontendPageCount = pagesCount;
+  measurements.spaPageCount = readNumber(diagnostic, 'frontendPagesCount') ?? 0;
 
   return measurements;
 }

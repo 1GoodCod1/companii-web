@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { LoadingStatus } from '@/shared/ui/LoadingStatus';
 import {
   Panel,
   PanelHeader,
   EmptyState,
+  SkeletonList,
 } from '@/widgets/cabinet/cabinet-ui';
 import type { InvitableCompanyRole } from '@/entities/company/model/roles.types';
 import type { TeamRoleKey } from '@/entities/company/model/team.types';
@@ -45,7 +47,9 @@ export function TeamHierarchyPanel({
       />
 
       {status.isLoading ? (
-        <p className="text-sm text-gray-400">{t('company.teamPage.loading')}</p>
+        <LoadingStatus label={t('company.teamPage.loading')}>
+          <SkeletonList rows={4} />
+        </LoadingStatus>
       ) : status.isError ? (
         <EmptyState message={status.error instanceof Error ? status.error.message : t('company.teamPage.loadError')} />
       ) : !members?.length ? (

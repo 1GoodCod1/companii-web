@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { MapPin, Star, Users, BadgeCheck } from 'lucide-react';
+import { MapPinIcon, StarIcon, UsersIcon, SealCheckIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { CompanyLogo } from '@/entities/company/ui/CompanyLogo';
 import {
@@ -68,7 +68,7 @@ function CardCover({
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
       <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/95 backdrop-blur-sm px-2.5 py-1 text-[10px] font-semibold text-emerald-700 shadow-sm">
-        <BadgeCheck className="size-3.5" />
+        <SealCheckIcon className="size-3.5" />
         {verifiedLabel}
       </span>
     </div>
@@ -107,7 +107,7 @@ export function CompanyCard({ company }: { company: PublicCompanyListItemDto }) 
             </p>
           </div>
           <div className="flex h-8 shrink-0 items-center gap-1 rounded-lg bg-amber-50 px-2.5">
-            <Star className="size-3.5 text-amber-500 fill-amber-500" />
+            <StarIcon className="size-3.5 text-amber-500 fill-amber-500" />
             <span className="text-xs font-bold text-gray-800 tabular-nums">{rating.toFixed(1)}</span>
           </div>
         </div>
@@ -119,11 +119,11 @@ export function CompanyCard({ company }: { company: PublicCompanyListItemDto }) 
         <div className="mt-auto pt-4 border-t border-gray-100/80">
           <div className="grid grid-cols-3 gap-2 text-[11px] text-gray-500">
             <span className="inline-flex items-center gap-1 min-w-0">
-              <MapPin className="size-3.5 shrink-0 text-gray-400" />
+              <MapPinIcon className="size-3.5 shrink-0 text-gray-400" />
               <span className="truncate">{company.city ? getTranslatedCityName(t, company.city) : '—'}</span>
             </span>
             <span className="inline-flex items-center justify-center gap-1 min-w-0">
-              <Users className="size-3.5 shrink-0 text-gray-400" />
+              <UsersIcon className="size-3.5 shrink-0 text-gray-400" />
               <span className="truncate">{company.teamSize}</span>
             </span>
             <span className="text-right truncate tabular-nums">

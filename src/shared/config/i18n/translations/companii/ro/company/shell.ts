@@ -7,7 +7,7 @@ export const companiiRoCompanyShell = {
           viewAll: 'Vezi toate →',
           empty: 'Nicio cerere nouă din servicii sau site.',
           convertToIntervention: 'Preia → Lucrare',
-          convertToEstimate: '→ Smetă',
+          convertToEstimate: '→ Calcul preț',
         },
         activeInterventions: {
           title: 'Lucrări recente active',
@@ -39,7 +39,7 @@ export const companiiRoCompanyShell = {
       },
       toasts: {
         leadConvertedIntervention: 'Cerere preluată ca lucrare.',
-        leadConvertedEstimate: 'Cerere convertită în smetă.',
+        leadConvertedEstimate: 'Cerere convertită în calcul de preț.',
         convertLeadFailed: 'Nu s-a putut converti cererea.',
       },
     },
@@ -62,9 +62,9 @@ export const companiiRoCompanyShell = {
 
   oferte: 'Oferte',
 
-  smete: 'Smete inteligente',
+  smete: 'Calcule de preț',
 
-  smeteTemplates: 'Șabloane smete',
+  smeteTemplates: 'Șabloane calcule de preț',
 
   facturi: 'Facturi',
 

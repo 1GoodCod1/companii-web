@@ -1,4 +1,4 @@
-import { Check, Eye, Plus, Trash2 } from 'lucide-react';
+import { CheckIcon, EyeIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { downloadFile } from '@/shared/api/files';
 import { EstimateLineSourceBadge } from '@/features/estimates/components/EstimateLineSourceBadge';
@@ -98,6 +98,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                 const isLabor = isEstimateLaborLine({
                   unit: line.unit,
                   description: line.description,
+                  stageKind: stage.kind,
                 });
                 const unitOptions: readonly EstimateMeasurementUnit[] | undefined = isLabor
                   ? laborUnits
@@ -218,7 +219,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                               onMouseDown={() => handleSaveStore(line.id, stage.id)}
                               className="rounded-md bg-emerald-100 p-1 text-emerald-700 hover:bg-emerald-200 transition-colors"
                             >
-                              <Check className="size-3" />
+                              <CheckIcon className="size-3" />
                             </button>
                           )}
                         </div>
@@ -239,7 +240,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                                 }
                                 className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100 px-2 py-1 text-[10px] font-bold text-violet-700 hover:bg-violet-100 transition-colors"
                               >
-                                <Eye className="size-3.5" /> {t('company.estimateWizard.stagesStep.viewReceipt')}
+                                <EyeIcon className="size-3.5" /> {t('company.estimateWizard.stagesStep.viewReceipt')}
                               </button>
                               {!isReadOnly && (
                                 <button
@@ -247,7 +248,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                                   onClick={() => handleDeleteReceipt(line.id, stage.id)}
                                   className="rounded-xl bg-red-50 border border-red-100 p-1 text-red-600 hover:bg-red-100 transition-colors"
                                 >
-                                  <Trash2 className="size-3.5" />
+                                  <TrashIcon className="size-3.5" />
                                 </button>
                               )}
                             </>
@@ -257,7 +258,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                                 <span className="animate-pulse">{t('cabinet.common.loading')}</span>
                               ) : (
                                 <>
-                                  <Plus className="size-3" /> {t('company.estimateWizard.stagesStep.receipt')}
+                                  <PlusIcon className="size-3" /> {t('company.estimateWizard.stagesStep.receipt')}
                                 </>
                               )}
                               <input
@@ -282,7 +283,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                           title={t('cabinet.common.delete')}
                           className="rounded-lg bg-red-50 border border-red-100 p-1.5 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors"
                         >
-                          <Trash2 className="size-3.5" />
+                          <TrashIcon className="size-3.5" />
                         </button>
                       </td>
                     )}
@@ -303,7 +304,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
           disabled={addLineMutation.isPending}
           className="w-full mt-2 rounded-xl border border-dashed border-violet-200 bg-violet-50/50 py-2 text-xs font-semibold text-violet-700 hover:bg-violet-100 transition-colors inline-flex items-center justify-center gap-1.5"
         >
-          <Plus className="size-3.5" /> {t('company.estimateWizard.stagesStep.addNewLine')}
+          <PlusIcon className="size-3.5" /> {t('company.estimateWizard.stagesStep.addNewLine')}
         </button>
       )}
     </div>

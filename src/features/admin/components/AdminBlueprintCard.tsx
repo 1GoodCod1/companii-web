@@ -1,4 +1,4 @@
-import { Edit2, Trash2 } from 'lucide-react';
+import { PencilSimpleIcon, TrashIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import type { AdminBlueprintDto } from '@/features/admin/api/useAdmin';
 
@@ -50,7 +50,7 @@ export function AdminBlueprintCard({
             <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase">
               {t('admin.blueprintsPage.colUsage')}
             </span>
-            <p className="font-semibold text-gray-700">{projectsCount} смет</p>
+            <p className="font-semibold text-gray-700">{projectsCount} расчет. стоимости</p>
           </div>
         </div>
 
@@ -84,7 +84,7 @@ export function AdminBlueprintCard({
               onClick={() => onEdit(bp)}
               className="p-2 text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition-all"
             >
-              <Edit2 className="size-4" />
+              <PencilSimpleIcon className="size-4" />
             </button>
             <button
               type="button"
@@ -92,7 +92,7 @@ export function AdminBlueprintCard({
               disabled={projectsCount > 0}
               className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-all disabled:opacity-30 disabled:hover:bg-transparent"
             >
-              <Trash2 className="size-4" />
+              <TrashIcon className="size-4" />
             </button>
           </div>
         </div>

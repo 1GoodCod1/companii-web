@@ -1,6 +1,6 @@
 import { useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ImagePlus, Play, Trash2 } from 'lucide-react';
+import { ImageSquareIcon, PlayIcon, TrashIcon } from '@phosphor-icons/react';
 import {
   cabinetBtnSecondary,
   cabinetFieldClass,
@@ -113,7 +113,7 @@ export function CompanyGallerySection({
             onClick={() => galleryInputRef.current?.click()}
             className={`${cabinetBtnSecondary} gap-2`}
           >
-            <ImagePlus className="size-4" />
+            <ImageSquareIcon className="size-4" />
             {t('company.branding.addGallery')}
           </button>
         </div>
@@ -153,7 +153,7 @@ export function CompanyGallerySection({
                       />
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <div className="size-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                          <Play className="size-5 text-white ml-0.5" fill="white" />
+                          <PlayIcon className="size-5 text-white ml-0.5" fill="white" />
                         </div>
                       </div>
                     </div>
@@ -177,7 +177,7 @@ export function CompanyGallerySection({
                   className="absolute top-2 right-2 z-10 inline-flex size-8 items-center justify-center rounded-full bg-black/55 text-white opacity-0 group-hover:opacity-100 transition-opacity"
                   aria-label={t('company.branding.deletePhoto')}
                 >
-                  <Trash2 className="size-4" />
+                  <TrashIcon className="size-4" />
                 </button>
                 {image.caption ? (
                   <p className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 text-[11px] text-white pointer-events-none">
@@ -210,7 +210,7 @@ export function CompanyGallerySection({
                         />
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                           <div className="size-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-                            <Play className="size-5 text-white ml-0.5" fill="white" />
+                            <PlayIcon className="size-5 text-white ml-0.5" fill="white" />
                           </div>
                         </div>
                       </div>
@@ -233,7 +233,7 @@ export function CompanyGallerySection({
                     className="absolute top-2 right-2 z-10 inline-flex size-8 items-center justify-center rounded-full bg-black/55 text-white"
                     aria-label={t('company.branding.removeFromList')}
                   >
-                    <Trash2 className="size-4" />
+                    <TrashIcon className="size-4" />
                   </button>
                 </div>
                 <input

@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CompanyManagementGate } from '@/features/companies';
-import { PageHero, Panel, PanelHeader, EmptyState } from '@/widgets/cabinet/cabinet-ui';
+import { LoadingStatus } from '@/shared/ui/LoadingStatus';
+import { PageHero, Panel, PanelHeader, EmptyState, SkeletonList } from '@/widgets/cabinet/cabinet-ui';
 import { LeadInboxItem } from '@/features/fsm';
 import { LeadsStatusFilter } from '@/features/fsm';
 import { ConvertLeadToEstimateModal } from '@/features/fsm';
@@ -37,7 +38,9 @@ export function CompanyLeadsPage() {
             meta={leadsMeta}
           />
           {inbox.isLoading ? (
-            <p className="text-sm text-gray-400 p-4">{t('cabinet.common.loading')}</p>
+            <LoadingStatus label={t('cabinet.common.loading')}>
+              <SkeletonList rows={5} />
+            </LoadingStatus>
           ) : !inbox.sortedLeads.length ? (
             <EmptyState message={t('company.leadsPage.empty')} />
           ) : (

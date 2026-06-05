@@ -1,4 +1,4 @@
-import { BadgeCheck, MapPin, Users, Star } from 'lucide-react';
+import { SealCheckIcon, MapPinIcon, UsersIcon, StarIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { CompanyLogo } from '@/entities/company/ui/CompanyLogo';
 import {
@@ -61,7 +61,7 @@ export function CompanyHero({ company }: CompanyHeroProps) {
                 {company.name}
               </h1>
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-[10px] font-bold text-emerald-700 shadow-xs">
-                <BadgeCheck className="size-3.5 fill-emerald-100" />
+                <SealCheckIcon className="size-3.5 fill-emerald-100" />
                 {t('companyDetail.verified')}
               </span>
             </div>
@@ -76,20 +76,20 @@ export function CompanyHero({ company }: CompanyHeroProps) {
               {company.city ? (
                 <span className="inline-flex items-center gap-2 font-medium">
                   <div className="p-1 rounded-lg bg-slate-100 text-slate-500">
-                    <MapPin className="size-4" />
+                    <MapPinIcon className="size-4" />
                   </div>
                   {getTranslatedCityName(t, company.city)}
                 </span>
               ) : null}
               <span className="inline-flex items-center gap-2 font-medium">
                 <div className="p-1 rounded-lg bg-slate-100 text-slate-500">
-                  <Users className="size-4" />
+                  <UsersIcon className="size-4" />
                 </div>
                 {t('companyDetail.teamMembers', { count: company.teamSize })}
               </span>
               <span className="inline-flex items-center gap-2 font-medium">
                 <div className="p-1 rounded-lg bg-amber-50 text-amber-500 border border-amber-100/50">
-                  <Star className="size-4 fill-amber-400 text-amber-400" />
+                  <StarIcon className="size-4 fill-amber-400 text-amber-400" />
                 </div>
                 <span className="font-extrabold text-slate-800">{rating.toFixed(1)}</span>
                 <span className="text-slate-400">

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChevronRight } from 'lucide-react';
+import { CaretRightIcon } from '@phosphor-icons/react';
 import { personInitials } from '@/shared/utils/person';
 import type { AuthUserSnapshot } from '@/entities/user/model/auth.types';
 
@@ -44,7 +44,7 @@ export function PublicHeaderAuth({
               <span className="block truncate text-xs text-gray-500">{displayEmail}</span>
             ) : null}
           </span>
-          <ChevronRight className="size-4 shrink-0 text-gray-400" />
+          <CaretRightIcon className="size-4 shrink-0 text-gray-400" />
         </Link>
       );
     }
@@ -58,7 +58,7 @@ export function PublicHeaderAuth({
           {initials}
         </span>
         <span className="min-w-0 truncate text-[11px] font-semibold text-gray-800">{cabinetLabel}</span>
-        <ChevronRight className="size-3.5 shrink-0 text-violet-600" />
+        <CaretRightIcon className="size-3.5 shrink-0 text-violet-600" />
       </Link>
     );
   }
@@ -88,13 +88,13 @@ export function PublicHeaderAuth({
     <div className="inline-flex h-8 items-center gap-2">
       <Link
         to="/login"
-        className="text-[11px] font-semibold text-gray-500 transition-colors hover:text-violet-700"
+        className="inline-flex h-8 items-center justify-center border border-gray-200 bg-white px-3.5 text-xs font-bold text-slate-800 transition-all duration-200 ease-in-out hover:border-violet-300 hover:bg-violet-50/50 hover:text-violet-600 hover:shadow-sm rounded-none"
       >
         {t('nav.login')}
       </Link>
       <Link
         to="/register"
-        className="inline-flex h-8 items-center bg-gray-900 px-3 text-[11px] font-bold uppercase tracking-wide text-white transition-colors hover:bg-gray-800"
+        className="inline-flex h-8 items-center justify-center border border-gray-900 bg-gray-900 px-3.5 text-xs font-bold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 hover:border-gray-800 hover:shadow-sm rounded-none"
       >
         {t('nav.register')}
       </Link>

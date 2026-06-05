@@ -26,9 +26,29 @@ export function groupStagesByWorkModule(
   }
 
   const groupMap = new Map<string | null, StageVisibility[]>();
+  const enabledSet = new Set(enabledModules);
+  const enabledModuleByStageCode = new Map<string, string>();
+  for (const module of config?.workModules ?? []) {
+    if (!enabledSet.has(module.key)) continue;
+    for (const stageCode of module.stageCodes) {
+      if (!enabledModuleByStageCode.has(stageCode)) {
+        enabledModuleByStageCode.set(stageCode, module.key);
+      }
+    }
+  }
 
   for (const v of visible) {
-    const key = v.blueprintDef?.moduleKey ?? null;
+    const defaultKey = v.blueprintDef?.moduleKey;
+    const stageCode = v.blueprintDef?.code;
+    let resolvedKey = defaultKey;
+    if (defaultKey && !enabledSet.has(defaultKey) && stageCode) {
+      const alternateKey = enabledModuleByStageCode.get(stageCode);
+      if (alternateKey) {
+        resolvedKey = alternateKey;
+      }
+    }
+
+    const key = resolvedKey ?? null;
     if (!groupMap.has(key)) {
       groupMap.set(key, []);
     }

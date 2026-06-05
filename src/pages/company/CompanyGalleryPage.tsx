@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, X } from 'lucide-react';
+import { ArrowLeftIcon, XIcon } from '@phosphor-icons/react';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
@@ -69,7 +69,7 @@ export function CompanyGalleryPage() {
         to={`${ROUTE_ABS.COMPANY}${COMPANY_CABINET_PATH.PROFILE}`}
         className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-violet-600 transition-colors"
       >
-        <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+        <ArrowLeftIcon className="size-4 transition-transform group-hover:-translate-x-1" />
         {t('company.galleryPage.backToProfile')}
       </Link>
 
@@ -113,7 +113,7 @@ export function CompanyGalleryPage() {
               onClick={handleCancelUpload}
               className={`${cabinetBtnSecondary} flex items-center gap-1.5 text-xs`}
             >
-              <X className="size-3.5" />
+              <XIcon className="size-3.5" />
               {t('cabinet.common.cancel')}
             </button>
           </div>

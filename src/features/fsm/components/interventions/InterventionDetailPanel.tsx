@@ -1,5 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { EmptyState, Panel, PanelHeader, cabinetPanelContentInsetClass } from '@/widgets/cabinet/cabinet-ui';
+import { LoadingStatus } from '@/shared/ui/LoadingStatus';
+import {
+  EmptyState,
+  Panel,
+  PanelHeader,
+  SkeletonForm,
+  cabinetPanelContentInsetClass,
+} from '@/widgets/cabinet/cabinet-ui';
 import { cabinetSplitPanelClass } from '@/widgets/cabinet/EntityListDetailLayout';
 import type { CompanyRole } from '@/entities/company/model/roles.types';
 import type { CompanyMemberDto } from '@/entities/fsm/model/types';
@@ -106,9 +113,12 @@ export function InterventionDetailPanel({
       <div className={cabinetPanelContentInsetClass}>
       {selectedId ? (
         isLoadingDetail || !detail ? (
-          <div className="flex flex-1 items-center justify-center text-gray-400">
-            {t('company.fsm.interventions.detail.loading')}
-          </div>
+          <LoadingStatus
+            label={t('company.fsm.interventions.detail.loading')}
+            className="flex-1"
+          >
+            <SkeletonForm fields={5} />
+          </LoadingStatus>
         ) : (
           <div className="space-y-4">
             <div className="flex justify-between items-start">

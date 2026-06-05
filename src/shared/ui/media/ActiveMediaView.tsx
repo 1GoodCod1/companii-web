@@ -1,4 +1,4 @@
-import { Play } from 'lucide-react';
+import { PlayIcon } from '@phosphor-icons/react';
 import { AnimatePresence, m } from 'framer-motion';
 import { MediaImage } from '@/shared/ui/MediaImage';
 import { MediaVideo } from '@/shared/ui/MediaVideo';
@@ -47,7 +47,7 @@ export function ActiveMediaView({
               className="absolute inset-0 flex items-center justify-center"
             >
               <div className="size-16 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-violet-600/30 transition-transform hover:scale-110">
-                <Play className="size-7 text-white ml-1" fill="white" />
+                <PlayIcon className="size-7 text-white ml-1" fill="white" />
               </div>
             </m.div>
           )}

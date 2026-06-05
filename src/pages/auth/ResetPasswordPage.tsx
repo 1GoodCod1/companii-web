@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import { useResetPasswordMutation } from '@/features/auth';
 import { getAuthErrorMessage } from '@/features/auth';
-import { Lock, ArrowLeft, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { LockIcon, ArrowLeftIcon, CheckCircleIcon, ShieldWarningIcon } from '@phosphor-icons/react';
 import { FormFieldError } from '@/shared/ui/FormFieldError';
 import { fieldClassName } from '@/lib/forms/fieldClassName';
 import {
@@ -72,7 +72,7 @@ export function ResetPasswordPage() {
       <div className="w-full animate-fade-in py-2 relative z-10">
         <div className="space-y-6 text-center lg:text-left py-4">
           <div className="mx-auto lg:mx-0 p-4 bg-rose-50 text-rose-600 rounded-3xl size-16 flex items-center justify-center shadow-xs border border-rose-500/10">
-            <ShieldAlert className="size-8 animate-pulse" />
+            <ShieldWarningIcon className="size-8 animate-pulse" />
           </div>
           <div className="space-y-2">
             <h2 className="text-2xl font-black text-slate-900 uppercase tracking-wide">
@@ -98,7 +98,7 @@ export function ResetPasswordPage() {
       <div className="w-full animate-fade-in py-2 relative z-10">
         <div className="space-y-6 text-center lg:text-left py-4 animate-fade-in">
           <div className="mx-auto lg:mx-0 p-4 bg-emerald-50 text-emerald-600 rounded-3xl size-16 flex items-center justify-center shadow-xs border border-emerald-500/10">
-            <CheckCircle2 className="size-8 animate-pulse" />
+            <CheckCircleIcon className="size-8 animate-pulse" />
           </div>
           <div className="space-y-2">
             <h2 className="text-2xl font-black text-slate-900 uppercase tracking-wide">
@@ -144,7 +144,7 @@ export function ResetPasswordPage() {
               {t('auth.resetPasswordPage.newPasswordLabel')}
             </label>
             <div className="relative">
-              <Lock className="absolute left-4 top-3.5 size-4 text-slate-400" />
+              <LockIcon className="absolute left-4 top-3.5 size-4 text-slate-400" />
               <input
                 type="password"
                 placeholder="••••••••"
@@ -160,7 +160,7 @@ export function ResetPasswordPage() {
               {t('auth.resetPasswordPage.confirmPasswordLabel')}
             </label>
             <div className="relative">
-              <Lock className="absolute left-4 top-3.5 size-4 text-slate-400" />
+              <LockIcon className="absolute left-4 top-3.5 size-4 text-slate-400" />
               <input
                 type="password"
                 placeholder="••••••••"
@@ -187,7 +187,7 @@ export function ResetPasswordPage() {
             to="/login"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-violet-600 hover:text-violet-750 transition-colors uppercase tracking-wider"
           >
-            <ArrowLeft className="size-3.5" />
+            <ArrowLeftIcon className="size-3.5" />
             {t('auth.resetPasswordPage.backToLogin')}
           </Link>
         </div>

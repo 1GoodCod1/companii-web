@@ -26,6 +26,7 @@ export const PUBLIC_ROUTE = {
   REGISTER: 'register',
   FORGOT_PASSWORD: 'forgot-password',
   RESET_PASSWORD: 'reset-password',
+  VERIFY_EMAIL: 'verify-email',
   COMPANIES: 'companies',
   COMPANY_DETAIL: 'companies/:slug',
 } as const;

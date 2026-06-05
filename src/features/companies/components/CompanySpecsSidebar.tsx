@@ -1,4 +1,4 @@
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheckIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import {
   getTranslatedCategoryName,
@@ -16,7 +16,7 @@ export function CompanySpecsSidebar({ company }: CompanySpecsSidebarProps) {
   return (
     <div className="glass-panel rounded-[28px] p-6 border border-white/40 space-y-6">
       <div className="flex items-center gap-2 pb-4 border-b border-slate-100">
-        <ShieldCheck className="size-5 text-emerald-600" />
+        <ShieldCheckIcon className="size-5 text-emerald-600" />
         <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">
           {t('companyDetail.specsTitle')}
         </h3>

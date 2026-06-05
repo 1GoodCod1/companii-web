@@ -7,7 +7,7 @@ export const companiiRuCompanyShell = {
           viewAll: 'Смотреть все →',
           empty: 'Нет новых заявок с сайта или из каталога.',
           convertToIntervention: 'Принять → Работа',
-          convertToEstimate: '→ Смета',
+          convertToEstimate: '→ Расчет стоимости',
         },
         activeInterventions: {
           title: 'Недавние активные работы',
@@ -39,7 +39,7 @@ export const companiiRuCompanyShell = {
       },
       toasts: {
         leadConvertedIntervention: 'Заявка принята как работа.',
-        leadConvertedEstimate: 'Заявка преобразована в смету.',
+        leadConvertedEstimate: 'Заявка преобразована в расчет стоимости.',
         convertLeadFailed: 'Не удалось преобразовать заявку.',
       },
     },
@@ -62,9 +62,9 @@ export const companiiRuCompanyShell = {
 
   oferte: 'Предложения',
 
-  smete: 'Умные сметы',
+  smete: 'Расчеты стоимости',
 
-  smeteTemplates: 'Шаблоны смет',
+  smeteTemplates: 'Шаблоны расчетов стоимости',
 
   facturi: 'Счета',
 

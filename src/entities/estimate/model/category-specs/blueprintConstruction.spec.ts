@@ -60,6 +60,7 @@ export const blueprintConstructionSpec = {
       'builtArea',
       'storyCount',
       'foundationType',
+      'foundationConcreteM3',
       'wallMaterial',
       'slabType',
       'excavationVolumeM3',

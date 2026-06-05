@@ -28,10 +28,10 @@ const COMPANY_AUDIT_ACTION_OPTIONS = [
   { value: 'TEAM_INVITATION_REVOKED', labelFallback: 'Revocare invitație' },
   { value: 'COMPANY_OWNERSHIP_TRANSFERRED', labelFallback: 'Transfer proprietate' },
   { value: 'SUBSCRIPTION_CHANGED', labelFallback: 'Schimbare plan' },
-  { value: 'ESTIMATE_SENT', labelFallback: 'Smetă trimisă' },
-  { value: 'ESTIMATE_ACCEPTED', labelFallback: 'Smetă acceptată' },
-  { value: 'ESTIMATE_REJECTED', labelFallback: 'Smetă respinsă' },
-  { value: 'ESTIMATE_CONVERTED', labelFallback: 'Smetă convertită' },
+  { value: 'ESTIMATE_SENT', labelFallback: 'Calcul de preț trimis' },
+  { value: 'ESTIMATE_ACCEPTED', labelFallback: 'Calcul de preț acceptat' },
+  { value: 'ESTIMATE_REJECTED', labelFallback: 'Calcul de preț respins' },
+  { value: 'ESTIMATE_CONVERTED', labelFallback: 'Calcul de preț convertit' },
 ] as const;
 
 export function CompanyAuditPage() {

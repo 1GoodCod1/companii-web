@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { MessageSquarePlus } from 'lucide-react';
+import { ChatTextIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
@@ -130,7 +130,7 @@ export function PortalInterventionsSection({ data }: { data: PortalDashboardDto 
                     onClick={() => openReviewModal(item)}
                     className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-3 py-2 text-xs font-bold text-white hover:bg-amber-600 transition-colors"
                   >
-                    <MessageSquarePlus className="size-4" />
+                    <ChatTextIcon className="size-4" />
                     {t('portal.interventionsSection.leaveReview')}
                   </button>
                 ) : null}

@@ -1,4 +1,4 @@
-import { Film } from 'lucide-react';
+import { FilmStripIcon } from '@phosphor-icons/react';
 import { MediaImage } from '@/shared/ui/MediaImage';
 import { isMediaItemVideo } from './mediaItem';
 
@@ -33,7 +33,7 @@ export function MediaThumb({ item, isActive, onClick, index }: MediaThumbProps) 
         <div className="relative size-full bg-gradient-to-br from-slate-700 to-slate-900">
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="size-7 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-              <Film className="size-3.5 text-white" />
+              <FilmStripIcon className="size-3.5 text-white" />
             </div>
           </div>
         </div>

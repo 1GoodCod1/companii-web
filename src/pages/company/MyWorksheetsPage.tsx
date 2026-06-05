@@ -1,16 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, Calendar, Hammer, MapPin, Phone, User } from 'lucide-react';
+import { ArrowRightIcon, CalendarIcon, HammerIcon, MapPinIcon, PhoneIcon, UserIcon } from '@phosphor-icons/react';
 import { EmptyState, PageHero, Panel, SoftBadge } from '@/widgets/cabinet/cabinet-ui';
 import { useMyAssignedWorksheetsQuery } from '@/features/estimates';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 
-/**
- * N-04: shortcut list for field technicians (MEMBER role).
- * Renders the assigned worksheets returned by F-04 endpoint
- * `GET /estimates/worksheets/my`. Stripped of all financial data.
- */
 export function MyWorksheetsPage() {
   const { t } = useTranslation();
   const { role } = useCompanyPermissions();
@@ -86,7 +81,7 @@ export function MyWorksheetsPage() {
                     {item.customer && (
                       <>
                         <div className="flex items-center gap-1.5">
-                          <User className="size-3.5 text-gray-400" />
+                          <UserIcon className="size-3.5 text-gray-400" />
                           {item.customer.fullName}
                         </div>
                         <a
@@ -94,26 +89,26 @@ export function MyWorksheetsPage() {
                           onClick={(e) => e.stopPropagation()}
                           className="flex items-center gap-1.5 text-violet-700 hover:underline"
                         >
-                          <Phone className="size-3.5 text-violet-500" />
+                          <PhoneIcon className="size-3.5 text-violet-500" />
                           {item.customer.phone}
                         </a>
                       </>
                     )}
                     {item.intervention.address && (
                       <div className="flex items-start gap-1.5">
-                        <MapPin className="size-3.5 text-gray-400 mt-0.5 shrink-0" />
+                        <MapPinIcon className="size-3.5 text-gray-400 mt-0.5 shrink-0" />
                         <span>{item.intervention.address}</span>
                       </div>
                     )}
                     {scheduled && (
                       <div className="flex items-center gap-1.5">
-                        <Calendar className="size-3.5 text-gray-400" />
+                        <CalendarIcon className="size-3.5 text-gray-400" />
                         {scheduled}
                       </div>
                     )}
                     {item.stage && (
                       <div className="flex items-center gap-1.5 text-violet-700">
-                        <Hammer className="size-3.5" />
+                        <HammerIcon className="size-3.5" />
                         {item.stage.name}
                       </div>
                     )}
@@ -121,7 +116,7 @@ export function MyWorksheetsPage() {
 
                   <div className="flex items-center justify-end text-[11px] font-bold text-violet-700">
                     {t('company.myWorksheets.open')}
-                    <ArrowRight className="size-3.5 ml-1" />
+                    <ArrowRightIcon className="size-3.5 ml-1" />
                   </div>
                 </Panel>
               </Link>

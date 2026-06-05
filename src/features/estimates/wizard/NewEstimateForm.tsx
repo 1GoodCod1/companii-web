@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRightIcon } from '@phosphor-icons/react';
 import {
   AppSelect,
   Panel,
@@ -215,7 +215,7 @@ export function NewEstimateForm({ activeCompany }: Props) {
           disabled={createProject.isPending || !activeBlueprint || isExcluded}
           className={cabinetBtnPrimary}
         >
-          {t('company.estimateWizard.newForm.createEstimate')} <ArrowRight className="size-4" />
+          {t('company.estimateWizard.newForm.createEstimate')} <ArrowRightIcon className="size-4" />
         </button>
       </div>
     </Panel>

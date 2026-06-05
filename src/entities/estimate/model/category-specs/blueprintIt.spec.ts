@@ -74,6 +74,8 @@ export const blueprintItSpec = {
       'documentationRequired',
       'migrationRequired',
       'slaRequired',
+      'multilingual',
+      'customDesign',
     ],
     workModuleKeys: [
       'audit',

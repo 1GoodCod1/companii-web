@@ -14,7 +14,9 @@ import {
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth';
 import { SEOHead } from '@/shared/ui/seo/SEOHead';
+import { LoadingStatus } from '@/shared/ui/LoadingStatus';
 import { PublicPageHeader } from '@/shared/ui/PublicPageHeader';
+import { SkeletonPlanCards } from '@/widgets/cabinet/cabinet-ui';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 
@@ -68,7 +70,7 @@ export function SubscriptionsPage() {
         hreflang
       />
 
-      <div className="max-w-5xl mx-auto space-y-12 py-10">
+      <div className="max-w-5xl mx-auto space-y-12 py-10 animate-fade-in">
         <PublicPageHeader
           badge={t('subscriptions.badge')}
           title={
@@ -91,7 +93,9 @@ export function SubscriptionsPage() {
         ) : null}
 
         {(isLoading || awaitingSubscription) && (
-          <p className="text-center text-sm text-gray-400 font-medium">{t('subscriptions.loading')}</p>
+          <LoadingStatus label={t('subscriptions.loading')}>
+            <SkeletonPlanCards />
+          </LoadingStatus>
         )}
 
         {isError && (

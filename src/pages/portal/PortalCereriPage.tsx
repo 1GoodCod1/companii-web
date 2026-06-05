@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ClipboardList } from 'lucide-react';
+import { ClipboardTextIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import {
   PageHero,
@@ -111,7 +111,7 @@ export function PortalCereriPage() {
 
       <Panel>
         <div className="flex items-start gap-3 px-4 py-5 sm:px-6">
-          <ClipboardList className="size-5 text-violet-600 shrink-0 mt-0.5" />
+          <ClipboardTextIcon className="size-5 text-violet-600 shrink-0 mt-0.5" />
           <div className="space-y-1 text-xs text-gray-500 leading-relaxed">
             <p className="font-semibold text-gray-700">{t('portal.cereriPage.complexProjectsTitle')}</p>
             <p>{t('portal.cereriPage.complexProjectsBody')}</p>

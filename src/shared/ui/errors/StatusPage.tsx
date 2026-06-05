@@ -1,17 +1,6 @@
 import { Link } from 'react-router-dom';
 import { m } from 'framer-motion';
-import {
-  ArrowLeft,
-  Building2,
-  Compass,
-  HardHat,
-  Home,
-  Lock,
-  Mail,
-  RefreshCw,
-  Ruler,
-  Wrench,
-} from 'lucide-react';
+import { ArrowLeftIcon, BuildingsIcon, CompassIcon, HardHatIcon, HouseIcon, LockIcon, EnvelopeIcon, ArrowsCounterClockwiseIcon, RulerIcon, WrenchIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { cn } from '@/lib/utils';
@@ -28,7 +17,7 @@ const VARIANT_CONFIG = {
   '404': {
     leftDigit: '4',
     rightDigit: '4',
-    icon: Compass,
+    icon: CompassIcon,
     accent: 'from-violet-600 via-indigo-600 to-violet-500',
     glow: 'bg-violet-400/20',
     iconColor: 'text-violet-600',
@@ -43,7 +32,7 @@ const VARIANT_CONFIG = {
   '403': {
     leftDigit: '4',
     rightDigit: '3',
-    icon: Lock,
+    icon: LockIcon,
     accent: 'from-amber-600 via-orange-600 to-amber-500',
     glow: 'bg-amber-400/20',
     iconColor: 'text-amber-600',
@@ -58,7 +47,7 @@ const VARIANT_CONFIG = {
   error: {
     leftDigit: null,
     rightDigit: null,
-    icon: Wrench,
+    icon: WrenchIcon,
     accent: 'from-rose-600 via-red-600 to-rose-500',
     glow: 'bg-rose-400/20',
     iconColor: 'text-rose-600',
@@ -73,10 +62,10 @@ const VARIANT_CONFIG = {
 } as const;
 
 const FLOATING_ICONS = [
-  { Icon: HardHat, className: 'left-[8%] top-[18%] text-violet-300/70', delay: 0 },
-  { Icon: Ruler, className: 'right-[10%] top-[22%] text-indigo-300/60', delay: 0.4 },
-  { Icon: Wrench, className: 'left-[14%] bottom-[24%] text-violet-300/50', delay: 0.8 },
-  { Icon: Building2, className: 'right-[12%] bottom-[20%] text-indigo-300/55', delay: 1.2 },
+  { Icon: HardHatIcon, className: 'left-[8%] top-[18%] text-violet-300/70', delay: 0 },
+  { Icon: RulerIcon, className: 'right-[10%] top-[22%] text-indigo-300/60', delay: 0.4 },
+  { Icon: WrenchIcon, className: 'left-[14%] bottom-[24%] text-violet-300/50', delay: 0.8 },
+  { Icon: BuildingsIcon, className: 'right-[12%] bottom-[20%] text-indigo-300/55', delay: 1.2 },
 ] as const;
 
 export function StatusPage({ variant, onReload, compact = false }: StatusPageProps) {
@@ -88,16 +77,16 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
   const actionLinks =
     variant === '403'
       ? [
-          { to: lp('/'), label: t('forbidden.goHome'), icon: Home, primary: true },
-          { to: '/login', label: t('forbidden.goLogin'), icon: ArrowLeft },
-          { to: lp('/contacts'), label: t('forbidden.contactSupport'), icon: Mail },
+          { to: lp('/'), label: t('forbidden.goHome'), icon: HouseIcon, primary: true },
+          { to: '/login', label: t('forbidden.goLogin'), icon: ArrowLeftIcon },
+          { to: lp('/contacts'), label: t('forbidden.contactSupport'), icon: EnvelopeIcon },
         ]
       : variant === 'error'
-        ? [{ to: lp('/'), label: t('routeError.goHome'), icon: Home, primary: true }]
+        ? [{ to: lp('/'), label: t('routeError.goHome'), icon: HouseIcon, primary: true }]
         : [
-            { to: lp('/'), label: t('notFound.goHome'), icon: Home, primary: true },
-            { to: lp('/companies'), label: t('notFound.browseCompanies'), icon: Building2 },
-            { to: lp('/contacts'), label: t('notFound.contactSupport'), icon: Mail },
+            { to: lp('/'), label: t('notFound.goHome'), icon: HouseIcon, primary: true },
+            { to: lp('/companies'), label: t('notFound.browseCompanies'), icon: BuildingsIcon },
+            { to: lp('/contacts'), label: t('notFound.contactSupport'), icon: EnvelopeIcon },
           ];
 
   return (
@@ -130,7 +119,7 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
             }}
             aria-hidden
           >
-            <Icon className="size-8" strokeWidth={1.5} />
+            <Icon className="size-8" weight="light" />
           </m.div>
         ))}
 
@@ -169,10 +158,7 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
               )}
               aria-hidden
             >
-              <HeroIcon
-                className={cn(config.iconColor, compact ? 'size-10' : 'size-11 sm:size-12')}
-                strokeWidth={1.75}
-              />
+              <HeroIcon className={cn(config.iconColor, compact ? 'size-10' : 'size-11 sm:size-12')} weight="light" />
             </m.div>
           ) : (
             <div
@@ -201,13 +187,7 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
                 )}
                 aria-hidden
               >
-                <HeroIcon
-                  className={cn(
-                    config.iconColor,
-                    compact ? 'size-8 sm:size-9' : 'size-9 sm:size-10',
-                  )}
-                  strokeWidth={1.75}
-                />
+                <HeroIcon className={cn( config.iconColor, compact ? 'size-8 sm:size-9' : 'size-9 sm:size-10', )} weight="light" />
               </m.div>
 
               <span
@@ -241,7 +221,7 @@ export function StatusPage({ variant, onReload, compact = false }: StatusPagePro
               onClick={onReload}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-gray-800"
             >
-              <RefreshCw className="size-4" />
+              <ArrowsCounterClockwiseIcon className="size-4" />
               {t('routeError.reload')}
             </button>
           )}

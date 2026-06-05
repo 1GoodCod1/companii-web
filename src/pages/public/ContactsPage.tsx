@@ -39,7 +39,7 @@ export function ContactsPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-10 space-y-12">
+    <div className="max-w-4xl mx-auto py-10 space-y-12 animate-fade-in">
       <PublicPageHeader
         badge={t('contacts.badge')}
         title={t('contacts.title')}

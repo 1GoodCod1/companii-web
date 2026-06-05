@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { MessageSquareQuote } from 'lucide-react';
+import { ChatCircleTextIcon } from '@phosphor-icons/react';
 import { useCompanyReviewsMeQuery } from '@/features/reviews';
 import { ReviewCard } from '@/entities/review/ui/ReviewCard';
 import { StarRating } from '@/shared/ui/reviews/StarRating';
@@ -71,7 +71,7 @@ export function CompanyReviewsPage() {
                 </button>
               ) : (
                 <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-violet-50 text-violet-500">
-                  <MessageSquareQuote className="size-5" />
+                  <ChatCircleTextIcon className="size-5" />
                 </div>
               )
             }

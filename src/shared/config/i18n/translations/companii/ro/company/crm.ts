@@ -2,7 +2,7 @@ export const companiiRoCompanyCrm = {
   leadsPage: {
       title: 'Cereri & lead-uri',
       description:
-        'Cereri din servicii publice, proiecte sau introduse manual — calificați, convertiți în smete sau lucrări și finalizați când fluxul e complet.',
+        'Cereri din servicii publice, proiecte sau introduse manual — calificați, convertiți în calcule de preț (devize) sau lucrări și finalizați când fluxul e complet.',
       inboxTitle: 'Inbox cereri',
       empty: 'Nicio cerere pentru filtrul selectat.',
     },

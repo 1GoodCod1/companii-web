@@ -1,6 +1,6 @@
 export const companiiRuNav = {
   nav: {
-    login: 'Вход',
+    login: 'Войти',
     register: 'Регистрация',
     companies: 'Компании',
     language: 'Язык',

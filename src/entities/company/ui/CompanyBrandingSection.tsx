@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Upload } from 'lucide-react';
+import { UploadIcon } from '@phosphor-icons/react';
 import { CompanyLogo } from '@/entities/company/ui/CompanyLogo';
 import {
   cabinetBtnSecondary,
@@ -80,7 +80,7 @@ export function CompanyBrandingSection({
           onClick={() => logoInputRef.current?.click()}
           className={`${cabinetBtnSecondary} gap-2 ${isSidebar ? 'w-full justify-center' : ''}`}
         >
-          <Upload className="size-4" />
+          <UploadIcon className="size-4" />
           {displayLogo ? t('company.branding.changeLogo') : t('company.branding.uploadLogo')}
         </button>
         {displayLogo ? (

@@ -6,7 +6,7 @@ export const companiiRuCompanyOperations = {
       selectDateTime: 'Выберите дату и время.',
       toastScheduled: 'Работа запланирована.',
       toastScheduleFailed: 'Не удалось запланировать работу.',
-      toastLeadEstimateHint: 'Откройте страницу Заявки для сметы.',
+      toastLeadEstimateHint: 'Откройте страницу Заявки для расчета стоимости.',
       toastConvertFailed: 'Не удалось конвертировать заявку.',
     },
 
@@ -25,7 +25,7 @@ export const companiiRuCompanyOperations = {
         'Чтобы управлять подпиской, сначала зарегистрируйте компанию.',
       createProfileBtn: 'Создать профиль компании',
       description:
-        'Ваш план определяет, какие FSM-модули доступны: клиенты, работы, сметы, предложения и счета.',
+        'Ваш план определяет, какие FSM-модули доступны: клиенты, работы, расчеты стоимости, предложения и счета.',
       loading: 'Загрузка текущей подписки...',
       activePlan: 'Активный план',
       statusTrial: 'Пробный период',
@@ -48,7 +48,7 @@ export const companiiRuCompanyOperations = {
 
   auditPage: {
       title: 'Журнал активности',
-      description: 'История всех действий сотрудников: изменения цен, смет, статусов работ и настроек компании.',
+      description: 'История всех действий сотрудников: изменения цен, расчетов стоимости, статусов работ и настроек компании.',
       filterAllActions: 'Все действия',
       filterAllUsers: 'Все сотрудники',
       loading: 'Загрузка журнала...',
@@ -62,7 +62,7 @@ export const companiiRuCompanyOperations = {
 
   servicesPage: {
       title: 'Услуги и цены',
-      description: 'Публичный каталог на профиле компании + внутренние тарифы для смет (Pro+).',
+      description: 'Публичный каталог на профиле компании + внутренние тарифы для расчетов стоимости (Pro+).',
       createBtn: '+ Новая услуга',
       catalogTitle: 'Каталог услуг',
       categoryUnset: '— не задана —',
@@ -92,7 +92,7 @@ export const companiiRuCompanyOperations = {
   quotesPage: {
       title: 'Коммерческие предложения',
       description:
-        'Создавайте сметы расходов, рабочие бюджеты и ценовые предложения для клиентов.',
+        'Создавайте расчеты стоимости расходов, рабочие бюджеты и ценовые предложения для клиентов.',
       createBtn: '+ Создать предложение',
     },
 
@@ -106,7 +106,7 @@ export const companiiRuCompanyOperations = {
 
   workSheetPage: {
       loading: 'Загрузка рабочего листа...',
-      noAccess: 'У этой работы нет связанной сметы или нет доступа.',
+      noAccess: 'У этой работы нет связанного расчета стоимости или нет доступа.',
       backToJobs: 'Назад к работам',
       title: 'Лист выполнения',
       descriptionManagement:
@@ -114,7 +114,7 @@ export const companiiRuCompanyOperations = {
       descriptionTechnician: 'План, этапы и материалы — без коммерческой информации.',
       jobLabel: 'Работа',
       clientLabel: 'Клиент',
-      estimateLabel: 'Смета',
+      estimateLabel: 'Расчет стоимости',
       checklist: 'Чеклист',
       materials: 'Материалы',
       colDescription: 'Описание',
@@ -136,7 +136,7 @@ export const companiiRuCompanyOperations = {
 
   myWorksheets: {
       title: 'Мои объекты',
-      description: 'Назначенные вам работы с активной сметой.',
+      description: 'Назначенные вам работы с активным расчетом стоимости.',
       empty: 'Назначенных объектов пока нет.',
       loadError: 'Ошибка загрузки списка.',
       notForRole: 'Эта страница для сотрудников.',

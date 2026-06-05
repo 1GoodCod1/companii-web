@@ -32,12 +32,24 @@ export function computeStageVisibility(
     let hidden = false;
     let hiddenReason: StageVisibility['hiddenReason'];
 
-    if (blueprintDef?.moduleKey && !enabledSet.has(blueprintDef.moduleKey)) {
+    const defaultKey = blueprintDef?.moduleKey;
+    const stageCode = blueprintDef?.code;
+    let resolvedKey = defaultKey;
+    if (defaultKey && !enabledSet.has(defaultKey) && stageCode) {
+      const alternateModule = config?.workModules?.find(
+        (m) => enabledSet.has(m.key) && m.stageCodes.includes(stageCode)
+      );
+      if (alternateModule) {
+        resolvedKey = alternateModule.key;
+      }
+    }
+
+    if (resolvedKey && !enabledSet.has(resolvedKey)) {
       if (meaningfulLineCount === 0) {
         hidden = true;
         hiddenReason = 'optional-module-off';
       }
-    } else if (blueprintDef?.optional && meaningfulLineCount === 0 && !blueprintDef.moduleKey) {
+    } else if (blueprintDef?.optional && meaningfulLineCount === 0 && !resolvedKey) {
       hidden = true;
       hiddenReason = 'optional-empty';
     }

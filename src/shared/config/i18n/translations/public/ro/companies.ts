@@ -53,7 +53,7 @@ export const publicRoCompanies = {
     requestService: 'Solicită serviciul',
     projectTitle: 'Cerere proiect / lucrare complexă',
     projectDescription:
-      'Descrieți lucrarea dorită — renovări, instalații, proiecte pe termen lung. Compania vă va contacta pentru evaluare și smetă.',
+      'Descrieți lucrarea dorită — renovări, instalații, proiecte pe termen lung. Compania vă va contacta pentru evaluare și calcul de preț.',
     projectAuthNote: ' Necesită cont de client autentificat.',
     projectCta: 'Trimite cerere proiect',
     specsTitle: 'Specificații Companie',

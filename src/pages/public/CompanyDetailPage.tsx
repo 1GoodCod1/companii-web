@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { SEOHead } from '@/shared/ui/seo/SEOHead';
-import { ArrowLeft, Clock, Sparkles, HardHat } from 'lucide-react';
+import { ArrowLeftIcon, ClockIcon, SparkleIcon, HardHatIcon } from '@phosphor-icons/react';
 import { CompanyGallery } from '@/entities/company/ui/CompanyGallery';
 import { CompanyReviewsSection } from '@/features/reviews';
 import { formatServiceDurationI18n } from '@/entities/fsm/model/serviceDuration';
@@ -104,22 +104,17 @@ function useCompanyDetailPageView() {
           to={lp('/companies')}
           className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-violet-600 transition-colors"
         >
-          <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+          <ArrowLeftIcon className="size-4 transition-transform group-hover:-translate-x-1" />
           {t('companyDetail.backLink')}
         </Link>
-
-        {/* Premium Unified Hero Card */}
         <CompanyHero company={company} />
 
-        {/* Responsive Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-start">
-          {/* Main Content Column */}
           <div className="space-y-8 min-w-0">
-            {/* Description Block */}
             {company.description ? (
               <section className="glass-panel rounded-[28px] p-6 sm:p-8 border border-white/40">
                 <div className="flex items-center gap-2 mb-4">
-                  <Sparkles className="size-5 text-violet-600" />
+                  <SparkleIcon className="size-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
                     {t('companyDetail.about')}
                   </h2>
@@ -145,7 +140,7 @@ function useCompanyDetailPageView() {
             {(company.services?.length ?? 0) > 0 ? (
               <section className="glass-panel rounded-[28px] p-6 sm:p-8 border border-white/40">
                 <div className="flex items-center gap-2 mb-2">
-                  <Clock className="size-5 text-violet-600" />
+                  <ClockIcon className="size-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
                     {t('companyDetail.servicesTitle')}
                   </h2>
@@ -205,12 +200,12 @@ function useCompanyDetailPageView() {
                             </span>
                             {durationLabel ? (
                               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-[10px] font-bold text-slate-600 rounded-xl">
-                                <Clock className="size-3 text-slate-400" />
+                                <ClockIcon className="size-3 text-slate-400" />
                                 {durationLabel}
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-[10px] font-bold text-slate-400 rounded-xl">
-                                <Clock className="size-3 text-slate-300" />
+                                <ClockIcon className="size-3 text-slate-300" />
                                 {t('companyDetail.variableDuration')}
                               </span>
                             )}
@@ -243,7 +238,7 @@ function useCompanyDetailPageView() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 rounded-xl bg-violet-100 text-violet-700 shrink-0">
-                        <HardHat className="size-5" />
+                        <HardHatIcon className="size-5" />
                       </div>
                       <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
                         {t('companyDetail.projectTitle')}
@@ -260,7 +255,7 @@ function useCompanyDetailPageView() {
                     onClick={openProjectRequest}
                     className="shrink-0 inline-flex items-center justify-center gap-2 py-4 px-8 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                   >
-                    <Sparkles className="size-4" /> {t('companyDetail.projectCta')}
+                    <SparkleIcon className="size-4" /> {t('companyDetail.projectCta')}
                   </button>
                 </div>
               </section>

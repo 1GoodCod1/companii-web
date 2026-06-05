@@ -7,7 +7,6 @@ import { queryKeys } from '@/shared/api/queryKeys';
 import { refreshAuthSession } from '@/features/auth';
 import { useAuthStore } from '@/entities/user/model/authStore';
 import { useCompanyContextStore } from '@/entities/company/model/companyContextStore';
-import { COMPANY_ROLE } from '@/entities/company/model/roles.constants';
 import type { CompanyMeResponse } from '@/entities/company/model/companies.types';
 import type { AuthUserSnapshot } from '@/entities/user/model/auth.types';
 
@@ -24,16 +23,7 @@ export function useCreateCompanyMutation() {
   return useMutation({
     mutationFn: (body: Record<string, unknown>) =>
       apiFetch<{ id: string }>('/companies', { method: 'POST', body: JSON.stringify(body) }),
-    onSuccess: async (company) => {
-      const { accessToken, user, setTokens } = useAuthStore.getState();
-      useCompanyContextStore.getState().setActiveCompanyId(company.id);
-      if (user && accessToken) {
-        setTokens(accessToken, {
-          ...user,
-          activeCompanyId: company.id,
-          companyRole: user.companyRole ?? COMPANY_ROLE.OWNER,
-        });
-      }
+    onSuccess: async () => {
       await refreshAuthSession();
       void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
       void qc.invalidateQueries({ queryKey: queryKeys.companies.all });

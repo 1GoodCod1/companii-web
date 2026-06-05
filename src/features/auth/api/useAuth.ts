@@ -41,6 +41,7 @@ export interface AuthMeResponse {
   firstName?: string | null;
   lastName?: string | null;
   accountKind?: AuthUserSnapshot['accountKind'];
+  emailVerified?: boolean;
   portalCustomer?: {
     id: string;
     fullName: string;
@@ -243,15 +244,46 @@ export function useResetPasswordMutation() {
   });
 }
 
-export function useChangePasswordMutation() {
+export function useVerifyEmailMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: { currentPassword: string; newPassword: string }) =>
-      apiFetch<{ message: string }>('/auth/change-password', {
+    mutationFn: (body: { token: string }) =>
+      apiFetch<{ message: string }>('/auth/verify-email', {
         method: 'POST',
         body: JSON.stringify(body),
       }),
     onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.auth.me });
+    },
+  });
+}
+
+export function useResendVerificationMutation() {
+  return useMutation({
+    mutationFn: () =>
+      apiFetch<{ message: string }>('/auth/resend-verification', {
+        method: 'POST',
+        body: JSON.stringify({}),
+      }),
+  });
+}
+
+export function useChangePasswordMutation() {
+  const qc = useQueryClient();
+  const setTokens = useAuthStore((s) => s.setTokens);
+  return useMutation({
+    mutationFn: async (body: { currentPassword: string; newPassword: string }) => {
+      const data = await apiFetch<AuthSession>('/auth/change-password', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      return {
+        accessToken: data.accessToken,
+        user: toUserSnapshot(data.user),
+      };
+    },
+    onSuccess: (data) => {
+      setTokens(data.accessToken, data.user);
       void qc.invalidateQueries({ queryKey: queryKeys.auth.me });
     },
   });

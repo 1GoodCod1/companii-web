@@ -1,19 +1,9 @@
 import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  ArrowUpRight,
-  Calendar,
-  Download,
-  FileText,
-  LayoutDashboard,
-  Receipt,
-  TrendingUp,
-  Users,
-  Wrench,
-} from 'lucide-react';
+import { ArrowUpRightIcon, CalendarIcon, DownloadIcon, FileTextIcon, LayoutIcon, ReceiptIcon, TrendUpIcon, UsersIcon, WrenchIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
-const SIDEBAR_ICONS = [LayoutDashboard, Users, Wrench, FileText, Receipt, Calendar] as const;
+const SIDEBAR_ICONS = [LayoutIcon, UsersIcon, WrenchIcon, FileTextIcon, ReceiptIcon, CalendarIcon] as const;
 const ACTIVE_SIDEBAR_INDEX = 4;
 
 const INVOICE_NUMBERS = ['FAC-2026-089', 'FAC-2026-088', 'FAC-2026-087'];
@@ -28,9 +18,9 @@ const STATUS_TONES = [
 const BARS = [42, 68, 55, 82, 74, 91, 88];
 
 const SUMMARY_ACCENTS = [
-  { tone: 'from-emerald-500/10 to-teal-500/5', valueClass: 'text-gray-900', hintClass: 'text-emerald-600' },
-  { tone: 'from-blue-500/10 to-cyan-500/5', valueClass: 'text-emerald-700', hintClass: 'text-gray-400' },
-  { tone: 'from-amber-500/10 to-orange-500/5', valueClass: 'text-amber-700', hintClass: 'text-gray-400' },
+  { tone: 'from-emerald-500/[0.03] to-emerald-500/[0.01] border-emerald-500/10', valueClass: 'text-gray-900', hintClass: 'text-emerald-600' },
+  { tone: 'from-blue-500/[0.03] to-blue-500/[0.01] border-blue-500/10', valueClass: 'text-emerald-700', hintClass: 'text-gray-400' },
+  { tone: 'from-amber-500/[0.03] to-amber-500/[0.01] border-amber-500/10', valueClass: 'text-amber-700', hintClass: 'text-gray-400' },
 ] as const;
 
 export function LandingFinanceMock({ className = '' }: { className?: string }) {
@@ -53,9 +43,9 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       className={cn('landing-dashboard-3d relative w-full max-w-[720px] mx-auto', className)}
     >
-      <div className="absolute -inset-8 rounded-[2rem] bg-emerald-500/[0.07] blur-[72px] -z-10" />
+      <div className="absolute -inset-8 rounded-[2rem] bg-emerald-500/[0.02] blur-[80px] -z-10" />
 
-      <div className="rounded-[1.5rem] border border-gray-200/80 bg-white shadow-[0_32px_80px_-16px_rgba(15,23,42,0.12)] overflow-hidden">
+      <div className="rounded-[1.5rem] border border-gray-200/80 bg-white shadow-[0_16px_48px_-12px_rgba(15,23,42,0.06)] overflow-hidden">
         <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-100 bg-slate-50/90">
           <span className="size-2 rounded-full bg-red-400/90" />
           <span className="size-2 rounded-full bg-amber-400/90" />
@@ -77,13 +67,13 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
                     : 'text-gray-400',
                 )}
               >
-                <Icon className="size-4" strokeWidth={1.75} />
+                <Icon className="size-4" weight="light" />
               </span>
             ))}
           </aside>
 
           <div className="flex-1 min-w-0 bg-slate-50/50 p-3 sm:p-4 space-y-3">
-            <div className="rounded-xl border border-violet-100/60 bg-gradient-to-br from-white via-violet-50/20 to-indigo-50/10 px-3.5 py-3">
+            <div className="rounded-xl border border-violet-100/60 bg-slate-50/40 px-3.5 py-3">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm sm:text-base font-black text-gray-900 tracking-tight">
@@ -98,7 +88,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
                     {t('landingMocks.finance.filterAll')}
                   </span>
                   <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-1 text-[9px] font-semibold text-gray-600">
-                    <Download className="size-3" />
+                    <DownloadIcon className="size-3" />
                     {t('landingMocks.finance.exportBtn')}
                   </span>
                   <span className="rounded-lg bg-gray-900 px-2 py-1 text-[9px] font-black uppercase tracking-wider text-white">
@@ -115,7 +105,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
                   <article
                     key={card.label}
                     className={cn(
-                      'rounded-xl border border-white/80 bg-gradient-to-br p-2.5 sm:p-3',
+                      'rounded-xl border bg-gradient-to-br p-2.5 sm:p-3',
                       accent.tone,
                     )}
                   >
@@ -126,7 +116,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
                       {card.value}
                     </p>
                     <p className={cn('text-[9px] font-semibold mt-0.5 flex items-center gap-0.5', accent.hintClass)}>
-                      {i === 0 ? <TrendingUp className="size-3 shrink-0" /> : null}
+                      {i === 0 ? <TrendUpIcon className="size-3 shrink-0" /> : null}
                       {card.hint}
                     </p>
                   </article>
@@ -195,7 +185,7 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
                 </p>
                 <span className="text-[9px] font-semibold text-violet-600 flex items-center gap-0.5">
                   {t('landingMocks.finance.viewAll')}
-                  <ArrowUpRight className="size-2.5" />
+                  <ArrowUpRightIcon className="size-2.5" />
                 </span>
               </div>
               <div className="flex items-end gap-1.5 h-16 sm:h-20">

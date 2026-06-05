@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CheckCircle2, Eye, FileText } from 'lucide-react';
+import { CheckCircleIcon, EyeIcon, FileTextIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Panel } from '@/widgets/cabinet/cabinet-ui';
@@ -19,7 +19,7 @@ export function ReviewInterventions({ project }: ReviewInterventionsProps) {
   return (
     <Panel className="p-6 border border-emerald-100 bg-gradient-to-br from-emerald-50/40 to-teal-50/40 space-y-4">
       <div className="flex items-center gap-2">
-        <CheckCircle2 className="size-5 text-emerald-600 animate-pulse" />
+        <CheckCircleIcon className="size-5 text-emerald-600 animate-pulse" />
         <h3 className="font-extrabold text-slate-900 text-sm uppercase tracking-wider">
           {t('company.estimateWizard.reviewStep.executionTitle', { defaultValue: 'Deviz în Execuție (FSM)' })}
         </h3>
@@ -65,14 +65,14 @@ export function ReviewInterventions({ project }: ReviewInterventionsProps) {
                 to={`/company/lucrari/${intervention.id}/fisa`}
                 className="inline-flex items-center gap-1 text-[11px] font-bold text-violet-700 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-xl border border-violet-100 transition-colors"
               >
-                <FileText className="size-3.5" />
+                <FileTextIcon className="size-3.5" />
                 {t('company.estimateWizard.reviewStep.worksheetLink', { defaultValue: 'Fișă de execuție' })}
               </Link>
               <Link
                 to={`/company/lucrari?selectedId=${intervention.id}`}
                 className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 transition-colors"
               >
-                <Eye className="size-3.5" />
+                <EyeIcon className="size-3.5" />
                 {t('company.estimateWizard.reviewStep.detailsLink', { defaultValue: 'Detalii' })}
               </Link>
             </div>

@@ -38,7 +38,7 @@ export const publicRoMarketing = {
     company: {
       title: 'Digitalizează prestarea serviciilor în 4 pași simpli',
       description:
-        'Treci de la foi imprimate, grupuri de WhatsApp blocate și calcule în Excel la o aplicație performantă. Fără erori de deviz, cu control permanent asupra profitului și angajaților tăi pe teren.',
+        'Treci de la foi imprimate, grupuri de WhatsApp blocate și calcule în Excel la o aplicație performantă. Fără erori în calculele de preț, cu control permanent asupra profitului și angajaților tăi pe teren.',
       steps: [
         {
           title: '1. Profilul Public & Configurare Tarife',
@@ -46,9 +46,9 @@ export const publicRoMarketing = {
             'Te înregistrezi cu IDNO-ul firmei și datele de contact moldovenești. Configurezi pachetele de servicii și prețurile lor de bază. Faber îți generează instant un profil web public modern unde clienții își pot trimite solicitările direct, fără intermediari.',
         },
         {
-          title: '2. Dimensionare Inteligentă & Smetă Smart',
+          title: '2. Configurator și Calcul de preț smart',
           description:
-            'În loc de desenat pe hârtie, completezi parametrii clădirii (înălțime pereți, arie sol, unghi acoperiș) și cantitățile de echipamente în configuratorul integrat. Platforma determină automat consumul de materiale, orele de lucru și marja de profit dorită, generând devizul (smeta) instantaneu.',
+            'În loc de desenat pe hârtie, completezi parametrii clădirii (înălțime pereți, arie sol, unghi acoperiș) și cantitățile de echipamente în configuratorul integrat. Platforma determină automat consumul de materiale, orele de lucru și marja de profit dorită, generând calculul de preț (devizul) instantaneu.',
         },
         {
           title: '3. Gestiune angajați & Dispecerat FSM',
@@ -58,7 +58,7 @@ export const publicRoMarketing = {
         {
           title: '4. Facturare Automată & PDF Nativ cu Diacritice',
           description:
-            'Din smeta aprobată, platforma generează automat oferta și factura în format PDF premium. Toate documentele sunt exportate cu diacritice românești (ș, ț, ă, â, î), calcul automat de TVA moldovenesc și IDNO, eliminând birocrația și oferind rapoarte clare financiare.',
+            'Din calculul de preț aprobat, platforma generează automat oferta și factura în format PDF premium. Toate documentele sunt exportate cu diacritice românești (ș, ț, ă, â, î), calcul automat de TVA moldovenesc și IDNO, eliminând birocrația și oferind rapoarte clare financiare.',
         },
       ],
     },
@@ -75,10 +75,10 @@ export const publicRoMarketing = {
         {
           title: '2. Cereri Directe & Transmitere Buget',
           description:
-            'Când dorești o intervenție tehnică nouă de la companie, poți crea o solicitare direct din portal. Îți specifici adresa și bugetul estimativ disponibil. Compania va primi această valoare direct în configuratorul lor pentru o planificare corectă a devizului.',
+            'Când dorești o intervenție tehnică nouă de la companie, poți crea o solicitare direct din portal. Îți specifici adresa și bugetul estimativ disponibil. Compania va primi această valoare direct în configuratorul lor pentru o planificare corectă a calculului de preț (devizului).',
         },
         {
-          title: '3. Aprobare Live a Devizelor / Smetelor',
+          title: '3. Aprobare în timp real a calculelor de preț / devizelor',
           description:
             'Compania îți trimite devizul oficial direct în contul tău de portal. Îl poți deschide, vezi prețul la fiecare lucrare de execuție și material, și îl poți aproba sau refuza printr-un singur click în timp real. Astfel, eviți neînțelegerile.',
         },
@@ -93,7 +93,7 @@ export const publicRoMarketing = {
       titleGuest: 'Pregătit să îți digitalizezi afacerea?',
       titleAuthed: 'Continuă activitatea în cabinet',
       descriptionGuest:
-        'Indiferent dacă ești prestator de servicii ce dorește smete și facturi rapide, sau un client ce dorește transparență maximă — Faber este soluția completă.',
+        'Indiferent dacă ești prestator de servicii ce dorește calcule de preț rapide și facturi, sau un client ce dorește transparență maximă — Faber este soluția completă.',
       descriptionAuthed:
         'Profilul tău public, membrii echipei de pe teren, prețurile serviciilor și programările le gestionezi simplu din cabinetul tău Faber.',
     },

@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Check, Sparkles, TrendingUp, Calendar, FileText, Users, DollarSign } from 'lucide-react';
+import { ArrowLeftIcon, SparkleIcon } from '@phosphor-icons/react';
 import { LanguageSwitcher } from '@/shared/ui/i18n/LanguageSwitcher';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { FaberLogo } from '@/shared/ui/brand/FaberLogo';
+import { m } from 'framer-motion';
 
 const SLIDE_COUNT = 3;
 const CURRENT_YEAR = new Date().getFullYear();
@@ -31,8 +32,6 @@ export function AuthLayout() {
     return () => clearInterval(timer);
   }, []);
 
-  const m = (key: string) => t(`auth.layout.mockup.${key}`);
-
   return (
     <div className="min-h-screen grid lg:grid-cols-[minmax(400px,_40%)_1fr] bg-slate-50 font-sans selection:bg-violet-100 selection:text-violet-900 overflow-x-hidden">
       <div className="flex flex-col justify-between w-full p-5 sm:p-8 lg:p-10 xl:p-12 bg-white border-r border-slate-200/80 z-10 overflow-y-auto min-h-screen relative">
@@ -42,7 +41,7 @@ export function AuthLayout() {
             className="inline-flex items-center gap-2 group text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
           >
             <span className="p-2 border border-slate-200 rounded-lg bg-slate-50 group-hover:-translate-x-1 transition-transform duration-200">
-              <ArrowLeft className="size-4" />
+              <ArrowLeftIcon className="size-4" />
             </span>
             <span className="hidden sm:inline">{t('auth.layout.backToHome')}</span>
           </Link>
@@ -82,157 +81,242 @@ export function AuthLayout() {
 
         <div className="relative z-10 flex justify-between items-center text-slate-500 text-xs font-medium border-b border-slate-200/80 pb-4">
           <span className="flex items-center gap-2">
-            <Sparkles className="size-3.5 text-violet-500" />
+            <SparkleIcon className="size-3.5 text-violet-500" />
             {t('auth.layout.interfaceTitle')}
           </span>
           <span className="text-slate-400">{t('auth.layout.version')}</span>
         </div>
 
-        <div className="relative z-10 w-full max-w-[800px] mx-auto py-6">
-          <div className="rounded-2xl border border-slate-200/80 bg-white/90 backdrop-blur-xl shadow-lg overflow-hidden">
-            <div className="flex justify-between items-center px-6 py-3 border-b border-slate-100 bg-slate-50/60">
-              <div className="flex gap-2">
-                <span className="size-2.5 rounded-full bg-rose-400/70" />
-                <span className="size-2.5 rounded-full bg-amber-400/70" />
-                <span className="size-2.5 rounded-full bg-emerald-400/70" />
-              </div>
-              <div className="px-4 py-1 rounded-md bg-slate-100 border border-slate-200/50 text-xs text-slate-500 w-64 text-center truncate">
-                companii.faber.md/company
-              </div>
-              <div className="w-10" />
-            </div>
+        <div className="relative z-10 w-full max-w-[760px] mx-auto py-4">
+          <m.svg
+            viewBox="0 0 800 520"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-full h-auto select-none"
+            initial="hidden"
+            animate="visible"
+          >
+            <defs>
+              {/* Grid pattern */}
+              <pattern id="auth-grid-large" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#F1F5F9" strokeWidth="1" />
+                <circle cx="20" cy="20" r="1" fill="#E2E8F0" />
+              </pattern>
+              
+              {/* Glowing gradients */}
+              <radialGradient id="glow-violet" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.12" />
+                <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0" />
+              </radialGradient>
+              <radialGradient id="glow-emerald" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#10B981" stopOpacity="0.08" />
+                <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
+              </radialGradient>
+            </defs>
 
-            <div className="grid grid-cols-[1fr_260px] gap-6 p-6">
-              <div className="space-y-5">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="size-4 text-violet-500" />
-                    <span className="text-sm font-semibold text-slate-700">
-                      {m('scheduleTitle')}
-                    </span>
-                  </div>
-                  <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                    {m('liveSync')}
-                  </span>
-                </div>
+            {/* Grid backdrop */}
+            <rect width="800" height="520" rx="16" fill="url(#auth-grid-large)" />
+            <rect width="800" height="520" rx="16" stroke="#E2E8F0" strokeWidth="1.5" />
 
-                <div className="space-y-3">
-                  <div className="border border-slate-100 bg-slate-50/40 p-3 rounded-xl">
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="size-5 rounded-full bg-violet-600 flex items-center justify-center text-[9px] font-bold text-white">AM</div>
-                        <span className="text-xs font-semibold text-slate-700">{m('master1Name')}</span>
-                      </div>
-                      <span className="text-[10px] font-medium text-violet-700 bg-violet-50 border border-violet-100 px-2 py-0.5 rounded-md">
-                        {m('master1Status')}
-                      </span>
-                    </div>
-                    <div className="bg-violet-50/60 border border-violet-100 rounded-lg p-2.5 flex justify-between items-center gap-2">
-                      <div>
-                        <p className="text-xs font-medium text-violet-900">{m('master1Task')}</p>
-                        <p className="text-[11px] text-violet-700/80 mt-0.5">{m('master1Address')}</p>
-                      </div>
-                      <span className="text-xs font-semibold text-violet-800 shrink-0">{m('master1Time')}</span>
-                    </div>
-                  </div>
+            {/* Colored ambient glows */}
+            <circle cx="250" cy="260" r="300" fill="url(#glow-violet)" />
+            <circle cx="600" cy="200" r="250" fill="url(#glow-emerald)" />
 
-                  <div className="border border-slate-100 bg-slate-50/40 p-3 rounded-xl">
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="size-5 rounded-full bg-indigo-600 flex items-center justify-center text-[9px] font-bold text-white">VC</div>
-                        <span className="text-xs font-semibold text-slate-700">{m('master2Name')}</span>
-                      </div>
-                      <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-md">
-                        {m('master2Status')}
-                      </span>
-                    </div>
-                    <div className="bg-emerald-50/60 border border-emerald-100 rounded-lg p-2.5 flex justify-between items-center gap-2">
-                      <div>
-                        <p className="text-xs font-medium text-emerald-900">{m('master2Task')}</p>
-                        <p className="text-[11px] text-emerald-700/80 mt-0.5">{m('master2Address')}</p>
-                      </div>
-                      <span className="text-xs font-semibold text-emerald-800 shrink-0">{m('master2Time')}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Section 1: CALENDAR & SCHEDULING (PLANIFICATOR CALENDAR) */}
+            <g transform="translate(40, 30)">
+              <rect width="360" height="230" rx="12" fill="white" stroke="#E2E8F0" strokeWidth="1" />
+              
+              {/* Header */}
+              <rect width="360" height="40" rx="12" fill="#F8FAFC" />
+              <circle cx="20" cy="20" r="4" fill="#8B5CF6" />
+              <text x="32" y="24" fill="#334155" fontSize="11" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.scheduleTitle')}</text>
+              <rect x="270" y="10" width="75" height="20" rx="4" fill="#F5F3FF" stroke="#DDD6FE" strokeWidth="1" />
+              <text x="307" y="22" fill="#7C3AED" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">{t('auth.layout.mockup.synchronized')}</text>
 
-              <div className="border-l border-slate-100 pl-6 flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <FileText className="size-4 text-indigo-500" />
-                    <span className="text-sm font-semibold text-slate-700">
-                      {m('estimateTitle')}
-                    </span>
-                  </div>
+              {/* Time grid headers */}
+              <g transform="translate(90, 52)">
+                <text x="0" y="12" fill="#94A3B8" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">09:00</text>
+                <text x="80" y="12" fill="#94A3B8" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">12:00</text>
+                <text x="160" y="12" fill="#94A3B8" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">15:00</text>
+                <text x="240" y="12" fill="#94A3B8" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">18:00</text>
+                
+                {/* Vertical grid lines */}
+                <line x1="0" y1="20" x2="0" y2="155" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="2 2" />
+                <line x1="80" y1="20" x2="80" y2="155" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="2 2" />
+                <line x1="160" y1="20" x2="160" y2="155" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="2 2" />
+                <line x1="240" y1="20" x2="240" y2="155" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="2 2" />
+              </g>
 
-                  <div className="space-y-2 bg-slate-50/50 border border-slate-100 rounded-xl p-3.5">
-                    <div className="flex justify-between text-[11px] text-slate-500 font-medium">
-                      <span>{m('colItem')}</span>
-                      <span>{m('colAmount')}</span>
-                    </div>
-                    <div className="space-y-1.5 pt-1.5 border-t border-slate-100">
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="text-slate-600">{m('item1')}</span>
-                        <span className="font-semibold text-slate-800">4,500 MDL</span>
-                      </div>
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="text-slate-600">{m('item2')}</span>
-                        <span className="font-semibold text-slate-800">3,900 MDL</span>
-                      </div>
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="text-slate-600">{m('item3')}</span>
-                        <span className="font-semibold text-slate-800">1,200 MDL</span>
-                      </div>
-                    </div>
-                    <div className="pt-2 border-t border-slate-100 flex justify-between items-baseline">
-                      <span className="text-xs font-medium text-slate-500">{m('total')}</span>
-                      <span className="text-sm font-bold text-violet-600">9,600 MDL</span>
-                    </div>
-                  </div>
-                </div>
+              {/* Roster rows */}
+              <g transform="translate(16, 75)">
+                {/* Tech 1 Row */}
+                <g transform="translate(0, 0)">
+                  <circle cx="12" cy="18" r="12" fill="#8B5CF6" />
+                  <text x="8" y="21" fill="white" fontSize="9" fontWeight="bold" fontFamily="sans-serif">AM</text>
+                  <text x="30" y="16" fill="#1E293B" fontSize="9" fontWeight="bold" fontFamily="sans-serif">Andrei M.</text>
+                  <text x="30" y="27" fill="#64748B" fontSize="8" fontFamily="sans-serif">{t('auth.layout.mockup.tech1Role')}</text>
+                  
+                  {/* Task block 1 */}
+                  <rect x="74" y="6" width="110" height="24" rx="6" fill="#F5F3FF" stroke="#DDD6FE" strokeWidth="1" />
+                  <text x="84" y="20" fill="#5B21B6" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.tech1Task')}</text>
+                </g>
 
-                <div className="mt-4 pt-4 border-t border-slate-100">
-                  <div className="w-full bg-violet-600 text-white rounded-lg py-2 px-3 text-xs font-semibold text-center flex items-center justify-center gap-1.5">
-                    <Check className="size-3" />
-                    {m('exportPdf')}
-                  </div>
-                </div>
-              </div>
-            </div>
+                {/* Tech 2 Row */}
+                <g transform="translate(0, 50)">
+                  <circle cx="12" cy="18" r="12" fill="#10B981" />
+                  <text x="8" y="21" fill="white" fontSize="9" fontWeight="bold" fontFamily="sans-serif">VC</text>
+                  <text x="30" y="16" fill="#1E293B" fontSize="9" fontWeight="bold" fontFamily="sans-serif">Vlad C.</text>
+                  <text x="30" y="27" fill="#64748B" fontSize="8" fontFamily="sans-serif">{t('auth.layout.mockup.tech2Role')}</text>
+                  
+                  {/* Task block 2 */}
+                  <rect x="114" y="6" width="130" height="24" rx="6" fill="#ECFDF5" stroke="#A7F3D0" strokeWidth="1" />
+                  <text x="124" y="20" fill="#065F46" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.tech2Task')}</text>
+                </g>
 
-            <div className="border-t border-slate-100 bg-slate-50/40 px-6 py-4 grid grid-cols-3 gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-violet-50 text-violet-600 border border-violet-100">
-                  <DollarSign className="size-4" />
-                </div>
-                <div>
-                  <p className="text-[11px] font-medium text-slate-500">{m('statRevenue')}</p>
-                  <p className="text-xs font-semibold text-slate-800 mt-0.5">{m('statRevenueValue')}</p>
-                </div>
-              </div>
+                {/* Tech 3 Row */}
+                <g transform="translate(0, 100)">
+                  <circle cx="12" cy="18" r="12" fill="#F59E0B" />
+                  <text x="9" y="21" fill="white" fontSize="9" fontWeight="bold" fontFamily="sans-serif">IP</text>
+                  <text x="30" y="16" fill="#1E293B" fontSize="9" fontWeight="bold" fontFamily="sans-serif">Igor P.</text>
+                  <text x="30" y="27" fill="#64748B" fontSize="8" fontFamily="sans-serif">{t('auth.layout.mockup.tech3Role')}</text>
+                  
+                  {/* Task block 3 */}
+                  <rect x="154" y="6" width="100" height="24" rx="6" fill="#FEF3C7" stroke="#FDE68A" strokeWidth="1" />
+                  <text x="164" y="20" fill="#92400E" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.tech3Task')}</text>
+                </g>
+              </g>
+            </g>
 
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
-                  <Users className="size-4" />
-                </div>
-                <div>
-                  <p className="text-[11px] font-medium text-slate-500">{m('statClients')}</p>
-                  <p className="text-xs font-semibold text-slate-800 mt-0.5">{m('statClientsValue')}</p>
-                </div>
-              </div>
+            {/* Section 2: CLIENT DATABASE (BAZĂ DE CLIENȚI) */}
+            <g transform="translate(40, 280)">
+              <rect width="360" height="210" rx="12" fill="white" stroke="#E2E8F0" strokeWidth="1" />
+              
+              {/* Header */}
+              <rect width="360" height="40" rx="12" fill="#F8FAFC" />
+              <circle cx="20" cy="20" r="4" fill="#10B981" />
+              <text x="32" y="24" fill="#334155" fontSize="11" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.clientsTitle')}</text>
+              <text x="340" y="24" fill="#94A3B8" fontSize="9" fontWeight="bold" fontFamily="sans-serif" textAnchor="end">{t('auth.layout.mockup.clientsCount')}</text>
 
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">
-                  <TrendingUp className="size-4" />
-                </div>
-                <div>
-                  <p className="text-[11px] font-medium text-slate-500">{m('statEfficiency')}</p>
-                  <p className="text-xs font-semibold text-slate-800 mt-0.5">{m('statEfficiencyValue')}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+              {/* Roster database list */}
+              <g transform="translate(16, 52)">
+                {/* Client row 1 */}
+                <g transform="translate(0, 0)">
+                  <text x="0" y="16" fill="#1E293B" fontSize="10" fontWeight="bold" fontFamily="sans-serif">SC ProConstruct SRL</text>
+                  <text x="0" y="28" fill="#64748B" fontSize="8" fontFamily="sans-serif">{t('auth.layout.mockup.client1Desc')}</text>
+                  <rect x="250" y="4" width="80" height="18" rx="9" fill="#EEF2FF" stroke="#C7D2FE" strokeWidth="1" />
+                  <text x="290" y="16" fill="#4F46E5" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">{t('auth.layout.mockup.client1Status')}</text>
+                </g>
+                <line x1="0" y1="38" x2="328" y2="38" stroke="#F1F5F9" strokeWidth="1" />
+
+                {/* Client row 2 */}
+                <g transform="translate(0, 48)">
+                  <text x="0" y="16" fill="#1E293B" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Elena Ciobanu</text>
+                  <text x="0" y="28" fill="#64748B" fontSize="8" fontFamily="sans-serif">{t('auth.layout.mockup.client2Desc')}</text>
+                  <rect x="250" y="4" width="80" height="18" rx="9" fill="#ECFDF5" stroke="#A7F3D0" strokeWidth="1" />
+                  <text x="290" y="16" fill="#059669" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">{t('auth.layout.mockup.client2Status')}</text>
+                </g>
+                <line x1="0" y1="86" x2="328" y2="86" stroke="#F1F5F9" strokeWidth="1" />
+
+                {/* Client row 3 */}
+                <g transform="translate(0, 96)">
+                  <text x="0" y="16" fill="#1E293B" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Ion Popescu</text>
+                  <text x="0" y="28" fill="#64748B" fontSize="8" fontFamily="sans-serif">{t('auth.layout.mockup.client3Desc')}</text>
+                  <rect x="250" y="4" width="80" height="18" rx="9" fill="#FFFBEB" stroke="#FDE68A" strokeWidth="1" />
+                  <text x="290" y="16" fill="#D97706" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">{t('auth.layout.mockup.client3Status')}</text>
+                </g>
+              </g>
+            </g>
+
+            {/* Section 3: CRM / PIPELINE LOGIC (RIGHT SIDE PANEL - CRM & INVOICES) */}
+            <g transform="translate(430, 30)">
+              <rect width="330" height="460" rx="12" fill="white" stroke="#E2E8F0" strokeWidth="1" />
+              
+              {/* Header */}
+              <rect width="330" height="40" rx="12" fill="#F8FAFC" />
+              <text x="16" y="24" fill="#334155" fontSize="11" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.workflowTitle')}</text>
+              
+              {/* Process Step 1: Customer Lead */}
+              <g transform="translate(16, 55)">
+                <rect width="298" height="68" rx="8" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="1" />
+                <rect x="12" y="12" width="8" height="8" rx="4" fill="#6366F1" />
+                <text x="26" y="20" fill="#1E293B" fontSize="10" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step1Title')}</text>
+                <text x="282" y="20" fill="#475569" fontSize="8" fontFamily="sans-serif" textAnchor="end">{t('auth.layout.mockup.step1Source')}</text>
+                
+                <text x="26" y="38" fill="#475569" fontSize="9" fontWeight="medium" fontFamily="sans-serif">{t('auth.layout.mockup.step1Client')}</text>
+                <text x="26" y="52" fill="#8B5CF6" fontSize="9" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step1Service')}</text>
+              </g>
+
+              {/* Arrow Connector 1 */}
+              <path d="M 165 123 L 165 133" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" />
+
+              {/* Process Step 2: Live Cost Estimate Document */}
+              <g transform="translate(16, 137)">
+                <rect width="298" height="152" rx="8" fill="#FFF" stroke="#E2E8F0" strokeWidth="1" />
+                <rect x="12" y="12" width="8" height="8" rx="4" fill="#8B5CF6" />
+                <text x="26" y="20" fill="#1E293B" fontSize="10" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step2Title')}</text>
+                
+                {/* Table representation */}
+                <g transform="translate(12, 36)">
+                  {/* Header Row */}
+                  <text x="0" y="10" fill="#94A3B8" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step2ColItem')}</text>
+                  <text x="274" y="10" fill="#94A3B8" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="end">{t('auth.layout.mockup.step2ColAmount')}</text>
+                  <line x1="0" y1="16" x2="274" y2="16" stroke="#F1F5F9" strokeWidth="1" />
+
+                  {/* Row 1 */}
+                  <text x="0" y="28" fill="#475569" fontSize="9" fontFamily="sans-serif">{t('auth.layout.mockup.step2Item1')}</text>
+                  <text x="274" y="28" fill="#1E293B" fontSize="9" fontWeight="semibold" fontFamily="sans-serif" textAnchor="end">{t('auth.layout.mockup.step2Amount1')}</text>
+                  
+                  {/* Row 2 */}
+                  <text x="0" y="42" fill="#475569" fontSize="9" fontFamily="sans-serif">{t('auth.layout.mockup.step2Item2')}</text>
+                  <text x="274" y="42" fill="#1E293B" fontSize="9" fontWeight="semibold" fontFamily="sans-serif" textAnchor="end">{t('auth.layout.mockup.step2Amount2')}</text>
+                  
+                  {/* Row 3 */}
+                  <text x="0" y="56" fill="#475569" fontSize="9" fontFamily="sans-serif">{t('auth.layout.mockup.step2Item3')}</text>
+                  <text x="274" y="56" fill="#1E293B" fontSize="9" fontWeight="semibold" fontFamily="sans-serif" textAnchor="end">{t('auth.layout.mockup.step2Amount3')}</text>
+
+                  <line x1="0" y1="64" x2="274" y2="64" stroke="#E2E8F0" strokeWidth="1" />
+                  
+                  {/* Total and automatic VAT */}
+                  <text x="0" y="78" fill="#64748B" fontSize="8" fontFamily="sans-serif">{t('auth.layout.mockup.step2Vat')}</text>
+                  <text x="274" y="78" fill="#475569" fontSize="8" textAnchor="end" fontFamily="sans-serif">{t('auth.layout.mockup.step2VatIncluded')}</text>
+
+                  <text x="0" y="94" fill="#1E293B" fontSize="10" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step2Total')}</text>
+                  <text x="274" y="94" fill="#7C3AED" fontSize="11" fontWeight="extrabold" textAnchor="end" fontFamily="sans-serif">{t('auth.layout.mockup.step2TotalAmount')}</text>
+                </g>
+              </g>
+
+              {/* Arrow Connector 2 */}
+              <path d="M 165 289 L 165 299" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" />
+
+              {/* Process Step 3: PDF Generation & Client Portal Success */}
+              <g transform="translate(16, 303)">
+                <rect width="298" height="68" rx="8" fill="#F0FDF4" stroke="#BBF7D0" strokeWidth="1" />
+                <rect x="12" y="12" width="8" height="8" rx="4" fill="#10B981" />
+                <text x="26" y="20" fill="#065F46" fontSize="10" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step3Title')}</text>
+                
+                <text x="26" y="38" fill="#047857" fontSize="9" fontWeight="semibold" fontFamily="sans-serif">{t('auth.layout.mockup.step3Status1')}</text>
+                <text x="26" y="52" fill="#065F46" fontSize="9" fontWeight="medium" fontFamily="sans-serif">{t('auth.layout.mockup.step3Status2')}</text>
+              </g>
+
+              {/* Financial growth stats at the very bottom of CRM flow */}
+              <g transform="translate(16, 386)">
+                <rect width="298" height="58" rx="8" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="1" />
+                
+                <g transform="translate(16, 12)">
+                  <text x="0" y="12" fill="#64748B" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.statEfficiencyTitle')}</text>
+                  <text x="0" y="32" fill="#10B981" fontSize="16" fontWeight="extrabold" fontFamily="sans-serif">{t('auth.layout.mockup.statEfficiencyValue')}</text>
+                </g>
+
+                <g transform="translate(145, 12)">
+                  <text x="0" y="12" fill="#64748B" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.statRevenueTitle')}</text>
+                  <text x="0" y="32" fill="#1E293B" fontSize="15" fontWeight="extrabold" fontFamily="sans-serif">{t('auth.layout.mockup.statRevenueValue')}</text>
+                </g>
+
+                {/* Up-trend arrow */}
+                <path d="M 268 28 L 274 22 L 278 26 L 284 20" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </g>
+            </g>
+          </m.svg>
         </div>
 
         <div className="relative z-10 max-w-[620px] min-h-[160px] flex flex-col justify-end pt-10 border-t border-slate-200/80">

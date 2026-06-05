@@ -3,11 +3,13 @@ import { apiFetch } from '@/shared/api/client';
 import type { EstimateCommentDto } from '@/entities/estimate/model/estimates';
 
 export function useEstimateComments(projectId: string | undefined, isPortal = false) {
-  const prefix = isPortal ? '/portal' : '/estimates';
+  const path = isPortal
+    ? `/portal/estimates/${projectId}/comments`
+    : `/estimates/projects/${projectId}/comments`;
   return useQuery<EstimateCommentDto[]>({
     queryKey: ['estimate-comments', projectId, isPortal],
     queryFn: async () => {
-      return apiFetch(`${prefix}/estimates/${projectId}/comments`);
+      return apiFetch(path);
     },
     enabled: Boolean(projectId),
   });
@@ -18,10 +20,12 @@ export function useAddComment(
   isPortal = false,
 ) {
   const qc = useQueryClient();
-  const prefix = isPortal ? '/portal' : '/estimates';
+  const path = isPortal
+    ? `/portal/estimates/${projectId}/comments`
+    : `/estimates/projects/${projectId}/comments`;
   return useMutation<EstimateCommentDto, Error, string>({
     mutationFn: async (body) => {
-      return apiFetch(`${prefix}/estimates/${projectId}/comments`, {
+      return apiFetch(path, {
         method: 'POST',
         body: JSON.stringify({ body }),
       });

@@ -5,6 +5,7 @@ import {
   RegisterPage,
   ForgotPasswordPage,
   ResetPasswordPage,
+  VerifyEmailPage,
   PortalInvitePage,
   TeamInvitePage,
 } from './lazy-pages';
@@ -16,6 +17,7 @@ export const authPublicRoutes = [
   { path: PUBLIC_ROUTE.REGISTER, element: <LazyPage><RegisterPage /></LazyPage> },
   { path: PUBLIC_ROUTE.FORGOT_PASSWORD, element: <LazyPage><ForgotPasswordPage /></LazyPage> },
   { path: PUBLIC_ROUTE.RESET_PASSWORD, element: <LazyPage><ResetPasswordPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.VERIFY_EMAIL, element: <LazyPage><VerifyEmailPage /></LazyPage> },
   { path: INVITE_ROUTE.PORTAL, element: <LazyPage><PortalInvitePage /></LazyPage> },
   { path: INVITE_ROUTE.TEAM, element: <LazyPage><TeamInvitePage /></LazyPage> },
   { path: '*', element: <NotFoundPage compact /> },

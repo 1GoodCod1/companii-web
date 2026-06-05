@@ -1,4 +1,4 @@
-import { Building2, UserRound } from 'lucide-react';
+import { BuildingsIcon, UserIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { ACCOUNT_KIND } from '@/entities/company/model/roles.constants';
 import type { AccountKind } from '@/entities/user/model/authStore';
@@ -11,8 +11,8 @@ interface RegisterAccountKindSelectorProps {
 }
 
 const OPTIONS = [
-  { kind: ACCOUNT_KIND.COMPANY_STAFF, icon: Building2, labelKey: 'auth.companyStaff' },
-  { kind: ACCOUNT_KIND.END_CLIENT, icon: UserRound, labelKey: 'auth.endClient' },
+  { kind: ACCOUNT_KIND.COMPANY_STAFF, icon: BuildingsIcon, labelKey: 'auth.companyStaff' },
+  { kind: ACCOUNT_KIND.END_CLIENT, icon: UserIcon, labelKey: 'auth.endClient' },
 ] as const;
 
 export function RegisterAccountKindSelector({
@@ -41,7 +41,7 @@ export function RegisterAccountKindSelector({
                 : 'text-slate-600 hover:text-slate-800'
             }`}
           >
-            <Icon className="size-3.5" strokeWidth={2} />
+            <Icon className="size-3.5" />
             {t(labelKey)}
           </button>
         );

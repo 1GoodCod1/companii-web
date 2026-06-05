@@ -1,12 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  Coins, 
-  Hammer, 
-  Calendar, 
-  Clock, 
-  Sparkles 
-} from 'lucide-react';
+import { CoinsIcon, HammerIcon, CalendarIcon, ClockIcon, SparkleIcon } from '@phosphor-icons/react';
 import type { CustomPricingValues } from '../utils/customPricing';
 
 type Props = {
@@ -72,7 +66,7 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
         <div>
           <h4 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-            <Sparkles className="size-4.5 text-violet-500 animate-pulse" />
+            <SparkleIcon className="size-4.5 text-violet-500 animate-pulse" />
             <span>{t('company.estimateWizard.customPricing.title')}</span>
           </h4>
           <p className="text-xs text-gray-400 mt-1 leading-relaxed">
@@ -89,7 +83,7 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-xs font-semibold text-gray-700">
-              <Coins className={`size-4 ${showUnitPrice ? 'text-violet-500' : 'text-gray-400'}`} />
+              <CoinsIcon className={`size-4 ${showUnitPrice ? 'text-violet-500' : 'text-gray-400'}`} />
               <span>{unitLabel || t('company.estimateWizard.customPricing.unitPriceDefault')}</span>
             </span>
             <button
@@ -135,7 +129,7 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-xs font-semibold text-gray-700">
-              <Hammer className={`size-4 ${showLaborTotal ? 'text-violet-500' : 'text-gray-400'}`} />
+              <HammerIcon className={`size-4 ${showLaborTotal ? 'text-violet-500' : 'text-gray-400'}`} />
               <span>{t('company.estimateWizard.customPricing.labor')}</span>
             </span>
             <button
@@ -181,7 +175,7 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-xs font-semibold text-gray-700">
-              <Calendar className={`size-4 ${showDuration ? 'text-violet-500' : 'text-gray-400'}`} />
+              <CalendarIcon className={`size-4 ${showDuration ? 'text-violet-500' : 'text-gray-400'}`} />
               <span>{t('company.estimateWizard.customPricing.duration')}</span>
             </span>
             <button
@@ -227,8 +221,8 @@ export function CustomPricingFields({ values, onChange, unitLabel, disabled }: P
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-xs font-semibold text-gray-700">
-              <Clock className={`size-4 ${showLaborHours ? 'text-violet-500' : 'text-gray-400'}`} />
-              <span>{t('company.estimateWizard.customPricing.laborHours')}</span>
+              <ClockIcon className={`size-4 ${showLaborHours ? 'text-violet-500' : 'text-gray-400'}`} />
+                <span>{t('company.estimateWizard.customPricing.laborHours')}</span>
             </span>
             <button
               type="button"

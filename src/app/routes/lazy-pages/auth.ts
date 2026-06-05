@@ -20,6 +20,12 @@ export const ResetPasswordPage = lazyWithRetry(() =>
   })),
 );
 
+export const VerifyEmailPage = lazyWithRetry(() =>
+  import('@/pages/auth/VerifyEmailPage').then((m) => ({
+    default: m.VerifyEmailPage,
+  })),
+);
+
 export const PortalInvitePage = lazyWithRetry(() =>
   import('@/pages/portal/PortalInvitePage').then((m) => ({
     default: m.PortalInvitePage,

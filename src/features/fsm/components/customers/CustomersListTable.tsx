@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { CaretLeftIcon, CaretRightIcon } from '@phosphor-icons/react';
 import type { CustomerDto } from '@/entities/fsm/model/types';
 import { EntityListPanel } from '@/widgets/cabinet/EntityListPanel';
 import { cabinetBtnSecondary } from '@/widgets/cabinet/cabinet-ui';
@@ -88,7 +88,7 @@ export function CustomersListTable({
               disabled={page <= 1}
               className={`${cabinetBtnSecondary} inline-flex items-center gap-1 px-3 py-1.5 text-xs disabled:opacity-40`}
             >
-              <ChevronLeft className="size-4" />
+              <CaretLeftIcon className="size-4" />
               {t('company.customersPage.paginationPrev')}
             </button>
             <span className="text-xs font-medium text-gray-500 tabular-nums">
@@ -101,7 +101,7 @@ export function CustomersListTable({
               className={`${cabinetBtnSecondary} inline-flex items-center gap-1 px-3 py-1.5 text-xs disabled:opacity-40`}
             >
               {t('company.customersPage.paginationNext')}
-              <ChevronRight className="size-4" />
+              <CaretRightIcon className="size-4" />
             </button>
           </div>
         </div>

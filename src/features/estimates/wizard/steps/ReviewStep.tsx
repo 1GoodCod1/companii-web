@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Copy, Download, FileText, Hammer, Send } from 'lucide-react';
+import { CopyIcon, DownloadIcon, FileTextIcon, HammerIcon, PaperPlaneRightIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -209,7 +209,7 @@ export function ReviewStep({ wizard }: Props) {
                 disabled={sendEstimate.isPending}
                 className={cabinetBtnPrimary}
               >
-                <Send className="size-4 flex-shrink-0" />{' '}
+                <PaperPlaneRightIcon className="size-4 flex-shrink-0" />{' '}
                 <span className="truncate">
                   {sendEstimate.isPending
                     ? t('company.estimateWizard.reviewStep.sending')
@@ -224,7 +224,7 @@ export function ReviewStep({ wizard }: Props) {
                 disabled={!!project.quote || generateQuote.isPending}
                 className={cabinetBtnPrimary}
               >
-                <FileText className="size-4 flex-shrink-0" />{' '}
+                <FileTextIcon className="size-4 flex-shrink-0" />{' '}
                 <span className="truncate">{t('company.estimateWizard.reviewStep.generateQuote')}</span>
               </button>
             )}
@@ -236,11 +236,11 @@ export function ReviewStep({ wizard }: Props) {
                 {canConvertEstimate ? (
                   <>
                     <button type="button" onClick={() => handleConvert('single')} className={cabinetBtnSecondary}>
-                      <Hammer className="size-4 flex-shrink-0" />{' '}
+                      <HammerIcon className="size-4 flex-shrink-0" />{' '}
                       <span className="truncate">{t('company.estimateWizard.reviewStep.convertSingle')}</span>
                     </button>
                     <button type="button" onClick={() => handleConvert('by-stage')} className={cabinetBtnSecondary}>
-                      <Send className="size-4 flex-shrink-0" />{' '}
+                      <PaperPlaneRightIcon className="size-4 flex-shrink-0" />{' '}
                       <span className="truncate">{t('company.estimateWizard.reviewStep.convertByStage')}</span>
                     </button>
                   </>
@@ -261,7 +261,7 @@ export function ReviewStep({ wizard }: Props) {
               onClick={() => setSaveTemplateOpen(true)}
               className={cabinetBtnSecondary}
             >
-              <Copy className="size-4 flex-shrink-0 text-violet-500" />{' '}
+              <CopyIcon className="size-4 flex-shrink-0 text-violet-500" />{' '}
               <span className="truncate">{t('company.estimatesTemplatesPage.saveAsTemplate')}</span>
             </button>
           </div>
@@ -289,7 +289,7 @@ export function ReviewStep({ wizard }: Props) {
               disabled={downloadPdf.isDownloading}
               className={cn(cabinetBtnSecondary, 'flex-1 sm:flex-none')}
             >
-              <Download className="size-4 flex-shrink-0" />{' '}
+              <DownloadIcon className="size-4 flex-shrink-0" />{' '}
               {downloadPdf.isDownloading
                 ? t('company.estimateWizard.wizard.toasts.pdfDownloading', 'Se descarcă...')
                 : t('company.estimateWizard.reviewStep.downloadEstimatePdf', 'Descarcă PDF')}

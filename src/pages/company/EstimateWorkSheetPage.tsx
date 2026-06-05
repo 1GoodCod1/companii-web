@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, Circle, ClipboardList, MapPin, Phone, User } from 'lucide-react';
+import { ArrowLeftIcon, CheckCircleIcon, CircleIcon, ClipboardTextIcon, MapPinIcon, PhoneIcon, UserIcon } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { PageHero, Panel, SkeletonPage, SoftBadge, EmptyState } from '@/widgets/cabinet/cabinet-ui';
@@ -56,7 +56,7 @@ export function EstimateWorkSheetPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <Link to="/company/lucrari" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-violet-600">
-        <ArrowLeft className="size-4" /> {t('company.workSheetPage.backToJobs')}
+        <ArrowLeftIcon className="size-4" /> {t('company.workSheetPage.backToJobs')}
       </Link>
 
       <PageHero
@@ -88,13 +88,13 @@ export function EstimateWorkSheetPage() {
             {t('company.workSheetPage.clientLabel')}
           </p>
           <div className="flex items-center gap-2 text-sm text-gray-700">
-            <User className="size-4 text-gray-400" /> {sheet.customer?.fullName}
+            <UserIcon className="size-4 text-gray-400" /> {sheet.customer?.fullName}
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-700">
-            <Phone className="size-4 text-gray-400" /> {sheet.customer?.phone}
+            <PhoneIcon className="size-4 text-gray-400" /> {sheet.customer?.phone}
           </div>
           <div className="flex items-start gap-2 text-sm text-gray-700">
-            <MapPin className="size-4 text-gray-400 mt-0.5 shrink-0" /> {sheet.intervention?.address ?? sheet.customer?.address}
+            <MapPinIcon className="size-4 text-gray-400 mt-0.5 shrink-0" /> {sheet.intervention?.address ?? sheet.customer?.address}
           </div>
         </Panel>
         <Panel className="p-5 space-y-2">
@@ -130,7 +130,7 @@ export function EstimateWorkSheetPage() {
         {sheet.stages.length === 0 ? (
           <Panel className="p-6 text-sm text-gray-500">
             {t('company.workSheetPage.noStages', {
-              defaultValue: 'Nu există etape active pentru această lucrare. Recalculați smeta și verificați modulele din Diagnostic.',
+              defaultValue: 'Nu există etape active pentru această lucrare. Recalculați calculul de preț și verificați modulele din Diagnostic.',
             })}
           </Panel>
         ) : null}
@@ -157,7 +157,7 @@ export function EstimateWorkSheetPage() {
             {stage.checklist?.length ? (
               <div className="mb-4">
                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 flex items-center gap-1">
-                  <ClipboardList className="size-3.5" /> {t('company.workSheetPage.checklist')}
+                  <ClipboardTextIcon className="size-3.5" /> {t('company.workSheetPage.checklist')}
                 </p>
                 <ul className="grid sm:grid-cols-2 gap-2">
                   {stage.checklist.map((item) => {
@@ -174,9 +174,9 @@ export function EstimateWorkSheetPage() {
                             onChange={(e) => handleToggleChecklist(key, e.target.checked)}
                           />
                           {checked ? (
-                            <CheckCircle2 className="size-4 text-emerald-500 shrink-0" />
+                            <CheckCircleIcon className="size-4 text-emerald-500 shrink-0" />
                           ) : (
-                            <Circle className="size-4 text-violet-300 shrink-0" />
+                            <CircleIcon className="size-4 text-violet-300 shrink-0" />
                           )}
                           <span className={checked ? 'line-through text-violet-500' : ''}>{item}</span>
                         </label>

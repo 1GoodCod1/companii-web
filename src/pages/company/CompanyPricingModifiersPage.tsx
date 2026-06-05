@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { Percent } from 'lucide-react';
+import { PercentIcon } from '@phosphor-icons/react';
 import {
   Panel,
   FormSection,
@@ -16,7 +16,6 @@ import {
 } from '@/features/companies/api/useCompanies';
 import { getErrorMessage } from '@/shared/utils/errors';
 
-/** Group catalog → categorySlug → group → defs (config order preserved). */
 function groupCatalog(catalog: PricingModifierDef[]) {
   const byCategory = new Map<string, Map<string, PricingModifierDef[]>>();
   for (const def of catalog) {
@@ -33,16 +32,11 @@ export function CompanyPricingModifiersPage() {
   const lang: 'ro' | 'ru' =
     (i18n.resolvedLanguage || i18n.language || 'ro') === 'ru' ? 'ru' : 'ro';
   const companyId = useAuthStore((s) => s.user?.activeCompanyId) ?? '';
-
   const { data, isLoading } = usePricingModifiersQuery(companyId);
   const updateMut = useUpdatePricingModifiersMutation(companyId);
-
-  // Only the inputs the user has touched. Persisted overrides come from `data`.
   const [edits, setEdits] = useState<Record<string, string>>({});
-
   const grouped = useMemo(() => groupCatalog(data?.catalog ?? []), [data]);
 
-  // Current input value for a key: a pending edit, else the saved override, else ''.
   const valueFor = (key: string): string => {
     if (edits[key] !== undefined) return edits[key];
     const saved = data?.overrides?.[key];
@@ -55,7 +49,7 @@ export function CompanyPricingModifiersPage() {
     for (const def of data.catalog) {
       const raw = valueFor(def.key);
       if (raw.trim() === '') {
-        modifiers[def.key] = null; // reset to registry default
+        modifiers[def.key] = null;
         continue;
       }
       const num = Number(raw);
@@ -78,7 +72,7 @@ export function CompanyPricingModifiersPage() {
     <div className="space-y-4 max-w-3xl">
       <Panel className="p-6 space-y-2">
         <h2 className="flex items-center gap-2 font-bold text-gray-900">
-          <Percent className="size-5 text-violet-600" />
+          <PercentIcon className="size-5 text-violet-600" />
           {t('company.pricingModifiers.title', { defaultValue: 'Coeficienți de preț' })}
         </h2>
         <p className="text-sm text-gray-500 leading-relaxed">

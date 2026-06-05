@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  Settings,
-  Home,
-  Ruler,
-  Layers,
-  Compass,
-  Maximize,
-  Calculator,
-} from 'lucide-react';
+import { GearIcon, HouseIcon, RulerIcon, StackIcon, CompassIcon, CornersOutIcon, CalculatorIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import type { Plan2dData } from '@/entities/estimate/model/estimates';
 import { computeRoofAreaFromSlope } from '@/features/estimates/derivations/roofGeometry';
@@ -44,8 +36,8 @@ function FacadeAreaCalculator({
   return (
     <div className="rounded-2xl border border-sky-100 bg-sky-50/30 p-4 space-y-3">
       <div className="flex items-center gap-2 text-sky-700 font-black text-[10px] uppercase tracking-widest">
-        <Calculator className="size-3.5" />
-        <span>{t(`${ns}.title`, { defaultValue: 'Calculator suprafață fațadă' })}</span>
+        <CalculatorIcon className="size-3.5" />
+        <span>{t(`${ns}.title`, { defaultValue: 'CalculatorIcon suprafață fațadă' })}</span>
       </div>
       <p className="text-[11px] text-slate-500 leading-snug">
         {t(`${ns}.hint`, {
@@ -157,7 +149,7 @@ export function PlanGlobalParameters({
 
       <div className="flex items-center justify-between border-b border-indigo-100/50 pb-3 relative z-10">
         <div className="flex items-center gap-2.5 text-indigo-950 font-black text-xs uppercase tracking-widest">
-          <Settings className="size-5 text-indigo-600 animate-spin-slow" />
+          <GearIcon className="size-5 text-indigo-600 animate-spin-slow" />
           <span>{t(`${ns}.title`)}</span>
         </div>
         {categoryName && (
@@ -171,7 +163,7 @@ export function PlanGlobalParameters({
         {!isFacade && (
           <div className={isRoof ? 'space-y-1 col-span-2' : 'space-y-1'}>
             <label htmlFor="plan-gp-base-area" className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
-              <Home className="size-3.5 text-slate-400" />
+              <HouseIcon className="size-3.5 text-slate-400" />
               {t(`${ns}.baseArea`)}
             </label>
             <input
@@ -202,7 +194,7 @@ export function PlanGlobalParameters({
           <>
             <div className="space-y-1">
               <label htmlFor="plan-gp-wall-height" className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
-                <Ruler className="size-3.5 text-slate-400" />
+                <RulerIcon className="size-3.5 text-slate-400" />
                 {t(`${ns}.wallHeight`)}
               </label>
               <input
@@ -223,7 +215,7 @@ export function PlanGlobalParameters({
 
             <div className="space-y-1">
               <label htmlFor="plan-gp-floors" className="block text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
-                <Layers className="size-3.5 text-slate-400" />
+                <StackIcon className="size-3.5 text-slate-400" />
                 {t(`${ns}.floors`)}
               </label>
               <input
@@ -245,7 +237,7 @@ export function PlanGlobalParameters({
         {isRoof && !isFlatRoof && (
           <div className="space-y-1 animate-fade-in col-span-2">
             <label htmlFor="plan-gp-roof-slope" className="block text-[9px] font-black text-rose-600 uppercase tracking-widest flex items-center gap-1">
-              <Compass className="size-3.5 text-rose-500 animate-pulse" />
+              <CompassIcon className="size-3.5 text-rose-500 animate-pulse" />
               {t(`${ns}.roofSlope`)}
             </label>
             <input
@@ -275,7 +267,7 @@ export function PlanGlobalParameters({
         {isFacade && (
           <div className="space-y-1 animate-fade-in col-span-2">
             <label htmlFor="plan-gp-facade-area" className="block text-[9px] font-black text-sky-600 uppercase tracking-widest flex items-center gap-1">
-              <Maximize className="size-3.5 text-sky-500 animate-pulse" />
+              <CornersOutIcon className="size-3.5 text-sky-500 animate-pulse" />
               {t(`${ns}.facadeArea`)}
             </label>
             <div className="flex items-center gap-2">
@@ -297,7 +289,7 @@ export function PlanGlobalParameters({
                 onClick={() => setShowCalc((v) => !v)}
                 className="inline-flex items-center gap-1 rounded-xl border border-sky-200 bg-white px-2.5 py-2 text-[10px] font-black uppercase tracking-wider text-sky-700 hover:bg-sky-50 transition-colors disabled:opacity-50"
               >
-                <Calculator className="size-3.5" />
+                <CalculatorIcon className="size-3.5" />
                 {showCalc
                   ? t(`${ns}.facadeCalc.hide`, { defaultValue: 'Ascunde' })
                   : t(`${ns}.facadeCalc.open`, { defaultValue: 'Calculează' })}

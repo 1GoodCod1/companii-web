@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Eye, CheckCircle2 } from 'lucide-react';
+import { EyeIcon, CheckCircleIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { downloadFile } from '@/shared/api/files';
@@ -320,11 +320,11 @@ function usePortalEstimatesSectionView({ data }: { data: PortalDashboardDto }) {
                           return (
                             <div className="space-y-2">
                               <p className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                                {t('company.estimateWizard.scopeSummary.title', 'Scope-ul smetei')}
+                                {t('company.estimateWizard.scopeSummary.title', 'Conținutul calculului de preț')}
                               </p>
                               <div className="bg-emerald-50/40 border border-emerald-100 rounded-xl p-3 space-y-1.5 shadow-xs">
                                 <p className="text-[10px] font-bold uppercase text-emerald-800 flex items-center gap-1">
-                                  <CheckCircle2 className="size-3.5 text-emerald-600" />
+                                  <CheckCircleIcon className="size-3.5 text-emerald-600" />
                                   {t('company.estimateWizard.scopeSummary.included', 'Inclus')}
                                 </p>
                                 <ul className="space-y-1 text-xs text-emerald-950 font-medium">
@@ -375,6 +375,7 @@ function usePortalEstimatesSectionView({ data }: { data: PortalDashboardDto }) {
                                   const isLabor = isEstimateLaborLine({
                                     unit: line.unit,
                                     description: line.description,
+                                    stageKind: stage.kind,
                                   });
                                   return (
                                     <li
@@ -412,7 +413,7 @@ function usePortalEstimatesSectionView({ data }: { data: PortalDashboardDto }) {
                                             }
                                             className="inline-flex items-center gap-1 rounded-xl bg-violet-600 hover:bg-violet-700 px-2.5 py-1 text-[9px] font-extrabold text-white transition-all shadow-xs cursor-pointer"
                                           >
-                                            <Eye className="size-3.5" /> {t('portal.estimatesSection.receipt')}
+                                            <EyeIcon className="size-3.5" /> {t('portal.estimatesSection.receipt')}
                                           </button>
                                         )}
                                       </div>

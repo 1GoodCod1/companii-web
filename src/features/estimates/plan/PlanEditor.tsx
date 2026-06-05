@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Globe, LayoutGrid, ListTree, MapPin } from 'lucide-react';
+import { GlobeIcon, GridFourIcon, TreeStructureIcon, MapPinIcon } from '@phosphor-icons/react';
 import type { Plan2dData, Plan2dRoom } from '@/entities/estimate/model/estimates';
 import {
   defaultRoomsForCategory,
@@ -18,10 +18,10 @@ import { globalParamsHasValues } from './planWorksheetContent';
 type PlanEditorTab = 'rooms' | 'items' | 'global' | 'preview';
 
 const ALL_TABS: { key: PlanEditorTab; icon: React.FC<{ className?: string }> }[] = [
-  { key: 'rooms', icon: MapPin },
-  { key: 'items', icon: ListTree },
-  { key: 'global', icon: Globe },
-  { key: 'preview', icon: LayoutGrid },
+  { key: 'rooms', icon: MapPinIcon },
+  { key: 'items', icon: TreeStructureIcon },
+  { key: 'global', icon: GlobeIcon },
+  { key: 'preview', icon: GridFourIcon },
 ];
 
 export function PlanEditor(props: PlanEditorProps) {

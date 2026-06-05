@@ -227,6 +227,78 @@ export function SkeletonForm({ fields = 4 }: { fields?: number }) {
   );
 }
 
+export function SkeletonList({ rows = 5, className }: { rows?: number; className?: string }) {
+  return (
+    <div className={cn('divide-y divide-slate-100', className)}>
+      {Array.from({ length: rows }).map((_, i) => (
+        <SkeletonRow key={i} />
+      ))}
+    </div>
+  );
+}
+
+export function SkeletonCompanyCard({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        'flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white animate-pulse',
+        className,
+      )}
+    >
+      <div className="h-44 shrink-0 bg-slate-200" />
+      <div className="flex flex-1 flex-col px-5 pb-5 pt-0">
+        <div className="-mt-7 mb-3">
+          <div className="size-14 rounded-2xl border-4 border-white bg-slate-300" />
+        </div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 space-y-2">
+            <div className="h-4 w-3/4 rounded bg-slate-200" />
+            <div className="h-3 w-1/2 rounded bg-slate-100" />
+          </div>
+          <div className="h-8 w-12 shrink-0 rounded-lg bg-slate-100" />
+        </div>
+        <div className="mt-3 space-y-2">
+          <div className="h-3 w-full rounded bg-slate-100" />
+          <div className="h-3 w-4/5 rounded bg-slate-100" />
+        </div>
+        <div className="mt-auto border-t border-slate-100 pt-4">
+          <div className="grid grid-cols-3 gap-2">
+            <div className="h-3 rounded bg-slate-100" />
+            <div className="h-3 rounded bg-slate-100" />
+            <div className="h-3 rounded bg-slate-100" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function SkeletonPlanCard({ className }: { className?: string }) {
+  return (
+    <div className={cn('flex flex-col border border-slate-200 bg-white p-6 animate-pulse', className)}>
+      <div className="mb-4 h-4 w-20 rounded bg-slate-200" />
+      <div className="mb-2 h-8 w-32 rounded bg-slate-200" />
+      <div className="mb-6 h-3 w-full rounded bg-slate-100" />
+      <div className="flex-1 space-y-2">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="h-3 w-full rounded bg-slate-100" />
+        ))}
+      </div>
+      <div className="mt-6 h-10 w-full rounded-none bg-slate-200" />
+    </div>
+  );
+}
+
+export function SkeletonPlanCards({ count = 3 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+      {Array.from({ length: count }).map((_, i) => (
+        <SkeletonPlanCard key={i} />
+      ))}
+    </div>
+  );
+}
+
 export function InlineSpinner({ size = 16 }: { size?: number }) {
   return (
     <svg

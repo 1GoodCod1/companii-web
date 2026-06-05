@@ -6,7 +6,7 @@ export const companiiRoCompanyOperations = {
       selectDateTime: 'Selectați data și ora.',
       toastScheduled: 'Lucrare programată.',
       toastScheduleFailed: 'Nu s-a putut programa lucrarea.',
-      toastLeadEstimateHint: 'Deschideți pagina Cereri pentru smetă.',
+      toastLeadEstimateHint: 'Deschideți pagina Cereri pentru calcul de preț.',
       toastConvertFailed: 'Nu s-a putut converti cererea.',
     },
 
@@ -25,7 +25,7 @@ export const companiiRoCompanyOperations = {
         'Pentru a gestiona abonamentul, mai întâi trebuie să înregistrezi compania ta.',
       createProfileBtn: 'Creează profil companie',
       description:
-        'Planul tău determină ce module FSM poți folosi: clienți, lucrări, smete, oferte și facturi.',
+        'Planul tău determină ce module FSM poți folosi: clienți, lucrări, calcule de preț, oferte și facturi.',
       loading: 'Se încarcă abonamentul curent...',
       activePlan: 'Plan activ',
       statusTrial: 'Perioadă probă',
@@ -48,7 +48,7 @@ export const companiiRoCompanyOperations = {
 
   auditPage: {
       title: 'Jurnal de activitate',
-      description: 'Istoricul tuturor acțiunilor angajaților: modificări de prețuri, smete, statusuri de lucrări și setări ale companiei.',
+      description: 'Istoricul tuturor acțiunilor angajaților: modificări de prețuri, calcule de preț, statusuri de lucrări și setări ale companiei.',
       filterAllActions: 'Toate acțiunile',
       filterAllUsers: 'Toți angajații',
       loading: 'Se încarcă jurnalul...',
@@ -106,7 +106,7 @@ export const companiiRoCompanyOperations = {
 
   workSheetPage: {
       loading: 'Se încarcă fișa de lucru...',
-      noAccess: 'Această lucrare nu are smetă asociată sau nu aveți acces.',
+      noAccess: 'Această lucrare nu are calcul de preț asociat sau nu aveți acces.',
       backToJobs: 'Înapoi la lucrări',
       title: 'Fișă de execuție',
       descriptionManagement:
@@ -114,7 +114,7 @@ export const companiiRoCompanyOperations = {
       descriptionTechnician: 'Plan, etape și materiale — fără informații comerciale.',
       jobLabel: 'Lucrare',
       clientLabel: 'Client',
-      estimateLabel: 'Smetă',
+      estimateLabel: 'Calcul de preț',
       checklist: 'Checklist',
       materials: 'Materiale',
       colDescription: 'Descriere',
@@ -136,7 +136,7 @@ export const companiiRoCompanyOperations = {
 
   myWorksheets: {
       title: 'Obiectele mele',
-      description: 'Lucrările asignate vouă cu smetă activă.',
+      description: 'Lucrările asignate vouă cu calcul de preț activă.',
       empty: 'Nu există obiecte asignate momentan.',
       loadError: 'Eroare la încărcarea listei.',
       notForRole: 'Această pagină este pentru angajați.',

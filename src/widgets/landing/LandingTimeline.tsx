@@ -1,8 +1,8 @@
 import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Building2, ClipboardCheck, FileSpreadsheet, Users, Wrench } from 'lucide-react';
+import { BuildingsIcon, ClipboardTextIcon, FileXlsIcon, UsersIcon, WrenchIcon } from '@phosphor-icons/react';
 
-const STEP_ICONS = [Building2, Users, Wrench, FileSpreadsheet, ClipboardCheck] as const;
+const STEP_ICONS = [BuildingsIcon, UsersIcon, WrenchIcon, FileXlsIcon, ClipboardTextIcon] as const;
 const STEP_TONES = [
   'border-violet-200 bg-violet-50/50 text-violet-700',
   'border-indigo-200 bg-indigo-50/50 text-indigo-700',
@@ -34,7 +34,7 @@ export function LandingTimeline() {
   }>;
 
   return (
-    <section className="relative py-24 sm:py-32">
+    <section className="relative py-24 sm:py-32 bg-white">
       <div className="max-w-6xl mx-auto px-6">
         <m.div
           initial={{ opacity: 0, y: 20 }}
@@ -62,11 +62,11 @@ export function LandingTimeline() {
           viewport={{ once: true, margin: '-60px' }}
           className="relative"
         >
-          <div className="absolute left-[1.65rem] top-4 bottom-4 w-px bg-gradient-to-b from-violet-300 via-indigo-200 to-emerald-300 hidden md:block" />
+          <div className="absolute left-[1.65rem] top-4 bottom-4 w-px bg-gray-200 hidden md:block" />
 
           <div className="space-y-6">
             {steps.map((step, index) => {
-              const Icon = STEP_ICONS[index] ?? Building2;
+              const Icon = STEP_ICONS[index] ?? BuildingsIcon;
               const tone = STEP_TONES[index] ?? STEP_TONES[0];
 
               return (
@@ -76,16 +76,16 @@ export function LandingTimeline() {
                   className="relative md:pl-16"
                 >
                   <div
-                    className={`hidden md:flex absolute left-0 top-5 size-14 items-center justify-center rounded-2xl border-2 ${tone} shadow-sm`}
+                    className={`hidden md:flex absolute left-0 top-5 size-14 items-center justify-center rounded-none border ${tone} shadow-sm`}
                   >
                     <Icon className="size-6" />
                   </div>
 
-                  <div className="rounded-3xl glass-panel p-6 sm:p-7">
+                  <div className="rounded-none border border-gray-200 bg-white p-6 sm:p-7 shadow-sm">
                     <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3 md:hidden">
                         <div
-                          className={`flex size-11 items-center justify-center rounded-xl border ${tone}`}
+                          className={`flex size-11 items-center justify-center rounded-none border ${tone}`}
                         >
                           <Icon className="size-5" />
                         </div>

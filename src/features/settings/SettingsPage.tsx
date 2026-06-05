@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Globe, Lock } from 'lucide-react';
+import { GlobeIcon, LockIcon } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 import { Panel, PanelHeader } from '@/widgets/cabinet/cabinet-ui';
@@ -115,7 +115,7 @@ export function SettingsPage() {
       <Panel className="p-5 sm:p-6">
         <div className="flex items-start gap-4">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
-            <Globe className="size-5" />
+            <GlobeIcon className="size-5" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-bold text-gray-900">
@@ -135,7 +135,7 @@ export function SettingsPage() {
       <Panel className="p-5 sm:p-6">
         <div className="flex items-start gap-4">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
-            <Lock className="size-5" />
+            <LockIcon className="size-5" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-bold text-gray-900">
@@ -153,7 +153,7 @@ export function SettingsPage() {
                 'hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700 cursor-pointer',
               )}
             >
-              <Lock className="size-4 shrink-0" />
+              <LockIcon className="size-4 shrink-0" />
               {t('cabinet.shell.changePassword')}
             </button>
           </div>

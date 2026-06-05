@@ -1,22 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import {
-  Calendar,
-  Calculator,
-  ClipboardList,
-  BookOpen,
-  CreditCard,
-  FileText,
-  Images,
-  Inbox,
-  LayoutDashboard,
-  List,
-  MessageSquareQuote,
-  Receipt,
-  Settings,
-  User,
-  Users,
-  Wrench,
-} from 'lucide-react';
+import { CalendarIcon, CalculatorIcon, ClipboardTextIcon, BookOpenIcon, CreditCardIcon, FileTextIcon, ImagesIcon, TrayIcon, LayoutIcon, ListIcon, ChatCircleTextIcon, ReceiptIcon, GearIcon, UserIcon, UsersIcon, WrenchIcon } from '@phosphor-icons/react';
 import { CabinetShell } from './CabinetShell';
 import { useMySubscriptionQuery } from '@/entities/subscription/api/useSubscriptions';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
@@ -46,7 +29,7 @@ const NAV_DEFS: Array<
       sectionKey: 'main',
       to: '',
       labelKey: 'company.dashboard.nav',
-      icon: <LayoutDashboard />,
+      icon: <LayoutIcon />,
       minPlanKey: '',
     },
     {
@@ -54,7 +37,7 @@ const NAV_DEFS: Array<
       sectionKey: 'main',
       to: '/profile',
       labelKey: 'company.profile',
-      icon: <User />,
+      icon: <UserIcon />,
       minPlanKey: '/profile',
     },
     {
@@ -62,7 +45,7 @@ const NAV_DEFS: Array<
       sectionKey: 'main',
       to: '/gallery',
       labelKey: 'company.gallery',
-      icon: <Images />,
+      icon: <ImagesIcon />,
       minPlanKey: '/gallery',
     },
     {
@@ -70,7 +53,7 @@ const NAV_DEFS: Array<
       sectionKey: 'operations',
       to: '/clienti',
       labelKey: 'company.clienti',
-      icon: <Users />,
+      icon: <UsersIcon />,
       minPlanKey: '/clienti',
     },
     {
@@ -78,7 +61,7 @@ const NAV_DEFS: Array<
       sectionKey: 'operations',
       to: '/cereri',
       labelKey: 'company.cereri',
-      icon: <Inbox />,
+      icon: <TrayIcon />,
       minPlanKey: '/cereri',
     },
     {
@@ -86,7 +69,7 @@ const NAV_DEFS: Array<
       sectionKey: 'operations',
       to: '/lucrari',
       labelKey: 'company.lucrari',
-      icon: <Wrench />,
+      icon: <WrenchIcon />,
       minPlanKey: '/lucrari',
     },
     {
@@ -94,7 +77,7 @@ const NAV_DEFS: Array<
       sectionKey: 'operations',
       to: '/calendar',
       labelKey: 'company.calendar',
-      icon: <Calendar />,
+      icon: <CalendarIcon />,
       minPlanKey: '/calendar',
     },
     {
@@ -102,7 +85,7 @@ const NAV_DEFS: Array<
       sectionKey: 'operations',
       to: '/servicii',
       labelKey: 'company.servicii',
-      icon: <List />,
+      icon: <ListIcon />,
       minPlanKey: '/servicii',
     },
     {
@@ -110,7 +93,7 @@ const NAV_DEFS: Array<
       sectionKey: 'operations',
       to: '/smete',
       labelKey: 'company.smete',
-      icon: <Calculator />,
+      icon: <CalculatorIcon />,
       minPlanKey: '/smete',
     },
     {
@@ -118,7 +101,7 @@ const NAV_DEFS: Array<
       sectionKey: 'operations',
       to: '/smete/templates',
       labelKey: 'company.smeteTemplates',
-      icon: <BookOpen />,
+      icon: <BookOpenIcon />,
       minPlanKey: '/smete',
     },
     {
@@ -126,7 +109,7 @@ const NAV_DEFS: Array<
       sectionKey: 'operations',
       to: '/oferte',
       labelKey: 'company.oferte',
-      icon: <FileText />,
+      icon: <FileTextIcon />,
       minPlanKey: '/oferte',
     },
     {
@@ -134,7 +117,7 @@ const NAV_DEFS: Array<
       sectionKey: 'operations',
       to: '/facturi',
       labelKey: 'company.facturi',
-      icon: <Receipt />,
+      icon: <ReceiptIcon />,
       minPlanKey: '/facturi',
     },
     {
@@ -142,7 +125,7 @@ const NAV_DEFS: Array<
       sectionKey: 'operations',
       to: '/recenzii',
       labelKey: 'company.recenzii',
-      icon: <MessageSquareQuote />,
+      icon: <ChatCircleTextIcon />,
       minPlanKey: '/recenzii',
     },
     {
@@ -150,7 +133,7 @@ const NAV_DEFS: Array<
       sectionKey: 'company',
       to: '/team',
       labelKey: 'company.team',
-      icon: <Users />,
+      icon: <UsersIcon />,
       minPlanKey: '/team',
     },
     {
@@ -158,7 +141,7 @@ const NAV_DEFS: Array<
       sectionKey: 'company',
       to: '/audit',
       labelKey: 'company.audit',
-      icon: <ClipboardList />,
+      icon: <ClipboardTextIcon />,
       minPlanKey: '',
     },
     {
@@ -166,7 +149,7 @@ const NAV_DEFS: Array<
       sectionKey: 'company',
       to: '/subscription',
       labelKey: 'company.subscription',
-      icon: <CreditCard />,
+      icon: <CreditCardIcon />,
       minPlanKey: '/subscription',
     },
     {
@@ -174,7 +157,7 @@ const NAV_DEFS: Array<
       sectionKey: 'company',
       to: '/settings',
       labelKey: 'company.settings',
-      icon: <Settings />,
+      icon: <GearIcon />,
       minPlanKey: '',
     },
   ];

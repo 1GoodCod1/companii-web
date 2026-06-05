@@ -1,26 +1,18 @@
 import { useTranslation } from 'react-i18next';
-import {
-  Megaphone,
-  Palette,
-  Sparkles,
-  Shield,
-  Scale,
-  Wrench,
-  type LucideIcon,
-} from 'lucide-react';
+import { MegaphoneIcon, PaletteIcon, SparkleIcon, ShieldIcon, ScalesIcon, WrenchIcon, type Icon } from '@phosphor-icons/react';
 import type { EstimateExcludedCategorySlug } from '@/entities/estimate/model/estimateCategorySlugs.constants';
 import {
   getExcludedAlternative,
   type ExcludedCategoryAlternative,
 } from '../diagnostic/excludedCategoryAlternatives';
 
-const ICONS: Record<ExcludedCategoryAlternative['icon'], LucideIcon> = {
-  megaphone: Megaphone,
-  palette: Palette,
-  sparkles: Sparkles,
-  shield: Shield,
-  scale: Scale,
-  wrench: Wrench,
+const ICONS: Record<ExcludedCategoryAlternative['icon'], Icon> = {
+  megaphone: MegaphoneIcon,
+  palette: PaletteIcon,
+  sparkles: SparkleIcon,
+  shield: ShieldIcon,
+  scale: ScalesIcon,
+  wrench: WrenchIcon,
 };
 
 type Props = {

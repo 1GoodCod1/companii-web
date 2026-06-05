@@ -3,23 +3,10 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePublicAuthCta } from '@/features/auth';
 import { SEOHead } from '@/shared/ui/seo/SEOHead';
-import {
-  Building2,
-  ArrowRight,
-  Calculator,
-  CalendarDays,
-  FileCheck,
-  KeyRound,
-  Send,
-  CheckCircle2,
-  ShieldCheck,
-  Sparkles,
-  HeartHandshake,
-  ArrowLeftRight,
-} from 'lucide-react';
+import { BuildingsIcon, ArrowRightIcon, CalculatorIcon, CalendarIcon, FileTextIcon, KeyIcon, PaperPlaneRightIcon, CheckCircleIcon, ShieldCheckIcon, SparkleIcon, HandshakeIcon, ArrowsLeftRightIcon } from '@phosphor-icons/react';
 
-const COMPANY_STEP_ICONS = [Building2, Calculator, CalendarDays, FileCheck] as const;
-const CLIENT_STEP_ICONS = [KeyRound, Send, CheckCircle2, ShieldCheck] as const;
+const COMPANY_STEP_ICONS = [BuildingsIcon, CalculatorIcon, CalendarIcon, FileTextIcon] as const;
+const CLIENT_STEP_ICONS = [KeyIcon, PaperPlaneRightIcon, CheckCircleIcon, ShieldCheckIcon] as const;
 
 type HowItWorksStep = { title: string; description: string };
 
@@ -49,7 +36,7 @@ export function HowItWorksPage() {
         {/* Hero Header Section */}
         <section className="text-center space-y-5 relative z-10">
           <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-violet-700 bg-violet-50 border border-violet-100/60 px-4 py-2 rounded-none">
-            <Sparkles className="size-3.5 text-violet-600 animate-pulse" />
+            <SparkleIcon className="size-3.5 text-violet-600 animate-pulse" />
             {t('howItWorks.badge')}
           </span>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-none text-slate-900">
@@ -82,7 +69,7 @@ export function HowItWorksPage() {
             </div>
             <div className="col-span-1 flex flex-col items-center justify-center self-center">
               <div className="p-2 bg-slate-100 text-slate-400 border border-slate-200/60">
-                <ArrowLeftRight className="size-4" />
+                <ArrowsLeftRightIcon className="size-4" />
               </div>
             </div>
             <div className="col-span-5 text-left space-y-2 border-b border-indigo-100/80 pb-3">
@@ -97,8 +84,8 @@ export function HowItWorksPage() {
 
           {/* Loop through matching step pairs */}
           {Array.from({ length: 4 }).map((_, index) => {
-            const CompanyIcon = COMPANY_STEP_ICONS[index] ?? Building2;
-            const ClientIcon = CLIENT_STEP_ICONS[index] ?? KeyRound;
+            const CompanyIcon = COMPANY_STEP_ICONS[index] ?? BuildingsIcon;
+            const ClientIcon = CLIENT_STEP_ICONS[index] ?? KeyIcon;
             const companyStep = companySteps[index] ?? { title: '', description: '' };
             const clientStep = clientSteps[index] ?? { title: '', description: '' };
             const stepNum = index + 1;
@@ -168,7 +155,7 @@ export function HowItWorksPage() {
                   : 'text-slate-500 hover:text-slate-800'
                 }`}
             >
-              <Building2 className={`size-4 ${activeRole === 'company' ? 'text-violet-600' : 'text-slate-400'}`} />
+              <BuildingsIcon className={`size-4 ${activeRole === 'company' ? 'text-violet-600' : 'text-slate-400'}`} />
               {t('howItWorks.roles.company')}
             </button>
             <button
@@ -177,10 +164,10 @@ export function HowItWorksPage() {
               onClick={() => setActiveRole('client')}
               className={`flex-1 py-3 px-4 rounded-none text-xs font-black uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${activeRole === 'client'
                   ? 'bg-white text-indigo-750 shadow-sm'
-                  : 'text-slate-550 hover:text-slate-850'
+                  : 'text-slate-555 hover:text-slate-855'
                 }`}
             >
-              <HeartHandshake className={`size-4 ${activeRole === 'client' ? 'text-indigo-650' : 'text-slate-400'}`} />
+              <HandshakeIcon className={`size-4 ${activeRole === 'client' ? 'text-indigo-650' : 'text-slate-400'}`} />
               {t('howItWorks.roles.client')}
             </button>
           </section>
@@ -200,7 +187,7 @@ export function HowItWorksPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {companySteps.map((step, idx) => {
-                    const CompanyIcon = COMPANY_STEP_ICONS[idx] ?? Building2;
+                    const CompanyIcon = COMPANY_STEP_ICONS[idx] ?? BuildingsIcon;
                     return (
                       <div key={step.title} className="bg-white p-5 border border-slate-100 space-y-3 relative">
                         <span className="absolute top-4 right-4 font-mono font-bold text-slate-100 text-5xl select-none">
@@ -233,7 +220,7 @@ export function HowItWorksPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {clientSteps.map((step, idx) => {
-                    const ClientIcon = CLIENT_STEP_ICONS[idx] ?? KeyRound;
+                    const ClientIcon = CLIENT_STEP_ICONS[idx] ?? KeyIcon;
                     return (
                       <div key={step.title} className="bg-white p-5 border border-slate-100 space-y-3 relative">
                         <span className="absolute top-4 right-4 font-mono font-bold text-slate-100 text-5xl select-none">
@@ -271,7 +258,7 @@ export function HowItWorksPage() {
             className="inline-flex items-center gap-2 mt-2 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl transition-all"
           >
             {primaryCta.label}
-            <ArrowRight className="size-4" />
+            <ArrowRightIcon className="size-4" />
           </Link>
         </section>
       </div>

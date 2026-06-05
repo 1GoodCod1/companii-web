@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Target } from 'lucide-react';
+import { TargetIcon } from '@phosphor-icons/react';
 
 const toneClasses = {
   emerald: {
@@ -47,7 +47,7 @@ export function LeadBudgetGauge({ budget, currentTotal, compact }: Props) {
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Target className={`size-4 ${c.text} shrink-0`} />
+          <TargetIcon className={`size-4 ${c.text} shrink-0`} />
           <span className={`text-[10px] font-black uppercase tracking-wider ${c.text}`}>
             {t(`${ns}.label`, { defaultValue: 'Buget client' })}
           </span>

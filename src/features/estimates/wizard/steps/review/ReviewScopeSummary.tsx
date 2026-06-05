@@ -1,4 +1,4 @@
-import { CheckCircle2, CircleDashed, PlusCircle } from 'lucide-react';
+import { CheckCircleIcon, CircleDashedIcon, PlusCircleIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { Panel } from '@/widgets/cabinet/cabinet-ui';
 import type { EstimateWizardApi } from '../../useEstimateWizard';
@@ -74,7 +74,7 @@ export function ReviewScopeSummary({ scopeSummary }: ReviewScopeSummaryProps) {
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <ScopeColumn
-          icon={<CheckCircle2 className="size-4 text-emerald-600" />}
+          icon={<CheckCircleIcon className="size-4 text-emerald-600" />}
           title={t('company.estimateWizard.scopeSummary.included')}
           entries={scopeSummary.included.map((m) => ({
             key: m.key,
@@ -88,7 +88,7 @@ export function ReviewScopeSummary({ scopeSummary }: ReviewScopeSummaryProps) {
           emptyMessage={t('company.estimateWizard.scopeSummary.emptyIncluded')}
         />
         <ScopeColumn
-          icon={<CircleDashed className="size-4 text-amber-600" />}
+          icon={<CircleDashedIcon className="size-4 text-amber-600" />}
           title={t('company.estimateWizard.scopeSummary.enabledWithoutLines')}
           entries={scopeSummary.enabledWithoutLines.map((m) => ({
             key: m.key,
@@ -104,7 +104,7 @@ export function ReviewScopeSummary({ scopeSummary }: ReviewScopeSummaryProps) {
           }))}
         />
         <ScopeColumn
-          icon={<PlusCircle className="size-4 text-slate-500" />}
+          icon={<PlusCircleIcon className="size-4 text-slate-500" />}
           title={t('company.estimateWizard.scopeSummary.available')}
           entries={scopeSummary.available.map((m) => ({
             key: m.key,

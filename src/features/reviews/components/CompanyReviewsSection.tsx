@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { useCompanyReviewsBySlugQuery } from '@/features/reviews/api/useReviews';
 import { ReviewCard } from '@/entities/review/ui/ReviewCard';
 import { StarRating } from '@/shared/ui/reviews/StarRating';
+import { LoadingStatus } from '@/shared/ui/LoadingStatus';
+import { SkeletonCard } from '@/widgets/cabinet/cabinet-ui';
 
 type CompanyReviewsSectionProps = {
   slug: string;
@@ -31,7 +33,11 @@ export function CompanyReviewsSection({ slug, rating, totalReviews }: CompanyRev
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-gray-400">{t('companyDetail.reviews.loading')}</p>
+        <LoadingStatus label={t('companyDetail.reviews.loading')} className="grid gap-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </LoadingStatus>
       ) : null}
 
       {isError ? (

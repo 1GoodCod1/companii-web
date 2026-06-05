@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { CheckCircle2, CloudOff, Loader2, RefreshCw, WifiOff } from 'lucide-react';
+import { CheckCircleIcon, CloudSlashIcon, CircleNotchIcon, ArrowsCounterClockwiseIcon, WifiSlashIcon } from '@phosphor-icons/react';
 import type { OfflineSyncState } from '../offline/useEstimateOfflineCache';
 
 type Props = {
@@ -36,7 +36,7 @@ export function OfflineBanner({
     if (!lastSavedAt) return null;
     return (
       <div className="inline-flex items-center gap-1.5 text-[11px] text-emerald-700">
-        <CheckCircle2 className="size-3.5" />
+        <CheckCircleIcon className="size-3.5" />
         <span>
           {t('company.estimateWizard.offline.savedAt', { time: formatTime(lastSavedAt) })}
         </span>
@@ -51,12 +51,12 @@ export function OfflineBanner({
       : 'border-violet-200 bg-violet-50 text-violet-900';
 
   const Icon = offline
-    ? WifiOff
+    ? WifiSlashIcon
     : isError
-      ? CloudOff
+      ? CloudSlashIcon
       : syncState === 'syncing'
-        ? Loader2
-        : CheckCircle2;
+        ? CircleNotchIcon
+        : CheckCircleIcon;
 
   const message = offline
     ? t('company.estimateWizard.offline.offline')
@@ -84,7 +84,7 @@ export function OfflineBanner({
           disabled={syncing}
           className="inline-flex items-center gap-1 rounded-lg border border-current/30 px-2 py-1 text-[11px] font-semibold transition-colors hover:bg-white/40 disabled:opacity-60"
         >
-          <RefreshCw className={`size-3 ${syncing ? 'animate-spin' : ''}`} />
+          <ArrowsCounterClockwiseIcon className={`size-3 ${syncing ? 'animate-spin' : ''}`} />
           {t('company.estimateWizard.offline.syncNow')}
         </button>
       )}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MessageSquarePlus, X } from 'lucide-react';
+import { ChatTextIcon, XIcon } from '@phosphor-icons/react';
 import { InteractiveStarRating } from '@/shared/ui/reviews/StarRating';
 
 type ReviewModalProps = {
@@ -46,12 +46,12 @@ export function ReviewModal({
           className="absolute right-4 top-4 rounded-lg p-1 text-gray-400 hover:text-gray-700"
           aria-label={t('company.reviewsUi.closeModal')}
         >
-          <X className="size-5" />
+          <XIcon className="size-5" />
         </button>
 
         <div className="mb-5 flex items-start gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
-            <MessageSquarePlus className="size-5" />
+            <ChatTextIcon className="size-5" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-gray-900">{t('company.reviewsUi.modalTitle')}</h2>

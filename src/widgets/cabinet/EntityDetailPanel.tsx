@@ -1,6 +1,13 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EmptyState, Panel, PanelHeader, cabinetPanelContentInsetClass } from '@/widgets/cabinet/cabinet-ui';
+import { LoadingStatus } from '@/shared/ui/LoadingStatus';
+import {
+  EmptyState,
+  Panel,
+  PanelHeader,
+  SkeletonForm,
+  cabinetPanelContentInsetClass,
+} from '@/widgets/cabinet/cabinet-ui';
 import { cabinetSplitPanelClass } from '@/widgets/cabinet/EntityListDetailLayout';
 
 type Props = {
@@ -9,6 +16,7 @@ type Props = {
   isLoading: boolean;
   hasDetail: boolean;
   loadingMessage?: string;
+  skeletonFields?: number;
   emptyMessage: string;
   headerAction?: ReactNode;
   children: ReactNode;
@@ -20,6 +28,7 @@ export function EntityDetailPanel({
   isLoading,
   hasDetail,
   loadingMessage,
+  skeletonFields = 4,
   emptyMessage,
   headerAction,
   children,
@@ -34,9 +43,9 @@ export function EntityDetailPanel({
       <div className={cabinetPanelContentInsetClass}>
         {selectedId ? (
           isLoading || !hasDetail ? (
-            <div className="flex flex-1 items-center justify-center text-center text-gray-400">
-              {resolvedLoadingMessage}
-            </div>
+            <LoadingStatus label={resolvedLoadingMessage} className="flex-1">
+              <SkeletonForm fields={skeletonFields} />
+            </LoadingStatus>
           ) : (
             children
           )

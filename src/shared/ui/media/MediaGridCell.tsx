@@ -1,4 +1,4 @@
-import { Film } from 'lucide-react';
+import { FilmStripIcon } from '@phosphor-icons/react';
 import { MediaImage } from '@/shared/ui/MediaImage';
 import { isVideoUrl } from '@/shared/utils/validateFile';
 import type { MediaThumbItem } from './MediaThumb';
@@ -25,7 +25,7 @@ export function MediaGridCell({ item, index, onClick, photoAlt }: MediaGridCellP
           <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_30%_20%,rgba(99,102,241,0.35)_0%,transparent_55%)]" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="size-12 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-xl transition-transform group-hover:scale-110">
-              <Film className="size-5 text-white" />
+              <FilmStripIcon className="size-5 text-white" />
             </div>
           </div>
         </div>

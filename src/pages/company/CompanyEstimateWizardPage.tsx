@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeftIcon } from '@phosphor-icons/react';
 import { PageHero, SkeletonForm } from '@/widgets/cabinet/cabinet-ui';
 import { CompanyManagementGate } from '@/features/companies';
 import { useEstimateProjectQuery } from '@/features/estimates';
@@ -33,7 +33,7 @@ export function CompanyEstimateWizardPage() {
       <div className="space-y-6 animate-fade-in">
         <div className="flex items-center gap-3">
           <Link to="/company/smete" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-violet-600">
-            <ArrowLeft className="size-4" /> {t('company.estimateWizardPage.backToList')}
+            <ArrowLeftIcon className="size-4" /> {t('company.estimateWizardPage.backToList')}
           </Link>
         </div>
 

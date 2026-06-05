@@ -133,7 +133,7 @@ export default defineConfig(({ mode }) => {
             'table-vendor': ['@tanstack/react-table'],
             'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
             'motion-vendor': ['framer-motion'],
-            icons: ['lucide-react'],
+            icons: ['@phosphor-icons/react'],
             i18n: ['i18next', 'react-i18next'],
             'ui-primitives': [
               '@radix-ui/react-label',
@@ -143,6 +143,13 @@ export default defineConfig(({ mode }) => {
         },
       },
       chunkSizeWarningLimit: 600,
+    },
+    test: {
+      exclude: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/src/entities/estimate/model/category-specs/**',
+      ],
     },
   };
 });

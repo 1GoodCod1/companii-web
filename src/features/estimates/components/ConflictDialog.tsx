@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, RefreshCw, Trash2 } from 'lucide-react';
+import { WarningIcon, ArrowsCounterClockwiseIcon, TrashIcon } from '@phosphor-icons/react';
 import type { EstimateVersionConflict } from '../offline/conflictResolution';
 
 type Props = {
@@ -24,7 +24,7 @@ export function ConflictDialog({
       <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl space-y-4">
         <div className="flex items-start gap-3">
           <div className="rounded-xl bg-rose-100 p-2 text-rose-600">
-            <AlertTriangle className="size-5" />
+            <WarningIcon className="size-5" />
           </div>
           <div className="min-w-0 space-y-1">
             <h3 className="font-bold text-gray-900 text-base">
@@ -52,7 +52,7 @@ export function ConflictDialog({
             disabled={busy}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700 disabled:opacity-60 transition-colors"
           >
-            <RefreshCw className={`size-4 ${busy ? 'animate-spin' : ''}`} />
+            <ArrowsCounterClockwiseIcon className={`size-4 ${busy ? 'animate-spin' : ''}`} />
             {t('company.estimateWizard.conflict.keepLocal')}
           </button>
           <button
@@ -61,7 +61,7 @@ export function ConflictDialog({
             disabled={busy}
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-rose-200 bg-white px-4 py-2.5 text-sm font-bold text-rose-700 hover:bg-rose-50 disabled:opacity-60 transition-colors"
           >
-            <Trash2 className="size-4" />
+            <TrashIcon className="size-4" />
             {t('company.estimateWizard.conflict.discardLocal')}
           </button>
           <button

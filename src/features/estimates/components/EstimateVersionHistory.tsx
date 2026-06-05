@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { ArrowRightLeft, TrendingDown, TrendingUp, Minus } from 'lucide-react';
+import { ArrowsLeftRightIcon, TrendDownIcon, TrendUpIcon, MinusIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useEstimateVersions, useEstimateVersionDiff } from '../api/useEstimateVersions';
 import type { EstimateVersionSummary } from '@/entities/estimate/model/estimates';
@@ -73,7 +73,7 @@ export function EstimateVersionHistory({ projectId }: Props) {
               maxVisibleItems={8}
             />
 
-            <ArrowRightLeft className="size-4 text-muted-foreground flex-shrink-0" />
+            <ArrowsLeftRightIcon className="size-4 text-muted-foreground flex-shrink-0" />
 
             <AppSelect
               value={selectedB != null ? String(selectedB) : ''}
@@ -95,15 +95,15 @@ export function EstimateVersionHistory({ projectId }: Props) {
                   </span>
                   {diff.lineCountDelta === 0 ? (
                     <span className="flex items-center gap-1">
-                      <Minus className="size-3" /> 0
+                      <MinusIcon className="size-3" /> 0
                     </span>
                   ) : diff.lineCountDelta > 0 ? (
                     <span className="flex items-center gap-1 text-green-600">
-                      <TrendingUp className="size-3" />+{diff.lineCountDelta}
+                      <TrendUpIcon className="size-3" />+{diff.lineCountDelta}
                     </span>
                   ) : (
                     <span className="flex items-center gap-1 text-red-600">
-                      <TrendingDown className="size-3" />
+                      <TrendDownIcon className="size-3" />
                       {diff.lineCountDelta}
                     </span>
                   )}
@@ -116,12 +116,12 @@ export function EstimateVersionHistory({ projectId }: Props) {
                     <span className="flex items-center gap-1">0 MDL</span>
                   ) : diff.grandTotalDelta > 0 ? (
                     <span className="flex items-center gap-1 text-green-600">
-                      <TrendingUp className="size-3" />+
+                      <TrendUpIcon className="size-3" />+
                       {diff.grandTotalDelta.toLocaleString()} MDL
                     </span>
                   ) : (
                     <span className="flex items-center gap-1 text-red-600">
-                      <TrendingDown className="size-3" />
+                      <TrendDownIcon className="size-3" />
                       {diff.grandTotalDelta.toLocaleString()} MDL
                     </span>
                   )}

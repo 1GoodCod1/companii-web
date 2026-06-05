@@ -1,5 +1,7 @@
+import { LoadingStatus } from '@/shared/ui/LoadingStatus';
 import {
   EmptyState,
+  SkeletonList,
   SoftBadge,
   cabinetBtnSecondary,
 } from '@/widgets/cabinet/cabinet-ui';
@@ -24,7 +26,11 @@ export function ServicesCatalogPanel({
   const { t } = useTranslation();
 
   if (isLoading) {
-    return <p className="text-sm text-gray-400 p-4">{t('cabinet.common.loading')}</p>;
+    return (
+      <LoadingStatus label={t('cabinet.common.loading')} className="p-4">
+        <SkeletonList rows={4} />
+      </LoadingStatus>
+    );
   }
 
   if (!services?.length) {

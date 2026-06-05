@@ -1,4 +1,4 @@
-import { MessageSquare, Phone, Mail, ShieldCheck } from 'lucide-react';
+import { ChatIcon, PhoneIcon, EnvelopeIcon, ShieldCheckIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import type { PublicCompanyDetailDto } from '@/entities/company/model/companies.types';
 
@@ -13,7 +13,7 @@ export function CompanyContactSidebar({ company }: CompanyContactSidebarProps) {
   return (
     <div className="glass-panel rounded-[28px] p-6 border border-white/40 space-y-5">
       <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
-        <MessageSquare className="size-5 text-violet-600" />
+        <ChatIcon className="size-5 text-violet-600" />
         <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">
           {t('companyDetail.contactTitle')}
         </h3>
@@ -26,7 +26,7 @@ export function CompanyContactSidebar({ company }: CompanyContactSidebarProps) {
               href={`tel:${company.contactPhone.replace(/\s/g, '')}`}
               className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-black text-xs uppercase tracking-wider transition-colors"
             >
-              <Phone className="size-4 shrink-0 transition-transform group-hover:scale-110" />
+              <PhoneIcon className="size-4 shrink-0 transition-transform group-hover:scale-110" />
               {t('companyDetail.callCompany')}
             </a>
           ) : null}
@@ -36,14 +36,14 @@ export function CompanyContactSidebar({ company }: CompanyContactSidebarProps) {
               href={`mailto:${company.contactEmail}`}
               className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-sm"
             >
-              <Mail className="size-4 shrink-0 text-slate-400 group-hover:text-violet-600 transition-colors" />
+              <EnvelopeIcon className="size-4 shrink-0 text-slate-400 group-hover:text-violet-600 transition-colors" />
               {t('companyDetail.sendEmail')}
             </a>
           ) : null}
 
           {/* Settings status indicator (subtle hint) */}
           <div className="flex items-center justify-center gap-1.5 mt-2 text-[10px] text-slate-400 font-medium text-center">
-            <ShieldCheck className="size-3 text-emerald-500 shrink-0" />
+            <ShieldCheckIcon className="size-3 text-emerald-500 shrink-0" />
             {t('companyDetail.officialChannels')}
           </div>
         </div>

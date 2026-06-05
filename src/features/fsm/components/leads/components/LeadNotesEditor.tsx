@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Edit2, Save, X } from 'lucide-react';
+import { PencilSimpleIcon, FloppyDiskIcon, XIcon } from '@phosphor-icons/react';
 import type { CompanyLeadDto } from '@/entities/fsm/model/types';
 import { isOpenLeadStatus } from '@/entities/fsm/model/leadStatus';
 
@@ -51,7 +51,7 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
               disabled={savingNotes}
               className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2 py-1 text-[11px] font-bold text-gray-500 bg-white hover:bg-gray-50"
             >
-              <X className="size-3.5" /> {t('cabinet.common.cancel')}
+              <XIcon className="size-3.5" /> {t('cabinet.common.cancel')}
             </button>
             <button
               type="button"
@@ -59,7 +59,7 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
               disabled={savingNotes}
               className="inline-flex items-center gap-1 rounded-lg bg-violet-600 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-violet-700 disabled:opacity-50"
             >
-              <Save className="size-3.5" /> {t('cabinet.common.save')}
+              <FloppyDiskIcon className="size-3.5" /> {t('cabinet.common.save')}
             </button>
           </div>
         </div>
@@ -95,7 +95,7 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
               className="rounded-lg bg-white border border-gray-200 p-1.5 text-violet-600 hover:bg-violet-50 transition-colors shadow-2xs cursor-pointer shrink-0"
               title={t('company.fsm.leads.inbox.editNotes', 'Editează note')}
             >
-              <Edit2 className="size-3.5" />
+              <PencilSimpleIcon className="size-3.5" />
             </button>
           )}
         </div>

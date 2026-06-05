@@ -19,7 +19,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
       },
       {
         q: 'Cui i se potrivește?',
-        a: 'Firmelor cu 1–50+ angajați care vor clienți, lucrări, smete, oferte și facturi într-un singur loc — fără Excel, WhatsApp și hârtie.',
+        a: 'Firmelor cu 1–50+ angajați care vor clienți, lucrări, calcule de preț, oferte și facturi într-un singur loc — fără Excel, WhatsApp și hârtie.',
       },
       {
         q: 'Trebuie instalat ceva?',
@@ -54,7 +54,7 @@ export const FAQ_SECTIONS: FaqSection[] = [
       },
       {
         q: 'Care e diferența între planuri?',
-        a: 'Free: profil public, catalog servicii, până la 20 lucrări/lună, calendar, 3 angajați. Pro: +CRM clienți, cereri, portal, până la 10 angajați și 150 lucrări/lună. Business: +smete inteligente, oferte comerciale, facturi cu TVA, export CSV — fără limite.',
+        a: 'Free: profil public, catalog servicii, până la 20 lucrări/lună, calendar, 3 angajați. Pro: +CRM clienți, cereri, portal, până la 10 angajați și 150 lucrări/lună. Business: +calcule de preț, oferte comerciale, facturi cu TVA, export CSV — fără limite.',
       },
       {
         q: 'Cum adaug colegi în echipă?',
@@ -115,16 +115,16 @@ export const FAQ_SECTIONS: FaqSection[] = [
         a: 'Șabloane de servicii cu nume, preț și descriere. Le folosiți rapid la crearea lucrărilor. Se pot afișa în profilul public.',
       },
       {
-        q: 'Cum funcționează smetele inteligente?',
-        a: 'Calculator încorporat: introduceți dimensiunile încăperii și dotările — motorul calculează materiale, ore și cost. Smeta gata în câteva secunde.',
+        q: 'Cum funcționează calculele de preț?',
+        a: 'Calculator încorporat: introduceți dimensiunile încăperii și dotările — motorul calculează materiale, ore și cost. Calculul de preț este gata în câteva secunde.',
       },
       {
         q: 'Cum emit o factură?',
-        a: 'La „Smete” și „Facturi”. TVA-ul și marja se calculează automat. Documentul apare instant în portalul clientului.',
+        a: 'La „Calcule de preț” și „Facturi”. TVA-ul și marja se calculează automat. Documentul apare instant în portalul clientului.',
       },
       {
         q: 'Pot exporta în PDF?',
-        a: 'Da. Smetele, ofertele și facturile se descarcă PDF. Imprimare direct din cabinet. Suport complet pentru diacritice.',
+        a: 'Calculele de preț, ofertele și facturile se descarcă PDF. Imprimare direct din cabinet. Suport complet pentru diacritice.',
       },
     ],
   },

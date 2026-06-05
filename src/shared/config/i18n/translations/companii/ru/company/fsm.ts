@@ -114,7 +114,7 @@ export const companiiRuCompanyFsm = {
         createModal: {
           title: 'Формирование оферты',
           submit: 'Сформировать оферту',
-          totalLabel: 'Итого по смете:',
+          totalLabel: 'Итого по расчету:',
           toast: {
             selectService: 'Выберите услугу из каталога.',
             requiredFields:
@@ -128,7 +128,7 @@ export const companiiRuCompanyFsm = {
             validUntil: 'Действительно до',
           },
           lines: {
-            title: 'Позиции сметы (товары / стоимость работ)',
+            title: 'Позиции расчета стоимости (товары / стоимость работ)',
             catalogPlaceholder: 'Из каталога...',
             addFromCatalog: '+ Каталог',
             addRow: '+ Добавить строку',
@@ -139,8 +139,8 @@ export const companiiRuCompanyFsm = {
           },
         },
         detail: {
-          title: 'Просмотр сметы',
-          loading: 'Загрузка деталей сметы...',
+          title: 'Просмотр расчета стоимости',
+          loading: 'Загрузка деталей расчета стоимости...',
           empty: 'Выберите предложение из списка для детального просмотра.',
           issuedAt: 'Выдано:',
           convertToIntervention: '🚀 Конвертировать в работу (FSM)',
@@ -168,7 +168,7 @@ export const companiiRuCompanyFsm = {
           lines: {
             title: 'Позиции / материалы / стоимость работ',
             qtyUnit: '{{qty}} шт. × {{price}} MDL',
-            total: 'ИТОГО по смете',
+            total: 'ИТОГО по расчету стоимости',
           },
         },
         list: {
@@ -393,7 +393,7 @@ export const companiiRuCompanyFsm = {
           titleEdit: 'Редактировать услугу',
           titleCreate: 'Новая услуга',
           submitCreate: 'Добавить',
-          proHint: 'Стоимость материалов для смет — доступна с плана Pro.',
+          proHint: 'Стоимость материалов для расчетов — доступна с плана Pro.',
           fields: {
             name: 'Название *',
             description: 'Описание (необязательно)',
@@ -426,7 +426,7 @@ export const companiiRuCompanyFsm = {
             inboxLink: 'Входящие →',
             empty: 'Нет открытых заявок.',
             convertIntervention: '→ Работа',
-            convertEstimate: '→ Смета',
+            convertEstimate: '→ Расчет стоимости',
           },
         },
         scheduled: { empty: 'На этой неделе нет запланированных работ.' },
@@ -449,11 +449,11 @@ export const companiiRuCompanyFsm = {
           WEBSITE: 'Сайт',
         },
         convertEstimate: {
-          title: 'Конвертация в смету',
+          title: 'Конвертация в расчет стоимости',
           leadFrom: 'Заявка от',
-          submit: 'Создать смету',
+          submit: 'Создать расчет стоимости',
           fields: {
-            category: 'Категория сметы *',
+            category: 'Категория расчета стоимости *',
             categoryPlaceholder: 'Выберите категорию...',
             title: 'Название проекта',
           },
@@ -461,12 +461,12 @@ export const companiiRuCompanyFsm = {
         inbox: {
           badges: { service: '🔧 Услуга: {{title}}', project: '🏗️ Сложный проект' },
           budget: '💰 Бюджет:',
-          estimateLink: '📝 Смета {{number}} — {{title}}',
+          estimateLink: '📝 Расчет стоимости {{number}} — {{title}}',
           addedAt: 'Добавлено:',
           actions: {
             saveToCrm: 'Сохранить в CRM',
             convertIntervention: 'Принять → Работа',
-            convertEstimate: '→ Смета',
+            convertEstimate: '→ Расчет стоимости',
             complete: 'Завершить заявку',
             markLost: 'Отметить как потерянную',
           },
@@ -481,10 +481,10 @@ export const companiiRuCompanyFsm = {
             completeFailed: 'Не удалось завершить заявку.',
             customerSaved: 'Клиент сохранён в CRM.',
             saveCustomerFailed: 'Не удалось сохранить клиента.',
-            selectEstimateCategory: 'Выберите категорию для сметы.',
-            estimateConverted: 'Заявка конвертирована в смету.',
-            estimateCreateFailed: 'Не удалось создать смету.',
-            defaultEstimateTitle: 'Смета {{name}}',
+            selectEstimateCategory: 'Выберите категорию для расчета стоимости.',
+            estimateConverted: 'Заявка конвертирована в расчет стоимости.',
+            estimateCreateFailed: 'Не удалось создать расчет стоимости.',
+            defaultEstimateTitle: 'Расчет стоимости {{name}}',
           },
         },
       },

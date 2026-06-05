@@ -266,6 +266,7 @@ describe('extractMeasurementsFromDiagnostic — IT categories', () => {
         projectScope: 'Mediu (6-20 pagini / 1-2 săptămâni)',
         documentationRequired: true,
         slaRequired: true,
+        customDesign: true,
       },
       'it-web',
     );
@@ -276,6 +277,7 @@ describe('extractMeasurementsFromDiagnostic — IT categories', () => {
     expect(m.slaUnits).toBe(1);
     expect(m.designPageCount).toBe(8);
     expect(m.frontendPageCount).toBe(8);
+    expect(m.spaPageCount).toBe(0);
   });
 
   it('it-networks: derives cabling quantities, separates workstation/servers, and defaults hours to 0', () => {

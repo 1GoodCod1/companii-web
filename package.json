@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
+    "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@tanstack/query-async-storage-persister": "^5.100.14",
@@ -36,7 +37,6 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
     "i18next": "^25.9.0",
-    "lucide-react": "^0.577.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-helmet-async": "^3.0.0",

@@ -135,7 +135,7 @@ export const companiiRuCompanyTeam = {
         },
         manager: {
           sectionTitle: 'Менеджеры',
-          description: 'Ежедневные операции: клиенты, работы, сметы, предложения и счета.',
+          description: 'Ежедневные операции: клиенты, работы, расчеты стоимости, предложения и счета.',
           responsibilities: {
             crmClients: 'CRM клиентов и записи',
             coordinateTechnicians: 'Координация сотрудников',

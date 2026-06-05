@@ -1,4 +1,4 @@
-import { LogOut } from 'lucide-react';
+import { SignOutIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { getCompanyRoleLabel } from '@/entities/company/model/companyRoleLabel';
@@ -77,7 +77,7 @@ export function CabinetProfileCard({
             'hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer',
           )}
         >
-          <LogOut className="size-3.5 shrink-0" />
+          <SignOutIcon className="size-3.5 shrink-0" />
           {t('auth.logout', 'Ieșire')}
         </button>
       </div>

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sliders, RefreshCw } from 'lucide-react';
+import { SlidersIcon, ArrowsCounterClockwiseIcon } from '@phosphor-icons/react';
 import {
   PageHero,
   EmptyState,
@@ -94,14 +94,14 @@ export function AdminBlueprintsPage() {
               onClick={() => void refetch()}
               className={`${cabinetBtnSecondary} flex items-center gap-1.5`}
             >
-              <RefreshCw className="size-3.5" />
+              <ArrowsCounterClockwiseIcon className="size-3.5" />
             </button>
             <button
               type="button"
               onClick={handleOpenCreate}
               className={`${cabinetBtnPrimary} flex items-center gap-1.5`}
             >
-              <Sliders className="size-3.5" />
+              <SlidersIcon className="size-3.5" />
               {t('admin.blueprintsPage.createBtn')}
             </button>
           </div>
@@ -117,7 +117,7 @@ export function AdminBlueprintsPage() {
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-          <RefreshCw className="size-8 animate-spin mb-2 text-primary/60" />
+          <ArrowsCounterClockwiseIcon className="size-8 animate-spin mb-2 text-primary/60" />
           <p className="text-sm font-semibold">{t('cabinet.common.loading')}</p>
         </div>
       ) : filteredBlueprints.length === 0 ? (

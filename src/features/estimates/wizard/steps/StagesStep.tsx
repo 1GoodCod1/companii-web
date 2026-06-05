@@ -1,4 +1,4 @@
-import { Calculator, Layers, Tag } from 'lucide-react';
+import { CalculatorIcon, StackIcon, TagIcon } from '@phosphor-icons/react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -118,7 +118,7 @@ export function StagesStep({ wizard }: Props) {
           <div className="flex items-center gap-3 flex-wrap">
             {!isReadOnly && templates && templates.length > 0 && (
               <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-600">
-                <Tag className="size-3.5 text-indigo-500" />
+                <TagIcon className="size-3.5 text-indigo-500" />
                 <AppSelect
                   value=""
                   onChange={handleApplyPricingTemplate}
@@ -158,7 +158,7 @@ export function StagesStep({ wizard }: Props) {
               </button>
             ) : (
               <button type="button" onClick={handleCalculate} disabled={calculate.isPending} className={cabinetBtnPrimary}>
-                <Calculator className="size-4" /> {t('company.estimateWizard.stagesStep.calculate')}
+                <CalculatorIcon className="size-4" /> {t('company.estimateWizard.stagesStep.calculate')}
               </button>
             )}
           </div>
@@ -188,7 +188,7 @@ export function StagesStep({ wizard }: Props) {
               <div key={group.moduleKey ?? '__unlabeled__'} className="space-y-4">
                 {!singleGroup && (
                   <div className="flex items-center gap-2 pt-1">
-                    <Layers className="size-4 text-indigo-500" />
+                    <StackIcon className="size-4 text-indigo-500" />
                     <h4 className="text-xs font-bold text-indigo-700 uppercase tracking-wide">
                       {group.label}
                     </h4>

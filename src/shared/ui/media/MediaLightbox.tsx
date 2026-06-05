@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom';
 import { m, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X, Play } from 'lucide-react';
+import { CaretLeftIcon, CaretRightIcon, XIcon, PlayIcon } from '@phosphor-icons/react';
 import { MediaImage } from '@/shared/ui/MediaImage';
 import { MediaVideo } from '@/shared/ui/MediaVideo';
 import type { MediaThumbItem } from './MediaThumb';
@@ -74,7 +74,7 @@ export function MediaLightbox({
               className="pointer-events-auto cursor-pointer inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-2 text-sm font-medium text-white hover:bg-black/55 transition-colors backdrop-blur-md"
               aria-label={labels.closeGallery}
             >
-              <X className="size-4" />
+              <XIcon className="size-4" />
               {labels.close}
             </button>
           </div>
@@ -87,7 +87,7 @@ export function MediaLightbox({
                 className="absolute left-3 sm:left-6 top-1/2 z-20 flex size-11 sm:size-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/45 text-white hover:bg-black/60 transition-colors backdrop-blur-md"
                 aria-label={labels.prev}
               >
-                <ChevronLeft className="size-6" />
+                <CaretLeftIcon className="size-6" />
               </button>
               <button
                 type="button"
@@ -95,7 +95,7 @@ export function MediaLightbox({
                 className="absolute right-3 sm:right-6 top-1/2 z-20 flex size-11 sm:size-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/45 text-white hover:bg-black/60 transition-colors backdrop-blur-md"
                 aria-label={labels.next}
               >
-                <ChevronRight className="size-6" />
+                <CaretRightIcon className="size-6" />
               </button>
             </>
           ) : null}
@@ -132,7 +132,7 @@ export function MediaLightbox({
                       className="absolute inset-0 flex items-center justify-center"
                     >
                       <div className="size-20 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-violet-600/30">
-                        <Play className="size-9 text-white ml-1" fill="white" />
+                        <PlayIcon className="size-9 text-white ml-1" fill="white" />
                       </div>
                     </m.div>
                   )}

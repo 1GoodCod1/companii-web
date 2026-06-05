@@ -134,7 +134,7 @@ export const companiiRoCompanyTeam = {
         },
         manager: {
           sectionTitle: 'Manageri',
-          description: 'Operațiuni zilnice: clienți, lucrări, smete, oferte și facturare.',
+          description: 'Operațiuni zilnice: clienți, lucrări, calcule de preț, oferte și facturare.',
           responsibilities: {
             crmClients: 'CRM clienți și programări',
             coordinateTechnicians: 'Coordonare angajați',

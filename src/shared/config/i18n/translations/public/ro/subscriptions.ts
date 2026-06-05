@@ -58,7 +58,7 @@ export const publicRoSubscriptions = {
         ],
         BUSINESS: [
           'Tot ce include Pro',
-          'Smete inteligente (blueprints)',
+          'Calcule de preț',
           'Oferte comerciale + PDF',
           'Facturi fiscale TVA + export CSV',
           'Lucrări nelimitate',

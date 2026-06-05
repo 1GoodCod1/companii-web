@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { m, useScroll, useTransform } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, Building2, PlayCircle } from 'lucide-react';
+import { ArrowRightIcon, BuildingsIcon, PlayCircleIcon } from '@phosphor-icons/react';
 import { SEOHead } from '@/shared/ui/seo/SEOHead';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth';
@@ -50,7 +50,7 @@ export function LandingPage() {
       {/* Hero */}
       <section
         ref={heroRef}
-        className="relative min-h-[92vh] flex flex-col justify-center overflow-hidden pt-8 pb-16 sm:pb-24"
+        className="relative min-h-[92vh] flex flex-col justify-center overflow-hidden pt-8 pb-16 sm:pb-24 bg-white"
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute top-[8%] right-[-8%] size-[520px] rounded-full bg-violet-400/[0.09] blur-[100px] lg:top-[12%] lg:right-[2%]" />
@@ -89,26 +89,26 @@ export function LandingPage() {
                 {t('landing.hero.description')}
               </p>
 
-              <div className="mt-10 flex flex-wrap gap-4">
+              <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
                 <Link
                   to={primaryCta.to}
-                  className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 px-7 py-3.5 text-sm font-black text-white transition-colors"
+                  className="inline-flex justify-center items-center gap-2 border border-transparent bg-gray-900 hover:bg-gray-800 px-5 py-3 text-sm font-black text-white transition-colors w-full sm:w-auto whitespace-nowrap"
                 >
                   {primaryCta.label}
-                  <ArrowRight className="size-4" />
+                  <ArrowRightIcon className="size-4" />
                 </Link>
                 <Link
                   to={lp('/companies')}
-                  className="inline-flex items-center gap-2 border border-violet-200 bg-violet-50 px-7 py-3.5 text-sm font-black text-violet-800 transition-colors hover:bg-violet-100"
+                  className="inline-flex justify-center items-center gap-2 border border-violet-200 bg-violet-50 px-5 py-3 text-sm font-black text-violet-800 transition-colors hover:bg-violet-100 w-full sm:w-auto whitespace-nowrap"
                 >
-                  <Building2 className="size-4" />
+                  <BuildingsIcon className="size-4" />
                   {t('landing.hero.browseCatalogLink')}
                 </Link>
                 <Link
                   to={lp('/how-it-works')}
-                  className="inline-flex items-center gap-2 glass-panel px-7 py-3.5 text-sm font-semibold text-gray-700 hover:bg-white transition-colors"
+                  className="inline-flex justify-center items-center gap-2 border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors w-full sm:w-auto whitespace-nowrap"
                 >
-                  <PlayCircle className="size-4 text-violet-600" />
+                  <PlayCircleIcon className="size-4 text-violet-600" />
                   {t('landing.hero.howItWorksLink')}
                 </Link>
               </div>
@@ -128,7 +128,7 @@ export function LandingPage() {
       <LandingCompaniesCatalog />
 
       {/* Product preview section */}
-      <section className="py-24 sm:py-32">
+      <section className="py-24 sm:py-32 border-y border-gray-100 bg-slate-50/50">
         <div className="max-w-6xl mx-auto px-6">
           <m.div
             initial={{ opacity: 0, y: 20 }}

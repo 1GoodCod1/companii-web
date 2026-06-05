@@ -9,7 +9,7 @@ import {
   type KeyboardEvent,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { Check, ChevronDown } from 'lucide-react';
+import { CheckIcon, CaretDownIcon } from '@phosphor-icons/react';
 import { cabinetFieldClass } from '@/widgets/cabinet/cabinet-ui';
 import { cn } from '@/lib/utils';
 
@@ -217,7 +217,7 @@ export function AppSelect({
         <span className={cn('min-w-0 truncate', !selectedLabel && 'text-gray-400')}>
           {selectedLabel ?? placeholder}
         </span>
-        <ChevronDown
+        <CaretDownIcon
           className={cn(
             'size-4 shrink-0 text-gray-400 transition-transform duration-200',
             open && 'rotate-180 text-gray-600',
@@ -272,7 +272,7 @@ export function AppSelect({
                       )}
                     >
                       <span className="min-w-0 truncate">{option.label}</span>
-                      {isSelected ? <Check className="size-4 shrink-0 text-violet-600" /> : null}
+                      {isSelected ? <CheckIcon className="size-4 shrink-0 text-violet-600" /> : null}
                     </button>
                   );
                 })}

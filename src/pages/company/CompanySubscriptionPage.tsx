@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
+import { LoadingStatus } from '@/shared/ui/LoadingStatus';
 import {
   PageHero,
   Panel,
@@ -9,6 +10,7 @@ import {
   EmptyState,
   SoftBadge,
   cabinetBtnPrimary,
+  SkeletonPlanCards,
 } from '@/widgets/cabinet/cabinet-ui';
 import {
   useMySubscriptionQuery,
@@ -152,7 +154,9 @@ export function CompanySubscriptionPage() {
       <Panel>
         <PanelHeader title={onFreePlan ? t('company.subscriptionPage.plansTitleAll') : t('company.subscriptionPage.plansTitle')} />
         {plansLoading ? (
-          <p className="text-sm text-gray-400">{t('company.subscriptionPage.loadingPlans')}</p>
+          <LoadingStatus label={t('company.subscriptionPage.loadingPlans')}>
+            <SkeletonPlanCards />
+          </LoadingStatus>
         ) : (
           <PlanCards
             plans={plans}

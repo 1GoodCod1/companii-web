@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { ListIcon, XIcon } from '@phosphor-icons/react';
 import { LanguageSwitcher } from '@/shared/ui/i18n/LanguageSwitcher';
 import { MobileSheet } from '@/widgets/layout/MobileSheet';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
@@ -82,9 +82,9 @@ export function PublicLayout() {
               type="button"
               onClick={openMobileMenu}
               className="lg:hidden rounded-lg p-2 text-gray-500 hover:bg-gray-100 transition-colors"
-              aria-label="Menu"
+              aria-label="List"
             >
-              <Menu className="size-5" />
+              <ListIcon className="size-5" />
             </button>
           </div>
         </div>
@@ -103,7 +103,7 @@ export function PublicLayout() {
               onClick={closeMobileMenu}
               className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
             >
-              <X className="size-5" />
+              <XIcon className="size-5" />
             </button>
           </div>
 

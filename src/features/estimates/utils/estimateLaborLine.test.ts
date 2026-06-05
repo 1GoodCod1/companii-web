@@ -21,6 +21,38 @@ describe('isEstimateLaborLine', () => {
       }),
     ).toBe(false);
   });
+
+  it('detects IT service keywords as labor', () => {
+    expect(
+      isEstimateLaborLine({
+        unit: 'buc',
+        description: 'Dezvoltare frontend per pagină',
+      }),
+    ).toBe(true);
+    expect(
+      isEstimateLaborLine({
+        unit: 'buc',
+        description: 'Design UI/UX Premium',
+      }),
+    ).toBe(true);
+  });
+
+  it('respects stageKind LABOR or MATERIAL', () => {
+    expect(
+      isEstimateLaborLine({
+        unit: 'buc',
+        description: 'Any random description',
+        stageKind: 'LABOR',
+      }),
+    ).toBe(true);
+    expect(
+      isEstimateLaborLine({
+        unit: 'ore',
+        description: 'lucrări',
+        stageKind: 'MATERIAL',
+      }),
+    ).toBe(false);
+  });
 });
 
 describe('resolveLaborUnits', () => {

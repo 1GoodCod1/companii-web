@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X } from 'lucide-react';
+import { ListIcon, XIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useLogoutMutation, useMeQuery } from '@/features/auth';
 import { useAuthStore } from '@/entities/user/model/authStore';
@@ -61,7 +61,7 @@ function SidebarContent({
               onClick={onNavClick}
               className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors lg:hidden"
             >
-              <X className="size-5" />
+              <XIcon className="size-5" />
             </button>
           )}
         </Link>
@@ -152,6 +152,7 @@ export function CabinetShell({
   profileAvatarUrl,
   profileRole,
   sidebarExtras,
+  banner,
 }: {
   basePath: string;
   sections: CabinetNavSection[];
@@ -159,6 +160,7 @@ export function CabinetShell({
   profileAvatarUrl?: string | null;
   profileRole?: string;
   sidebarExtras?: ReactNode;
+  banner?: ReactNode;
 }) {
   const location = useLocation();
   const navTo = useNavigate();
@@ -223,9 +225,9 @@ export function CabinetShell({
           type="button"
           onClick={openMobileMenu}
           className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 transition-colors"
-          aria-label="Menu"
+          aria-label="List"
         >
-          <Menu className="size-5" />
+          <ListIcon className="size-5" />
         </button>
       </div>
       <MobileSheet open={mobileMenuOpen} onClose={closeMobileMenu}>
@@ -234,6 +236,7 @@ export function CabinetShell({
         </div>
       </MobileSheet>
       <main className="cabinet-content flex-1 overflow-y-auto h-full p-4 sm:p-6 lg:p-8 pt-18 sm:pt-6 lg:pt-8">
+        {banner}
         <Outlet />
       </main>
     </div>

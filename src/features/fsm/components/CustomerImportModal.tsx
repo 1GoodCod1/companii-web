@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { Download, FileSpreadsheet, Upload } from 'lucide-react';
+import { DownloadIcon, FileXlsIcon, UploadIcon } from '@phosphor-icons/react';
 import { AppModal } from '@/shared/ui/AppModal';
 import { getErrorMessage } from '@/shared/utils/errors';
 import {
@@ -147,7 +147,7 @@ export function CustomerImportModal({ open, onClose }: Props) {
               onClick={() => void handleDownload('xlsx')}
               className={`${cabinetBtnPrimary} inline-flex items-center gap-2`}
             >
-              <FileSpreadsheet className="size-4" />
+              <FileXlsIcon className="size-4" />
               {t('company.fsm.customers.import.step1.downloadXlsx')}
             </button>
             <button
@@ -155,7 +155,7 @@ export function CustomerImportModal({ open, onClose }: Props) {
               onClick={() => void handleDownload('csv')}
               className={`${cabinetBtnSecondary} inline-flex items-center gap-2`}
             >
-              <Download className="size-4" />
+              <DownloadIcon className="size-4" />
               {t('company.fsm.customers.import.step1.downloadCsv')}
             </button>
           </div>
@@ -183,7 +183,7 @@ export function CustomerImportModal({ open, onClose }: Props) {
               disabled={previewImport.isPending}
               className={`${cabinetBtnSecondary} inline-flex items-center gap-2`}
             >
-              <Upload className="size-4" />
+              <UploadIcon className="size-4" />
               {previewImport.isPending
                 ? t('company.fsm.customers.import.step2.analyzing')
                 : t('company.fsm.customers.import.step2.selectFile')}

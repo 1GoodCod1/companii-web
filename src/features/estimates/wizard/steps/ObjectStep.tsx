@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Save } from 'lucide-react';
+import { FloppyDiskIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import {
   AppSelect,
@@ -166,7 +166,7 @@ export function ObjectStep({ wizard }: Props) {
       )}
 
       <button type="button" onClick={handleSaveObject} className={cabinetBtnPrimary}>
-        <Save className="size-4" /> {t('company.estimateWizard.objectStep.saveAndContinue')}
+        <FloppyDiskIcon className="size-4" /> {t('company.estimateWizard.objectStep.saveAndContinue')}
       </button>
     </Panel>
   );

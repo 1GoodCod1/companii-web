@@ -4,7 +4,8 @@ import {
   useCitiesQuery,
   useCategoriesQuery,
 } from '@/features/companies/api/useCompanies';
-import { EmptyState } from '@/widgets/cabinet/cabinet-ui';
+import { LoadingStatus } from '@/shared/ui/LoadingStatus';
+import { EmptyState, SkeletonPage } from '@/widgets/cabinet/cabinet-ui';
 import { useMeQuery } from '@/features/auth';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
@@ -29,9 +30,9 @@ export function CompanyProfilePage() {
 
   if (isLoadingMe || isLoadingCities || isLoadingCategories) {
     return (
-      <div className="flex items-center justify-center py-20 text-sm text-gray-400">
-        {t('company.profilePage.loading')}
-      </div>
+      <LoadingStatus label={t('company.profilePage.loading')}>
+        <SkeletonPage rows={3} />
+      </LoadingStatus>
     );
   }
 

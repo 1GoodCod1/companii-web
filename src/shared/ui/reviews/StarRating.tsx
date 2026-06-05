@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+import { StarIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
@@ -27,7 +27,7 @@ export function StarRating({ value, max = 5, size = 'md', className }: StarRatin
         const starValue = index + 1;
         const filled = starValue <= Math.round(value);
         return (
-          <Star
+          <StarIcon
             key={starValue}
             className={cn(sizeClass[size], filled ? 'fill-amber-400 text-amber-400' : 'text-gray-200')}
           />
@@ -58,7 +58,7 @@ export function InteractiveStarRating({ value, onChange, disabled }: Interactive
             className="rounded-lg p-1 transition hover:scale-110 disabled:opacity-50"
             aria-label={t('company.reviewsUi.starButtonAria', { count: star })}
           >
-            <Star
+            <StarIcon
               className={cn(
                 'size-8 transition',
                 star <= value ? 'fill-amber-400 text-amber-400' : 'text-gray-300',

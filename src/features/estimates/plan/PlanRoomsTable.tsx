@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { LayoutTemplate, Plus, Trash2 } from 'lucide-react';
+import { LayoutIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { AppSelect } from '@/widgets/cabinet/cabinet-ui';
 import type { Plan2dData, Plan2dRoom } from '@/entities/estimate/model/estimates';
@@ -61,14 +61,14 @@ export function PlanRoomsTable({
               onClick={onApplyCategoryTemplate}
               className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/50 px-3.5 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition-all cursor-pointer shadow-xs active:scale-95"
             >
-              <LayoutTemplate className="size-4" /> {t(`${ns}.defaultTemplate`)}
+              <LayoutIcon className="size-4" /> {t(`${ns}.defaultTemplate`)}
             </button>
             <button
               type="button"
               onClick={onAddRoom}
               className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-indigo-700 transition-all cursor-pointer shadow-md active:scale-95"
             >
-              <Plus className="size-4" /> {t(`${ns}.addRoom`)}
+              <PlusIcon className="size-4" /> {t(`${ns}.addRoom`)}
             </button>
           </div>
         )}
@@ -173,7 +173,7 @@ export function PlanRoomsTable({
                           onClick={() => onRemoveRoom(room.id)}
                           className="p-1.5 text-gray-800 hover:text-red-600 rounded-lg transition-colors cursor-pointer"
                         >
-                          <Trash2 className="size-4" />
+                          <TrashIcon className="size-4" />
                         </button>
                       </td>
                     )}

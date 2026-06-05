@@ -26,7 +26,7 @@ export function FaqPage() {
         hreflang
       />
 
-      <div className="max-w-4xl mx-auto py-10 space-y-10">
+      <div className="max-w-4xl mx-auto py-10 space-y-10 animate-fade-in">
         <PublicPageHeader
           badge={t('faqPage.badge')}
           title={t('faqPage.title')}

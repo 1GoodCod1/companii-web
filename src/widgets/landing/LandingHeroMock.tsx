@@ -1,27 +1,18 @@
 import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  ArrowUpRight,
-  BadgeCheck,
-  Calendar,
-  Inbox,
-  LayoutDashboard,
-  Receipt,
-  Users,
-  Wrench,
-} from 'lucide-react';
+import { ArrowUpRightIcon, SealCheckIcon, CalendarIcon, TrayIcon, LayoutIcon, ReceiptIcon, UsersIcon, WrenchIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
-const SIDEBAR_ICONS = [LayoutDashboard, Users, Inbox, Wrench, Calendar] as const;
+const SIDEBAR_ICONS = [LayoutIcon, UsersIcon, TrayIcon, WrenchIcon, CalendarIcon] as const;
 
 const KPI_ACCENTS = [
-  { tone: 'from-blue-500/10 to-cyan-500/5', iconBg: 'bg-blue-500/10 text-blue-600', hintClass: 'text-blue-600/80' },
-  { tone: 'from-amber-500/10 to-orange-500/5', iconBg: 'bg-amber-500/10 text-amber-600', hintClass: 'text-amber-600/80' },
-  { tone: 'from-violet-500/10 to-indigo-500/5', iconBg: 'bg-violet-500/10 text-violet-600', hintClass: 'text-violet-600/80' },
-  { tone: 'from-emerald-500/10 to-teal-500/5', iconBg: 'bg-emerald-500/10 text-emerald-600', hintClass: 'text-emerald-600/80' },
+  { tone: 'from-blue-500/[0.03] to-blue-500/[0.01] border-blue-500/10', iconBg: 'bg-blue-500/[0.06] text-blue-600', hintClass: 'text-blue-600/80' },
+  { tone: 'from-amber-500/[0.03] to-amber-500/[0.01] border-amber-500/10', iconBg: 'bg-amber-500/[0.06] text-amber-600', hintClass: 'text-amber-600/80' },
+  { tone: 'from-violet-500/[0.03] to-violet-500/[0.01] border-violet-500/10', iconBg: 'bg-violet-500/[0.06] text-violet-600', hintClass: 'text-violet-600/80' },
+  { tone: 'from-emerald-500/[0.03] to-emerald-500/[0.01] border-emerald-500/10', iconBg: 'bg-emerald-500/[0.06] text-emerald-600', hintClass: 'text-emerald-600/80' },
 ] as const;
 
-const KPI_ICONS = [Users, Wrench, Receipt, BadgeCheck] as const;
+const KPI_ICONS = [UsersIcon, WrenchIcon, ReceiptIcon, SealCheckIcon] as const;
 
 const STATUS_TONES: Record<string, string> = {
   'În lucru': 'bg-blue-50 text-blue-700',
@@ -55,9 +46,9 @@ export function LandingHeroMock() {
       transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
       className="landing-dashboard-3d relative w-full max-w-[720px] mx-auto"
     >
-      <div className="absolute -inset-8 rounded-[2rem] bg-violet-500/[0.07] blur-[72px] -z-10" />
+      <div className="absolute -inset-8 rounded-[2rem] bg-violet-500/[0.02] blur-[80px] -z-10" />
 
-      <div className="rounded-[1.5rem] border border-gray-200/80 bg-white shadow-[0_32px_80px_-16px_rgba(15,23,42,0.12)] overflow-hidden">
+      <div className="rounded-[1.5rem] border border-gray-200/80 bg-white shadow-[0_16px_48px_-12px_rgba(15,23,42,0.06)] overflow-hidden">
         <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-100 bg-slate-50/90">
           <span className="size-2 rounded-full bg-red-400/90" />
           <span className="size-2 rounded-full bg-amber-400/90" />
@@ -79,13 +70,13 @@ export function LandingHeroMock() {
                     : 'text-gray-400',
                 )}
               >
-                <Icon className="size-4" strokeWidth={1.75} />
+                <Icon className="size-4" weight="light" />
               </span>
             ))}
           </aside>
 
           <div className="flex-1 min-w-0 bg-slate-50/50 p-3 sm:p-4 space-y-3">
-            <div className="rounded-xl border border-violet-100/60 bg-gradient-to-br from-white via-violet-50/20 to-indigo-50/10 px-3.5 py-3">
+            <div className="rounded-xl border border-violet-100/60 bg-slate-50/40 px-3.5 py-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[9px] font-black uppercase tracking-[0.16em] text-violet-600/80">
@@ -112,7 +103,7 @@ export function LandingHeroMock() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.25 + i * 0.06, duration: 0.45 }}
                     className={cn(
-                      'rounded-xl border border-white/80 bg-gradient-to-br p-2.5 sm:p-3',
+                      'rounded-xl border bg-gradient-to-br p-2.5 sm:p-3',
                       accent.tone,
                     )}
                   >
@@ -126,7 +117,7 @@ export function LandingHeroMock() {
                           accent.iconBg,
                         )}
                       >
-                        <Icon className="size-3.5" strokeWidth={2} />
+                        <Icon className="size-3.5" />
                       </span>
                     </div>
                     <p className="mt-2 text-lg sm:text-xl font-black tracking-tight text-gray-900">
@@ -144,7 +135,7 @@ export function LandingHeroMock() {
                   <p className="text-[11px] font-semibold text-gray-900">{interventions.title}</p>
                   <span className="text-[9px] font-semibold text-violet-600 flex items-center gap-0.5">
                     {interventions.viewAll}
-                    <ArrowUpRight className="size-2.5" />
+                    <ArrowUpRightIcon className="size-2.5" />
                   </span>
                 </div>
                 <div className="space-y-1.5">
@@ -154,13 +145,10 @@ export function LandingHeroMock() {
                       className="flex items-center justify-between gap-2 rounded-lg bg-slate-50/80 px-2.5 py-2"
                     >
                       <div className="min-w-0">
-                        <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">
-                          {item.number}
-                        </span>
                         <p className="text-[10px] font-semibold text-gray-800 truncate">{item.type}</p>
                         <p className="text-[9px] text-gray-500 truncate">{item.client}</p>
                       </div>
-                      <div className="text-right shrink-0">
+                      <div className="text-right shrink-0 flex flex-col items-end gap-0.5">
                         <span
                           className={cn(
                             'inline-block rounded-full px-1.5 py-0.5 text-[8px] font-semibold',
@@ -169,7 +157,7 @@ export function LandingHeroMock() {
                         >
                           {item.status}
                         </span>
-                        <p className="text-[8px] text-gray-400 mt-1">{item.time}</p>
+                        <p className="text-[8px] text-gray-400">{item.time}</p>
                       </div>
                     </div>
                   ))}
@@ -181,28 +169,22 @@ export function LandingHeroMock() {
                   <p className="text-[11px] font-semibold text-gray-900">{leads.title}</p>
                   <span className="text-[9px] font-semibold text-violet-600 flex items-center gap-0.5">
                     {leads.viewAll}
-                    <ArrowUpRight className="size-2.5" />
+                    <ArrowUpRightIcon className="size-2.5" />
                   </span>
                 </div>
                 <div className="space-y-1.5">
                   {leads.items.map((item) => (
                     <div
                       key={item.name}
-                      className="rounded-lg bg-slate-50/80 px-2.5 py-2 space-y-1.5"
+                      className="flex items-center justify-between gap-2 rounded-lg bg-slate-50/80 px-2.5 py-2"
                     >
-                      <div>
-                        <p className="text-[10px] font-semibold text-gray-800">{item.name}</p>
-                        <p className="text-[9px] text-gray-500">{item.phone}</p>
-                        <p className="text-[9px] font-semibold text-violet-600 mt-0.5">{item.service}</p>
+                      <div className="min-w-0">
+                        <p className="text-[10px] font-semibold text-gray-800 truncate">{item.name}</p>
+                        <p className="text-[9px] text-gray-500 truncate">{item.service}</p>
                       </div>
-                      <div className="flex gap-1">
-                        <span className="rounded-md bg-gray-900 px-2 py-1 text-[7px] font-black uppercase tracking-wider text-white">
-                          {t('landingMocks.hero.leadActionPrimary')}
-                        </span>
-                        <span className="rounded-md bg-slate-100 px-2 py-1 text-[7px] font-semibold text-gray-600">
-                          {t('landingMocks.hero.leadActionSecondary')}
-                        </span>
-                      </div>
+                      <span className="shrink-0 text-[8px] font-semibold text-violet-600 bg-violet-50 px-1.5 py-0.5 rounded-full">
+                        {t('landingMocks.hero.newBadge') || 'Nou'}
+                      </span>
                     </div>
                   ))}
                 </div>

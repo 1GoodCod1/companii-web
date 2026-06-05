@@ -3,7 +3,7 @@ export const publicRoLanding = {
     seo: {
       title: 'Faber — CRM & FSM pentru companii de servicii',
       description:
-        'Faber — echipă, clienți, lucrări, smete, oferte și facturi într-un singur loc. CRM complet pentru field service din Moldova.',
+        'Faber — echipă, clienți, lucrări, calcule de preț, oferte și facturi într-un singur loc. CRM complet pentru field service din Moldova.',
       keywords:
         'CRM Moldova, FSM, field service, gestionare companie, facturare, oferte, lucrări',
     },
@@ -12,7 +12,7 @@ export const publicRoLanding = {
       title: 'Gestionează-ți business-ul de servicii',
       titleHighlight: 'dintr-un singur loc',
       subtitle:
-        'Smete, clienți, calendar teren, dimensionare, oferte și facturi PDF cu diacritice — fără Excel și grupuri WhatsApp.',
+        'Calcule de preț, clienți, calendar teren, dimensionare, oferte și facturi PDF cu diacritice — fără Excel și grupuri WhatsApp.',
       description:
         'Faber — platforma FSM pentru instalatori, electricieni, firme de curățenie și orice companie cu angajați mobili din Moldova.',
       howItWorksLink: 'Vezi cum funcționează',
@@ -50,12 +50,13 @@ export const publicRoLanding = {
           rating: '4.7',
         },
       ],
+      emptyState: 'Momentan nu există companii active în catalog. Înregistrează-ți compania gratuit și fii primul!',
     },
     stats: [
       {
         value: '5',
         label: 'module FSM integrate',
-        hint: 'Clienți · Lucrări · Smete · Oferte · Facturi',
+        hint: 'Clienți · Lucrări · Calcule de preț · Oferte · Facturi',
       },
       {
         value: '10 min',
@@ -77,7 +78,7 @@ export const publicRoLanding = {
       eyebrow: 'Finanțe',
       title: 'Facturi, TVA și încasări — automat',
       description:
-        'Smetă calculată → ofertă trimisă → lucrare executată → factură cu TVA. Plăți, restanțe și raport lunar — fără Excel și calcule manuale.',
+        'Calcul de preț realizat → ofertă trimisă → lucrare executată → factură cu TVA. Plăți, restanțe și raport lunar — fără Excel și calcule manuale.',
     },
     timeline: {
       eyebrow: 'Flux complet',
@@ -106,7 +107,7 @@ export const publicRoLanding = {
         },
         {
           step: '04',
-          title: 'Smete inteligente și dimensionare',
+          title: 'Calcule de preț și dimensionare',
           description:
             'Introduci parametrii încăperii și echipamentele — sistemul calculează materiale, ore și cost.',
         },
@@ -126,19 +127,19 @@ export const publicRoLanding = {
       items: [
         {
           title: 'CRM și FSM într-un singur loc',
-          text: 'Clienți, echipă, lucrări, smete și facturi — nu mai sari între aplicații.',
+          text: 'Clienți, echipă, lucrări, calcule de preț și facturi — nu mai sari între aplicații.',
         },
         {
           title: 'Calendar inteligent',
           text: 'Programări pe angajat, vedere zilnică, zero suprapuneri și vizite uitate.',
         },
         {
-          title: 'Smetă cu parametri',
+          title: 'Calcul de preț cu parametri',
           text: 'Dimensiuni încăperi, echipamente — sistemul calculează materiale, costul lucrărilor și marjă.',
         },
         {
           title: 'Portal client',
-          text: 'Clienții plasează cereri cu buget și adresă. Descarcă smete și facturi PDF cu diacritice.',
+          text: 'Clienții plasează cereri cu buget și adresă. Descarcă calcule de preț și facturi PDF cu diacritice.',
         },
         {
           title: 'Made for Moldova',
@@ -156,9 +157,9 @@ export const publicRoLanding = {
       titleGuest: 'Începe gratuit. Scalează când crește echipa.',
       titleAuthed: 'Cabinetul tău te așteaptă',
       descriptionGuest:
-        'Creează contul, înregistrează compania și lansează primul flux: client → smetă → lucrare → factură. Fără demo, fără așteptare.',
+        'Creează contul, înregistrează compania și lansează primul flux: client → calcul de preț → lucrare → factură. Fără demo, fără așteptare.',
       descriptionAuthed:
-        'Clienți, lucrări, smete, oferte și facturi — totul din panoul Faber.',
+        'Clienți, lucrări, calcule de preț, oferte și facturi — totul din panoul Faber.',
       perks: [
         'Free — fără card bancar',
         'Pro și Business — 30 zile gratuit',
@@ -181,7 +182,7 @@ export const publicRoLanding = {
         },
         {
           title: '3. Jurnal de activitate',
-          text: 'Orice modificare de preț, status sau smetă e înregistrată automat. Știi exact cine și când a făcut schimbarea.'
+          text: 'Orice modificare de preț, status sau calcul de preț e înregistrată automat. Știi exact cine și când a făcut schimbarea.'
         },
         {
           title: '4. Backup zilnic automat',
@@ -198,10 +199,10 @@ export const publicRoLanding = {
       greeting: 'Bună, Voltex Instal',
       planBadge: 'Pro',
       kpis: [
-        { label: 'Clienți activi', value: '48', hint: '+3 luna aceasta' },
-        { label: 'Lucrări active', value: '6', hint: 'Pe teren azi' },
-        { label: 'Total facturat', value: '84.2k', hint: 'MDL luna curentă' },
-        { label: 'Plăți confirmate', value: '62.4k', hint: 'MDL încasat' },
+        { label: 'Clienți', value: '48', hint: '+3 luna aceasta' },
+        { label: 'Lucrări', value: '6', hint: 'Azi' },
+        { label: 'Facturat', value: '84.2k', hint: 'Luna curentă' },
+        { label: 'Plăți', value: '62.4k', hint: 'Încasat' },
       ],
       interventions: {
         title: 'Lucrări active',
@@ -227,14 +228,13 @@ export const publicRoLanding = {
         title: 'Cereri noi',
         viewAll: 'Vezi toate',
         items: [
-          { name: 'Elena Ciobanu', phone: '069 123 456', service: 'Instalare boiler' },
-          { name: 'SC ProConstruct', phone: '022 456 789', service: 'Montaj AC × 3' },
+          { name: 'Elena Ciobanu', service: 'Instalare boiler' },
+          { name: 'SC ProConstruct', service: 'Montaj AC × 3' },
         ],
       },
-      leadActionPrimary: 'Lucrare',
-      leadActionSecondary: 'Smetă',
+      newBadge: 'Nou',
       statusUpdated: 'Status actualizat',
-      statusExample: 'LUC-1042 → În lucru',
+      statusExample: 'Reparație → În lucru',
     },
     finance: {
       windowTitle: 'companii.faber.md/company/facturi',

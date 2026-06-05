@@ -15,6 +15,7 @@ export {
   RegisterPage,
   ForgotPasswordPage,
   ResetPasswordPage,
+  VerifyEmailPage,
   PortalInvitePage,
   TeamInvitePage,
 } from './lazy-pages/auth';
