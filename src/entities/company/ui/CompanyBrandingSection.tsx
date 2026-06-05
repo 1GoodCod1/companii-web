@@ -102,9 +102,8 @@ export function CompanyBrandingSection({
   if (isSidebar) {
     return (
       <div className="space-y-5">
-        <div>
+        <div className="text-center">
           <h2 className="text-base font-bold text-gray-900">{t('company.branding.sectionTitle')}</h2>
-          <p className="mt-1 text-sm text-gray-500">{t('company.branding.sectionDescription')}</p>
         </div>
         {content}
       </div>
@@ -112,10 +111,7 @@ export function CompanyBrandingSection({
   }
 
   return (
-    <FormSection
-      title={t('company.branding.sectionTitle')}
-      description={t('company.branding.sectionDescription')}
-    >
+    <FormSection title={t('company.branding.sectionTitle')}>
       {content}
     </FormSection>
   );

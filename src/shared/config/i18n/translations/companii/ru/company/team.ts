@@ -19,8 +19,6 @@ export const companiiRuCompanyTeam = {
       removeFromList: 'Убрать из списка',
       captionPlaceholder: 'Краткое описание (необязательно)',
       sectionTitle: 'Логотип компании',
-      sectionDescription:
-        'Логотип отображается в публичном профиле каталога.',
     },
 
   reviewsUi: {

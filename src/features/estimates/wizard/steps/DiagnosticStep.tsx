@@ -154,7 +154,14 @@ export function DiagnosticStep({ wizard }: Props) {
       {isReadOnly ? (
         <button
           type="button"
-          onClick={() => wizard.setStepIndex((i) => Math.min(i + 1, wizard.steps.length - 1))}
+          onClick={() => {
+            const stagesIndex = wizard.steps.indexOf('stages');
+            wizard.setStepIndex(
+              stagesIndex >= 0
+                ? stagesIndex
+                : Math.min(wizard.stepIndex + 1, wizard.steps.length - 1),
+            );
+          }}
           className={cabinetBtnPrimary}
         >
           {t('company.estimateWizard.wizard.next', { defaultValue: 'Înainte' })}

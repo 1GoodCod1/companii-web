@@ -11,6 +11,7 @@ import {
 import { SitePhotoGallery } from '@/features/estimates/components/SitePhotoGallery';
 import type { EstimateWizardApi } from '../useEstimateWizard';
 import { ObjectLeadInfo } from './object/ObjectLeadInfo';
+import { EstimateRelatedProjectsSection } from '@/features/estimates/components/EstimateRelatedProjectsSection';
 
 type Props = {
   wizard: EstimateWizardApi;
@@ -41,6 +42,7 @@ export function ObjectStep({ wizard }: Props) {
     isFurnitureCategory,
     isElektrikaCategory,
     isPlumbingCategory,
+    isReadOnly,
     handleSaveObject,
   } = wizard;
 
@@ -76,6 +78,7 @@ export function ObjectStep({ wizard }: Props) {
   return (
     <Panel className="p-6 max-w-2xl space-y-4">
       <ObjectLeadInfo project={project} />
+      <EstimateRelatedProjectsSection project={project} readOnly={isReadOnly} />
       <label className={cabinetLabelClass}>
         {t('company.estimateWizard.objectStep.projectTitle')}
         <input value={title} onChange={(e) => setTitle(e.target.value)} className={cabinetFieldClass} />

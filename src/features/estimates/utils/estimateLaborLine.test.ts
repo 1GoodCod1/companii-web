@@ -44,6 +44,20 @@ describe('isEstimateLaborLine', () => {
         description: 'Any random description',
         stageKind: 'LABOR',
       }),
+    ).toBe(false);
+    expect(
+      isEstimateLaborLine({
+        unit: 'buc',
+        description: 'Componente PC (material)',
+        stageKind: 'LABOR',
+      }),
+    ).toBe(false);
+    expect(
+      isEstimateLaborLine({
+        unit: 'buc',
+        description: 'Asamblare PC (lucrări)',
+        stageKind: 'LABOR',
+      }),
     ).toBe(true);
     expect(
       isEstimateLaborLine({
@@ -51,7 +65,7 @@ describe('isEstimateLaborLine', () => {
         description: 'lucrări',
         stageKind: 'MATERIAL',
       }),
-    ).toBe(false);
+    ).toBe(true);
   });
 });
 

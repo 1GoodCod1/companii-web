@@ -17,10 +17,10 @@ export const AUDIT_ACTION_LABELS: Record<string, string> = {
   REVIEW_MODERATED: 'Recenzie moderată',
   CONSENT_GRANTED: 'Consimțământ acordat',
   CONSENT_REVOKED: 'Consimțământ retras',
-  ESTIMATE_SENT: 'Smetă trimisă clientului',
-  ESTIMATE_ACCEPTED: 'Smetă acceptată de client',
-  ESTIMATE_REJECTED: 'Smetă respinsă de client',
-  ESTIMATE_CONVERTED: 'Smetă convertită în lucrări',
+  ESTIMATE_SENT: 'Calcul de preț trimis clientului',
+  ESTIMATE_ACCEPTED: 'Calcul de preț acceptat de client',
+  ESTIMATE_REJECTED: 'Calcul de preț respins de client',
+  ESTIMATE_CONVERTED: 'Calcul de preț convertit în lucrări',
 };
 
 export const AUDIT_ACTION_FILTER_OPTIONS = [

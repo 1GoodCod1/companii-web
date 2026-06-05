@@ -6,10 +6,15 @@ export {
   isEstimateBlueprintCategorySlug,
   isEstimateExcludedCategorySlug,
   isEstimateServiceCategorySlug,
+  canHostEstimateRelatedProjects,
+  canBeAddedAsRelatedEstimate,
+  canLinkEstimateCategories,
 } from './category-specs';
 
 export type {
   EstimateBlueprintCategorySlug,
   EstimateExcludedCategorySlug,
   EstimateServiceCategorySlug,
+  EstimateRelatedGroupHostSlug,
+  EstimateRelatedGroupTargetSlug,
 } from './category-specs';

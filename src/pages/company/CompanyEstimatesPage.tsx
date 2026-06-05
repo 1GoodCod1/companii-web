@@ -117,6 +117,11 @@ export function CompanyEstimatesPage() {
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-900">{project.number}</p>
                         <p className="text-gray-500 text-xs mt-0.5">{project.title}</p>
+                        {(project.group?._count.projects ?? 0) > 1 && (
+                          <span className="inline-flex mt-1 rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-violet-700">
+                            {t('company.estimatesPage.relatedGroupBadge')}
+                          </span>
+                        )}
                       </td>
                       <td className="px-6 py-4 text-gray-700">{project.customer.fullName}</td>
                       <td className="px-6 py-4">

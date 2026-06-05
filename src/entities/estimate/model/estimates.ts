@@ -93,12 +93,40 @@ export type EstimateProjectListDto = {
   tvaAmount?: number;
   grandTotalWithVat?: number;
   createdAt: string;
+  groupId?: string | null;
+  group?: { id: string; _count: { projects: number } } | null;
   customer: { id: string; fullName: string; phone: string };
   category: { id: string; name: string; slug: string };
   company?: { id: string; name: string; slug: string | null };
   quote?: { id: string; number: string; status: string } | null;
   stages?: Array<{ id: string; name: string; sortOrder: number; stageTotal: number }>;
 };
+
+export type EstimateGroupProjectSummaryDto = {
+  id: string;
+  number: string;
+  title: string;
+  status: EstimateProjectStatus;
+  grandTotal: number;
+  grandTotalWithVat?: number;
+  category: { id: string; name: string; slug: string };
+};
+
+export type EstimateGroupDto = {
+  id: string;
+  title?: string | null;
+  address?: string | null;
+  projects: EstimateGroupProjectSummaryDto[];
+};
+
+export function estimateGroupCombinedTotal(
+  projects: EstimateGroupProjectSummaryDto[],
+): number {
+  return projects.reduce(
+    (sum, project) => sum + Number(project.grandTotalWithVat ?? project.grandTotal ?? 0),
+    0,
+  );
+}
 
 export type EstimateClientFeedbackKind = 'ACCEPT' | 'REJECT' | 'REQUEST_CHANGES';
 
@@ -126,7 +154,9 @@ export type EstimateProjectPhotoDto = {
   createdAt: string;
 };
 
-export type EstimateProjectDto = Omit<EstimateProjectListDto, 'stages'> & {
+export type EstimateProjectDto = Omit<EstimateProjectListDto, 'stages' | 'group'> & {
+  groupId?: string | null;
+  group?: EstimateGroupDto | null;
   siteType?: string | null;
   address?: string | null;
   siteFloor?: number | null;

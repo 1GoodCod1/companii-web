@@ -23,7 +23,7 @@ export const TEAM_ROLE_CONFIG: Record<TeamRoleKey, TeamRoleConfig> = {
   [COMPANY_ROLE.MANAGER]: {
     label: 'Manager',
     sectionTitle: 'Manageri',
-    description: 'Operațiuni zilnice: clienți, lucrări, smete, oferte și facturare.',
+    description: 'Operațiuni zilnice: clienți, lucrări, calcule de preț, oferte și facturare.',
     badgeTone: 'blue',
     avatarClass: 'from-blue-500 to-cyan-600',
     responsibilities: [

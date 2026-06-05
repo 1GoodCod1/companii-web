@@ -17,6 +17,7 @@ import type { EstimateWizardApi } from '../useEstimateWizard';
 import { ReviewInterventions } from './review/ReviewInterventions';
 import { ReviewScopeSummary } from './review/ReviewScopeSummary';
 import { ReviewMaterialStages } from './review/ReviewMaterialStages';
+import { EstimateRelatedProjectsSection } from '@/features/estimates/components/EstimateRelatedProjectsSection';
 
 type Props = {
   wizard: EstimateWizardApi;
@@ -64,6 +65,7 @@ export function ReviewStep({ wizard }: Props) {
 
   return (
     <div className="space-y-4">
+      <EstimateRelatedProjectsSection project={project} readOnly={isReadOnly} />
       {project.sourceLead?.estimatedBudget && (
         <LeadBudgetGauge
           budget={project.sourceLead.estimatedBudget}

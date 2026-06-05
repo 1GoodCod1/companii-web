@@ -45,3 +45,29 @@ export type EstimateServiceCategorySlug = (typeof ESTIMATE_SERVICE_CATEGORY_SLUG
 export function isEstimateServiceCategorySlug(slug: string): slug is EstimateServiceCategorySlug {
   return (ESTIMATE_SERVICE_CATEGORY_SLUGS as readonly string[]).includes(slug);
 }
+
+export const ESTIMATE_RELATED_GROUP_HOST_SLUGS = ['lucrari-finisaj'] as const;
+
+export type EstimateRelatedGroupHostSlug = (typeof ESTIMATE_RELATED_GROUP_HOST_SLUGS)[number];
+
+export const ESTIMATE_RELATED_GROUP_TARGET_SLUGS = [
+  'elektrika',
+  'santehnika',
+  'constructii',
+] as const;
+
+export type EstimateRelatedGroupTargetSlug = (typeof ESTIMATE_RELATED_GROUP_TARGET_SLUGS)[number];
+
+export function canHostEstimateRelatedProjects(slug: string): slug is EstimateRelatedGroupHostSlug {
+  return (ESTIMATE_RELATED_GROUP_HOST_SLUGS as readonly string[]).includes(slug);
+}
+
+export function canBeAddedAsRelatedEstimate(
+  slug: string,
+): slug is EstimateRelatedGroupTargetSlug {
+  return (ESTIMATE_RELATED_GROUP_TARGET_SLUGS as readonly string[]).includes(slug);
+}
+
+export function canLinkEstimateCategories(sourceSlug: string, targetSlug: string): boolean {
+  return canHostEstimateRelatedProjects(sourceSlug) && canBeAddedAsRelatedEstimate(targetSlug);
+}

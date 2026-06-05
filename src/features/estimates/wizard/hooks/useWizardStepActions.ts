@@ -126,8 +126,10 @@ export function useWizardStepActions({ project, formState, derivations, askConfi
       } catch (calcErr) {
         console.warn('Auto-calculate after diagnostic save failed:', calcErr);
       }
-
-      setStepIndex((i) => Math.min(i + 1, derivations.steps.length - 1));
+      const stagesIndex = derivations.steps.indexOf('stages');
+      setStepIndex(
+        stagesIndex >= 0 ? stagesIndex : Math.min(stepIndex + 1, derivations.steps.length - 1),
+      );
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('company.estimateWizard.wizard.toasts.saveFailed')));
     }

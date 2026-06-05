@@ -36,9 +36,39 @@ export function useCreateEstimateProjectMutation() {
       siteType?: string;
       address?: string;
       validUntil?: string;
+      groupId?: string;
     }) => apiFetch<EstimateProjectDto>(`${ESTIMATES_API_BASE}/projects`, { method: 'POST', body: JSON.stringify(body) }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
+    },
+  });
+}
+
+export function useCreateRelatedEstimateProjectMutation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      sourceProjectId,
+      categoryId,
+      title,
+    }: {
+      sourceProjectId: string;
+      categoryId: string;
+      title?: string;
+    }) =>
+      apiFetch<EstimateProjectDto>(`${ESTIMATES_API_BASE}/projects/${sourceProjectId}/related`, {
+        method: 'POST',
+        body: JSON.stringify({ categoryId, title }),
+      }),
+    onSuccess: (project, { sourceProjectId }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(sourceProjectId) });
+      void qc.invalidateQueries({ queryKey: queryKeys.estimates.project(project.id) });
+      if (project.customer?.id) {
+        void qc.invalidateQueries({
+          queryKey: queryKeys.fsm.customerTimeline(project.customer.id),
+        });
+      }
     },
   });
 }

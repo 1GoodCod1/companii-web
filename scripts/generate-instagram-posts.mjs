@@ -10,8 +10,8 @@ const htmlPath = path.join(__dirname, 'instagram-posts/template.html');
 const posts = [
   { id: 'post-01', file: 'instagram-01-hero-crm-fsm.png' },
   { id: 'post-02', file: 'instagram-02-crm-fsm-unificat.png' },
-  { id: 'post-03', file: 'instagram-03-calendar-inteligent.png' },
-  { id: 'post-04', file: 'instagram-04-smeta-inteligenta.png' },
+  { id: 'post-03', file: 'instagram-03-calendar-programari.png' },
+  { id: 'post-04', file: 'instagram-04-calcul-pret.png' },
   { id: 'post-05', file: 'instagram-05-facturare-automata.png' },
   { id: 'post-06', file: 'instagram-06-profil-public.png' },
 ];

@@ -19,7 +19,6 @@ export const companiiRoCompanyTeam = {
       removeFromList: 'Elimină din listă',
       captionPlaceholder: 'Descriere scurtă (opțional)',
       sectionTitle: 'Logo companie',
-      sectionDescription: 'Logo-ul apare pe profilul public din catalog.',
     },
 
   reviewsUi: {

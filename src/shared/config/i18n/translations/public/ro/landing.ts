@@ -130,7 +130,7 @@ export const publicRoLanding = {
           text: 'Clienți, echipă, lucrări, calcule de preț și facturi — nu mai sari între aplicații.',
         },
         {
-          title: 'Calendar inteligent',
+          title: 'Calendar de programări',
           text: 'Programări pe angajat, vedere zilnică, zero suprapuneri și vizite uitate.',
         },
         {

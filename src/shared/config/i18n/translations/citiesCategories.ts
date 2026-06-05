@@ -85,7 +85,7 @@ export const citiesCategories = {
       'it-web': 'Веб-разработка и приложения',
       'panouri-solare': 'Солнечные панели',
       constructii: 'Общее строительство',
-      pavaj: 'Мощение и благоустройство',
+      pavaj: 'Тротуарная плитка и наружное благоустройство',
       'smm-marketing': 'SMM и реклама',
       'design-grafic': 'Графический дизайн',
       'frumusete-ingrijire': 'Красота и уход (макияж, маникюр, педикюр)',

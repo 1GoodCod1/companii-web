@@ -5,12 +5,17 @@ export {
   isEstimateBlueprintCategorySlug,
   isEstimateExcludedCategorySlug,
   isEstimateServiceCategorySlug,
+  canHostEstimateRelatedProjects,
+  canBeAddedAsRelatedEstimate,
+  canLinkEstimateCategories,
 } from './estimateCategorySlugs.constants';
 
 export type {
   EstimateBlueprintCategorySlug,
   EstimateExcludedCategorySlug,
   EstimateServiceCategorySlug,
+  EstimateRelatedGroupHostSlug,
+  EstimateRelatedGroupTargetSlug,
 } from './estimateCategorySlugs.constants';
 
 export { ESTIMATE_CATEGORY_BLUEPRINT_SPEC } from './estimateCategoryBlueprintSpec';
