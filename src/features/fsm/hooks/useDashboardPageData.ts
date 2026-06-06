@@ -17,6 +17,7 @@ import { LEAD_STATUS } from '@/entities/fsm/model/leadStatus.constants';
 import type { InterventionDto } from '@/entities/fsm/model/types';
 import { KPI_ACCENTS, type DashboardKpi } from '@/entities/fsm/model/dashboard.constants';
 import { getErrorMessage } from '@/shared/utils/errors';
+import { formatMdl } from '@/shared/utils/money';
 import { isActiveInterventionStatus } from '@/entities/fsm/model/interventionStatus';
 import { isPaidPaymentStatus } from '@/entities/fsm/model/invoicePaymentStatus';
 
@@ -85,14 +86,14 @@ export function useDashboardPageData() {
         },
         {
           label: t('company.dashboard.kpi.totalInvoiced.label'),
-          value: totalInvoiced.toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' }),
+          value: formatMdl(totalInvoiced),
           hint: t('company.dashboard.kpi.totalInvoiced.hint'),
           hintClass: 'text-gray-400',
           accent: KPI_ACCENTS[2],
         },
         {
           label: t('company.dashboard.kpi.confirmedPayments.label'),
-          value: totalPaid.toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' }),
+          value: formatMdl(totalPaid),
           hint: t('company.dashboard.kpi.confirmedPayments.hint'),
           hintClass: 'text-emerald-600',
           accent: KPI_ACCENTS[3],

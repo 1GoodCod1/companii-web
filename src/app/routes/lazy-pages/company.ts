@@ -42,6 +42,12 @@ export const CompanyInterventionsPage = lazyWithRetry(() =>
   })),
 );
 
+export const CompanyPipelinePage = lazyWithRetry(() =>
+  import('@/pages/company/CompanyPipelinePage').then((m) => ({
+    default: m.CompanyPipelinePage,
+  })),
+);
+
 export const CompanyCalendarPage = lazyWithRetry(() =>
   import('@/pages/company/CompanyCalendarPage').then((m) => ({
     default: m.CompanyCalendarPage,

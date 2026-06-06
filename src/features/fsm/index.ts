@@ -1,9 +1,12 @@
+import { lazyWithRetry } from '@/shared/lib/lazyWithRetry';
+
 export * from './api/useFsm';
 export * from './api/useCustomers';
 export * from './api/useInterventions';
 export * from './api/useInvoices';
 export * from './api/useQuotes';
 export * from './api/useCompanyServices';
+export * from './api/useAnalytics';
 
 export { InterventionsListTable } from './components/interventions/InterventionsListTable';
 export { InterventionsStatusFilter } from './components/interventions/components/InterventionsStatusFilter';
@@ -31,6 +34,12 @@ export { DashboardNewLeadsPanel } from './components/dashboard/DashboardNewLeads
 export { DashboardActiveInterventionsPanel } from './components/dashboard/DashboardActiveInterventionsPanel';
 export { DashboardRecentInvoicesPanel } from './components/dashboard/DashboardRecentInvoicesPanel';
 export { useDashboardPageData } from './hooks/useDashboardPageData';
+
+// Lazy so ApexCharts ships in its own chunk, loaded only when management opens
+// the dashboard (technicians never mount it).
+export const DashboardAnalyticsSection = lazyWithRetry(
+  () => import('./components/dashboard/analytics/DashboardAnalyticsSection'),
+);
 
 export { CustomerImportModal } from './components/CustomerImportModal';
 export { CustomersListTable, CUSTOMERS_LIST_PAGE_SIZE } from './components/customers/CustomersListTable';

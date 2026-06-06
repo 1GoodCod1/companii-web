@@ -54,6 +54,8 @@ export const companiiRuCompanyShell = {
 
   cereri: 'Заявки',
 
+  pipeline: 'Воронка',
+
   clienti: 'Клиенты',
 
   lucrari: 'Работы',

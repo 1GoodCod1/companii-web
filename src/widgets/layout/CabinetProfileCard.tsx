@@ -13,6 +13,7 @@ export function CabinetProfileCard({
   avatarUrl,
   onLogout,
   isLoggingOut,
+  collapsed,
 }: {
   displayName: string;
   email: string;
@@ -21,11 +22,44 @@ export function CabinetProfileCard({
   avatarUrl?: string | null;
   onLogout: () => void;
   isLoggingOut?: boolean;
+  collapsed?: boolean;
 }) {
   const { t } = useTranslation();
   const roleLabel = role ? getCompanyRoleLabel(t, role) : null;
   const initials = personInitials(displayName, email);
   const title = displayName || email;
+
+  if (collapsed) {
+    return (
+      <div className="mt-4 border-t border-gray-200 pt-4 flex flex-col items-center gap-3">
+        <div className="relative shrink-0" title={title}>
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={title}
+              className="size-10 object-cover border border-slate-200 bg-slate-100"
+            />
+          ) : (
+            <div className="flex size-10 items-center justify-center bg-gray-900 text-xs font-black text-white">
+              {initials}
+            </div>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={onLogout}
+          disabled={isLoggingOut}
+          title={t('auth.logout', 'Ieșire')}
+          className={cn(
+            'flex size-10 items-center justify-center border border-slate-200 bg-slate-50 text-gray-600 transition-all rounded-xl',
+            'hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer',
+          )}
+        >
+          <SignOutIcon className="size-4 shrink-0" />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-4 border-t border-gray-200 pt-4">

@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom';
 import { m, AnimatePresence } from 'framer-motion';
-import { CaretLeftIcon, CaretRightIcon, XIcon, PlayIcon } from '@phosphor-icons/react';
+import { CaretLeftIcon, CaretRightIcon, XIcon } from '@phosphor-icons/react';
 import { MediaImage } from '@/shared/ui/MediaImage';
 import { MediaVideo } from '@/shared/ui/MediaVideo';
 import type { MediaThumbItem } from './MediaThumb';
@@ -34,9 +34,7 @@ export function MediaLightbox({
   index,
   total,
   hasMultiple,
-  isPlaying,
   videoRef,
-  onPlayToggle,
   onPrev,
   onNext,
   onClose,
@@ -109,35 +107,16 @@ export function MediaLightbox({
             className="relative z-10 w-fit max-w-[min(100vw-7rem,80rem)]"
           >
             {isMediaItemVideo(item) ? (
-              <button
-                type="button"
-                className="relative cursor-pointer mx-auto block border-0 bg-transparent p-0"
-                onClick={onPlayToggle}
-                aria-label={isPlaying ? labels.close : labels.photoAlt}
-              >
-                <MediaVideo
-                  ref={videoRef}
-                  src={item.url}
-                  className="mx-auto block max-h-[min(78vh,820px)] max-w-full rounded-2xl shadow-2xl"
-                  playsInline
-                  loop
-                  preload="metadata"
-                />
-                <AnimatePresence>
-                  {!isPlaying && (
-                    <m.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      className="absolute inset-0 flex items-center justify-center"
-                    >
-                      <div className="size-20 rounded-full bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-violet-600/30">
-                        <PlayIcon className="size-9 text-white ml-1" fill="white" />
-                      </div>
-                    </m.div>
-                  )}
-                </AnimatePresence>
-              </button>
+              <MediaVideo
+                ref={videoRef}
+                src={item.url}
+                className="mx-auto block max-h-[min(78vh,820px)] max-w-full rounded-2xl bg-black shadow-2xl"
+                controls
+                autoPlay
+                playsInline
+                loop
+                preload="metadata"
+              />
             ) : (
               <MediaImage
                 src={item.url}

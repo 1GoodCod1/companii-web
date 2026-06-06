@@ -26,6 +26,7 @@ const sections: CabinetNavSection[] = [
       { key: 'waitlist', to: '/waitlist', labelKey: 'admin.waitlist', icon: <UserPlusIcon /> },
       { key: 'reviews', to: '/reviews', labelKey: 'admin.reviews', icon: <ChatIcon /> },
       { key: 'audit', to: '/audit', labelKey: 'admin.audit', icon: <ScrollIcon /> },
+      { key: 'feedback', to: '/feedback', labelKey: 'admin.feedback', icon: <ChatIcon /> },
     ],
   },
   {

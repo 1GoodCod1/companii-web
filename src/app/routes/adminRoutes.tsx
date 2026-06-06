@@ -12,6 +12,7 @@ import {
   AdminReviewsPage,
   AdminAuditPage,
   AdminBlueprintsPage,
+  AdminFeedbackPage,
 } from './lazy-pages';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import { ROUTE_ROOT, ROUTE_ACCESS, ADMIN_ROUTE } from '@/shared/constants/routes.constants';
@@ -34,6 +35,7 @@ export const adminRoutesSection = {
     { path: ADMIN_ROUTE.CATEGORIES, element: <LazyPage><AdminCategoriesPage /></LazyPage> },
     { path: ADMIN_ROUTE.CLIENTS, element: <LazyPage><AdminClientsPage /></LazyPage> },
     { path: ADMIN_ROUTE.BLUEPRINTS, element: <LazyPage><AdminBlueprintsPage /></LazyPage> },
+    { path: ADMIN_ROUTE.FEEDBACK, element: <LazyPage><AdminFeedbackPage /></LazyPage> },
     { path: '*', element: <NotFoundPage compact /> },
   ],
 };

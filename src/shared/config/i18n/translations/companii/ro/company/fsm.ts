@@ -6,6 +6,25 @@ export const companiiRoCompanyFsm = {
         error: 'Eroare.',
         errorGeneric: 'A apărut o eroare.',
       },
+      pipeline: {
+        eyebrow: 'CRM',
+        title: 'Pipeline',
+        subtitle: 'Trage cardurile între coloane pentru a schimba statusul. Vizualizează întreaga pâlnie: cereri, lucrări, oferte și facturi.',
+        tabs: {
+          leads: 'Cereri',
+          interventions: 'Lucrări',
+          quotes: 'Oferte',
+          invoices: 'Facturi',
+        },
+        dragHint: 'Trage pentru a schimba statusul',
+        emptyColumn: 'Trage aici',
+        emptyPipeline: 'Nimic de afișat încă.',
+        loadMore: 'Încarcă încă ({{count}})',
+        moved: 'Status actualizat.',
+        moveError: 'Nu s-a putut schimba statusul.',
+        quotesHint: 'Poți marca ofertele ca Acceptată / Respinsă. Trimiterea și conversia se fac din fișa ofertei.',
+        invoicesHint: 'Doar vizualizare — încasările și anulările se gestionează din fișa facturii.',
+      },
       interventions: {
         createModal: {
           title: 'Creează Lucrare / Intervenție',

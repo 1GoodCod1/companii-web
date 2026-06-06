@@ -1,12 +1,14 @@
+import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { PageHero, Panel, SoftBadge } from '@/widgets/cabinet/cabinet-ui';
+import { PageHero, Panel, SoftBadge, SkeletonCard } from '@/widgets/cabinet/cabinet-ui';
 import { useAuthStore } from '@/entities/user/model/authStore';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { DashboardKpiGrid } from '@/features/fsm';
 import { DashboardNewLeadsPanel } from '@/features/fsm';
 import { DashboardActiveInterventionsPanel } from '@/features/fsm';
 import { DashboardRecentInvoicesPanel } from '@/features/fsm';
+import { DashboardAnalyticsSection } from '@/features/fsm';
 import { useDashboardPageData } from '@/features/fsm';
 
 export function CompanyDashboardPage() {
@@ -91,6 +93,20 @@ export function CompanyDashboardPage() {
       ) : null}
 
       <DashboardKpiGrid kpis={dashboard.kpis} />
+
+      {dashboard.isManagement && !dashboard.onboardingRequired ? (
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <SkeletonCard key={index} className="h-[372px]" />
+              ))}
+            </div>
+          }
+        >
+          <DashboardAnalyticsSection />
+        </Suspense>
+      ) : null}
 
       <div
         className={`grid grid-cols-1 gap-5 sm:gap-6 ${dashboard.isManagement ? 'xl:grid-cols-3 lg:grid-cols-2' : 'lg:grid-cols-2'}`}

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ListIcon, XIcon } from '@phosphor-icons/react';
+import { ListIcon, XIcon, CaretLeftIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useLogoutMutation, useMeQuery } from '@/features/auth';
 import { useAuthStore } from '@/entities/user/model/authStore';
@@ -28,6 +28,8 @@ function SidebarContent({
   onLogout,
   isLoggingOut,
   onNavClick,
+  isCollapsed,
+  onToggleCollapse,
 }: {
   sections: CabinetNavSection[];
   basePath: string;
@@ -41,6 +43,8 @@ function SidebarContent({
   onLogout: () => void;
   isLoggingOut: boolean;
   onNavClick?: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }) {
   const { t } = useTranslation();
   const location = useLocation();
@@ -53,8 +57,20 @@ function SidebarContent({
   return (
     <>
       <div className="flex-none">
-        <Link to="/" className="mb-6 flex items-center justify-between px-2">
-          <FaberLogo size="sm" />
+        <div className="mb-6 flex items-center justify-between px-1">
+          <Link to="/" className="flex items-center">
+            <FaberLogo size="sm" showText={!isCollapsed} />
+          </Link>
+          {onToggleCollapse && (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="hidden lg:flex items-center justify-center rounded-lg border border-gray-100 bg-white p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors cursor-pointer"
+              title={isCollapsed ? t('layout.sidebar.expand', 'Afișează meniu') : t('layout.sidebar.collapse', 'Ascunde meniu')}
+            >
+              <CaretLeftIcon className={cn('size-4 transition-transform', isCollapsed && 'rotate-180')} />
+            </button>
+          )}
           {onNavClick && (
             <button
               type="button"
@@ -64,15 +80,19 @@ function SidebarContent({
               <XIcon className="size-5" />
             </button>
           )}
-        </Link>
+        </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto min-h-0 space-y-4 pr-1 py-2 custom-scrollbar">
         {sections.map((section) => (
-          <div key={section.key}>
-            <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-gray-400">
-              {t(section.labelKey)}
-            </p>
+          <div key={section.key} className="space-y-1">
+            {!isCollapsed ? (
+              <p className="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-gray-400">
+                {t(section.labelKey)}
+              </p>
+            ) : (
+              <div className="border-t border-gray-100/70 my-2 mx-2" />
+            )}
             <div className="flex flex-col gap-1">
               {section.items.map((item) => {
                 const fullPath = buildCabinetPath(basePath, item.to);
@@ -88,8 +108,12 @@ function SidebarContent({
                     key={item.key}
                     to={fullPath}
                     onClick={onNavClick}
+                    title={isCollapsed ? t(item.labelKey) : undefined}
                     className={cn(
-                      'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] transition-all duration-200',
+                      'group relative flex items-center transition-all duration-200 rounded-xl',
+                      isCollapsed
+                        ? 'justify-center w-11 h-11 mx-auto'
+                        : 'gap-3 px-3 py-2.5 text-[13px]',
                       '[&_svg]:size-[1.125rem] [&_svg]:shrink-0 [&_svg]:stroke-[1.75]',
                       selected
                         ? 'bg-gray-900 font-semibold text-white shadow-sm shadow-gray-900/10'
@@ -106,18 +130,22 @@ function SidebarContent({
                     >
                       {item.icon}
                     </span>
-                    <span className="truncate">{t(item.labelKey)}</span>
+                    {!isCollapsed && <span className="truncate">{t(item.labelKey)}</span>}
                     {item.badge != null && Number(item.badge) !== 0 ? (
-                      <span
-                        className={cn(
-                          'ml-auto inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none',
-                          selected
-                            ? 'bg-white/15 text-white ring-1 ring-white/20'
-                            : 'bg-violet-600 text-white',
-                        )}
-                      >
-                        {item.badge}
-                      </span>
+                      isCollapsed ? (
+                        <span className="absolute top-1.5 right-1.5 flex size-2 rounded-full bg-violet-600 ring-2 ring-white" />
+                      ) : (
+                        <span
+                          className={cn(
+                            'ml-auto inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none',
+                            selected
+                              ? 'bg-white/15 text-white ring-1 ring-white/20'
+                              : 'bg-violet-600 text-white',
+                          )}
+                        >
+                          {item.badge}
+                        </span>
+                      )
                     ) : null}
                   </Link>
                 );
@@ -129,7 +157,7 @@ function SidebarContent({
 
       {user ? (
         <div className="flex-none mt-auto">
-          {sidebarExtras}
+          {!isCollapsed && sidebarExtras}
           <CabinetProfileCard
             displayName={displayName}
             email={user.email}
@@ -138,6 +166,7 @@ function SidebarContent({
             avatarUrl={profileAvatarUrl}
             onLogout={onLogout}
             isLoggingOut={isLoggingOut}
+            collapsed={isCollapsed}
           />
         </div>
       ) : null}
@@ -167,6 +196,21 @@ export function CabinetShell({
   const logout = useLogoutMutation();
   const user = useAuthStore((s) => s.user);
   const { data: meData } = useMeQuery(!!user);
+
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('cabinet-sidebar-collapsed') === 'true';
+    }
+    return false;
+  });
+
+  const handleToggleCollapse = () => {
+    setIsCollapsed((prev) => {
+      const newVal = !prev;
+      localStorage.setItem('cabinet-sidebar-collapsed', String(newVal));
+      return newVal;
+    });
+  };
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const openMobileMenu = useCallback(() => setMobileMenuOpen(true), []);
@@ -212,8 +256,15 @@ export function CabinetShell({
   return (
     <div className="h-screen flex bg-gray-50/30 overflow-hidden">
       {/* Desktop sidebar: hidden on screens < 1024px */}
-      <aside className="hidden lg:flex w-64 h-full border-r border-gray-100 bg-white p-5 flex-col justify-between shrink-0 overflow-hidden">
-        <SidebarContent {...sidebarProps} />
+      <aside className={cn(
+        'hidden lg:flex h-full border-r border-gray-100 bg-white flex-col justify-between shrink-0 overflow-hidden transition-all duration-300',
+        isCollapsed ? 'w-20 px-3.5 py-5' : 'w-64 p-5',
+      )}>
+        <SidebarContent
+          {...sidebarProps}
+          isCollapsed={isCollapsed}
+          onToggleCollapse={handleToggleCollapse}
+        />
       </aside>
 
       {/* Mobile hamburger bar: visible on screens < 1024px */}

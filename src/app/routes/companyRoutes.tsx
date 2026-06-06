@@ -9,6 +9,7 @@ import {
   CompanyCustomersPage,
   CompanyLeadsPage,
   CompanyInterventionsPage,
+  CompanyPipelinePage,
   CompanyCalendarPage,
   CompanyPricingModifiersPage,
   CompanyQuotesPage,
@@ -109,6 +110,14 @@ export const companyRoutesSection = {
       element: (
         <RequireCompanyRole routePath={COMPANY_CABINET_PATH.CALENDAR}>
           <LazyPage><CompanyCalendarPage /></LazyPage>
+        </RequireCompanyRole>
+      ),
+    },
+    {
+      path: COMPANY_ROUTE.PIPELINE,
+      element: (
+        <RequireCompanyRole routePath={COMPANY_CABINET_PATH.PIPELINE}>
+          <LazyPage><CompanyPipelinePage /></LazyPage>
         </RequireCompanyRole>
       ),
     },

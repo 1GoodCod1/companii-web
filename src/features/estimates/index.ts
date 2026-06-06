@@ -11,3 +11,7 @@ export { buildScopeSummary } from './stages/scopeSummary';
 export { filterStagesForClientDisplay } from './stages/stageVisibility';
 export { isEstimateLaborLine } from './utils/estimateLaborLine';
 export { findPricingRuleForLine, formatPricingRuleExplanation } from './utils/pricingRuleExplanation';
+export { EstimateDevNoticeBanner } from './components/EstimateDevNoticeBanner';
+export { EstimateFeedbackModal } from './components/EstimateFeedbackModal';
+
+

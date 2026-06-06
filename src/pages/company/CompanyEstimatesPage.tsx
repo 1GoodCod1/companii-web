@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { CalculatorIcon, CaretRightIcon, PercentIcon, PlusIcon, SparkleIcon, TrashIcon } from '@phosphor-icons/react';
+import { CalculatorIcon, CaretRightIcon, PercentIcon, PlusIcon, SparkleIcon, TrashIcon, MegaphoneIcon } from '@phosphor-icons/react';
 import {
   PageHero,
   Panel,
@@ -14,6 +15,8 @@ import { CompanyManagementGate } from '@/features/companies';
 import {
   useEstimateProjectsQuery,
   useDeleteEstimateProjectMutation,
+  EstimateDevNoticeBanner,
+  EstimateFeedbackModal,
 } from '@/features/estimates';
 import {
   ESTIMATE_STATUS_TONES,
@@ -26,6 +29,7 @@ export function CompanyEstimatesPage() {
   const { data: projects, isLoading } = useEstimateProjectsQuery();
   const deleteProjectMutation = useDeleteEstimateProjectMutation();
   const { ask, dialog } = useCabinetConfirmDialog();
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   const handleDeleteClick = (id: string, number: string) => {
     ask({
@@ -56,6 +60,14 @@ export function CompanyEstimatesPage() {
           description={t('company.estimatesPage.description')}
           action={
             <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => setFeedbackOpen(true)}
+                className="inline-flex items-center justify-center rounded-none border border-gray-200 bg-white p-2.5 text-gray-500 hover:bg-gray-50 hover:text-violet-600 transition-colors cursor-pointer"
+                title={t('company.devNotice.feedbackBtn')}
+              >
+                <MegaphoneIcon className="size-4" />
+              </button>
               <Link
                 to="/company/smete/coeficienti"
                 className="inline-flex items-center gap-1.5 rounded-none border border-violet-200 bg-white px-3 py-2 text-xs font-bold text-violet-700 hover:bg-violet-50 transition-colors"
@@ -70,6 +82,8 @@ export function CompanyEstimatesPage() {
             </div>
           }
         />
+
+        <EstimateDevNoticeBanner />
 
         <div className="grid md:grid-cols-3 gap-4">
           <Panel className="p-5 bg-violet-50 border-violet-100">
@@ -166,6 +180,12 @@ export function CompanyEstimatesPage() {
         </Panel>
 
         {dialog}
+        {feedbackOpen && (
+          <EstimateFeedbackModal
+            open={feedbackOpen}
+            onClose={() => setFeedbackOpen(false)}
+          />
+        )}
       </div>
     </CompanyManagementGate>
   );

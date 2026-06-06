@@ -428,4 +428,29 @@ export const companiiRoCompanyEstimates = {
         kWh: 'Kilowatt-oră',
       },
     },
+  devNotice: {
+    title: 'Modul în curs de dezvoltare (BETA)',
+    description: 'Acest instrument de calcul este în fază de testare activă. Unele formule sau funcționalități pot fi modificate.',
+    feedbackBtn: 'Trimite Feedback',
+    toastSuccess: 'Feedback-ul dvs. a fost trimis dezvoltatorilor Faber. Vă mulțumim!',
+    toastError: 'Eroare la trimiterea feedback-ului.',
+  },
+  feedbackModal: {
+    title: 'Raportați o problemă sau propuneți o îmbunătățire',
+    categoryLabel: 'Alegeți categoria problemei / sugestiei:',
+    detailsLabel: 'Vă rugăm să ne spuneți mai multe detalii* (obligatoriu):',
+    detailsPlaceholder: 'Introduceți detaliile aici...',
+    charactersLeft: '{{count}} caractere rămase',
+    submitBtn: 'Trimite',
+    cancelBtn: 'Renunță',
+    categories: {
+      INCORRECT_CALCULATION: 'Calcul incorect al materialelor sau manoperei',
+      MISSING_CATEGORY_WORK: 'Lipsește o categorie de lucrări sau tehnologie necesară',
+      COMPLEX_UI: 'Interfața este prea complexă sau neclară',
+      PRICING_COEFFICIENTS_ERROR: 'Nu se pot seta coeficienții sau adaosul',
+      PDF_EXPORT_ERROR: 'Erori la exportul PDF sau tipărirea devizului',
+      FEATURE_SUGGESTION: 'Vreau să propun o îmbunătățire sau o funcție nouă',
+      OTHER: 'Altceva',
+    }
+  }
 };

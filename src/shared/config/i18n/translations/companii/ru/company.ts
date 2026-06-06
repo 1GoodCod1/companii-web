@@ -4,6 +4,7 @@ import { companiiRuCompanyEstimates } from './company/estimates';
 import { companiiRuCompanyFsm } from './company/fsm';
 import { companiiRuCompanyTeam } from './company/team';
 import { companiiRuCompanyOperations } from './company/operations';
+import { companiiRuCompanyAnalytics } from './company/analytics';
 
 export const companiiRuCompany = {
   company: {
@@ -13,5 +14,6 @@ export const companiiRuCompany = {
     ...companiiRuCompanyFsm,
     ...companiiRuCompanyTeam,
     ...companiiRuCompanyOperations,
+    ...companiiRuCompanyAnalytics,
   },
 };

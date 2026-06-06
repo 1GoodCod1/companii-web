@@ -28,6 +28,7 @@ export {
   CompanyCustomersPage,
   CompanyLeadsPage,
   CompanyInterventionsPage,
+  CompanyPipelinePage,
   CompanyCalendarPage,
   CompanyPricingModifiersPage,
   CompanyQuotesPage,
@@ -64,4 +65,5 @@ export {
   AdminReviewsPage,
   AdminAuditPage,
   AdminBlueprintsPage,
+  AdminFeedbackPage,
 } from './lazy-pages/admin';

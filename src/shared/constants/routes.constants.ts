@@ -42,6 +42,7 @@ export const COMPANY_ROUTE = {
   GALLERY: 'gallery',
   TEAM: 'team',
   CLIENTI: 'clienti',
+  PIPELINE: 'pipeline',
   CERERI: 'cereri',
   LUCRARI: 'lucrari',
   LUCRARI_MY: 'lucrari/my',
@@ -67,6 +68,7 @@ export const COMPANY_CABINET_PATH = {
   GALLERY: '/gallery',
   TEAM: '/team',
   CLIENTI: '/clienti',
+  PIPELINE: '/pipeline',
   CERERI: '/cereri',
   LUCRARI: '/lucrari',
   LUCRARI_MY: '/lucrari/my',
@@ -104,6 +106,7 @@ export const ADMIN_ROUTE = {
   CATEGORIES: 'categories',
   CLIENTS: 'clients',
   BLUEPRINTS: 'blueprints',
+  FEEDBACK: 'feedback',
 } as const;
 
 export const ROUTE_ACCESS = {

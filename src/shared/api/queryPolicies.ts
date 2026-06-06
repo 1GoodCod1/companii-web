@@ -13,6 +13,15 @@ export const cabinetCustomersQueryOptions = {
   refetchOnReconnect: true,
 } as const;
 
+// Aggregated analytics are heavier and not real-time — cache longer and skip
+// focus refetches.
+export const cabinetAnalyticsQueryOptions = {
+  staleTime: 5 * 60_000,
+  gcTime: 30 * 60_000,
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: true,
+} as const;
+
 export const publicListQueryOptions = {
   staleTime: publicCachePolicy.listStaleTimeMs,
   gcTime: publicCachePolicy.listGcTimeMs,

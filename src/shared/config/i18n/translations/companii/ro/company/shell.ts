@@ -54,6 +54,8 @@ export const companiiRoCompanyShell = {
 
   cereri: 'Cereri',
 
+  pipeline: 'Pipeline',
+
   clienti: 'Clienți',
 
   lucrari: 'Lucrări',

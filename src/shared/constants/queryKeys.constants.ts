@@ -43,6 +43,8 @@ export const QUERY_KEY_FSM = {
   LEADS: 'leads',
   SERVICES: 'services',
   TIMELINE: 'timeline',
+  ANALYTICS: 'analytics',
+  PIPELINE_BOARD: 'pipeline-board',
 } as const;
 
 export const QUERY_KEY_PORTAL = {

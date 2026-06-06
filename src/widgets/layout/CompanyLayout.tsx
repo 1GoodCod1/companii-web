@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { CalendarIcon, CalculatorIcon, ClipboardTextIcon, BookOpenIcon, CreditCardIcon, FileTextIcon, ImagesIcon, TrayIcon, LayoutIcon, ListIcon, ChatCircleTextIcon, ReceiptIcon, GearIcon, UserIcon, UsersIcon, WrenchIcon } from '@phosphor-icons/react';
+import { CalendarIcon, CalculatorIcon, ClipboardTextIcon, BookOpenIcon, CreditCardIcon, FileTextIcon, ImagesIcon, KanbanIcon, TrayIcon, LayoutIcon, ListIcon, ChatCircleTextIcon, ReceiptIcon, GearIcon, UserIcon, UsersIcon, WrenchIcon } from '@phosphor-icons/react';
 import { CabinetShell } from './CabinetShell';
 import { useMySubscriptionQuery } from '@/entities/subscription/api/useSubscriptions';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
@@ -63,6 +63,14 @@ const NAV_DEFS: Array<
       labelKey: 'company.cereri',
       icon: <TrayIcon />,
       minPlanKey: '/cereri',
+    },
+    {
+      key: 'pipeline',
+      sectionKey: 'operations',
+      to: '/pipeline',
+      labelKey: 'company.pipeline',
+      icon: <KanbanIcon />,
+      minPlanKey: '/pipeline',
     },
     {
       key: 'lucrari',

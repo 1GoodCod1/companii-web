@@ -7,3 +7,4 @@ export * from './useAdminCities';
 export * from './useAdminCategories';
 export * from './useAdminClients';
 export * from './useAdminBlueprints';
+export * from './useAdminFeedback';

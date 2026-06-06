@@ -59,6 +59,10 @@ export const queryKeys = {
     services: [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.SERVICES] as const,
     customerTimeline: (id: string) =>
       [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.CUSTOMERS, id, QUERY_KEY_FSM.TIMELINE] as const,
+    analytics: (period: string) =>
+      [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.ANALYTICS, period] as const,
+    pipelineBoard: (entity: string) =>
+      [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.PIPELINE_BOARD, entity] as const,
   },
   portal: {
     dashboard: [QUERY_KEY_ROOT.PORTAL, QUERY_KEY_PORTAL.DASHBOARD] as const,
@@ -105,5 +109,6 @@ export const queryKeys = {
     categories: [QUERY_KEY_ROOT.ADMIN, QUERY_KEY_ADMIN.CATEGORIES] as const,
     clients: [QUERY_KEY_ROOT.ADMIN, QUERY_KEY_ADMIN.CLIENTS] as const,
     blueprints: [QUERY_KEY_ROOT.ADMIN, QUERY_KEY_ADMIN.BLUEPRINTS] as const,
+    feedback: [QUERY_KEY_ROOT.ADMIN, 'feedback'] as const,
   },
 };
