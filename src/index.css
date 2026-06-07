@@ -1,4 +1,39 @@
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Manrope', 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', 'Manrope', system-ui, sans-serif;
+
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.02);
+  --shadow-md: 0 4px 12px 0 rgba(15, 23, 42, 0.035), 0 2px 4px 0 rgba(15, 23, 42, 0.015);
+  --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.04), 0 4px 12px -2px rgba(15, 23, 42, 0.015);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.05), 0 10px 10px -5px rgba(15, 23, 42, 0.02);
+
+  --color-violet-50: #fdf8f6;
+  --color-violet-100: #fbf0eb;
+  --color-violet-200: #f6ded5;
+  --color-violet-300: #eec0b1;
+  --color-violet-400: #e1977e;
+  --color-violet-500: #d27357;
+  --color-violet-600: #c2593f;
+  --color-violet-700: #a24732;
+  --color-violet-800: #863c2c;
+  --color-violet-900: #703528;
+  --color-violet-950: #3d1a13;
+
+  --color-indigo-50: #fcfcfc;
+  --color-indigo-100: #f4f4f5;
+  --color-indigo-200: #e4e4e7;
+  --color-indigo-300: #d4d4d8;
+  --color-indigo-400: #a1a1aa;
+  --color-indigo-500: #71717a;
+  --color-indigo-600: #52525b;
+  --color-indigo-700: #3f3f46;
+  --color-indigo-800: #27272a;
+  --color-indigo-900: #18181b;
+  --color-indigo-950: #0f0f11;
+}
+
 @import './shared/styles/variables.css';
 @import './shared/styles/base.css';
 @import './shared/styles/legal.css';

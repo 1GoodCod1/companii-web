@@ -1,5 +1,23 @@
 import { useEffect, useMemo } from 'react';
-import { CalendarIcon, CalculatorIcon, ClipboardTextIcon, BookOpenIcon, CreditCardIcon, FileTextIcon, ImagesIcon, KanbanIcon, TrayIcon, LayoutIcon, ListIcon, ChatCircleTextIcon, ReceiptIcon, GearIcon, UserIcon, UsersIcon, WrenchIcon } from '@phosphor-icons/react';
+import {
+  CalendarIcon,
+  CalculatorIcon,
+  ClipboardTextIcon,
+  BookOpenIcon,
+  CreditCardIcon,
+  FileTextIcon,
+  ImagesIcon,
+  KanbanIcon,
+  TrayIcon,
+  LayoutIcon,
+  ListIcon,
+  ChatCircleTextIcon,
+  ReceiptIcon,
+  GearIcon,
+  UserIcon,
+  UsersIcon,
+  WrenchIcon,
+} from '@phosphor-icons/react';
 import { CabinetShell } from './CabinetShell';
 import { useMySubscriptionQuery } from '@/entities/subscription/api/useSubscriptions';
 import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
@@ -17,158 +35,196 @@ import { useAuthStore } from '@/entities/user/model/authStore';
 import { useCompanyContextStore } from '@/entities/company/model/companyContextStore';
 import { refreshAuthSession } from '@/features/auth';
 import {
+  COMPANY_COMPANY_GROUP_LABELS,
+  COMPANY_COMPANY_GROUP_ORDER,
   COMPANY_NAV_SECTION_LABELS,
   COMPANY_NAV_SECTION_ORDER,
+  COMPANY_OPERATIONS_GROUP_LABELS,
+  COMPANY_OPERATIONS_GROUP_ORDER,
+  type CompanyCompanyGroupKey,
+  type CompanyNavSectionKey,
+  type CompanyOperationsGroupKey,
 } from '@/entities/company/model/companyNav.constants';
 
-const NAV_DEFS: Array<
-  CabinetNavItem & { sectionKey: 'main' | 'operations' | 'company'; minPlanKey: string }
-> = [
-    {
-      key: 'dashboard',
-      sectionKey: 'main',
-      to: '',
-      labelKey: 'company.dashboard.nav',
-      icon: <LayoutIcon />,
-      minPlanKey: '',
-    },
-    {
-      key: 'profile',
-      sectionKey: 'main',
-      to: '/profile',
-      labelKey: 'company.profile',
-      icon: <UserIcon />,
-      minPlanKey: '/profile',
-    },
-    {
-      key: 'gallery',
-      sectionKey: 'main',
-      to: '/gallery',
-      labelKey: 'company.gallery',
-      icon: <ImagesIcon />,
-      minPlanKey: '/gallery',
-    },
-    {
-      key: 'clienti',
-      sectionKey: 'operations',
-      to: '/clienti',
-      labelKey: 'company.clienti',
-      icon: <UsersIcon />,
-      minPlanKey: '/clienti',
-    },
-    {
-      key: 'cereri',
-      sectionKey: 'operations',
-      to: '/cereri',
-      labelKey: 'company.cereri',
-      icon: <TrayIcon />,
-      minPlanKey: '/cereri',
-    },
-    {
-      key: 'pipeline',
-      sectionKey: 'operations',
-      to: '/pipeline',
-      labelKey: 'company.pipeline',
-      icon: <KanbanIcon />,
-      minPlanKey: '/pipeline',
-    },
-    {
-      key: 'lucrari',
-      sectionKey: 'operations',
-      to: '/lucrari',
-      labelKey: 'company.lucrari',
-      icon: <WrenchIcon />,
-      minPlanKey: '/lucrari',
-    },
-    {
-      key: 'calendar',
-      sectionKey: 'operations',
-      to: '/calendar',
-      labelKey: 'company.calendar',
-      icon: <CalendarIcon />,
-      minPlanKey: '/calendar',
-    },
-    {
-      key: 'servicii',
-      sectionKey: 'operations',
-      to: '/servicii',
-      labelKey: 'company.servicii',
-      icon: <ListIcon />,
-      minPlanKey: '/servicii',
-    },
-    {
-      key: 'smete',
-      sectionKey: 'operations',
-      to: '/smete',
-      labelKey: 'company.smete',
-      icon: <CalculatorIcon />,
-      minPlanKey: '/smete',
-    },
-    {
-      key: 'smeteTemplates',
-      sectionKey: 'operations',
-      to: '/smete/templates',
-      labelKey: 'company.smeteTemplates',
-      icon: <BookOpenIcon />,
-      minPlanKey: '/smete',
-    },
-    {
-      key: 'oferte',
-      sectionKey: 'operations',
-      to: '/oferte',
-      labelKey: 'company.oferte',
-      icon: <FileTextIcon />,
-      minPlanKey: '/oferte',
-    },
-    {
-      key: 'facturi',
-      sectionKey: 'operations',
-      to: '/facturi',
-      labelKey: 'company.facturi',
-      icon: <ReceiptIcon />,
-      minPlanKey: '/facturi',
-    },
-    {
-      key: 'recenzii',
-      sectionKey: 'operations',
-      to: '/recenzii',
-      labelKey: 'company.recenzii',
-      icon: <ChatCircleTextIcon />,
-      minPlanKey: '/recenzii',
-    },
-    {
-      key: 'team',
-      sectionKey: 'company',
-      to: '/team',
-      labelKey: 'company.team',
-      icon: <UsersIcon />,
-      minPlanKey: '/team',
-    },
-    {
-      key: 'audit',
-      sectionKey: 'company',
-      to: '/audit',
-      labelKey: 'company.audit',
-      icon: <ClipboardTextIcon />,
-      minPlanKey: '',
-    },
-    {
-      key: 'subscription',
-      sectionKey: 'company',
-      to: '/subscription',
-      labelKey: 'company.subscription',
-      icon: <CreditCardIcon />,
-      minPlanKey: '/subscription',
-    },
-    {
-      key: 'settings',
-      sectionKey: 'company',
-      to: '/settings',
-      labelKey: 'company.settings',
-      icon: <GearIcon />,
-      minPlanKey: '',
-    },
-  ];
+type NavDef = CabinetNavItem & {
+  sectionKey: CompanyNavSectionKey;
+  groupKey?: CompanyOperationsGroupKey | CompanyCompanyGroupKey;
+  minPlanKey: string;
+};
+
+const NAV_DEFS: NavDef[] = [
+  {
+    key: 'dashboard',
+    sectionKey: 'main',
+    to: '',
+    labelKey: 'company.dashboard.nav',
+    icon: <LayoutIcon />,
+    minPlanKey: '',
+  },
+  {
+    key: 'clienti',
+    sectionKey: 'operations',
+    groupKey: 'clients',
+    to: '/clienti',
+    labelKey: 'company.clienti',
+    icon: <UsersIcon />,
+    minPlanKey: '/clienti',
+  },
+  {
+    key: 'cereri',
+    sectionKey: 'operations',
+    groupKey: 'clients',
+    to: '/cereri',
+    labelKey: 'company.cereri',
+    icon: <TrayIcon />,
+    minPlanKey: '/cereri',
+  },
+  {
+    key: 'pipeline',
+    sectionKey: 'operations',
+    groupKey: 'clients',
+    to: '/pipeline',
+    labelKey: 'company.pipeline',
+    icon: <KanbanIcon />,
+    minPlanKey: '/pipeline',
+  },
+  {
+    key: 'lucrari',
+    sectionKey: 'operations',
+    groupKey: 'work',
+    to: '/lucrari',
+    labelKey: 'company.lucrari',
+    icon: <WrenchIcon />,
+    minPlanKey: '/lucrari',
+  },
+  {
+    key: 'calendar',
+    sectionKey: 'operations',
+    groupKey: 'work',
+    to: '/calendar',
+    labelKey: 'company.calendar',
+    icon: <CalendarIcon />,
+    minPlanKey: '/calendar',
+  },
+  {
+    key: 'smete',
+    sectionKey: 'operations',
+    groupKey: 'finance',
+    to: '/smete',
+    labelKey: 'company.smete',
+    icon: <CalculatorIcon />,
+    minPlanKey: '/smete',
+  },
+  {
+    key: 'smeteTemplates',
+    sectionKey: 'operations',
+    groupKey: 'finance',
+    to: '/smete/templates',
+    labelKey: 'company.smeteTemplates',
+    icon: <BookOpenIcon />,
+    minPlanKey: '/smete',
+  },
+  {
+    key: 'oferte',
+    sectionKey: 'operations',
+    groupKey: 'finance',
+    to: '/oferte',
+    labelKey: 'company.oferte',
+    icon: <FileTextIcon />,
+    minPlanKey: '/oferte',
+  },
+  {
+    key: 'facturi',
+    sectionKey: 'operations',
+    groupKey: 'finance',
+    to: '/facturi',
+    labelKey: 'company.facturi',
+    icon: <ReceiptIcon />,
+    minPlanKey: '/facturi',
+  },
+  {
+    key: 'servicii',
+    sectionKey: 'operations',
+    groupKey: 'catalog',
+    to: '/servicii',
+    labelKey: 'company.servicii',
+    icon: <ListIcon />,
+    minPlanKey: '/servicii',
+  },
+  {
+    key: 'recenzii',
+    sectionKey: 'operations',
+    groupKey: 'catalog',
+    to: '/recenzii',
+    labelKey: 'company.recenzii',
+    icon: <ChatCircleTextIcon />,
+    minPlanKey: '/recenzii',
+  },
+  {
+    key: 'profile',
+    sectionKey: 'company',
+    groupKey: 'profile',
+    to: '/profile',
+    labelKey: 'company.profile',
+    icon: <UserIcon />,
+    minPlanKey: '/profile',
+  },
+  {
+    key: 'gallery',
+    sectionKey: 'company',
+    groupKey: 'profile',
+    to: '/gallery',
+    labelKey: 'company.gallery',
+    icon: <ImagesIcon />,
+    minPlanKey: '/gallery',
+  },
+  {
+    key: 'team',
+    sectionKey: 'company',
+    groupKey: 'admin',
+    to: '/team',
+    labelKey: 'company.team',
+    icon: <UsersIcon />,
+    minPlanKey: '/team',
+  },
+  {
+    key: 'subscription',
+    sectionKey: 'company',
+    groupKey: 'admin',
+    to: '/subscription',
+    labelKey: 'company.subscription',
+    icon: <CreditCardIcon />,
+    minPlanKey: '/subscription',
+  },
+  {
+    key: 'settings',
+    sectionKey: 'company',
+    groupKey: 'admin',
+    to: '/settings',
+    labelKey: 'company.settings',
+    icon: <GearIcon />,
+    minPlanKey: '',
+  },
+  {
+    key: 'audit',
+    sectionKey: 'company',
+    groupKey: 'admin',
+    to: '/audit',
+    labelKey: 'company.audit',
+    icon: <ClipboardTextIcon />,
+    minPlanKey: '',
+  },
+];
+
+function buildGroupItems(
+  visible: NavDef[],
+  sectionKey: CompanyNavSectionKey,
+  groupKey: CompanyOperationsGroupKey | CompanyCompanyGroupKey,
+): CabinetNavItem[] {
+  return visible
+    .filter((item) => item.sectionKey === sectionKey && item.groupKey === groupKey)
+    .map(({ key, to, labelKey, icon, badge }) => ({ key, to, labelKey, icon, badge }));
+}
 
 function buildCompanySections(
   currentPlan: string | undefined,
@@ -183,36 +239,55 @@ function buildCompanySections(
     return hasMinPlan(currentPlan as CompanySubscriptionPlanCode | undefined, required);
   });
 
-  return COMPANY_NAV_SECTION_ORDER.flatMap((sectionKey) => {
-    const items = visible.reduce<
-      Array<{
-        key: string;
-        to: string;
-        labelKey: string;
-        icon: React.ReactNode;
-        badge?: string | number;
-      }>
-    >((acc, item) => {
-      if (item.sectionKey === sectionKey) {
-        acc.push({
-          key: item.key,
-          to: item.to,
-          labelKey: item.labelKey,
-          icon: item.icon,
-          badge: item.badge,
+  const sections: CabinetNavSection[] = [];
+
+  for (const sectionKey of COMPANY_NAV_SECTION_ORDER) {
+    if (sectionKey === 'main') {
+      const items = visible
+        .filter((item) => item.sectionKey === 'main')
+        .map(({ key, to, labelKey, icon, badge }) => ({ key, to, labelKey, icon, badge }));
+
+      if (items.length > 0) {
+        sections.push({
+          key: sectionKey,
+          labelKey: COMPANY_NAV_SECTION_LABELS[sectionKey],
+          items,
         });
       }
-      return acc;
-    }, []);
+      continue;
+    }
 
-    if (items.length === 0) return [];
+    const groups =
+      sectionKey === 'operations'
+        ? COMPANY_OPERATIONS_GROUP_ORDER.flatMap((groupKey) => {
+            const items = buildGroupItems(visible, sectionKey, groupKey);
+            if (items.length === 0) return [];
+            return [{
+              key: groupKey,
+              labelKey: COMPANY_OPERATIONS_GROUP_LABELS[groupKey],
+              items,
+            }];
+          })
+        : COMPANY_COMPANY_GROUP_ORDER.flatMap((groupKey) => {
+            const items = buildGroupItems(visible, sectionKey, groupKey);
+            if (items.length === 0) return [];
+            return [{
+              key: groupKey,
+              labelKey: COMPANY_COMPANY_GROUP_LABELS[groupKey],
+              items,
+            }];
+          });
 
-    return [{
-      key: sectionKey,
-      labelKey: COMPANY_NAV_SECTION_LABELS[sectionKey],
-      items,
-    }];
-  });
+    if (groups.length > 0) {
+      sections.push({
+        key: sectionKey,
+        labelKey: COMPANY_NAV_SECTION_LABELS[sectionKey],
+        groups,
+      });
+    }
+  }
+
+  return sections;
 }
 
 export function CompanyLayout() {
@@ -269,11 +344,19 @@ export function CompanyLayout() {
 
   const sections = buildCompanySections(currentPlan, profileRole).map((section) => ({
     ...section,
-    items: section.items.map((item) =>
+    items: section.items?.map((item) =>
       item.key === 'cereri' && newLeadCount > 0
         ? { ...item, badge: newLeadCount > 99 ? '99+' : newLeadCount }
         : item,
     ),
+    groups: section.groups?.map((group) => ({
+      ...group,
+      items: group.items.map((item) =>
+        item.key === 'cereri' && newLeadCount > 0
+          ? { ...item, badge: newLeadCount > 99 ? '99+' : newLeadCount }
+          : item,
+      ),
+    })),
   }));
 
   const sidebarExtras = useMemo(() => <CompanySwitcher />, []);

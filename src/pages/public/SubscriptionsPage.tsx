@@ -107,7 +107,7 @@ export function SubscriptionsPage() {
         {!isLoading && !awaitingSubscription && !isError && plans.length > 0 && (
           <div className="space-y-4">
             {hasCompany && !onFreePlan ? (
-              <p className="text-center text-sm font-semibold text-emerald-700">
+              <p className="text-center text-sm font-semibold text-gray-700">
                 {t('subscriptions.activePlanPrefix')}{' '}
                 <strong>{subscription?.plan.name}</strong>
               </p>

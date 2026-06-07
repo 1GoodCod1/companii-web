@@ -101,7 +101,7 @@ export function CompanySubscriptionPage() {
                 {planPriceLabel(subscription.plan, t)}
               </p>
             </div>
-            <SoftBadge tone={subscription.status === 'ACTIVE' || subscription.status === 'TRIAL' ? 'emerald' : 'gray'}>
+            <SoftBadge tone={subscription.status === 'ACTIVE' || subscription.status === 'TRIAL' ? 'violet' : 'gray'}>
               {subscription.status === 'TRIAL' ? t('company.subscriptionPage.statusTrial') : subscription.status}
             </SoftBadge>
           </div>

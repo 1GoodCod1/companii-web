@@ -64,4 +64,4 @@ export const AdminFeedbackPage = lazyWithRetry(() =>
   import('@/pages/admin/AdminFeedbackPage').then((m) => ({
     default: m.AdminFeedbackPage,
   })),
-);
+);

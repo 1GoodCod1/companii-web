@@ -100,9 +100,9 @@ export function KanbanBoard({ entity }: { entity: PipelineEntity }) {
 
   if (isLoading) {
     return (
-      <div className="flex gap-4 overflow-x-auto pb-2">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4 pb-2">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="w-[280px] shrink-0 space-y-3">
+          <div key={i} className="space-y-3">
             <SkeletonCard />
             <SkeletonCard />
           </div>
@@ -117,7 +117,7 @@ export function KanbanBoard({ entity }: { entity: PipelineEntity }) {
     <div className="space-y-3">
       {readOnlyHint ? <p className="text-xs font-medium text-amber-600">{t(readOnlyHint)}</p> : null}
 
-      <div className="flex items-start gap-4 overflow-x-auto pb-3">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] items-start gap-4 pb-3">
         {columns.map((column) => {
           const tone = columnTone(entity, column.status);
           const isValidTarget = !!drag && drag.targets.includes(column.status);
@@ -135,7 +135,7 @@ export function KanbanBoard({ entity }: { entity: PipelineEntity }) {
               onDragLeave={() => setOverColumn((cur) => (cur === column.status ? null : cur))}
               onDrop={() => void handleDrop(column.status)}
               className={cn(
-                'flex w-[280px] shrink-0 flex-col rounded-2xl border border-slate-200/70 bg-slate-50/70 transition',
+                'flex flex-col rounded-2xl border border-slate-200/70 bg-slate-50/70 transition',
                 isValidTarget && 'border-violet-300 ring-2 ring-violet-200',
                 overColumn === column.status && isValidTarget && 'bg-violet-50/80',
                 isDimmed && 'opacity-50',

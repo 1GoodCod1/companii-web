@@ -14,7 +14,7 @@
 .glass-panel:not([class*='bg-gradient']),
 .shadow-premium:not([class*='bg-gradient']) {
   background-color: #fff !important;
-  border: 1px solid rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(194, 89, 63, 0.08);
 }
 
 :where(div, section, article, aside, form, main, header, footer):is(.shadow-premium, .glass-panel):hover {

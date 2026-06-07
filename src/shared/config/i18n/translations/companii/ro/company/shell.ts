@@ -84,6 +84,15 @@ export const companiiRoCompanyShell = {
       company: 'Companie',
     },
 
+  navGroups: {
+      clients: 'Clienți & cereri',
+      work: 'Lucrări & calendar',
+      finance: 'Calcule & facturare',
+      catalog: 'Catalog public',
+      profile: 'Profil & galerie',
+      admin: 'Echipă & setări',
+    },
+
   roles: {
       owner: 'Proprietar',
       manager: 'Manager',

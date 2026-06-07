@@ -37,50 +37,32 @@ export function FaberLogo({
         )}
       >
         <defs>
-          <linearGradient id="faberGradientLeft" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#8b5cf6" /> 
-            <stop offset="100%" stopColor="#4f46e5" /> 
-          </linearGradient>
-          <linearGradient id="faberGradientRight" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#4f46e5" /> 
-            <stop offset="100%" stopColor="#ec4899" /> 
-          </linearGradient>
+          {/* Top face — gold, the lit surface */}
           <linearGradient id="faberGradientTop" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#a78bfa" /> 
-            <stop offset="100%" stopColor="#8b5cf6" />
+            <stop offset="0%" stopColor="#e6ad44" />
+            <stop offset="100%" stopColor="#c98f28" />
+          </linearGradient>
+          {/* Left face — terracotta */}
+          <linearGradient id="faberGradientLeft" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#c2593f" />
+            <stop offset="100%" stopColor="#8f4030" />
+          </linearGradient>
+          {/* Right face — graphite, the shadowed surface */}
+          <linearGradient id="faberGradientRight" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#3f3f46" />
+            <stop offset="100%" stopColor="#1c1c20" />
           </linearGradient>
         </defs>
+        {/* Clean isometric cube — three faces meeting at the front vertex. */}
         <path
-          d="M 50 15 L 18 33.5 L 18 70.5 L 50 52 L 50 15 Z"
-          fill="url(#faberGradientLeft)"
-          opacity="0.95"
+          d="M 50 12 L 82 30 L 50 48 L 18 30 Z"
+          fill="url(#faberGradientTop)"
           className={cn(
-            animated && 'transition-all duration-1000 ease-out hover:scale-105 origin-center'
+            animated && 'transition-transform duration-1000 ease-out hover:scale-105 origin-center'
           )}
         />
-        <path
-          d="M 50 52 L 82 70.5 L 82 33.5 L 50 15 L 50 52 Z"
-          fill="url(#faberGradientRight)"
-          opacity="0.95"
-        />
-        <path
-          d="M 50 52 L 18 70.5 L 50 89 L 82 70.5 L 50 52 Z"
-          fill="url(#faberGradientTop)"
-          opacity="0.85"
-        />
-        <path
-          d="M 32 41.5 L 50 32 M 50 32 L 68 41.5 M 50 52 L 50 72.5"
-          stroke="white"
-          strokeWidth="3.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity="0.9"
-        />
-        
-        <circle cx="50" cy="32" r="2.5" fill="white" />
-        <circle cx="32" cy="41.5" r="2.5" fill="white" />
-        <circle cx="68" cy="41.5" r="2.5" fill="white" />
-        <circle cx="50" cy="72.5" r="2.5" fill="white" />
+        <path d="M 18 30 L 50 48 L 50 84 L 18 66 Z" fill="url(#faberGradientLeft)" />
+        <path d="M 82 30 L 82 66 L 50 84 L 50 48 Z" fill="url(#faberGradientRight)" />
       </svg>
 
       {/* BRAND TEXT */}

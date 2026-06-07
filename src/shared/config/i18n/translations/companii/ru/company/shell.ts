@@ -84,6 +84,15 @@ export const companiiRuCompanyShell = {
       company: 'Компания',
     },
 
+  navGroups: {
+      clients: 'Клиенты и заявки',
+      work: 'Работы и календарь',
+      finance: 'Расчёты и счета',
+      catalog: 'Публичный каталог',
+      profile: 'Профиль и галерея',
+      admin: 'Команда и настройки',
+    },
+
   roles: {
       owner: 'Владелец',
       manager: 'Менеджер',

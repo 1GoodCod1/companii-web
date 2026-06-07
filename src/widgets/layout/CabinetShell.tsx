@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ListIcon, XIcon, CaretLeftIcon } from '@phosphor-icons/react';
+import { ListIcon, XIcon, CaretLeftIcon, CaretDownIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useLogoutMutation, useMeQuery } from '@/features/auth';
 import { useAuthStore } from '@/entities/user/model/authStore';
@@ -10,10 +10,152 @@ import { FaberLogo } from '@/shared/ui/brand/FaberLogo';
 import { MobileSheet } from '@/widgets/layout/MobileSheet';
 import {
   buildCabinetPath,
+  flattenCabinetNavSections,
   isCabinetNavItemActive,
+  type CabinetNavGroup,
+  type CabinetNavItem,
   type CabinetNavSection,
 } from '@/widgets/layout/cabinet-nav';
 import { formatPersonName } from '@/shared/utils/person';
+
+function NavItemLink({
+  item,
+  basePath,
+  allPaths,
+  pathname,
+  isCollapsed,
+  onNavClick,
+  t,
+}: {
+  item: CabinetNavItem;
+  basePath: string;
+  allPaths: string[];
+  pathname: string;
+  isCollapsed?: boolean;
+  onNavClick?: () => void;
+  t: (key: string) => string;
+}) {
+  const fullPath = buildCabinetPath(basePath, item.to);
+  const selected = isCabinetNavItemActive(pathname, basePath, item.to, allPaths);
+
+  return (
+    <Link
+      to={fullPath}
+      onClick={onNavClick}
+      title={isCollapsed ? t(item.labelKey) : undefined}
+      className={cn(
+        'group relative flex items-center transition-colors duration-150 rounded-lg',
+        isCollapsed ? 'justify-center w-11 h-11 mx-auto' : 'gap-3 px-3 py-2 text-[13px]',
+        '[&_svg]:size-[1.125rem] [&_svg]:shrink-0 [&_svg]:stroke-[1.75]',
+        selected
+          ? 'bg-gray-100 font-medium text-gray-900'
+          : 'font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-800',
+      )}
+    >
+      <span
+        className={cn(
+          'flex shrink-0 items-center justify-center transition-colors',
+          selected ? 'text-violet-600' : 'text-gray-400 group-hover:text-gray-600',
+        )}
+      >
+        {item.icon}
+      </span>
+      {!isCollapsed && <span className="truncate">{t(item.labelKey)}</span>}
+      {item.badge != null && Number(item.badge) !== 0 ? (
+        isCollapsed ? (
+          <span className="absolute top-1.5 right-1.5 flex size-2 rounded-full bg-violet-600 ring-2 ring-white" />
+        ) : (
+          <span
+            className={cn(
+              'ml-auto inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none',
+              'bg-violet-600 text-white',
+            )}
+          >
+            {item.badge}
+          </span>
+        )
+      ) : null}
+    </Link>
+  );
+}
+
+function NavCollapsibleGroup({
+  group,
+  basePath,
+  allPaths,
+  pathname,
+  isCollapsed,
+  onNavClick,
+  t,
+}: {
+  group: CabinetNavGroup;
+  basePath: string;
+  allPaths: string[];
+  pathname: string;
+  isCollapsed?: boolean;
+  onNavClick?: () => void;
+  t: (key: string) => string;
+}) {
+  const hasActiveChild = group.items.some((item) =>
+    isCabinetNavItemActive(pathname, basePath, item.to, allPaths),
+  );
+  const [open, setOpen] = useState(false);
+  const isOpen = hasActiveChild || open;
+
+  if (isCollapsed) {
+    return (
+      <div className="flex flex-col gap-1">
+        {group.items.map((item) => (
+          <NavItemLink
+            key={item.key}
+            item={item}
+            basePath={basePath}
+            allPaths={allPaths}
+            pathname={pathname}
+            isCollapsed={isCollapsed}
+            onNavClick={onNavClick}
+            t={t}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-1">
+      <button
+        type="button"
+        onClick={() => {
+          if (!hasActiveChild) setOpen((value) => !value);
+        }}
+        className={cn(
+          'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-[12px] font-semibold transition-colors',
+          hasActiveChild ? 'text-gray-900' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800',
+        )}
+      >
+        <CaretDownIcon
+          className={cn('size-3.5 shrink-0 text-gray-400 transition-transform', !isOpen && '-rotate-90')}
+        />
+        <span className="truncate">{t(group.labelKey)}</span>
+      </button>
+      {isOpen ? (
+        <div className="flex flex-col gap-1 pl-2">
+          {group.items.map((item) => (
+            <NavItemLink
+              key={item.key}
+              item={item}
+              basePath={basePath}
+              allPaths={allPaths}
+              pathname={pathname}
+              onNavClick={onNavClick}
+              t={t}
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 function SidebarContent({
   sections,
@@ -94,62 +236,30 @@ function SidebarContent({
               <div className="border-t border-gray-100/70 my-2 mx-2" />
             )}
             <div className="flex flex-col gap-1">
-              {section.items.map((item) => {
-                const fullPath = buildCabinetPath(basePath, item.to);
-                const selected = isCabinetNavItemActive(
-                  location.pathname,
-                  basePath,
-                  item.to,
-                  allPaths,
-                );
-
-                return (
-                  <Link
-                    key={item.key}
-                    to={fullPath}
-                    onClick={onNavClick}
-                    title={isCollapsed ? t(item.labelKey) : undefined}
-                    className={cn(
-                      'group relative flex items-center transition-all duration-200 rounded-xl',
-                      isCollapsed
-                        ? 'justify-center w-11 h-11 mx-auto'
-                        : 'gap-3 px-3 py-2.5 text-[13px]',
-                      '[&_svg]:size-[1.125rem] [&_svg]:shrink-0 [&_svg]:stroke-[1.75]',
-                      selected
-                        ? 'bg-gray-900 font-semibold text-white shadow-sm shadow-gray-900/10'
-                        : 'font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900',
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        'flex shrink-0 items-center justify-center transition-colors',
-                        selected
-                          ? 'text-white/90'
-                          : 'text-gray-400 group-hover:text-gray-600',
-                      )}
-                    >
-                      {item.icon}
-                    </span>
-                    {!isCollapsed && <span className="truncate">{t(item.labelKey)}</span>}
-                    {item.badge != null && Number(item.badge) !== 0 ? (
-                      isCollapsed ? (
-                        <span className="absolute top-1.5 right-1.5 flex size-2 rounded-full bg-violet-600 ring-2 ring-white" />
-                      ) : (
-                        <span
-                          className={cn(
-                            'ml-auto inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none',
-                            selected
-                              ? 'bg-white/15 text-white ring-1 ring-white/20'
-                              : 'bg-violet-600 text-white',
-                          )}
-                        >
-                          {item.badge}
-                        </span>
-                      )
-                    ) : null}
-                  </Link>
-                );
-              })}
+              {section.items?.map((item) => (
+                <NavItemLink
+                  key={item.key}
+                  item={item}
+                  basePath={basePath}
+                  allPaths={allPaths}
+                  pathname={location.pathname}
+                  isCollapsed={isCollapsed}
+                  onNavClick={onNavClick}
+                  t={t}
+                />
+              ))}
+              {section.groups?.map((group) => (
+                <NavCollapsibleGroup
+                  key={group.key}
+                  group={group}
+                  basePath={basePath}
+                  allPaths={allPaths}
+                  pathname={location.pathname}
+                  isCollapsed={isCollapsed}
+                  onNavClick={onNavClick}
+                  t={t}
+                />
+              ))}
             </div>
           </div>
         ))}
@@ -235,8 +345,8 @@ export function CabinetShell({
     }
   };
 
-  const allPaths = sections.flatMap((section) =>
-    section.items.map((item) => buildCabinetPath(basePath, item.to)),
+  const allPaths = flattenCabinetNavSections(sections).map((item) =>
+    buildCabinetPath(basePath, item.to),
   );
 
   const sidebarProps = {

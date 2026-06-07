@@ -15,8 +15,8 @@
 
 .error-blueprint-grid {
   background-image:
-    linear-gradient(rgba(124, 58, 237, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(124, 58, 237, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(194, 89, 63, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(194, 89, 63, 0.035) 1px, transparent 1px);
   background-size: 44px 44px;
   mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, black 20%, transparent 100%);
   -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, black 20%, transparent 100%);

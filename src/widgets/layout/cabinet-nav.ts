@@ -13,11 +13,26 @@ export type CabinetNavItem = {
   badge?: number | string;
 };
 
-export type CabinetNavSection = {
+export type CabinetNavGroup = {
   key: string;
   labelKey: string;
   items: CabinetNavItem[];
 };
+
+export type CabinetNavSection = {
+  key: string;
+  labelKey: string;
+  items?: CabinetNavItem[];
+  groups?: CabinetNavGroup[];
+};
+
+export function flattenCabinetNavSections(sections: CabinetNavSection[]): CabinetNavItem[] {
+  return sections.flatMap((section) =>
+    section.groups
+      ? section.groups.flatMap((group) => group.items)
+      : (section.items ?? []),
+  );
+}
 
 export { COMPANY_ROLE_LABELS } from '@/entities/company/model/team.constants';
 

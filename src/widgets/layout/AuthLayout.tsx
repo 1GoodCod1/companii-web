@@ -104,13 +104,13 @@ export function AuthLayout() {
               </pattern>
               
               {/* Glowing gradients */}
-              <radialGradient id="glow-violet" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.12" />
-                <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0" />
+              <radialGradient id="glow-terracotta" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#c2593f" stopOpacity="0.12" />
+                <stop offset="100%" stopColor="#c2593f" stopOpacity="0" />
               </radialGradient>
-              <radialGradient id="glow-emerald" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#10B981" stopOpacity="0.08" />
-                <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
+              <radialGradient id="glow-amber" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#dfa135" stopOpacity="0.08" />
+                <stop offset="100%" stopColor="#dfa135" stopOpacity="0" />
               </radialGradient>
             </defs>
 
@@ -119,8 +119,8 @@ export function AuthLayout() {
             <rect width="800" height="520" rx="16" stroke="#E2E8F0" strokeWidth="1.5" />
 
             {/* Colored ambient glows */}
-            <circle cx="250" cy="260" r="300" fill="url(#glow-violet)" />
-            <circle cx="600" cy="200" r="250" fill="url(#glow-emerald)" />
+            <circle cx="250" cy="260" r="300" fill="url(#glow-terracotta)" />
+            <circle cx="600" cy="200" r="250" fill="url(#glow-amber)" />
 
             {/* Section 1: CALENDAR & SCHEDULING (PLANIFICATOR CALENDAR) */}
             <g transform="translate(40, 30)">
@@ -128,10 +128,10 @@ export function AuthLayout() {
               
               {/* Header */}
               <rect width="360" height="40" rx="12" fill="#F8FAFC" />
-              <circle cx="20" cy="20" r="4" fill="#8B5CF6" />
+              <circle cx="20" cy="20" r="4" fill="#c2593f" />
               <text x="32" y="24" fill="#334155" fontSize="11" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.scheduleTitle')}</text>
-              <rect x="270" y="10" width="75" height="20" rx="4" fill="#F5F3FF" stroke="#DDD6FE" strokeWidth="1" />
-              <text x="307" y="22" fill="#7C3AED" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">{t('auth.layout.mockup.synchronized')}</text>
+              <rect x="270" y="10" width="75" height="20" rx="4" fill="#fbf0eb" stroke="#f6ded5" strokeWidth="1" />
+              <text x="307" y="22" fill="#a24732" fontSize="8" fontWeight="bold" fontFamily="sans-serif" textAnchor="middle">{t('auth.layout.mockup.synchronized')}</text>
 
               {/* Time grid headers */}
               <g transform="translate(90, 52)">
@@ -151,38 +151,38 @@ export function AuthLayout() {
               <g transform="translate(16, 75)">
                 {/* Tech 1 Row */}
                 <g transform="translate(0, 0)">
-                  <circle cx="12" cy="18" r="12" fill="#8B5CF6" />
+                  <circle cx="12" cy="18" r="12" fill="#d27357" />
                   <text x="8" y="21" fill="white" fontSize="9" fontWeight="bold" fontFamily="sans-serif">AM</text>
                   <text x="30" y="16" fill="#1E293B" fontSize="9" fontWeight="bold" fontFamily="sans-serif">Andrei M.</text>
                   <text x="30" y="27" fill="#64748B" fontSize="8" fontFamily="sans-serif">{t('auth.layout.mockup.tech1Role')}</text>
                   
                   {/* Task block 1 */}
-                  <rect x="74" y="6" width="110" height="24" rx="6" fill="#F5F3FF" stroke="#DDD6FE" strokeWidth="1" />
-                  <text x="84" y="20" fill="#5B21B6" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.tech1Task')}</text>
+                  <rect x="74" y="6" width="110" height="24" rx="6" fill="#fbf0eb" stroke="#f6ded5" strokeWidth="1" />
+                  <text x="84" y="20" fill="#863c2c" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.tech1Task')}</text>
                 </g>
 
                 {/* Tech 2 Row */}
                 <g transform="translate(0, 50)">
-                  <circle cx="12" cy="18" r="12" fill="#10B981" />
+                  <circle cx="12" cy="18" r="12" fill="#52525b" />
                   <text x="8" y="21" fill="white" fontSize="9" fontWeight="bold" fontFamily="sans-serif">VC</text>
                   <text x="30" y="16" fill="#1E293B" fontSize="9" fontWeight="bold" fontFamily="sans-serif">Vlad C.</text>
                   <text x="30" y="27" fill="#64748B" fontSize="8" fontFamily="sans-serif">{t('auth.layout.mockup.tech2Role')}</text>
                   
                   {/* Task block 2 */}
-                  <rect x="114" y="6" width="130" height="24" rx="6" fill="#ECFDF5" stroke="#A7F3D0" strokeWidth="1" />
-                  <text x="124" y="20" fill="#065F46" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.tech2Task')}</text>
+                  <rect x="114" y="6" width="130" height="24" rx="6" fill="#f4f4f5" stroke="#e4e4e7" strokeWidth="1" />
+                  <text x="124" y="20" fill="#3f3f46" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.tech2Task')}</text>
                 </g>
 
                 {/* Tech 3 Row */}
                 <g transform="translate(0, 100)">
-                  <circle cx="12" cy="18" r="12" fill="#F59E0B" />
+                  <circle cx="12" cy="18" r="12" fill="#dfa135" />
                   <text x="9" y="21" fill="white" fontSize="9" fontWeight="bold" fontFamily="sans-serif">IP</text>
                   <text x="30" y="16" fill="#1E293B" fontSize="9" fontWeight="bold" fontFamily="sans-serif">Igor P.</text>
                   <text x="30" y="27" fill="#64748B" fontSize="8" fontFamily="sans-serif">{t('auth.layout.mockup.tech3Role')}</text>
                   
                   {/* Task block 3 */}
-                  <rect x="154" y="6" width="100" height="24" rx="6" fill="#FEF3C7" stroke="#FDE68A" strokeWidth="1" />
-                  <text x="164" y="20" fill="#92400E" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.tech3Task')}</text>
+                  <rect x="154" y="6" width="100" height="24" rx="6" fill="#fbf0eb" stroke="#f6ded5" strokeWidth="1" />
+                  <text x="164" y="20" fill="#863c2c" fontSize="8" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.tech3Task')}</text>
                 </g>
               </g>
             </g>
@@ -238,12 +238,12 @@ export function AuthLayout() {
               {/* Process Step 1: Customer Lead */}
               <g transform="translate(16, 55)">
                 <rect width="298" height="68" rx="8" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="1" />
-                <rect x="12" y="12" width="8" height="8" rx="4" fill="#6366F1" />
+                <rect x="12" y="12" width="8" height="8" rx="4" fill="#52525b" />
                 <text x="26" y="20" fill="#1E293B" fontSize="10" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step1Title')}</text>
                 <text x="282" y="20" fill="#475569" fontSize="8" fontFamily="sans-serif" textAnchor="end">{t('auth.layout.mockup.step1Source')}</text>
                 
                 <text x="26" y="38" fill="#475569" fontSize="9" fontWeight="medium" fontFamily="sans-serif">{t('auth.layout.mockup.step1Client')}</text>
-                <text x="26" y="52" fill="#8B5CF6" fontSize="9" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step1Service')}</text>
+                <text x="26" y="52" fill="#c2593f" fontSize="9" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step1Service')}</text>
               </g>
 
               {/* Arrow Connector 1 */}
@@ -252,7 +252,7 @@ export function AuthLayout() {
               {/* Process Step 2: Live Cost Estimate Document */}
               <g transform="translate(16, 137)">
                 <rect width="298" height="152" rx="8" fill="#FFF" stroke="#E2E8F0" strokeWidth="1" />
-                <rect x="12" y="12" width="8" height="8" rx="4" fill="#8B5CF6" />
+                <rect x="12" y="12" width="8" height="8" rx="4" fill="#c2593f" />
                 <text x="26" y="20" fill="#1E293B" fontSize="10" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step2Title')}</text>
                 
                 {/* Table representation */}
@@ -281,7 +281,7 @@ export function AuthLayout() {
                   <text x="274" y="78" fill="#475569" fontSize="8" textAnchor="end" fontFamily="sans-serif">{t('auth.layout.mockup.step2VatIncluded')}</text>
 
                   <text x="0" y="94" fill="#1E293B" fontSize="10" fontWeight="bold" fontFamily="sans-serif">{t('auth.layout.mockup.step2Total')}</text>
-                  <text x="274" y="94" fill="#7C3AED" fontSize="11" fontWeight="extrabold" textAnchor="end" fontFamily="sans-serif">{t('auth.layout.mockup.step2TotalAmount')}</text>
+                  <text x="274" y="94" fill="#c2593f" fontSize="11" fontWeight="extrabold" textAnchor="end" fontFamily="sans-serif">{t('auth.layout.mockup.step2TotalAmount')}</text>
                 </g>
               </g>
 

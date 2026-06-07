@@ -21,8 +21,8 @@ export function ChartCard({
       <PanelHeader title={title} description={description} />
       <div className="mt-4">
         {isEmpty ? (
-          <div className="flex h-[300px] items-center justify-center">
-            <EmptyState message={emptyMessage} compact />
+          <div className="flex h-[300px]">
+            <EmptyState message={emptyMessage} fill />
           </div>
         ) : (
           children

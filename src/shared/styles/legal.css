@@ -3,7 +3,7 @@
 }
 
 .legal-title {
-  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  font-family: var(--font-display);
   letter-spacing: -0.03em;
 }
 
@@ -23,13 +23,13 @@
 }
 
 .legal-section-title {
-  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  font-family: var(--font-display);
   letter-spacing: 0.08em;
 }
 
 .legal-section-content a,
 .legal-lead a {
-  color: #6d28d9;
+  color: #a24732;
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -37,13 +37,13 @@
 
 .legal-section-content a:hover,
 .legal-lead a:hover {
-  color: #5b21b6;
+  color: #863c2c;
 }
 
 .legal-toc a {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-sans);
 }
 
 .legal-document-body {
-  border-top: 3px solid rgba(124, 58, 237, 0.12);
+  border-top: 3px solid rgba(194, 89, 63, 0.12);
 }

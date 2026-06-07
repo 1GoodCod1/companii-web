@@ -53,10 +53,9 @@
 }
 
 .landing-shimmer-text {
-  background: linear-gradient(90deg, #7c3aed 0%, #6366f1 35%, #a78bfa 50%, #6366f1 65%, #7c3aed 100%);
-  background-size: 200% auto;
+  background: linear-gradient(90deg, #c2593f, #dfa135);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: landing-shimmer 6s linear infinite;
 }
+

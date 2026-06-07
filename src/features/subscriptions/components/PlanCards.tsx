@@ -124,11 +124,11 @@ export function PlanCards({
             className={cn(
               'relative border bg-white p-6 flex flex-col',
               isPopular ? 'border-violet-200 ring-1 ring-violet-100' : 'border-slate-200',
-              isCurrent && 'ring-2 ring-emerald-200 border-emerald-200',
+              isCurrent && 'ring-1 ring-gray-300 border-gray-300',
             )}
           >
             {isCurrent ? (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold bg-emerald-600 text-white px-3 py-1">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold bg-gray-900 text-white px-3 py-1">
                 {t('subscriptions.planCards.activePlan')}
               </span>
             ) : null}
@@ -156,7 +156,7 @@ export function PlanCards({
             <ul className="space-y-2.5 flex-1 mb-6 border-t border-slate-100 pt-5">
               {planFeatures(plan, t).map((feature) => (
                 <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-600">
-                  <CheckIcon className="size-4 text-emerald-500 mt-0.5 shrink-0" weight="bold" />
+                  <CheckIcon className="size-4 text-violet-600 mt-0.5 shrink-0" weight="bold" />
                   <span>{feature}</span>
                 </li>
               ))}
@@ -164,7 +164,7 @@ export function PlanCards({
 
             {isCurrent ? (
               <div className="space-y-2.5">
-                <div className="text-center text-sm font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 py-2.5">
+                <div className="text-center text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 py-2.5">
                   {t('subscriptions.planCards.currentPlan')}
                 </div>
                 {isProPlan(currentPlanCode) && onClaimFree ? (
