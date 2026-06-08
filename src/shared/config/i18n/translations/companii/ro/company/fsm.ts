@@ -481,6 +481,7 @@ export const companiiRoCompanyFsm = {
           badges: { service: '🔧 Serviciu: {{title}}', project: '🏗️ Proiect Complex' },
           budget: '💰 Buget:',
           estimateLink: '📝 Calcul de preț {{number}} — {{title}}',
+          interventionLink: '🔧 Lucrare {{number}} — {{type}}',
           addedAt: 'Adăugat la:',
           actions: {
             saveToCrm: 'Salvează în CRM',

@@ -1,4 +1,10 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
+import { queryKeys } from '@/shared/api/queryKeys';
+import { CompanyVerificationPending } from '@/features/companies';
 import {
   CalendarIcon,
   CalculatorIcon,
@@ -17,6 +23,7 @@ import {
   UserIcon,
   UsersIcon,
   WrenchIcon,
+  Clock,
 } from '@phosphor-icons/react';
 import { CabinetShell } from './CabinetShell';
 import { useMySubscriptionQuery } from '@/entities/subscription/api/useSubscriptions';
@@ -229,8 +236,13 @@ function buildGroupItems(
 function buildCompanySections(
   currentPlan: string | undefined,
   companyRole: string | undefined,
+  isVerified: boolean,
 ): CabinetNavSection[] {
   const visible = NAV_DEFS.filter((item) => {
+    if (!isVerified && item.key !== 'dashboard' && item.key !== 'profile' && item.key !== 'settings') {
+      return false;
+    }
+
     const roleAllowed = canAccessCompanyRoute(companyRole, item.to);
     if (!roleAllowed) return false;
 
@@ -291,12 +303,15 @@ function buildCompanySections(
 }
 
 export function CompanyLayout() {
+  const { t } = useTranslation();
+  const location = useLocation();
+  const qc = useQueryClient();
   const user = useAuthStore((s) => s.user);
   const contextCompanyId = useCompanyContextStore((s) => s.activeCompanyId);
   const setActiveCompanyId = useCompanyContextStore((s) => s.setActiveCompanyId);
   const activeCompanyId = contextCompanyId ?? user?.activeCompanyId;
   const { data: subData } = useMySubscriptionQuery();
-  const { data: companyMe } = useCompanyMeQuery();
+  const { data: companyMe, refetch: refetchCompanyMe } = useCompanyMeQuery();
   const activeCompany =
     companyMe?.owned.find((company) => company.id === activeCompanyId) ??
     companyMe?.memberships.find((membership) => membership.companyId === activeCompanyId)?.company ??
@@ -309,10 +324,46 @@ export function CompanyLayout() {
   const { isManagement } = useCompanyPermissions();
   const cereriPlanAllowed = hasMinPlan(currentPlan, SUBSCRIPTION_PLAN.PRO);
   const cereriRoleAllowed = canAccessCompanyRoute(profileRole, '/cereri');
+
+  const isVerified = activeCompany?.isVerified ?? false;
+
   const { data: newLeads } = useLeadsQuery(LEAD_STATUS.NEW, {
-    enabled: isManagement && cereriPlanAllowed && cereriRoleAllowed && !!activeCompanyId,
+    enabled:
+      isManagement &&
+      cereriPlanAllowed &&
+      cereriRoleAllowed &&
+      !!activeCompanyId &&
+      !!isVerified,
   });
   const newLeadCount = newLeads?.length ?? 0;
+
+  // Poll company status if not verified
+  useEffect(() => {
+    if (!activeCompanyId || isVerified) return;
+
+    const interval = setInterval(() => {
+      void refetchCompanyMe();
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [activeCompanyId, isVerified, refetchCompanyMe]);
+
+  // Handle transition from unverified to verified (auto unlock and invalidate queries)
+  const prevIsVerifiedRef = useRef(isVerified);
+  useEffect(() => {
+    if (isVerified && !prevIsVerifiedRef.current) {
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.me });
+      void qc.invalidateQueries({ queryKey: queryKeys.companies.members });
+      void qc.invalidateQueries({ queryKey: queryKeys.subscriptions.me });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.customersRoot });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+      toast.success(
+        t('company.verificationPending.approvedToast', 'Кабинет одобрен администратором! Добро пожаловать.')
+      );
+    }
+    prevIsVerifiedRef.current = isVerified;
+  }, [isVerified, qc, t]);
 
   useEffect(() => {
     if (!companyMe) return;
@@ -342,7 +393,7 @@ export function CompanyLayout() {
     }
   }, [companyMe, user?.activeCompanyId, user?.companyRole, activeCompanyId, setActiveCompanyId]);
 
-  const sections = buildCompanySections(currentPlan, profileRole).map((section) => ({
+  const sections = buildCompanySections(currentPlan, profileRole, isVerified).map((section) => ({
     ...section,
     items: section.items?.map((item) =>
       item.key === 'cereri' && newLeadCount > 0
@@ -361,6 +412,34 @@ export function CompanyLayout() {
 
   const sidebarExtras = useMemo(() => <CompanySwitcher />, []);
 
+  const isProfileOrSettings =
+    location.pathname.endsWith('/profile') ||
+    location.pathname.endsWith('/settings');
+
+  const showPendingVerification = activeCompany && !isVerified && !isProfileOrSettings;
+
+  const banner = useMemo(() => {
+    if (activeCompany && !isVerified && isProfileOrSettings) {
+      return (
+        <div className="mb-6 p-4 border border-amber-100 bg-amber-50/60 rounded-2xl flex items-start gap-3 text-amber-800 animate-fade-in">
+          <Clock className="size-5 shrink-0 mt-0.5 text-amber-500 animate-pulse" />
+          <div>
+            <h4 className="font-bold text-sm">
+              {t('company.verificationPending.bannerTitle', 'Кабинет на модерации')}
+            </h4>
+            <p className="text-xs text-amber-700/90 mt-0.5">
+              {t(
+                'company.verificationPending.bannerDescription',
+                'Полный доступ к панели управления будет открыт автоматически сразу после одобрения администратором.'
+              )}
+            </p>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }, [activeCompany, isVerified, isProfileOrSettings, t]);
+
   return (
     <CabinetShell
       basePath="/company"
@@ -369,6 +448,11 @@ export function CompanyLayout() {
       profileAvatarUrl={activeCompany?.logoUrl}
       profileRole={profileRole}
       sidebarExtras={sidebarExtras}
-    />
+      banner={banner}
+    >
+      {showPendingVerification ? (
+        <CompanyVerificationPending companyName={activeCompany?.name ?? ''} />
+      ) : null}
+    </CabinetShell>
   );
 }

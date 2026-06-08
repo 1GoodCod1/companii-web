@@ -134,7 +134,23 @@ export function CalendarBoardView({
                   <p className="text-xs font-semibold text-violet-600">{lead.serviceTitle}</p>
                 ) : null}
                 <SoftBadge tone="amber">{leadStatusLabel(lead.status, t)}</SoftBadge>
-                {isManagement ? (
+                {lead.interventions && lead.interventions.length > 0 ? (
+                  <div className="space-y-1 pt-1">
+                    {lead.interventions.map((intv) => (
+                      <p key={intv.id} className="text-xs">
+                        <Link
+                          to={`/company/lucrari?selectedId=${intv.id}`}
+                          className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100/50 px-3 py-1 text-xs font-bold text-violet-700 hover:bg-violet-100 transition-colors"
+                        >
+                          {t('company.fsm.leads.inbox.interventionLink', {
+                            number: intv.number,
+                            type: intv.type,
+                          })}
+                        </Link>
+                      </p>
+                    ))}
+                  </div>
+                ) : isManagement ? (
                   <div className="flex flex-wrap gap-2 pt-1">
                     <button
                       type="button"

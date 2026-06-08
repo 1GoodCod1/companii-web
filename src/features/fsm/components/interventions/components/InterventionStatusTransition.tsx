@@ -37,7 +37,10 @@ export function InterventionStatusTransition({
         {t('company.fsm.interventions.detail.nextStep.title')}
       </h4>
       {(() => {
-        const allowed = getAllowedInterventionTransitions(detail.status, role);
+        let allowed = getAllowedInterventionTransitions(detail.status, role);
+        if (!detail.scheduledAt) {
+          allowed = allowed.filter((st) => st !== INTERVENTION_STATUS.SCHEDULED);
+        }
         const hint = interventionStatusHint(detail.status, t);
         if (allowed.length === 0) {
           return (

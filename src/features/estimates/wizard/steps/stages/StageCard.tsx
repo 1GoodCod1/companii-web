@@ -45,6 +45,7 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
     addLineMutation,
     isReadOnly,
     laborUnits,
+    isServiceCategory,
   } = wizard;
 
   return (
@@ -82,8 +83,8 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                 <th className={`py-2 ${estimateLineColUnit} text-center`}>{t('company.estimateWizard.stagesStep.colUnit')}</th>
                 <th className={`py-2 ${estimateLineColPrice} text-right`}>{t('company.estimateWizard.stagesStep.colUnitPrice')}</th>
                 <th className={`py-2 ${estimateLineColTotal} text-right`}>{t('company.estimateWizard.stagesStep.colTotal')}</th>
-                <th className="py-2">{t('company.estimateWizard.stagesStep.colStore')}</th>
-                <th className="py-2 text-right">{t('company.estimateWizard.stagesStep.colReceipt')}</th>
+                {!isServiceCategory && <th className="py-2">{t('company.estimateWizard.stagesStep.colStore')}</th>}
+                {!isServiceCategory && <th className="py-2 text-right">{t('company.estimateWizard.stagesStep.colReceipt')}</th>}
                 {!isReadOnly && (
                   <th className="py-2 w-10">
                     <span className="sr-only">
@@ -190,91 +191,95 @@ export function StageCard({ stage, index, wizard }: StageCardProps) {
                     <td className={`${estimateLineNumericCellEnd} font-extrabold text-gray-900 tabular-nums whitespace-nowrap`}>
                       {Number(line.lineTotal).toLocaleString('ro-MD')} MDL
                     </td>
-                    <td className="py-3">
-                      {isLabor ? (
-                        <span className="text-[10px] text-gray-400 italic">
-                          {t('company.estimateWizard.stagesStep.laborService')}
-                        </span>
-                      ) : (
-                        <div className="flex items-center gap-1.5">
-                          <input
-                            type="text"
-                            placeholder={t('company.estimateWizard.stagesStep.storePlaceholder')}
-                            aria-label={t('company.estimateWizard.stagesStep.colStore')}
-                            disabled={isReadOnly}
-                            value={
-                              editingStore?.lineId === line.id
-                                ? editingStore.value
-                                : line.materialStore || ''
-                            }
-                            onChange={(e) =>
-                              setEditingStore({ lineId: line.id, value: e.target.value })
-                            }
-                            onBlur={() => handleSaveStore(line.id, stage.id)}
-                            className="w-36 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
-                          />
-                          {!isReadOnly && editingStore?.lineId === line.id && (
-                            <button
-                              type="button"
-                              onMouseDown={() => handleSaveStore(line.id, stage.id)}
-                              className="rounded-md bg-emerald-100 p-1 text-emerald-700 hover:bg-emerald-200 transition-colors"
-                            >
-                              <CheckIcon className="size-3" />
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </td>
-                    <td className="py-3 text-right">
-                      {isLabor ? null : (
-                        <div className="inline-flex items-center gap-2">
-                          {line.receiptFileKey ? (
-                            <>
+                    {!isServiceCategory && (
+                      <td className="py-3">
+                        {isLabor ? (
+                          <span className="text-[10px] text-gray-400 italic">
+                            {t('company.estimateWizard.stagesStep.laborService')}
+                          </span>
+                        ) : (
+                          <div className="flex items-center gap-1.5">
+                            <input
+                              type="text"
+                              placeholder={t('company.estimateWizard.stagesStep.storePlaceholder')}
+                              aria-label={t('company.estimateWizard.stagesStep.colStore')}
+                              disabled={isReadOnly}
+                              value={
+                                editingStore?.lineId === line.id
+                                  ? editingStore.value
+                                  : line.materialStore || ''
+                              }
+                              onChange={(e) =>
+                                setEditingStore({ lineId: line.id, value: e.target.value })
+                              }
+                              onBlur={() => handleSaveStore(line.id, stage.id)}
+                              className="w-36 rounded-lg border border-gray-200 px-2 py-1 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium disabled:bg-slate-50 disabled:text-gray-500"
+                            />
+                            {!isReadOnly && editingStore?.lineId === line.id && (
                               <button
                                 type="button"
-                                onClick={() =>
-                                  downloadFile(
-                                    line.receiptFileKey!,
-                                    `Bon-${line.description.replace(/\s+/g, '_')}.pdf`,
-                                  )
-                                }
-                                className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100 px-2 py-1 text-[10px] font-bold text-violet-700 hover:bg-violet-100 transition-colors"
+                                onMouseDown={() => handleSaveStore(line.id, stage.id)}
+                                className="rounded-md bg-emerald-100 p-1 text-emerald-700 hover:bg-emerald-200 transition-colors"
                               >
-                                <EyeIcon className="size-3.5" /> {t('company.estimateWizard.stagesStep.viewReceipt')}
+                                <CheckIcon className="size-3" />
                               </button>
-                              {!isReadOnly && (
+                            )}
+                          </div>
+                        )}
+                      </td>
+                    )}
+                    {!isServiceCategory && (
+                      <td className="py-3 text-right">
+                        {isLabor ? null : (
+                          <div className="inline-flex items-center gap-2">
+                            {line.receiptFileKey ? (
+                              <>
                                 <button
                                   type="button"
-                                  onClick={() => handleDeleteReceipt(line.id, stage.id)}
-                                  className="rounded-xl bg-red-50 border border-red-100 p-1 text-red-600 hover:bg-red-100 transition-colors"
+                                  onClick={() =>
+                                    downloadFile(
+                                      line.receiptFileKey!,
+                                      `Bon-${line.description.replace(/\s+/g, '_')}.pdf`,
+                                    )
+                                  }
+                                  className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100 px-2 py-1 text-[10px] font-bold text-violet-700 hover:bg-violet-100 transition-colors"
                                 >
-                                  <TrashIcon className="size-3.5" />
+                                  <EyeIcon className="size-3.5" /> {t('company.estimateWizard.stagesStep.viewReceipt')}
                                 </button>
-                              )}
-                            </>
-                          ) : !isReadOnly ? (
-                            <label className="relative cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-dashed border-gray-200 bg-white px-2.5 py-1 text-[10px] font-bold text-gray-500 hover:bg-gray-50 transition-colors">
-                              {uploadingLineId === line.id ? (
-                                <span className="animate-pulse">{t('cabinet.common.loading')}</span>
-                              ) : (
-                                <>
-                                  <PlusIcon className="size-3" /> {t('company.estimateWizard.stagesStep.receipt')}
-                                </>
-                              )}
-                              <input
-                                type="file"
-                                className="sr-only"
-                                accept="image/*,application/pdf"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) handleUploadReceipt(line.id, stage.id, file);
-                                }}
-                              />
-                            </label>
-                          ) : null}
-                        </div>
-                      )}
-                    </td>
+                                {!isReadOnly && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteReceipt(line.id, stage.id)}
+                                    className="rounded-xl bg-red-50 border border-red-100 p-1 text-red-600 hover:bg-red-100 transition-colors"
+                                  >
+                                    <TrashIcon className="size-3.5" />
+                                  </button>
+                                )}
+                              </>
+                            ) : !isReadOnly ? (
+                              <label className="relative cursor-pointer inline-flex items-center gap-1.5 rounded-xl border border-dashed border-gray-200 bg-white px-2.5 py-1 text-[10px] font-bold text-gray-500 hover:bg-gray-50 transition-colors">
+                                {uploadingLineId === line.id ? (
+                                  <span className="animate-pulse">{t('cabinet.common.loading')}</span>
+                                ) : (
+                                  <>
+                                    <PlusIcon className="size-3" /> {t('company.estimateWizard.stagesStep.receipt')}
+                                  </>
+                                )}
+                                <input
+                                  type="file"
+                                  className="sr-only"
+                                  accept="image/*,application/pdf"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) handleUploadReceipt(line.id, stage.id, file);
+                                  }}
+                                />
+                              </label>
+                            ) : null}
+                          </div>
+                        )}
+                      </td>
+                    )}
                     {!isReadOnly && (
                       <td className="py-3 text-center">
                         <button

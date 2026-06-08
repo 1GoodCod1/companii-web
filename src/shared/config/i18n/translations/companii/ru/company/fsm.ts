@@ -481,6 +481,7 @@ export const companiiRuCompanyFsm = {
           badges: { service: '🔧 Услуга: {{title}}', project: '🏗️ Сложный проект' },
           budget: '💰 Бюджет:',
           estimateLink: '📝 Расчет стоимости {{number}} — {{title}}',
+          interventionLink: '🔧 Работа {{number}} — {{type}}',
           addedAt: 'Добавлено:',
           actions: {
             saveToCrm: 'Сохранить в CRM',

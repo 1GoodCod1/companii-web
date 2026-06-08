@@ -118,6 +118,24 @@ export function LeadInboxItem({
             </p>
           ) : null}
 
+          {lead.interventions && lead.interventions.length > 0 ? (
+            <div className="space-y-1 pt-1">
+              {lead.interventions.map((intv) => (
+                <p key={intv.id} className="text-xs">
+                  <Link
+                    to={`/company/lucrari?selectedId=${intv.id}`}
+                    className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100/50 px-3 py-1 text-xs font-bold text-violet-700 hover:bg-violet-100 transition-colors"
+                  >
+                    {t('company.fsm.leads.inbox.interventionLink', {
+                      number: intv.number,
+                      type: intv.type,
+                    })}
+                  </Link>
+                </p>
+              ))}
+            </div>
+          ) : null}
+
           <p className="text-[10px] text-slate-400 font-medium">
             {t('company.fsm.leads.inbox.addedAt')}{' '}
             {formatDateTimeLocalized(lead.createdAt, locale)}
@@ -148,14 +166,16 @@ export function LeadInboxItem({
               {t('company.fsm.leads.inbox.actions.saveToCrm')}
             </button>
           ) : null}
-          <button
-            type="button"
-            onClick={() => onConvertIntervention(lead.id)}
-            disabled={convertPending}
-            className={cabinetBtnPrimary}
-          >
-            {t('company.fsm.leads.inbox.actions.convertIntervention')}
-          </button>
+          {(!lead.interventions || lead.interventions.length === 0) ? (
+            <button
+              type="button"
+              onClick={() => onConvertIntervention(lead.id)}
+              disabled={convertPending}
+              className={cabinetBtnPrimary}
+            >
+              {t('company.fsm.leads.inbox.actions.convertIntervention')}
+            </button>
+          ) : null}
           {!lead.estimateProjectId && !isExcluded ? (
             <button
               type="button"

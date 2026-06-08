@@ -178,6 +178,11 @@ export interface CompanyLeadDto {
   createdAt: string;
   updatedAt: string;
   category?: { id: string; name: string; slug?: string } | null;
+  interventions?: {
+    id: string;
+    number: string;
+    type: string;
+  }[];
 }
 
 export interface CompanyServiceDto {

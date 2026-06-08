@@ -292,6 +292,7 @@ export function CabinetShell({
   profileRole,
   sidebarExtras,
   banner,
+  children,
 }: {
   basePath: string;
   sections: CabinetNavSection[];
@@ -300,6 +301,7 @@ export function CabinetShell({
   profileRole?: string;
   sidebarExtras?: ReactNode;
   banner?: ReactNode;
+  children?: ReactNode;
 }) {
   const location = useLocation();
   const navTo = useNavigate();
@@ -398,7 +400,7 @@ export function CabinetShell({
       </MobileSheet>
       <main className="cabinet-content flex-1 overflow-y-auto h-full p-4 sm:p-6 lg:p-8 pt-18 sm:pt-6 lg:pt-8">
         {banner}
-        <Outlet />
+        {children ?? <Outlet />}
       </main>
     </div>
   );

@@ -15,9 +15,9 @@ function readClientFeedback(
 
 /** Forces wizard remount when server-side estimate revision changes (e.g. client feedback). */
 export function getEstimateWizardRemountKey(
-  project: Pick<EstimateProjectDto, 'id' | 'status' | 'clientFeedback'>,
+  project: Pick<EstimateProjectDto, 'id' | 'clientFeedback'>,
 ): string {
   const feedback = readClientFeedback(project.clientFeedback);
   const last = feedback.at(-1);
-  return `${project.id}:${project.status}:${feedback.length}:${last?.createdAt ?? ''}:${last?.kind ?? ''}`;
+  return `${project.id}:${feedback.length}:${last?.createdAt ?? ''}:${last?.kind ?? ''}`;
 }

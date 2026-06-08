@@ -123,4 +123,19 @@ export const companiiRoCompanyShell = {
       technicianCalendarSuffix:
         '. Pentru a-ți înregistra propria companie, ieși din cont și creează un cont nou de tip «Companie» pe pagina publică de înregistrare.',
     },
+    verificationPending: {
+      title: 'Cabinet în curs de moderare',
+      description: 'Compania dvs. a fost înregistrată și așteaptă verificarea de către un administrator. Accesul la panourile de lucru se va deschide automat imediat după aprobare.',
+      statusTitle: 'Stare verificare',
+      statusWaiting: 'În așteptarea aprobării',
+      stepRegistered: 'Înregistrarea companiei',
+      stepReview: 'Verificarea de către administrator',
+      stepActivate: 'Activarea cabinetului',
+      autoUpdateInfo: 'Pagina se va actualiza automat, nu o închideți.',
+      editProfile: 'Editează profilul',
+      settings: 'Setări',
+      bannerTitle: 'Cabinet în curs de moderare',
+      bannerDescription: 'Accesul complet la panoul de control se va deschide automat imediat după aprobarea de către administrator.',
+      approvedToast: 'Cabinetul a fost aprobat cu succes! Bine ați venit.',
+    },
 };

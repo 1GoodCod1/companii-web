@@ -31,6 +31,17 @@ function resolveBackendComplexityUnits(backendComplexity: unknown): number {
     .replace(/\p{M}/gu, '');
 
   if (normalized.includes('fara') || normalized.includes('fără') || normalized === '') return 0;
+  return 1;
+}
+
+function resolveBackendComplexityMultiplier(backendComplexity: unknown): number {
+  const normalized = String(backendComplexity ?? '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '');
+
+  if (normalized.includes('fara') || normalized.includes('fără') || normalized === '') return 0;
   if (normalized.includes('simplu')) return 1;
   if (normalized.includes('mediu')) return 2;
   if (normalized.includes('complex')) return 3;
@@ -47,6 +58,7 @@ export function deriveItWebMeasurements(diagnostic: Record<string, unknown> | nu
   const pagesCount = readNumber(diagnostic, 'pagesCount') ?? 0;
   measurements.pagesCount = pagesCount;
   measurements.hasBackendCount = resolveBackendComplexityUnits(diagnostic.backendComplexity);
+  measurements.backendComplexityMultiplier = resolveBackendComplexityMultiplier(diagnostic.backendComplexity);
   measurements.hasCmsCount = readBoolean(diagnostic, 'hasCMS') ? 1 : 0;
   measurements.hasEcommerceCount = readBoolean(diagnostic, 'hasEcommerce') ? 1 : 0;
 

@@ -39,7 +39,10 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
     handleDeleteReceipt,
     isReadOnly,
     laborUnits,
+    isServiceCategory,
   } = wizard;
+
+  if (isServiceCategory) return null;
 
   const showMaterialsSection = (project.stages as EstimateStageDto[]).some(
     (stage) => (stage.lines ?? []).some((l) => l.source !== 'stage-default')

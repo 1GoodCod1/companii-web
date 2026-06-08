@@ -1,6 +1,5 @@
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import type { InvoicePaymentStatus } from '@/entities/fsm/model/types';
 import {
   useInvoiceQuery,
   useUpdateInvoiceMutation,
@@ -14,7 +13,6 @@ import {
 } from '@/features/fsm/api/useInvoices';
 import { downloadFile } from '@/shared/api/files';
 import { useLocale } from '@/shared/hooks/useLocale';
-import { paymentStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 import { getErrorMessage } from '@/shared/utils/errors';
 import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
@@ -36,42 +34,6 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
   const confirmPayment = useConfirmInvoicePaymentMutation();
   const rejectPayment = useRejectInvoicePaymentMutation();
 
-  const handlePaymentStatusChange = async (newStatus: InvoicePaymentStatus) => {
-    if (!selectedId || !detail) return;
-    if (newStatus === detail.paymentStatus) return;
-    let paymentReversalReason: string | undefined;
-    if (detail.paymentStatus === 'PAID' && newStatus === 'UNPAID') {
-      const reason = window.prompt(
-        t('company.fsm.invoices.detail.reversal.prompt', {
-          defaultValue:
-            'Motivul anulării plății (obligatoriu — va fi salvat în istoric):',
-        }),
-        '',
-      );
-      if (reason === null) return;
-      if (!reason.trim()) {
-        toast.error(
-          t('company.fsm.invoices.detail.reversal.reasonRequired', {
-            defaultValue: 'Motivul este obligatoriu pentru anularea plății',
-          }),
-        );
-        return;
-      }
-      paymentReversalReason = reason.trim();
-    }
-
-    try {
-      await updateInvoice.mutateAsync({
-        id: selectedId,
-        paymentStatus: newStatus,
-        paymentReversalReason,
-      });
-      toast.success(t('cabinet.toasts.invoiceMarked', { status: paymentStatusLabel(newStatus, t) }));
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.toast.updateError')));
-    }
-  };
-
   const handleDownloadPdf = async () => {
     if (!selectedId || !detail) return;
     try {
@@ -82,24 +44,8 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
     }
   };
 
-  const handleCancel = async () => {
+  const handleCancel = async (reason: string) => {
     if (!selectedId) return;
-    const reason = window.prompt(
-      t('company.fsm.invoices.detail.cancel.prompt', {
-        defaultValue:
-          'Motivul anulării (va apărea pe PDF și în istoric):',
-      }),
-      '',
-    );
-    if (reason === null) return;
-    if (!reason.trim()) {
-      toast.error(
-        t('company.fsm.invoices.detail.cancel.reasonRequired', {
-          defaultValue: 'Motivul este obligatoriu',
-        }),
-      );
-      return;
-    }
     try {
       await cancelInvoice.mutateAsync({ id: selectedId, reason: reason.trim() });
       toast.success(
@@ -112,26 +58,10 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
     }
   };
 
-  const handlePartialPayment = async () => {
+  const handlePartialPayment = async (amount: number, note?: string) => {
     if (!selectedId || !detail) return;
-    const total = Number(detail.amount) + Number(detail.tvaAmount);
-    const paid = Number(detail.paidAmount ?? 0);
-    const remaining = Math.max(0, total - paid);
-    const input = window.prompt(
-      t('company.fsm.invoices.detail.payment.prompt', {
-        remaining: remaining.toLocaleString('ro-MD'),
-        defaultValue: 'Sumă plătită (max {{remaining}} MDL):',
-      }),
-      String(remaining.toFixed(2)),
-    );
-    if (input === null) return;
-    const amount = Number(input.replace(',', '.'));
-    if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error(t('company.fsm.invoices.detail.payment.invalidAmount', { defaultValue: 'Sumă invalidă' }));
-      return;
-    }
     try {
-      const updated = await recordPayment.mutateAsync({ id: selectedId, amount });
+      const updated = await recordPayment.mutateAsync({ id: selectedId, amount, note });
       if (updated.paymentStatus === 'PAID') {
         toast.success(t('company.fsm.invoices.detail.payment.paidInFull', { defaultValue: 'Factura este plătită integral' }));
       } else {
@@ -139,20 +69,6 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
       }
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.payment.error', { defaultValue: 'Înregistrare eșuată' })));
-    }
-  };
-
-  const handleCashPaid = async () => {
-    if (!selectedId || !detail) return;
-    try {
-      await updateInvoice.mutateAsync({ id: selectedId, paymentStatus: 'PAID' });
-      toast.success(
-        t('company.fsm.invoices.detail.payment.cashSuccess', {
-          defaultValue: 'Factura marcată ca plătită (numerar / fără upload client)',
-        }),
-      );
-    } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.toast.updateError')));
     }
   };
 
@@ -177,23 +93,8 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
     }
   };
 
-  const handleRejectPayment = async () => {
+  const handleRejectPayment = async (reason: string) => {
     if (!selectedId) return;
-    const reason = window.prompt(
-      t('company.fsm.invoices.detail.paymentProof.rejectPrompt', {
-        defaultValue: 'Motiv respingere (clientul va putea reîncărca dovada):',
-      }),
-      '',
-    );
-    if (reason === null) return;
-    if (!reason.trim()) {
-      toast.error(
-        t('company.fsm.invoices.detail.paymentProof.rejectReasonRequired', {
-          defaultValue: 'Motivul este obligatoriu',
-        }),
-      );
-      return;
-    }
     try {
       await rejectPayment.mutateAsync({ id: selectedId, reason: reason.trim() });
       toast.success(
@@ -293,11 +194,9 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
     sendEmailPending: sendEmail.isPending,
     confirmPaymentPending: confirmPayment.isPending,
     rejectPaymentPending: rejectPayment.isPending,
-    handlePaymentStatusChange,
     handleDownloadPdf,
     handleCancel,
     handlePartialPayment,
-    handleCashPaid,
     handleConfirmPayment,
     handleRejectPayment,
     handleDownloadPaymentProof,
