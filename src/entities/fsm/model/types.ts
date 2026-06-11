@@ -149,7 +149,8 @@ export type CompanyLeadSource =
   | 'PROJECT_REQUEST'
   | 'MANUAL'
   | 'PHONE'
-  | 'WEBSITE';
+  | 'WEBSITE'
+  | 'BOOKING';
 
 export interface CompanyLeadDto {
   id: string;

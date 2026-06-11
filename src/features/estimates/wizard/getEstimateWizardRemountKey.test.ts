@@ -5,7 +5,6 @@ import { getEstimateWizardRemountKey } from './getEstimateWizardRemountKey';
 describe('getEstimateWizardRemountKey', () => {
   const base = {
     id: 'proj-1',
-    status: 'SENT' as const,
     clientFeedback: null,
   };
 
@@ -13,7 +12,6 @@ describe('getEstimateWizardRemountKey', () => {
     const before = getEstimateWizardRemountKey(base);
     const after = getEstimateWizardRemountKey({
       ...base,
-      status: 'CALCULATED',
       clientFeedback: [
         { kind: 'REQUEST_CHANGES', comment: 'Please adjust', createdAt: '2026-05-31T12:00:00.000Z' },
       ],

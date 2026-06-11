@@ -94,6 +94,7 @@ export const companiiRoPortal = {
         MANUAL: 'Cerere manuală',
         PHONE: 'Telefon',
         WEBSITE: 'Site',
+        BOOKING: 'Programare online',
       },
     },
     lucrariPage: {

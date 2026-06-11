@@ -94,6 +94,7 @@ export const companiiRuPortal = {
         MANUAL: 'Ручная заявка',
         PHONE: 'Телефон',
         WEBSITE: 'Сайт',
+        BOOKING: 'Онлайн-запись',
       },
     },
     lucrariPage: {

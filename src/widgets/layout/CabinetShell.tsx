@@ -267,7 +267,7 @@ function SidebarContent({
 
       {user ? (
         <div className="flex-none mt-auto">
-          {!isCollapsed && sidebarExtras}
+          {sidebarExtras}
           <CabinetProfileCard
             displayName={displayName}
             email={user.email}

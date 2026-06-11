@@ -30,7 +30,7 @@
   "include": [
     "src",
     "vite.config.ts"
-  ],
+, "../admin.ts"  ],
   "exclude": [
     "node_modules",
     "dist",

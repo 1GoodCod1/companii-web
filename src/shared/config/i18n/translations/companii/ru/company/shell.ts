@@ -78,6 +78,26 @@ export const companiiRuCompanyShell = {
 
   audit: 'Журнал активности',
 
+  searchPalette: {
+    placeholder: 'Поиск по кабинету: клиенты, работы, счета…',
+    minChars: 'Введите минимум 2 символа.',
+    empty: 'Ничего не найдено по запросу «{{query}}».',
+    navigation: 'Навигация',
+    more: '(+{{count}} ещё)',
+    hintNavigate: 'выбор',
+    hintOpen: 'открыть',
+    hintClose: 'закрыть',
+    types: {
+      customer: 'Клиент',
+      lead: 'Заявка',
+      intervention: 'Работа',
+      quote: 'Предложение',
+      invoice: 'Счёт',
+      estimate: 'Расчет стоимости',
+      service: 'Услуга',
+    },
+  },
+
   sections: {
       main: 'Главное',
       operations: 'Операции',

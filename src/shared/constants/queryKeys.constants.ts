@@ -18,6 +18,7 @@ export const QUERY_KEY_COMPANIES = {
   LIST: 'list',
   ME: 'me',
   DETAIL: 'detail',
+  BOOKING_SLOTS: 'booking-slots',
   MEMBERS: 'members',
   INVITATIONS: 'invitations',
   CITIES: 'cities',
@@ -45,6 +46,7 @@ export const QUERY_KEY_FSM = {
   TIMELINE: 'timeline',
   ANALYTICS: 'analytics',
   PIPELINE_BOARD: 'pipeline-board',
+  SEARCH: 'search',
 } as const;
 
 export const QUERY_KEY_PORTAL = {

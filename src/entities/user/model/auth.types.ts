@@ -10,4 +10,7 @@ export interface AuthUserSnapshot {
   memberId?: string;
   customerId?: string;
   companyRole?: string;
+  telegramChatId?: string | null;
+  notifyInApp?: boolean;
+  leadNotifyChannel?: 'NONE' | 'IN_APP' | 'TELEGRAM' | 'BOTH';
 }

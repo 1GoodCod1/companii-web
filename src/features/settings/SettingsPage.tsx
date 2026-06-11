@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils';
 import { Panel } from '@/widgets/cabinet/cabinet-ui';
 import { LanguageSwitcher } from '@/shared/ui/i18n/LanguageSwitcher';
 import { AppModal } from '@/shared/ui/AppModal';
-import { useChangePasswordMutation } from '@/features/auth';
-import { getAuthErrorMessage } from '@/features/auth';
+import { useChangePasswordMutation, getAuthErrorMessage } from '@/features/auth';
+import { NotificationSettings } from '@/components/notifications/NotificationSettings';
 
 interface ChangePasswordState {
   isOpen: boolean;
@@ -155,9 +155,10 @@ export function SettingsPage() {
             </div>
           </div>
         </Panel>
+        <Panel className="h-full p-5 sm:p-6">
+          <NotificationSettings />
+        </Panel>
       </div>
-
-      {/* Change Password Modal */}
       <AppModal
         open={isChangePasswordOpen}
         onClose={() => passwordDispatch({ type: 'CLOSE_MODAL' })}

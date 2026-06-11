@@ -475,6 +475,7 @@ export const companiiRuCompanyFsm = {
           MANUAL: 'Вручную',
           PHONE: 'Телефон',
           WEBSITE: 'Сайт',
+          BOOKING: 'Онлайн-запись',
         },
         convertEstimate: {
           title: 'Конвертация в расчет стоимости',

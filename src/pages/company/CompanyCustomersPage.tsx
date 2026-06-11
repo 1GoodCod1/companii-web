@@ -1,4 +1,5 @@
 import { useMemo, useState, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react';
@@ -20,7 +21,8 @@ export function CompanyCustomersPage() {
   const deleteCustomer = useDeleteCustomerMutation();
   const { ask, dialog } = useCabinetConfirmDialog();
 
-  const [search, setSearch] = useState('');
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get('q') ?? '');
   const [page, setPage] = useState(1);
   const formModal = useEntityModal<CustomerDto>();
   const importModal = useEntityModal();

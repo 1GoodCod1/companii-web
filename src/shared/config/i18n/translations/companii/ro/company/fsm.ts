@@ -475,6 +475,7 @@ export const companiiRoCompanyFsm = {
           MANUAL: 'Manual',
           PHONE: 'Telefon',
           WEBSITE: 'Site',
+          BOOKING: 'Programare online',
         },
         convertEstimate: {
           title: 'Convertire în calcul de preț',

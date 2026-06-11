@@ -41,6 +41,8 @@ import { CompanySwitcher } from '@/widgets/layout/CompanySwitcher';
 import { useAuthStore } from '@/entities/user/model/authStore';
 import { useCompanyContextStore } from '@/entities/company/model/companyContextStore';
 import { refreshAuthSession } from '@/features/auth';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
+import { GlobalSearchPalette } from '@/features/fsm/components/search/GlobalSearchPalette';
 import {
   COMPANY_COMPANY_GROUP_LABELS,
   COMPANY_COMPANY_GROUP_ORDER,
@@ -410,7 +412,15 @@ export function CompanyLayout() {
     })),
   }));
 
-  const sidebarExtras = useMemo(() => <CompanySwitcher />, []);
+  const sidebarExtras = useMemo(() => (
+    <div className="px-3 mb-3 flex items-center justify-between">
+      <div className="flex-1 min-w-0 mr-2">
+        <CompanySwitcher />
+      </div>
+      <GlobalSearchPalette />
+      <NotificationBell />
+    </div>
+  ), []);
 
   const isProfileOrSettings =
     location.pathname.endsWith('/profile') ||

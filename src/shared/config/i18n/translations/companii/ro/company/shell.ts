@@ -78,6 +78,26 @@ export const companiiRoCompanyShell = {
 
   audit: 'Jurnal de activitate',
 
+  searchPalette: {
+    placeholder: 'Căutare în cabinet: clienți, lucrări, facturi…',
+    minChars: 'Introduceți minim 2 caractere.',
+    empty: 'Nimic găsit pentru „{{query}}”.',
+    navigation: 'Navigare',
+    more: '(+{{count}} în plus)',
+    hintNavigate: 'selectare',
+    hintOpen: 'deschide',
+    hintClose: 'închide',
+    types: {
+      customer: 'Client',
+      lead: 'Cerere',
+      intervention: 'Lucrare',
+      quote: 'Ofertă',
+      invoice: 'Factură',
+      estimate: 'Calcul de preț',
+      service: 'Serviciu',
+    },
+  },
+
   sections: {
       main: 'Principal',
       operations: 'Operațiuni',

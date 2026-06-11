@@ -34,6 +34,7 @@ export function useCompanyDetail() {
   const [requestModal, setRequestModal] = useState<{ serviceId: string; serviceName: string } | null>(null);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [projectTitle, setProjectTitle] = useState('');
   const [projectAddress, setProjectAddress] = useState('');
   const [projectCategoryId, setProjectCategoryId] = useState('');
@@ -67,6 +68,7 @@ export function useCompanyDetail() {
   const openServiceRequest = (serviceId: string, serviceName: string) => {
     if (!requireClientAuth()) return;
     setMessage('');
+    setSelectedSlot(null);
     setRequestModal({ serviceId, serviceName });
   };
 
@@ -87,10 +89,16 @@ export function useCompanyDetail() {
       await requestService.mutateAsync({
         serviceId: requestModal.serviceId,
         message: message.trim() || undefined,
+        scheduledAt: selectedSlot ?? undefined,
       });
-      toast.success(t('companyDetail.toast.serviceSent'));
+      toast.success(
+        selectedSlot
+          ? t('companyDetail.toast.bookingSent')
+          : t('companyDetail.toast.serviceSent'),
+      );
       setRequestModal(null);
       setMessage('');
+      setSelectedSlot(null);
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('companyDetail.toast.sendFailed')));
     }
@@ -148,6 +156,8 @@ export function useCompanyDetail() {
     setProjectModalOpen,
     message,
     setMessage,
+    selectedSlot,
+    setSelectedSlot,
     projectTitle,
     setProjectTitle,
     projectAddress,

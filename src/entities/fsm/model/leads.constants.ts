@@ -18,6 +18,7 @@ export const LEAD_SOURCE_LABELS: Record<CompanyLeadDto['source'], string> = {
   MANUAL: 'Manual',
   PHONE: 'Telefon',
   WEBSITE: 'Site',
+  BOOKING: 'Programare online',
 };
 
 export const PORTAL_LEAD_SOURCE_LABELS: Record<CompanyLeadDto['source'], string> = {

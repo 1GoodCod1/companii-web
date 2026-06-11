@@ -73,6 +73,8 @@ export function LeadInboxItem({
               </SoftBadge>
             ) : lead.source === 'PROJECT_REQUEST' ? (
               <SoftBadge tone="blue">{t('company.fsm.leads.inbox.badges.project')}</SoftBadge>
+            ) : lead.source === 'BOOKING' ? (
+              <SoftBadge tone="emerald">{leadSourceLabel(lead.source)}</SoftBadge>
             ) : (
               <SoftBadge tone="gray">{leadSourceLabel(lead.source)}</SoftBadge>
             )}

@@ -10,6 +10,19 @@ import type {
   PublicCompanyDetailDto,
 } from '@/entities/company/model/companies.types';
 
+export interface BookingSlotsDay {
+  date: string;
+  weekday: string;
+  slots: { start: string }[];
+}
+
+export interface BookingSlotsResponse {
+  enabled: boolean;
+  timezone: string;
+  slotMinutes: number;
+  days: BookingSlotsDay[];
+}
+
 export function useCompaniesListQuery(
   filters: Record<string, string | undefined> = {},
 ): UseQueryResult<CompaniesListResponse, Error> {
@@ -31,6 +44,20 @@ export function useCompanyBySlugQuery(
     queryFn: () => apiFetch<PublicCompanyDetailDto>(`/companies/${slug}`),
     enabled: !!slug,
     ...publicDetailQueryOptions,
+  });
+}
+
+export function useCompanyBookingSlotsQuery(
+  slug: string,
+  from: string,
+  enabled = true,
+): UseQueryResult<BookingSlotsResponse, Error> {
+  const qs = from ? `?from=${encodeURIComponent(from)}` : '';
+  return useQuery<BookingSlotsResponse, Error>({
+    queryKey: queryKeys.companies.bookingSlots(slug, from),
+    queryFn: () => apiFetch<BookingSlotsResponse>(`/companies/${slug}/booking-slots${qs}`),
+    enabled: !!slug && enabled,
+    staleTime: 30_000,
   });
 }
 

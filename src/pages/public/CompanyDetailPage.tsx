@@ -31,6 +31,8 @@ function useCompanyDetailPageView() {
     setProjectModalOpen,
     message,
     setMessage,
+    selectedSlot,
+    setSelectedSlot,
     projectTitle,
     setProjectTitle,
     projectAddress,
@@ -275,6 +277,7 @@ function useCompanyDetailPageView() {
       <CompanyServiceRequestModal
         open={requestModal !== null}
         onClose={() => setRequestModal(null)}
+        companySlug={company.slug}
         requestModal={requestModal}
         onSubmit={handleRequestSubmit}
         profileName={profileName}
@@ -282,6 +285,8 @@ function useCompanyDetailPageView() {
         profileEmail={profileEmail}
         message={message}
         onMessageChange={setMessage}
+        selectedSlot={selectedSlot}
+        onSelectSlot={setSelectedSlot}
         isPending={isRequestServicePending}
       />
 

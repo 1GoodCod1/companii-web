@@ -6,6 +6,7 @@ import { SEOHead } from '@/shared/ui/seo/SEOHead';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth';
 import { LandingHeroMock } from '@/widgets/landing/LandingHeroMock';
+import { DecorBackdrop } from '@/widgets/cabinet/DecorBackdrop';
 import { LandingFinanceMock } from '@/widgets/landing/LandingFinanceMock';
 import { LandingStats } from '@/widgets/landing/LandingStats';
 import { LandingTimeline } from '@/widgets/landing/LandingTimeline';
@@ -41,7 +42,8 @@ export function LandingPage() {
 
       {/* Hero — editorial, full-width, mock below the copy */}
       <section className="relative bg-white border-b border-gray-100 overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 pt-16 sm:pt-24 pb-16 sm:pb-20">
+        <DecorBackdrop />
+        <div className="relative max-w-6xl mx-auto px-6 pt-16 sm:pt-24 pb-16 sm:pb-20">
           <span className="inline-flex items-center gap-2 border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-700 mb-8">
             <span className="size-1.5 bg-violet-600" />
             {t('landing.hero.badge')}

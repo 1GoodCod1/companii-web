@@ -22,6 +22,8 @@ export const queryKeys = {
     me: [QUERY_KEY_ROOT.COMPANIES, QUERY_KEY_COMPANIES.ME] as const,
     detail: (slug: string) =>
       [QUERY_KEY_ROOT.COMPANIES, QUERY_KEY_COMPANIES.DETAIL, slug] as const,
+    bookingSlots: (slug: string, from: string) =>
+      [QUERY_KEY_ROOT.COMPANIES, QUERY_KEY_COMPANIES.BOOKING_SLOTS, slug, from] as const,
     members: [QUERY_KEY_ROOT.COMPANIES, QUERY_KEY_COMPANIES.MEMBERS] as const,
     invitations: [QUERY_KEY_ROOT.COMPANIES, QUERY_KEY_COMPANIES.INVITATIONS] as const,
     cities: [QUERY_KEY_ROOT.COMPANIES, QUERY_KEY_COMPANIES.CITIES] as const,
@@ -63,6 +65,8 @@ export const queryKeys = {
       [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.ANALYTICS, period] as const,
     pipelineBoard: (entity: string) =>
       [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.PIPELINE_BOARD, entity] as const,
+    search: (q: string) =>
+      [QUERY_KEY_ROOT.FSM, QUERY_KEY_FSM.SEARCH, q] as const,
   },
   portal: {
     dashboard: [QUERY_KEY_ROOT.PORTAL, QUERY_KEY_PORTAL.DASHBOARD] as const,

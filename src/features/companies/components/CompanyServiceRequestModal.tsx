@@ -6,10 +6,12 @@ import {
   cabinetFieldClass,
   cabinetLabelClass,
 } from '@/widgets/cabinet/cabinet-ui';
+import { BookingSlotPicker } from './BookingSlotPicker';
 
 interface CompanyServiceRequestModalProps {
   open: boolean;
   onClose: () => void;
+  companySlug: string;
   requestModal: { serviceId: string; serviceName: string } | null;
   onSubmit: (e: React.FormEvent) => void;
   profileName: string;
@@ -17,6 +19,8 @@ interface CompanyServiceRequestModalProps {
   profileEmail: string;
   message: string;
   onMessageChange: (val: string) => void;
+  selectedSlot: string | null;
+  onSelectSlot: (slotStart: string | null) => void;
   isPending: boolean;
 }
 
@@ -44,6 +48,7 @@ function ClientProfileSummary({
 export function CompanyServiceRequestModal({
   open,
   onClose,
+  companySlug,
   requestModal,
   onSubmit,
   profileName,
@@ -51,6 +56,8 @@ export function CompanyServiceRequestModal({
   profileEmail,
   message,
   onMessageChange,
+  selectedSlot,
+  onSelectSlot,
   isPending,
 }: CompanyServiceRequestModalProps) {
   const { t } = useTranslation();
@@ -72,6 +79,9 @@ export function CompanyServiceRequestModal({
           email={profileEmail}
           title={t('companyDetail.yourData')}
         />
+        {open ? (
+          <BookingSlotPicker slug={companySlug} value={selectedSlot} onChange={onSelectSlot} />
+        ) : null}
         <div>
           <label className={cabinetLabelClass} htmlFor="req-msg">
             {t('companyDetail.messageLabel')}
@@ -85,7 +95,11 @@ export function CompanyServiceRequestModal({
           />
         </div>
         <button type="submit" className={cabinetBtnPrimary} disabled={isPending}>
-          {isPending ? t('companyDetail.submitting') : t('companyDetail.submitRequest')}
+          {isPending
+            ? t('companyDetail.submitting')
+            : selectedSlot
+              ? t('companyDetail.booking.submitBooking')
+              : t('companyDetail.submitRequest')}
         </button>
       </form>
     </AppModal>
