@@ -35,10 +35,8 @@ export function getRequestAuthContext(): {
 export function applyAuthHeaders(
   headers: Headers,
   accessToken: string | null,
-  companyId: string | null,
 ): void {
   if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
-  if (companyId) headers.set('x-company-id', companyId);
 }
 
 export function clearAuthSession(): void {

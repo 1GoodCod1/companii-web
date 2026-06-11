@@ -7,7 +7,7 @@ import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany'
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { useCompanyGalleryForm } from '@/features/companies/gallery/useCompanyGalleryForm';
 import { CompanyGallerySection } from '@/entities/company/ui/CompanyGallerySection';
-import { PageHero, cabinetBtnPrimary, cabinetBtnSecondary, EmptyState } from '@/widgets/cabinet/cabinet-ui';
+import { cabinetBtnPrimary, cabinetBtnSecondary, EmptyState } from '@/widgets/cabinet/cabinet-ui';
 import { ROUTE_ABS, COMPANY_CABINET_PATH } from '@/shared/constants/routes.constants';
 
 export function CompanyGalleryPage() {
@@ -64,20 +64,24 @@ export function CompanyGalleryPage() {
   }
 
   return (
-    <div className="max-w-6xl space-y-6">
-      <Link
-        to={`${ROUTE_ABS.COMPANY}${COMPANY_CABINET_PATH.PROFILE}`}
-        className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-violet-600 transition-colors"
-      >
-        <ArrowLeftIcon className="size-4 transition-transform group-hover:-translate-x-1" />
-        {t('company.galleryPage.backToProfile')}
-      </Link>
-
-      <PageHero
-        eyebrow={t('company.galleryPage.eyebrow')}
-        title={t('company.galleryPage.title')}
-        description={t('company.galleryPage.description')}
-      />
+    <div className="max-w-6xl space-y-5 animate-fade-in">
+      <div className="flex min-w-0 items-center gap-3">
+        <Link
+          to={`${ROUTE_ABS.COMPANY}${COMPANY_CABINET_PATH.PROFILE}`}
+          title={t('company.galleryPage.backToProfile')}
+          className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition-colors hover:border-violet-200 hover:text-violet-600"
+        >
+          <ArrowLeftIcon className="size-4" />
+        </Link>
+        <div className="min-w-0">
+          <h1 className="truncate text-lg sm:text-xl font-black tracking-tight text-gray-900">
+            {t('company.galleryPage.title')}
+          </h1>
+          <p className="truncate text-xs text-gray-400 mt-0.5">
+            {t('company.galleryPage.description')}
+          </p>
+        </div>
+      </div>
 
       <div className="glass-panel rounded-3xl p-5 sm:p-6 space-y-6">
         <CompanyGallerySection

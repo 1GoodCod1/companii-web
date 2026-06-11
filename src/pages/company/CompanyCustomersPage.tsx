@@ -1,13 +1,8 @@
 import { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import {
-  PageHero,
-  Panel,
-  cabinetFieldClass,
-  cabinetBtnPrimary,
-  cabinetBtnSecondary,
-} from '@/widgets/cabinet/cabinet-ui';
+import { MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { cabinetBtnPrimary, cabinetBtnSecondary } from '@/widgets/cabinet/cabinet-ui';
 import { EntityListDetailLayout } from '@/widgets/cabinet/EntityListDetailLayout';
 import type { CustomerDto } from '@/entities/fsm/model/types';
 import { useCustomersQuery, useDeleteCustomerMutation } from '@/features/fsm';
@@ -94,34 +89,28 @@ export function CompanyCustomersPage() {
   return (
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
-        <PageHero
-          title={t('company.customersPage.title')}
-          description={t('company.customersPage.description')}
-          action={
-            <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={importModal.openCreate} className={cabinetBtnSecondary}>
-                {t('company.customersPage.importBtn')}
-              </button>
-              <button type="button" onClick={formModal.openCreate} className={cabinetBtnPrimary}>
-                {t('company.customersPage.addBtn')}
-              </button>
-            </div>
-          }
-        />
-
-        <Panel className="p-4">
-          <input
-            type="text"
-            placeholder={t('company.customersPage.searchPlaceholder')}
-            aria-label={t('company.customersPage.searchPlaceholder')}
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            className={cabinetFieldClass}
-          />
-        </Panel>
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="relative min-w-[220px] flex-1">
+            <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder={t('company.customersPage.searchPlaceholder')}
+              aria-label={t('company.customersPage.searchPlaceholder')}
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+            />
+          </div>
+          <button type="button" onClick={importModal.openCreate} className={cabinetBtnSecondary}>
+            {t('company.customersPage.importBtn')}
+          </button>
+          <button type="button" onClick={formModal.openCreate} className={cabinetBtnPrimary}>
+            {t('company.customersPage.addBtn')}
+          </button>
+        </div>
 
         <EntityListDetailLayout
           list={

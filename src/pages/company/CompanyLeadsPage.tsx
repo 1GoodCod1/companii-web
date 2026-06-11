@@ -2,16 +2,15 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CompanyManagementGate } from '@/features/companies';
 import { LoadingStatus } from '@/shared/ui/LoadingStatus';
-import { PageHero, Panel, PanelHeader, EmptyState, SkeletonList } from '@/widgets/cabinet/cabinet-ui';
+import { Panel, PanelHeader, EmptyState, SkeletonList } from '@/widgets/cabinet/cabinet-ui';
 import { LeadInboxItem } from '@/features/fsm';
 import { LeadsStatusFilter } from '@/features/fsm';
 import { ConvertLeadToEstimateModal } from '@/features/fsm';
-import { LEAD_STATUS } from '@/entities/fsm/model/leadStatus.constants';
 import { useLeadInbox } from '@/features/fsm';
 
 export function CompanyLeadsPage() {
   const { t } = useTranslation();
-  const inbox = useLeadInbox(LEAD_STATUS.NEW);
+  const inbox = useLeadInbox(undefined);
 
   const leadsMeta = useMemo(
     () => (
@@ -25,11 +24,6 @@ export function CompanyLeadsPage() {
   return (
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
-        <PageHero
-          title={t('company.leadsPage.title')}
-          description={t('company.leadsPage.description')}
-        />
-
         <LeadsStatusFilter value={inbox.statusFilter} onChange={inbox.setStatusFilter} />
 
         <Panel>

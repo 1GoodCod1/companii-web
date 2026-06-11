@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/lib/utils';
 import type { CompanyLeadStatus } from '@/entities/fsm/model/types';
 import { LEAD_STATUS_FILTERS } from '@/entities/fsm/model/leads.constants';
 import { leadFilterLabel } from '@/entities/fsm/model/i18nStatusLabels';
@@ -13,21 +14,30 @@ export function LeadsStatusFilter({
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-wrap gap-1.5 pb-2">
-      {LEAD_STATUS_FILTERS.map((filter) => (
-        <button
-          key={filter.value ?? 'all'}
-          type="button"
-          onClick={() => onChange(filter.value)}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-            value === filter.value
-              ? 'bg-violet-600 text-white shadow-xs'
-              : 'bg-white/80 text-gray-500 hover:bg-slate-100'
-          }`}
-        >
-          {leadFilterLabel(filter.value, t)}
-        </button>
-      ))}
+    <div
+      className="scrollbar-none flex items-center gap-5 overflow-x-auto border-b border-gray-200"
+      role="tablist"
+    >
+      {LEAD_STATUS_FILTERS.map((filter) => {
+        const active = value === filter.value;
+        return (
+          <button
+            key={filter.value ?? 'all'}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => onChange(filter.value)}
+            className={cn(
+              '-mb-px shrink-0 cursor-pointer border-b-2 px-1 pb-2.5 text-sm font-bold transition-colors',
+              active
+                ? 'border-violet-600 text-gray-900'
+                : 'border-transparent text-gray-400 hover:text-gray-600',
+            )}
+          >
+            {leadFilterLabel(filter.value, t)}
+          </button>
+        );
+      })}
     </div>
   );
 }

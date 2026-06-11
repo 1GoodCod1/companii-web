@@ -37,6 +37,16 @@
   background: rgba(194, 89, 63, 0.3);
 }
 
+/* Tabs: fully hidden scrollbar, scroll still works */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Dashboard: invisible scrollbar until hover/scroll */
 .custom-scrollbar,
 .cabinet-content {

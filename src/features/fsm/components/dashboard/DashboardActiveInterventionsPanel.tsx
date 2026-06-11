@@ -17,7 +17,7 @@ export function DashboardActiveInterventionsPanel({
   const locale = useLocale();
 
   return (
-    <Panel>
+    <Panel className="h-full">
       <PanelHeader
         title={t('company.dashboard.panels.activeInterventions.title')}
         action={

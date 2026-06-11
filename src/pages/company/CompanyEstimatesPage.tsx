@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { CalculatorIcon, CaretRightIcon, PercentIcon, PlusIcon, SparkleIcon, TrashIcon, MegaphoneIcon } from '@phosphor-icons/react';
+import { CaretRightIcon, PercentIcon, PlusIcon, TrashIcon, MegaphoneIcon } from '@phosphor-icons/react';
 import {
-  PageHero,
   Panel,
   EmptyState,
   SkeletonPage,
   cabinetBtnPrimary,
   SoftBadge,
 } from '@/widgets/cabinet/cabinet-ui';
+import { cn } from '@/lib/utils';
 import { CompanyManagementGate } from '@/features/companies';
 import {
   useEstimateProjectsQuery,
@@ -19,6 +19,7 @@ import {
   EstimateFeedbackModal,
 } from '@/features/estimates';
 import {
+  ESTIMATE_STATUS_CODES,
   ESTIMATE_STATUS_TONES,
 } from '@/entities/estimate/model/estimates.constants';
 import { estimateStatusLabel } from '@/entities/estimate/model/i18nStatusLabels';
@@ -30,6 +31,12 @@ export function CompanyEstimatesPage() {
   const deleteProjectMutation = useDeleteEstimateProjectMutation();
   const { ask, dialog } = useCabinetConfirmDialog();
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>('');
+
+  const filteredProjects = useMemo(
+    () => (projects ?? []).filter((p) => !statusFilter || p.status === statusFilter),
+    [projects, statusFilter],
+  );
 
   const handleDeleteClick = (id: string, number: string) => {
     ask({
@@ -54,59 +61,60 @@ export function CompanyEstimatesPage() {
   return (
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
-        <PageHero
-          flat
-          title={t('company.estimatesPage.title')}
-          description={t('company.estimatesPage.description')}
-          action={
-            <div className="flex items-center gap-2 flex-wrap">
-              <button
-                type="button"
-                onClick={() => setFeedbackOpen(true)}
-                className="inline-flex items-center justify-center rounded-none border border-gray-200 bg-white p-2.5 text-gray-500 hover:bg-gray-50 hover:text-violet-600 transition-colors cursor-pointer"
-                title={t('company.devNotice.feedbackBtn')}
-              >
-                <MegaphoneIcon className="size-4" />
-              </button>
-              <Link
-                to="/company/smete/coeficienti"
-                className="inline-flex items-center gap-1.5 rounded-none border border-violet-200 bg-white px-3 py-2 text-xs font-bold text-violet-700 hover:bg-violet-50 transition-colors"
-              >
-                <PercentIcon className="size-4" />
-                {t('company.estimatesPage.pricingModifiersBtn', { defaultValue: 'Coeficienți de preț' })}
-              </Link>
-              <Link to="/company/smete/new" className={cabinetBtnPrimary}>
-                <PlusIcon className="size-4" />
-                {t('company.estimatesPage.newBtn')}
-              </Link>
-            </div>
-          }
-        />
-
         <EstimateDevNoticeBanner />
 
-        <div className="grid md:grid-cols-3 gap-4">
-          <Panel className="p-5 bg-violet-50 border-violet-100">
-            <SparkleIcon className="size-5 text-violet-600 mb-2" />
-            <p className="font-bold text-gray-900">{t('company.estimatesPage.featureCategories')}</p>
-            <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureCategoriesHint')}</p>
-          </Panel>
-          <Panel className="p-5 bg-sky-50 border-sky-100">
-            <CalculatorIcon className="size-5 text-sky-600 mb-2" />
-            <p className="font-bold text-gray-900">{t('company.estimatesPage.featureAutoCalc')}</p>
-            <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureAutoCalcHint')}</p>
-          </Panel>
-          <Panel className="p-5 bg-emerald-50 border-emerald-100">
-            <CaretRightIcon className="size-5 text-emerald-600 mb-2" />
-            <p className="font-bold text-gray-900">{t('company.estimatesPage.featureExecution')}</p>
-            <p className="text-sm text-gray-500 mt-1">{t('company.estimatesPage.featureExecutionHint')}</p>
-          </Panel>
+        <div className="flex items-end justify-between gap-3 border-b border-gray-200">
+          <div className="scrollbar-none flex items-center gap-5 overflow-x-auto" role="tablist">
+            {['', ...ESTIMATE_STATUS_CODES].map((status) => {
+              const active = statusFilter === status;
+              return (
+                <button
+                  key={status || 'all'}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setStatusFilter(status)}
+                  className={cn(
+                    '-mb-px shrink-0 cursor-pointer border-b-2 px-1 pb-2.5 text-sm font-bold transition-colors',
+                    active
+                      ? 'border-violet-600 text-gray-900'
+                      : 'border-transparent text-gray-400 hover:text-gray-600',
+                  )}
+                >
+                  {status
+                    ? (estimateStatusLabel(status, t) ?? status)
+                    : t('company.estimatesPage.filterAll')}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex shrink-0 items-center gap-2 pb-2">
+            <button
+              type="button"
+              onClick={() => setFeedbackOpen(true)}
+              className="inline-flex items-center justify-center rounded-none border border-gray-200 bg-white p-2.5 text-gray-500 hover:bg-gray-50 hover:text-violet-600 transition-colors cursor-pointer"
+              title={t('company.devNotice.feedbackBtn')}
+            >
+              <MegaphoneIcon className="size-4" />
+            </button>
+            <Link
+              to="/company/smete/coeficienti"
+              className="inline-flex items-center gap-1.5 rounded-none border border-violet-200 bg-white px-3 py-2 text-xs font-bold text-violet-700 hover:bg-violet-50 transition-colors"
+            >
+              <PercentIcon className="size-4" />
+              {t('company.estimatesPage.pricingModifiersBtn', { defaultValue: 'Coeficienți de preț' })}
+            </Link>
+            <Link to="/company/smete/new" className={cabinetBtnPrimary}>
+              <PlusIcon className="size-4" />
+              {t('company.estimatesPage.newBtn')}
+            </Link>
+          </div>
         </div>
 
         <Panel>
           {isLoading ? (
             <SkeletonPage rows={6} />
-          ) : !projects?.length ? (
+          ) : !filteredProjects.length ? (
             <EmptyState message={t('company.estimatesPage.empty')} />
           ) : (
             <div className="overflow-x-auto">
@@ -126,7 +134,7 @@ export function CompanyEstimatesPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {projects.map((project) => (
+                  {filteredProjects.map((project) => (
                     <tr key={project.id} className="hover:bg-violet-50/30">
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-900">{project.number}</p>

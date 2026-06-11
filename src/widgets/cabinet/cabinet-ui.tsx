@@ -241,31 +241,29 @@ export function SkeletonCompanyCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white animate-pulse',
+        'flex h-full flex-col overflow-hidden border border-slate-200 bg-white animate-pulse',
         className,
       )}
     >
-      <div className="h-44 shrink-0 bg-slate-200" />
-      <div className="flex flex-1 flex-col px-5 pb-5 pt-0">
-        <div className="-mt-7 mb-3">
-          <div className="size-14 rounded-2xl border-4 border-white bg-slate-300" />
-        </div>
-        <div className="flex items-start justify-between gap-3">
+      <div className="h-32 shrink-0 border-b border-slate-100 bg-slate-200" />
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-start gap-3">
+          <div className="size-10 shrink-0 bg-slate-300" />
           <div className="flex-1 space-y-2">
-            <div className="h-4 w-3/4 rounded bg-slate-200" />
-            <div className="h-3 w-1/2 rounded bg-slate-100" />
+            <div className="h-4 w-3/4 bg-slate-200" />
+            <div className="h-3 w-1/2 bg-slate-100" />
           </div>
-          <div className="h-8 w-12 shrink-0 rounded-lg bg-slate-100" />
+          <div className="h-7 w-12 shrink-0 bg-slate-100" />
         </div>
         <div className="mt-3 space-y-2">
-          <div className="h-3 w-full rounded bg-slate-100" />
-          <div className="h-3 w-4/5 rounded bg-slate-100" />
+          <div className="h-3 w-full bg-slate-100" />
+          <div className="h-3 w-4/5 bg-slate-100" />
         </div>
         <div className="mt-auto border-t border-slate-100 pt-4">
           <div className="grid grid-cols-3 gap-2">
-            <div className="h-3 rounded bg-slate-100" />
-            <div className="h-3 rounded bg-slate-100" />
-            <div className="h-3 rounded bg-slate-100" />
+            <div className="h-3 bg-slate-100" />
+            <div className="h-3 bg-slate-100" />
+            <div className="h-3 bg-slate-100" />
           </div>
         </div>
       </div>

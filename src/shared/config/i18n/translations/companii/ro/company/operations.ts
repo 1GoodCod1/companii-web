@@ -94,6 +94,7 @@ export const companiiRoCompanyOperations = {
       description:
         'Generează devize de cheltuieli, bugete de lucru și oferte de preț pentru clienții tăi.',
       createBtn: '+ Creează ofertă',
+      filterAll: 'Toate',
     },
 
   invoicesPage: {

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { BookOpenIcon, CalendarIcon, StackIcon, ListChecksIcon, PlusIcon, MagnifyingGlassIcon, TrashIcon } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import {
-  PageHero,
   Panel,
   EmptyState,
   SkeletonPage,
@@ -56,52 +55,33 @@ export function CompanyTemplatesPage() {
   return (
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
-        <PageHero
-          title={t('company.estimatesTemplatesPage.title')}
-          description={t('company.estimatesTemplatesPage.description')}
-          action={
-            <button
-              type="button"
-              onClick={() => navigate('/company/smete/new')}
-              className={cabinetBtnPrimary}
-            >
-              <PlusIcon className="size-4" />
-              {t('company.estimatesTemplatesPage.newBtn')}
-            </button>
-          }
-        />
-
-        {/* MagnifyingGlass bar */}
-        {templates && templates.length > 0 && (
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <div className="relative min-w-[220px] flex-1">
+            <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Căutare șablon..."
               aria-label="Căutare șablon"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm rounded-xl border border-gray-200 focus:border-violet-600 focus:outline-none bg-white font-medium"
+              className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 shadow-sm outline-none transition-colors placeholder:text-gray-400 focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
             />
           </div>
-        )}
+          <button
+            type="button"
+            onClick={() => navigate('/company/smete/new')}
+            className={cabinetBtnPrimary}
+          >
+            <PlusIcon className="size-4" />
+            {t('company.estimatesTemplatesPage.newBtn')}
+          </button>
+        </div>
 
         <Panel>
           {isLoading ? (
             <SkeletonPage rows={6} />
           ) : !templates?.length ? (
-            <EmptyState
-              message={t('company.estimatesTemplatesPage.empty')}
-              action={
-                <button
-                  type="button"
-                  onClick={() => navigate('/company/smete')}
-                  className={cabinetBtnPrimary}
-                >
-                  {t('company.estimatesTemplatesPage.newBtn')}
-                </button>
-              }
-            />
+            <EmptyState message={t('company.estimatesTemplatesPage.empty')} />
           ) : filteredTemplates.length === 0 ? (
             <div className="text-center py-12 text-sm text-gray-400">
               Niciun șablon găsit pentru criteriul de căutare.

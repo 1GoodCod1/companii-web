@@ -122,6 +122,10 @@ export const companiiRoCompanyShell = {
       linkAnd: 'și',
       technicianCalendarSuffix:
         '. Pentru a-ți înregistra propria companie, ieși din cont și creează un cont nou de tip «Companie» pe pagina publică de înregistrare.',
+      tabs: {
+        overview: 'Privire generală',
+        analytics: 'Analiză business',
+      },
     },
     verificationPending: {
       title: 'Cabinet în curs de moderare',

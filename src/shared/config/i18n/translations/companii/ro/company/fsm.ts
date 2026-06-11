@@ -320,6 +320,15 @@ export const companiiRoCompanyFsm = {
           empty: 'Selectează un client din listă pentru a-i vedea profilul detaliat.',
           internalNotes: 'Note interne',
           registeredAt: 'Înregistrat la:',
+          tabs: {
+            details: 'Detalii',
+            history: 'Istoric',
+          },
+          contact: {
+            phone: 'Telefon',
+            email: 'Email',
+            address: 'Adresă',
+          },
           toast: {
             portalLinkCopied: 'Link portal generat și copiat în clipboard.',
             portalLinkGeneratedManual: 'Link portal generat. Copiază manual din câmp.',

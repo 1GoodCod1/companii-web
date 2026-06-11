@@ -17,14 +17,14 @@ export function CompanyReviewsSection({ slug, rating, totalReviews }: CompanyRev
   const reviews = data?.items ?? [];
 
   return (
-    <section className="glass-panel rounded-3xl p-6 sm:p-8 space-y-5">
+    <section className="border border-gray-200 bg-white p-6 sm:p-8 space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold text-gray-900">{t('companyDetail.reviews.title')}</h2>
           <p className="text-sm text-gray-500 mt-1">{t('companyDetail.reviews.subtitle')}</p>
         </div>
         {totalReviews > 0 ? (
-          <div className="flex items-center gap-2 rounded-xl bg-amber-50 px-3 py-2 border border-amber-100">
+          <div className="flex items-center gap-2 bg-amber-50 px-3 py-2 border border-amber-100">
             <StarRating value={rating} />
             <span className="text-sm font-black text-gray-900 tabular-nums">{rating.toFixed(1)}</span>
             <span className="text-xs text-gray-500">({totalReviews})</span>

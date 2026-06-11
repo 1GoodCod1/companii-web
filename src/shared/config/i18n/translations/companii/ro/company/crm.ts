@@ -10,6 +10,7 @@ export const companiiRoCompanyCrm = {
   customersPage: {
       title: 'Clienți',
       description: 'Gestionează baza de date a clienților tăi, istoricul lucrărilor și detaliile de contact.',
+      totalCount: '{{count}} clienți în baza de date',
       importBtn: 'Import Excel / CSV',
       addBtn: '+ Adaugă client',
       searchPlaceholder: 'Caută după nume, telefon sau email...',

@@ -76,27 +76,28 @@ export function ObjectStep({ wizard }: Props) {
   );
 
   return (
-    <Panel className="p-6 max-w-2xl space-y-4">
+    <Panel className="p-6 space-y-5">
       <ObjectLeadInfo project={project} />
       <EstimateRelatedProjectsSection project={project} readOnly={isReadOnly} />
-      <label className={cabinetLabelClass}>
-        {t('company.estimateWizard.objectStep.projectTitle')}
-        <input value={title} onChange={(e) => setTitle(e.target.value)} className={cabinetFieldClass} />
-      </label>
-      <label className={cabinetLabelClass}>
-        {t('company.estimateWizard.objectStep.siteType')}
-        <AppSelect
-          value={siteType}
-          onChange={setSiteType}
-          options={siteTypeOptions}
-          aria-label={t('company.estimateWizard.objectStep.siteType')}
-        />
-      </label>
-      <label className={cabinetLabelClass}>
-        {t('company.estimateWizard.objectStep.address')}
-        <input value={address} onChange={(e) => setAddress(e.target.value)} className={cabinetFieldClass} />
-      </label>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <label className={`${cabinetLabelClass} md:col-span-2`}>
+          {t('company.estimateWizard.objectStep.projectTitle')}
+          <input value={title} onChange={(e) => setTitle(e.target.value)} className={cabinetFieldClass} />
+        </label>
+        <label className={cabinetLabelClass}>
+          {t('company.estimateWizard.objectStep.siteType')}
+          <AppSelect
+            value={siteType}
+            onChange={setSiteType}
+            options={siteTypeOptions}
+            aria-label={t('company.estimateWizard.objectStep.siteType')}
+          />
+        </label>
+        <label className={cabinetLabelClass}>
+          {t('company.estimateWizard.objectStep.address')}
+          <input value={address} onChange={(e) => setAddress(e.target.value)} className={cabinetFieldClass} />
+        </label>
         <label className={cabinetLabelClass}>
           {t('company.estimateWizard.objectStep.margin')}
           <input type="number" min={0} max={100} value={marginPct} onChange={(e) => setMarginPct(Number(e.target.value))} className={cabinetFieldClass} />
@@ -117,26 +118,24 @@ export function ObjectStep({ wizard }: Props) {
             {t('company.estimateWizard.objectStep.riskReserveHint')}
           </span>
         </label>
-      </div>
 
-      {showPhysicalSiteFields && (
-        <div className={`grid grid-cols-1 ${siteType === 'house' ? '' : 'md:grid-cols-2'} gap-4`}>
-          {siteType !== 'house' && (
-            <label className={cabinetLabelClass}>
-              {t('company.estimateWizard.objectStep.siteFloor')}
-              <input
-                type="number"
-                min={0}
-                max={50}
-                value={siteFloor ?? ''}
-                onChange={(e) =>
-                  setSiteFloor(e.target.value === '' ? null : Number(e.target.value))
-                }
-                className={cabinetFieldClass}
-                placeholder="Ex: 4"
-              />
-            </label>
-          )}
+        {showPhysicalSiteFields && siteType !== 'house' && (
+          <label className={cabinetLabelClass}>
+            {t('company.estimateWizard.objectStep.siteFloor')}
+            <input
+              type="number"
+              min={0}
+              max={50}
+              value={siteFloor ?? ''}
+              onChange={(e) =>
+                setSiteFloor(e.target.value === '' ? null : Number(e.target.value))
+              }
+              className={cabinetFieldClass}
+              placeholder="Ex: 4"
+            />
+          </label>
+        )}
+        {showPhysicalSiteFields && (
           <label className={cabinetLabelClass}>
             {t('company.estimateWizard.objectStep.urgency')}
             <AppSelect
@@ -146,31 +145,32 @@ export function ObjectStep({ wizard }: Props) {
               aria-label={t('company.estimateWizard.objectStep.urgency')}
             />
           </label>
-        </div>
-      )}
-
-      {showPhysicalSiteFields && (
-        <label className={cabinetLabelClass}>
-          {t('company.estimateWizard.objectStep.accessDifficulty')}
-          <AppSelect
-            value={accessDifficulty ?? ''}
-            onChange={(value) => setAccessDifficulty(value || null)}
-            options={accessDifficultyOptions}
-            aria-label={t('company.estimateWizard.objectStep.accessDifficulty')}
-          />
-          <span className="text-[10px] text-slate-400 font-semibold mt-0.5 block">
-            {t('company.estimateWizard.objectStep.accessHint')}
-          </span>
-        </label>
-      )}
+        )}
+        {showPhysicalSiteFields && (
+          <label className={cabinetLabelClass}>
+            {t('company.estimateWizard.objectStep.accessDifficulty')}
+            <AppSelect
+              value={accessDifficulty ?? ''}
+              onChange={(value) => setAccessDifficulty(value || null)}
+              options={accessDifficultyOptions}
+              aria-label={t('company.estimateWizard.objectStep.accessDifficulty')}
+            />
+            <span className="text-[10px] text-slate-400 font-semibold mt-0.5 block">
+              {t('company.estimateWizard.objectStep.accessHint')}
+            </span>
+          </label>
+        )}
+      </div>
 
       {project.category.slug !== 'it-web' && (
         <SitePhotoGallery projectId={project.id} photos={project.photos ?? []} />
       )}
 
-      <button type="button" onClick={handleSaveObject} className={cabinetBtnPrimary}>
-        <FloppyDiskIcon className="size-4" /> {t('company.estimateWizard.objectStep.saveAndContinue')}
-      </button>
+      <div className="flex justify-end border-t border-gray-100 pt-4">
+        <button type="button" onClick={handleSaveObject} className={cabinetBtnPrimary}>
+          <FloppyDiskIcon className="size-4" /> {t('company.estimateWizard.objectStep.saveAndContinue')}
+        </button>
+      </div>
     </Panel>
   );
 }

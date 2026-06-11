@@ -15,7 +15,6 @@ import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth';
 import { SEOHead } from '@/shared/ui/seo/SEOHead';
 import { LoadingStatus } from '@/shared/ui/LoadingStatus';
-import { PublicPageHeader } from '@/shared/ui/PublicPageHeader';
 import { SkeletonPlanCards } from '@/widgets/cabinet/cabinet-ui';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
@@ -70,27 +69,29 @@ export function SubscriptionsPage() {
         hreflang
       />
 
-      <div className="max-w-5xl mx-auto space-y-12 py-10 animate-fade-in">
-        <PublicPageHeader
-          badge={t('subscriptions.badge')}
-          title={
-            <>
-              {t('subscriptions.title')}{' '}
-              <span className="text-violet-600">{t('subscriptions.titleHighlight')}</span>
-            </>
-          }
-          description={t('subscriptions.description')}
-        />
-        {isAuthed ? (
-          <p className="text-center -mt-8">
-            <Link
-              to={subscriptionLinkRoute}
-              className="text-sm font-medium text-violet-600 hover:text-violet-700"
-            >
-              {t('subscriptions.activeSubscriptionLink')}
-            </Link>
+      <div className="max-w-5xl mx-auto space-y-10 py-10 animate-fade-in">
+        <section className="public-page-header border-b border-gray-200 pb-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-600 mb-3">
+            {t('subscriptions.badge')}
           </p>
-        ) : null}
+          <h1 className="public-page-header__title text-2xl md:text-3xl font-black text-gray-900 tracking-tight">
+            {t('subscriptions.title')}{' '}
+            <span className="landing-shimmer-text">{t('subscriptions.titleHighlight')}</span>
+          </h1>
+          <p className="mt-4 text-sm text-gray-500 max-w-2xl leading-relaxed">
+            {t('subscriptions.description')}
+          </p>
+          {isAuthed ? (
+            <p className="mt-4">
+              <Link
+                to={subscriptionLinkRoute}
+                className="text-sm font-medium text-violet-600 hover:text-violet-700"
+              >
+                {t('subscriptions.activeSubscriptionLink')}
+              </Link>
+            </p>
+          ) : null}
+        </section>
 
         {(isLoading || awaitingSubscription) && (
           <LoadingStatus label={t('subscriptions.loading')}>

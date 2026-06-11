@@ -17,6 +17,9 @@ import {
   SUBSCRIPTION_PLAN,
 } from '@/entities/subscription/model/subscriptions.constants';
 
+const PLAN_BTN_CLASS =
+  'text-center text-xs font-black uppercase tracking-wider py-3 transition-colors';
+
 function PlanPricing({
   plan,
   showPromo,
@@ -31,7 +34,7 @@ function PlanPricing({
 
   if (amount === 0) {
     return (
-      <p className="text-3xl font-semibold text-slate-900 tracking-tight">
+      <p className="text-3xl font-black text-gray-900 tracking-tight">
         {t('subscriptions.planCards.priceFree')}
       </p>
     );
@@ -44,14 +47,14 @@ function PlanPricing({
           {t('subscriptions.planCards.firstMonthFree')}
         </span>
         <div className="flex items-end gap-2.5 flex-wrap">
-          <p className="text-3xl font-semibold text-slate-900 tracking-tight leading-none">
+          <p className="text-3xl font-black text-gray-900 tracking-tight leading-none">
             0 {currency}
           </p>
-          <p className="text-base text-slate-400 line-through decoration-slate-300 pb-0.5">
+          <p className="text-base text-gray-400 line-through decoration-gray-300 pb-0.5">
             {amount} {currency}
           </p>
         </div>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-gray-500">
           {t('subscriptions.planCards.thenPricePerMonth', { amount, currency })}
         </p>
       </div>
@@ -59,7 +62,7 @@ function PlanPricing({
   }
 
   return (
-    <p className="text-3xl font-semibold text-slate-900 tracking-tight">
+    <p className="text-3xl font-black text-gray-900 tracking-tight">
       {t('subscriptions.planCards.pricePerMonth', { amount, currency })}
     </p>
   );
@@ -100,7 +103,7 @@ export function PlanCards({
   return (
     <div
       className={cn(
-        'grid gap-5',
+        'grid gap-5 items-stretch',
         singlePlan ? 'grid-cols-1 max-w-md mx-auto' : 'grid-cols-1 md:grid-cols-3',
       )}
     >
@@ -122,120 +125,110 @@ export function PlanCards({
           <article
             key={plan.id}
             className={cn(
-              'relative border bg-white p-6 flex flex-col',
-              isPopular ? 'border-violet-200 ring-1 ring-violet-100' : 'border-slate-200',
-              isCurrent && 'ring-1 ring-gray-300 border-gray-300',
+              'flex flex-col border bg-white',
+              isPopular ? 'border-violet-300' : 'border-gray-200',
+              isCurrent && 'border-gray-400',
             )}
           >
+            {/* Status band: invisible placeholder keeps all cards vertically aligned */}
             {isCurrent ? (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold bg-gray-900 text-white px-3 py-1">
+              <div className="bg-gray-900 px-4 py-2 text-center text-[10px] font-black uppercase tracking-widest text-white">
                 {t('subscriptions.planCards.activePlan')}
-              </span>
-            ) : null}
-
-            {isPopular ? (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold bg-violet-600 text-white px-3 py-1">
+              </div>
+            ) : isPopular ? (
+              <div className="bg-violet-600 px-4 py-2 text-center text-[10px] font-black uppercase tracking-widest text-white">
                 {t('subscriptions.planCards.recommended')}
-              </span>
-            ) : null}
+              </div>
+            ) : (
+              <div className="invisible px-4 py-2 text-[10px]" aria-hidden>
+                &nbsp;
+              </div>
+            )}
 
-            <div className="mb-5">
-              <span className={cn('inline-block text-xs font-semibold px-2.5 py-1', accent.badge)}>
+            <div className="p-6 pt-2 border-b border-gray-100">
+              <span
+                className={cn(
+                  'inline-block text-[10px] font-black uppercase tracking-widest px-2.5 py-1',
+                  accent.badge,
+                )}
+              >
                 {plan.name}
               </span>
 
-              <div className="mt-4">
+              <div className="mt-5 flex flex-col justify-end min-h-[96px]">
                 <PlanPricing plan={plan} showPromo={showPromo} t={t} />
               </div>
 
-              {teamCaption ? (
-                <p className="text-sm text-slate-500 mt-2">{teamCaption}</p>
-              ) : null}
+              <p className="text-sm text-gray-500 mt-2 min-h-[1.25rem]">
+                {teamCaption ?? ' '}
+              </p>
             </div>
 
-            <ul className="space-y-2.5 flex-1 mb-6 border-t border-slate-100 pt-5">
+            <ul className="p-6 space-y-2.5 flex-1">
               {planFeatures(plan, t).map((feature) => (
-                <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-600">
+                <li key={feature} className="flex items-start gap-2.5 text-sm text-gray-600">
                   <CheckIcon className="size-4 text-violet-600 mt-0.5 shrink-0" weight="bold" />
                   <span>{feature}</span>
                 </li>
               ))}
             </ul>
 
-            {isCurrent ? (
-              <div className="space-y-2.5">
-                <div className="text-center text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 py-2.5">
-                  {t('subscriptions.planCards.currentPlan')}
+            <div className="p-6 pt-0">
+              {isCurrent ? (
+                <div className="space-y-2.5">
+                  <div className="text-center text-xs font-black uppercase tracking-wider text-gray-700 bg-gray-100 border border-gray-200 py-3">
+                    {t('subscriptions.planCards.currentPlan')}
+                  </div>
+                  {isProPlan(currentPlanCode) && onClaimFree ? (
+                    <button
+                      type="button"
+                      disabled={!!claimingPlanCode}
+                      onClick={() => onClaimFree(SUBSCRIPTION_PLAN.BUSINESS)}
+                      className={cn(
+                        'w-full disabled:opacity-50',
+                        PLAN_BTN_CLASS,
+                        PLAN_ACCENTS[SUBSCRIPTION_PLAN.BUSINESS].btn,
+                      )}
+                    >
+                      {claimingPlanCode === SUBSCRIPTION_PLAN.BUSINESS
+                        ? t('subscriptions.planCards.upgradingBusiness')
+                        : t('subscriptions.planCards.switchToBusiness')}
+                    </button>
+                  ) : null}
                 </div>
-                {isProPlan(currentPlanCode) && onClaimFree ? (
-                  <button
-                    type="button"
-                    disabled={!!claimingPlanCode}
-                    onClick={() => onClaimFree(SUBSCRIPTION_PLAN.BUSINESS)}
-                    className={cn(
-                      'w-full text-center text-sm font-semibold py-2.5 disabled:opacity-50',
-                      PLAN_ACCENTS[SUBSCRIPTION_PLAN.BUSINESS].btn,
-                    )}
-                  >
-                    {claimingPlanCode === SUBSCRIPTION_PLAN.BUSINESS
-                      ? t('subscriptions.planCards.upgradingBusiness')
-                      : t('subscriptions.planCards.switchToBusiness')}
-                  </button>
-                ) : null}
-              </div>
-            ) : isClaimable && claimableTarget ? (
-              <button
-                type="button"
-                disabled={!!claimingPlanCode}
-                onClick={() => onClaimFree!(claimableTarget)}
-                className={cn(
-                  'w-full text-center text-sm font-semibold py-2.5 disabled:opacity-50',
-                  accent.btn,
-                )}
-              >
-                {isClaiming
-                  ? t('subscriptions.planCards.activating')
-                  : t('subscriptions.planCards.activateFreeTrial')}
-              </button>
-            ) : ctaMode === 'public' && authCta ? (
-              <Link
-                to={authCta.to}
-                className={cn(
-                  'block text-center text-sm font-semibold py-2.5',
-                  accent.btn,
-                )}
-              >
-                {showPromo
-                  ? t('subscriptions.planCards.startFreeMonth')
-                  : authCta.label}
-              </Link>
-            ) : ctaMode === 'public' ? (
-              <Link
-                to="/register"
-                className={cn(
-                  'block text-center text-sm font-semibold py-2.5',
-                  accent.btn,
-                )}
-              >
-                {showPromo
-                  ? t('subscriptions.planCards.startFreeMonth')
-                  : t('subscriptions.planCards.startNow')}
-              </Link>
-            ) : isFreePlan(plan.code) ? (
-              <div className="text-center text-sm text-slate-500 bg-slate-50 border border-slate-100 py-2.5">
-                {t('subscriptions.planCards.basePlanIncluded')}
-              </div>
-            ) : (
-              <Link
-                to="/contacts"
-                className={cn(
-                  'block text-center text-sm font-semibold py-2.5',
-                  accent.btn,
-                )}
-              >
-                {t('subscriptions.planCards.contactUs')}
-              </Link>
-            )}
+              ) : isClaimable && claimableTarget ? (
+                <button
+                  type="button"
+                  disabled={!!claimingPlanCode}
+                  onClick={() => onClaimFree!(claimableTarget)}
+                  className={cn('w-full disabled:opacity-50', PLAN_BTN_CLASS, accent.btn)}
+                >
+                  {isClaiming
+                    ? t('subscriptions.planCards.activating')
+                    : t('subscriptions.planCards.activateFreeTrial')}
+                </button>
+              ) : ctaMode === 'public' && authCta ? (
+                <Link to={authCta.to} className={cn('block', PLAN_BTN_CLASS, accent.btn)}>
+                  {showPromo
+                    ? t('subscriptions.planCards.startFreeMonth')
+                    : authCta.label}
+                </Link>
+              ) : ctaMode === 'public' ? (
+                <Link to="/register" className={cn('block', PLAN_BTN_CLASS, accent.btn)}>
+                  {showPromo
+                    ? t('subscriptions.planCards.startFreeMonth')
+                    : t('subscriptions.planCards.startNow')}
+                </Link>
+              ) : isFreePlan(plan.code) ? (
+                <div className="text-center text-sm text-gray-500 bg-slate-50 border border-slate-100 py-3">
+                  {t('subscriptions.planCards.basePlanIncluded')}
+                </div>
+              ) : (
+                <Link to="/contacts" className={cn('block', PLAN_BTN_CLASS, accent.btn)}>
+                  {t('subscriptions.planCards.contactUs')}
+                </Link>
+              )}
+            </div>
           </article>
         );
       })}

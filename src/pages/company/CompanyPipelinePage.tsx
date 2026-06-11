@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PageHero } from '@/widgets/cabinet/cabinet-ui';
 import { cn } from '@/lib/utils';
 import { KanbanBoard } from '@/features/fsm/components/pipeline/KanbanBoard';
 import { PIPELINE_TABS } from '@/features/fsm/components/pipeline/pipelineMeta';
@@ -11,26 +10,25 @@ export function CompanyPipelinePage() {
   const [activeEntity, setActiveEntity] = useState<PipelineEntity>('leads');
 
   return (
-    <div className="space-y-5">
-      <PageHero
-        eyebrow={t('company.fsm.pipeline.eyebrow')}
-        title={t('company.fsm.pipeline.title')}
-        description={t('company.fsm.pipeline.subtitle')}
-      />
-
-      <div className="flex flex-wrap gap-2">
+    <div className="space-y-5 animate-fade-in">
+      <div
+        className="scrollbar-none flex items-center gap-5 overflow-x-auto border-b border-gray-200"
+        role="tablist"
+      >
         {PIPELINE_TABS.map((tab) => {
           const isActive = tab.key === activeEntity;
           return (
             <button
               key={tab.key}
               type="button"
+              role="tab"
+              aria-selected={isActive}
               onClick={() => setActiveEntity(tab.key)}
               className={cn(
-                'inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold transition',
+                '-mb-px shrink-0 cursor-pointer border-b-2 px-1 pb-2.5 text-sm font-bold transition-colors',
                 isActive
-                  ? 'bg-violet-600 text-white shadow-sm'
-                  : 'bg-white text-gray-600 ring-1 ring-slate-200 hover:bg-slate-50',
+                  ? 'border-violet-600 text-gray-900'
+                  : 'border-transparent text-gray-400 hover:text-gray-600',
               )}
             >
               {t(tab.labelKey)}

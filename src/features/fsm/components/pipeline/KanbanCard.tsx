@@ -42,7 +42,7 @@ export function KanbanCard({
       }}
       onDragEnd={onDragEnd}
       className={cn(
-        'group relative rounded-xl border border-l-4 border-slate-200/70 bg-white px-3 py-2.5 shadow-sm transition',
+        'group relative min-h-[96px] rounded-xl border border-l-4 border-slate-200/70 bg-white p-4 shadow-sm transition',
         ACCENT[tone],
         draggable
           ? 'cursor-grab hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing'
@@ -52,22 +52,26 @@ export function KanbanCard({
       title={draggable ? t('company.fsm.pipeline.dragHint') : undefined}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-semibold leading-snug text-gray-900 line-clamp-2">{card.title}</p>
+        <p className="text-sm font-bold leading-snug text-gray-900 line-clamp-2">{card.title}</p>
         {isMoving ? <InlineSpinner size={14} /> : null}
       </div>
       {card.subtitle ? (
-        <p className="mt-0.5 text-xs text-gray-500 line-clamp-1">{card.subtitle}</p>
+        <p className="mt-1 text-xs text-gray-500 line-clamp-2">{card.subtitle}</p>
       ) : null}
-      <div className="mt-2 flex items-center justify-between gap-2">
-        {card.meta ? (
-          <span className="text-[11px] text-gray-400 line-clamp-1">{card.meta}</span>
-        ) : (
-          <span />
-        )}
-        {card.amount != null && card.amount > 0 ? (
-          <span className="shrink-0 text-xs font-bold text-gray-700">{formatMdl(card.amount)}</span>
-        ) : null}
-      </div>
+      {card.meta || (card.amount != null && card.amount > 0) ? (
+        <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-2.5">
+          {card.meta ? (
+            <span className="text-[11px] text-gray-400 line-clamp-1">{card.meta}</span>
+          ) : (
+            <span />
+          )}
+          {card.amount != null && card.amount > 0 ? (
+            <span className="shrink-0 rounded-lg bg-slate-100 px-2 py-0.5 text-xs font-bold tabular-nums text-gray-700">
+              {formatMdl(card.amount)}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
     </article>
   );
 }

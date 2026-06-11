@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useInterventionsQuery } from '@/features/fsm';
 import { useCustomersQuery } from '@/features/fsm';
 import { useCompanyMembersQuery } from '@/features/companies/api/useCompanies';
-import { PageHero, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
+import { cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
 import { EntityListDetailLayout } from '@/widgets/cabinet/EntityListDetailLayout';
 import type { InterventionStatus, InterventionDto } from '@/entities/fsm/model/types';
 import { filterAssignableTechnicians } from '@/entities/company/model/teamMembers';
@@ -66,13 +66,9 @@ export function CompanyInterventionsPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <PageHero
-        title={t('company.interventionsPage.title')}
-        description={
-          isManagement
-            ? t('company.interventionsPage.descriptionManagement')
-            : t('company.interventionsPage.descriptionTechnician')
-        }
+      <InterventionsStatusFilter
+        value={statusFilter}
+        onChange={(value) => setStatusFilter(value)}
         action={
           isManagement ? (
             <button type="button" onClick={createModal.openCreate} className={cabinetBtnPrimary}>
@@ -81,8 +77,6 @@ export function CompanyInterventionsPage() {
           ) : undefined
         }
       />
-
-      <InterventionsStatusFilter value={statusFilter} onChange={(value) => setStatusFilter(value)} />
 
       <EntityListDetailLayout
         list={

@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import { CheckIcon } from '@phosphor-icons/react';
+import { cn } from '@/lib/utils';
 import type { EstimateProjectDto } from '@/entities/estimate/model/estimates';
 import { wizardStepLabel } from '@/entities/estimate/model/i18nStatusLabels';
 import { useEstimateWizard } from './useEstimateWizard';
@@ -53,36 +55,71 @@ export function ExistingEstimateWizard({ project }: ExistingEstimateWizardProps)
           onClose={acknowledgeConflict}
         />
       )}
-      {/* U-07: Autosave indicator */}
-      <div className="flex items-center justify-end gap-2 mb-1">
-        {savingStatus === 'saving' && (
-          <span className="text-xs text-amber-600 animate-pulse font-medium">
-            Se salvează...
-          </span>
-        )}
-        {savingStatus === 'saved' && lastSavedAt && (
-          <span className="text-xs text-emerald-600 font-medium">
-            Salvat {new Date(lastSavedAt).toLocaleTimeString()}
-          </span>
-        )}
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {steps.map((step, index) => (
-          <button
-            key={step}
-            type="button"
-            onClick={() => handleStepChange(index)}
-            className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${
-              index === stepIndex
-                ? 'bg-violet-600 text-white shadow-md'
-                : index < stepIndex
-                  ? 'bg-violet-100 text-violet-700'
-                  : 'bg-gray-100 text-gray-500'
-            }`}
-          >
-            {index + 1}. {wizardStepLabel(step, t)}
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <ol className="scrollbar-none flex items-center overflow-x-auto">
+          {steps.map((step, index) => {
+            const isCurrent = index === stepIndex;
+            const isDone = index < stepIndex;
+            return (
+              <li key={step} className="flex shrink-0 items-center">
+                {index > 0 ? (
+                  <span
+                    aria-hidden
+                    className={cn(
+                      'mx-2.5 h-px w-6 sm:w-9',
+                      index <= stepIndex ? 'bg-violet-300' : 'bg-gray-200',
+                    )}
+                  />
+                ) : null}
+                <button
+                  type="button"
+                  onClick={() => handleStepChange(index)}
+                  className="group flex cursor-pointer items-center gap-2"
+                >
+                  <span
+                    className={cn(
+                      'flex size-8 items-center justify-center rounded-full text-xs font-black transition-all',
+                      isCurrent
+                        ? 'bg-violet-600 text-white ring-4 ring-violet-100'
+                        : isDone
+                          ? 'bg-violet-100 text-violet-700'
+                          : 'border border-gray-200 bg-white text-gray-400 group-hover:border-violet-200 group-hover:text-violet-500',
+                    )}
+                  >
+                    {isDone ? <CheckIcon className="size-4" /> : index + 1}
+                  </span>
+                  <span
+                    className={cn(
+                      'text-xs font-bold transition-colors',
+                      isCurrent
+                        ? 'text-gray-900'
+                        : isDone
+                          ? 'text-violet-700'
+                          : 'text-gray-400 group-hover:text-gray-600',
+                      !isCurrent && 'hidden sm:inline',
+                    )}
+                  >
+                    {wizardStepLabel(step, t)}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+
+        {/* U-07: Autosave indicator */}
+        <div className="flex items-center gap-2">
+          {savingStatus === 'saving' && (
+            <span className="text-xs text-amber-600 animate-pulse font-medium">
+              Se salvează...
+            </span>
+          )}
+          {savingStatus === 'saved' && lastSavedAt && (
+            <span className="text-xs text-emerald-600 font-medium">
+              Salvat {new Date(lastSavedAt).toLocaleTimeString()}
+            </span>
+          )}
+        </div>
       </div>
 
       {currentStep === 'object' && <ObjectStep wizard={wizard} />}

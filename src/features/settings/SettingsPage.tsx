@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { GlobeIcon, LockIcon } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
-import { Panel, PanelHeader } from '@/widgets/cabinet/cabinet-ui';
+import { Panel } from '@/widgets/cabinet/cabinet-ui';
 import { LanguageSwitcher } from '@/shared/ui/i18n/LanguageSwitcher';
 import { AppModal } from '@/shared/ui/AppModal';
 import { useChangePasswordMutation } from '@/features/auth';
@@ -105,60 +105,57 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <PanelHeader
-        title={t('settings.title')}
-        description={t('settings.description')}
-      />
-
-      {/* Language */}
-      <Panel className="p-5 sm:p-6">
-        <div className="flex items-start gap-4">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
-            <GlobeIcon className="size-5" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-bold text-gray-900">
-              {t('settings.language.title')}
-            </h3>
-            <p className="mt-1 text-xs text-gray-500 leading-relaxed">
-              {t('settings.language.description')}
-            </p>
-            <div className="mt-4">
-              <LanguageSwitcher />
+    <div className="space-y-6 animate-fade-in">
+      <div className="grid grid-cols-1 items-stretch gap-5 sm:gap-6 lg:grid-cols-2">
+        {/* Language */}
+        <Panel className="h-full p-5 sm:p-6">
+          <div className="flex items-start gap-4">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+              <GlobeIcon className="size-5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-bold text-gray-900">
+                {t('settings.language.title')}
+              </h3>
+              <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+                {t('settings.language.description')}
+              </p>
+              <div className="mt-4">
+                <LanguageSwitcher />
+              </div>
             </div>
           </div>
-        </div>
-      </Panel>
+        </Panel>
 
-      {/* Password */}
-      <Panel className="p-5 sm:p-6">
-        <div className="flex items-start gap-4">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
-            <LockIcon className="size-5" />
+        {/* Password */}
+        <Panel className="h-full p-5 sm:p-6">
+          <div className="flex items-start gap-4">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+              <LockIcon className="size-5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-bold text-gray-900">
+                {t('settings.password.title')}
+              </h3>
+              <p className="mt-1 text-xs text-gray-500 leading-relaxed">
+                {t('settings.password.description')}
+              </p>
+              <button
+                type="button"
+                onClick={() => passwordDispatch({ type: 'OPEN_MODAL' })}
+                className={cn(
+                  'mt-4 inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5',
+                  'text-xs font-bold uppercase tracking-wider text-gray-600 transition-colors',
+                  'hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700 cursor-pointer',
+                )}
+              >
+                <LockIcon className="size-4 shrink-0" />
+                {t('cabinet.shell.changePassword')}
+              </button>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-bold text-gray-900">
-              {t('settings.password.title')}
-            </h3>
-            <p className="mt-1 text-xs text-gray-500 leading-relaxed">
-              {t('settings.password.description')}
-            </p>
-            <button
-              type="button"
-              onClick={() => passwordDispatch({ type: 'OPEN_MODAL' })}
-              className={cn(
-                'mt-4 inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5',
-                'text-xs font-bold uppercase tracking-wider text-gray-600 transition-colors',
-                'hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700 cursor-pointer',
-              )}
-            >
-              <LockIcon className="size-4 shrink-0" />
-              {t('cabinet.shell.changePassword')}
-            </button>
-          </div>
-        </div>
-      </Panel>
+        </Panel>
+      </div>
 
       {/* Change Password Modal */}
       <AppModal

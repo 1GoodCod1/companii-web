@@ -1,14 +1,13 @@
-import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { CloudIcon, ClockIcon, GiftIcon, StackIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 const STAT_ICONS = [StackIcon, ClockIcon, GiftIcon, CloudIcon] as const;
-const STAT_STYLES = [
-  { tone: 'from-violet-500/4 to-indigo-500/1', iconBg: 'bg-violet-500/10', iconClass: 'text-violet-600' },
-  { tone: 'from-blue-500/4 to-cyan-500/1', iconBg: 'bg-blue-500/10', iconClass: 'text-blue-600' },
-  { tone: 'from-emerald-500/4 to-teal-500/1', iconBg: 'bg-emerald-500/10', iconClass: 'text-emerald-600' },
-  { tone: 'from-slate-500/4 to-slate-400/1', iconBg: 'bg-slate-500/10', iconClass: 'text-slate-600' },
+const STAT_ICON_CLASSES = [
+  'bg-violet-50 text-violet-600',
+  'bg-blue-50 text-blue-600',
+  'bg-emerald-50 text-emerald-600',
+  'bg-slate-100 text-slate-600',
 ] as const;
 
 export function LandingStats() {
@@ -20,44 +19,30 @@ export function LandingStats() {
   }>;
 
   return (
-    <section className="border-y border-gray-100 bg-slate-50/50">
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
+    <section className="border-b border-gray-100 bg-white">
+      <div className="max-w-6xl mx-auto px-6 py-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-px bg-gray-200 border border-gray-200">
           {stats.map((stat, i) => {
             const Icon = STAT_ICONS[i];
-            const style = STAT_STYLES[i];
 
             return (
-              <m.article
-                key={stat.label}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: 0.5 }}
-                className={cn(
-                  'rounded-none border border-white/80 bg-gradient-to-br p-5 sm:p-6 shadow-sm',
-                  style.tone,
-                )}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <p className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-                    {stat.value}
-                  </p>
-                  <span
-                    className={cn(
-                      'flex size-10 shrink-0 items-center justify-center rounded-none',
-                      style.iconBg,
-                      style.iconClass,
-                    )}
-                  >
-                    <Icon className="size-5" weight="light" />
-                  </span>
-                </div>
-                <p className="text-sm font-semibold text-gray-800 mt-4 leading-snug">{stat.label}</p>
+              <article key={stat.label} className="bg-white p-6 sm:p-7">
+                <span
+                  className={cn(
+                    'flex size-10 items-center justify-center',
+                    STAT_ICON_CLASSES[i],
+                  )}
+                >
+                  <Icon className="size-5" weight="light" />
+                </span>
+                <p className="mt-5 text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+                  {stat.value}
+                </p>
+                <p className="text-sm font-semibold text-gray-800 mt-1.5 leading-snug">{stat.label}</p>
                 {stat.hint ? (
                   <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">{stat.hint}</p>
                 ) : null}
-              </m.article>
+              </article>
             );
           })}
         </div>

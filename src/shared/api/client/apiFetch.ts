@@ -17,7 +17,6 @@ export async function apiFetch<T>(
     headers.set('Content-Type', 'application/json');
   }
   if (auth.accessToken) headers.set('Authorization', `Bearer ${auth.accessToken}`);
-  if (auth.companyId) headers.set('x-company-id', auth.companyId);
 
   const method = (init.method ?? 'GET').toUpperCase();
   if (

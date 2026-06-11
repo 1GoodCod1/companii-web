@@ -1,10 +1,9 @@
-import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ArrowUpRightIcon, CalendarIcon, DownloadIcon, FileTextIcon, LayoutIcon, ReceiptIcon, TrendUpIcon, UsersIcon, WrenchIcon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
-const SIDEBAR_ICONS = [LayoutIcon, UsersIcon, WrenchIcon, FileTextIcon, ReceiptIcon, CalendarIcon] as const;
-const ACTIVE_SIDEBAR_INDEX = 4;
+const NAV_ICONS = [LayoutIcon, UsersIcon, WrenchIcon, FileTextIcon, ReceiptIcon, CalendarIcon] as const;
+const ACTIVE_NAV_INDEX = 4;
 
 const INVOICE_NUMBERS = ['FAC-2026-089', 'FAC-2026-088', 'FAC-2026-087'];
 const INVOICE_AMOUNTS = ['4.850', '12.400', '2.100'];
@@ -18,9 +17,9 @@ const STATUS_TONES = [
 const BARS = [42, 68, 55, 82, 74, 91, 88];
 
 const SUMMARY_ACCENTS = [
-  { tone: 'from-emerald-500/[0.03] to-emerald-500/[0.01] border-emerald-500/10', valueClass: 'text-gray-900', hintClass: 'text-emerald-600' },
-  { tone: 'from-blue-500/[0.03] to-blue-500/[0.01] border-blue-500/10', valueClass: 'text-emerald-700', hintClass: 'text-gray-400' },
-  { tone: 'from-amber-500/[0.03] to-amber-500/[0.01] border-amber-500/10', valueClass: 'text-amber-700', hintClass: 'text-gray-400' },
+  { valueClass: 'text-gray-900', hintClass: 'text-emerald-600' },
+  { valueClass: 'text-emerald-700', hintClass: 'text-gray-400' },
+  { valueClass: 'text-amber-700', hintClass: 'text-gray-400' },
 ] as const;
 
 export function LandingFinanceMock({ className = '' }: { className?: string }) {
@@ -36,182 +35,172 @@ export function LandingFinanceMock({ className = '' }: { className?: string }) {
   }>;
 
   return (
-    <m.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className={cn('landing-dashboard-3d relative w-full max-w-[720px] mx-auto', className)}
-    >
-      <div className="absolute -inset-8 rounded-[2rem] bg-emerald-500/[0.02] blur-[80px] -z-10" />
-
-      <div className="rounded-[1.5rem] border border-gray-200/80 bg-white shadow-[0_16px_48px_-12px_rgba(15,23,42,0.06)] overflow-hidden">
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-100 bg-slate-50/90">
-          <span className="size-2 rounded-full bg-red-400/90" />
-          <span className="size-2 rounded-full bg-amber-400/90" />
-          <span className="size-2 rounded-full bg-emerald-400/90" />
-          <span className="ml-2 text-[10px] font-medium text-gray-400 truncate">
-            {t('landingMocks.finance.windowTitle')}
-          </span>
+    <div className={cn('relative w-full', className)}>
+      <div className="border border-gray-200 bg-white shadow-lg">
+        {/* Window chrome */}
+        <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="flex size-5 shrink-0 items-center justify-center bg-violet-600 text-[9px] font-black text-white">
+              F
+            </span>
+            <span className="text-[10px] font-semibold text-gray-500 truncate">
+              {t('landingMocks.finance.windowTitle')}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="size-2 border border-gray-300" />
+            <span className="size-2 border border-gray-300" />
+            <span className="size-2 bg-gray-300" />
+          </div>
         </div>
 
-        <div className="flex min-h-[400px]">
-          <aside className="hidden sm:flex w-11 shrink-0 flex-col items-center gap-1 border-r border-gray-100 bg-white py-3">
-            {SIDEBAR_ICONS.map((Icon, i) => (
-              <span
-                key={Icon.displayName}
-                className={cn(
-                  'flex size-8 items-center justify-center rounded-lg transition-colors',
-                  i === ACTIVE_SIDEBAR_INDEX
-                    ? 'bg-violet-50 text-violet-600 shadow-xs'
-                    : 'text-gray-400',
-                )}
-              >
-                <Icon className="size-4" weight="light" />
+        {/* Navigation strip */}
+        <div className="hidden sm:flex items-center gap-1 border-b border-gray-100 bg-slate-50/60 px-3 py-1.5">
+          {NAV_ICONS.map((Icon, i) => (
+            <span
+              key={Icon.displayName}
+              className={cn(
+                'flex size-7 items-center justify-center',
+                i === ACTIVE_NAV_INDEX
+                  ? 'border border-gray-200 bg-white text-violet-600'
+                  : 'text-gray-400',
+              )}
+            >
+              <Icon className="size-3.5" weight="light" />
+            </span>
+          ))}
+        </div>
+
+        <div className="p-3 sm:p-4 space-y-3">
+          {/* Page header */}
+          <div className="flex flex-wrap items-start justify-between gap-3 border-b border-gray-100 pb-3">
+            <div className="min-w-0">
+              <p className="text-sm sm:text-base font-black text-gray-900 tracking-tight">
+                {t('landingMocks.finance.pageTitle')}
+              </p>
+              <p className="text-[10px] text-gray-500 mt-0.5 leading-relaxed max-w-sm">
+                {t('landingMocks.finance.pageDescription')}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5 shrink-0">
+              <span className="border border-gray-200 bg-white px-2 py-1 text-[9px] font-bold text-gray-600">
+                {t('landingMocks.finance.filterAll')}
               </span>
-            ))}
-          </aside>
-
-          <div className="flex-1 min-w-0 bg-slate-50/50 p-3 sm:p-4 space-y-3">
-            <div className="rounded-xl border border-violet-100/60 bg-slate-50/40 px-3.5 py-3">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-sm sm:text-base font-black text-gray-900 tracking-tight">
-                    {t('landingMocks.finance.pageTitle')}
-                  </p>
-                  <p className="text-[10px] text-gray-500 mt-0.5 leading-relaxed max-w-sm">
-                    {t('landingMocks.finance.pageDescription')}
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-1.5 shrink-0">
-                  <span className="rounded-lg border border-gray-200 bg-white px-2 py-1 text-[9px] font-bold text-gray-600">
-                    {t('landingMocks.finance.filterAll')}
-                  </span>
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-1 text-[9px] font-semibold text-gray-600">
-                    <DownloadIcon className="size-3" />
-                    {t('landingMocks.finance.exportBtn')}
-                  </span>
-                  <span className="rounded-lg bg-gray-900 px-2 py-1 text-[9px] font-black uppercase tracking-wider text-white">
-                    {t('landingMocks.finance.generateBtn')}
-                  </span>
-                </div>
-              </div>
+              <span className="inline-flex items-center gap-1 border border-gray-200 bg-slate-50 px-2 py-1 text-[9px] font-semibold text-gray-600">
+                <DownloadIcon className="size-3" />
+                {t('landingMocks.finance.exportBtn')}
+              </span>
+              <span className="bg-gray-900 px-2 py-1 text-[9px] font-black uppercase tracking-wider text-white">
+                {t('landingMocks.finance.generateBtn')}
+              </span>
             </div>
-
-            <div className="grid grid-cols-3 gap-2">
-              {summaryCards.map((card, i) => {
-                const accent = SUMMARY_ACCENTS[i];
-                return (
-                  <article
-                    key={card.label}
-                    className={cn(
-                      'rounded-xl border bg-gradient-to-br p-2.5 sm:p-3',
-                      accent.tone,
-                    )}
-                  >
-                    <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-gray-400">
-                      {card.label}
-                    </p>
-                    <p className={cn('mt-1.5 text-base sm:text-lg font-black tracking-tight', accent.valueClass)}>
-                      {card.value}
-                    </p>
-                    <p className={cn('text-[9px] font-semibold mt-0.5 flex items-center gap-0.5', accent.hintClass)}>
-                      {i === 0 ? <TrendUpIcon className="size-3 shrink-0" /> : null}
-                      {card.hint}
-                    </p>
-                  </article>
-                );
-              })}
-            </div>
-
-            <section className="rounded-xl border border-gray-100/80 bg-white/90 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b border-gray-100 bg-gray-50/60">
-                      {(
-                        t('landingMocks.finance.columns', { returnObjects: true }) as string[]
-                      ).map((col) => (
-                        <th
-                          key={col}
-                          className="px-2.5 py-2 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-gray-400"
-                        >
-                          {col}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-50">
-                    {invoices.map((inv, i) => (
-                      <tr key={INVOICE_NUMBERS[i]} className="hover:bg-slate-50/60 transition-colors">
-                        <td className="px-2.5 py-2">
-                          <p className="text-[10px] font-bold text-gray-800">{INVOICE_NUMBERS[i]}</p>
-                          <p className="text-[8px] font-semibold uppercase text-gray-400 mt-0.5">
-                            {INVOICE_DATES[i]}
-                          </p>
-                        </td>
-                        <td className="px-2.5 py-2">
-                          <p className="text-[10px] font-semibold text-gray-900 truncate max-w-[120px] sm:max-w-none">
-                            {inv.client}
-                          </p>
-                          <p className="text-[8px] text-gray-400 mt-0.5">{INVOICE_WORKS[i]}</p>
-                        </td>
-                        <td className="px-2.5 py-2">
-                          <p className="text-[10px] sm:text-xs font-black text-gray-950 whitespace-nowrap">
-                            {INVOICE_AMOUNTS[i]} MDL
-                          </p>
-                        </td>
-                        <td className="px-2.5 py-2">
-                          <span
-                            className={cn(
-                              'inline-block rounded-full px-2 py-0.5 text-[8px] font-semibold uppercase tracking-wide',
-                              STATUS_TONES[i],
-                            )}
-                          >
-                            {inv.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-            <section className="rounded-xl border border-gray-100/80 bg-white/90 p-3">
-              <div className="flex items-center justify-between gap-2 mb-2.5">
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
-                  {t('landingMocks.finance.weeklyTitle')}
-                </p>
-                <span className="text-[9px] font-semibold text-violet-600 flex items-center gap-0.5">
-                  {t('landingMocks.finance.viewAll')}
-                  <ArrowUpRightIcon className="size-2.5" />
-                </span>
-              </div>
-              <div className="flex items-end gap-1.5 h-16 sm:h-20">
-                {BARS.map((h, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 rounded-t-sm bg-emerald-500/80"
-                    style={{ height: `${h}%`, opacity: 0.45 + (h / 100) * 0.55 }}
-                  />
-                ))}
-              </div>
-            </section>
           </div>
+
+          {/* Summary strip */}
+          <div className="grid grid-cols-3 gap-px bg-gray-100 border border-gray-100">
+            {summaryCards.map((card, i) => {
+              const accent = SUMMARY_ACCENTS[i];
+              return (
+                <article key={card.label} className="bg-white p-2.5 sm:p-3">
+                  <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-gray-400">
+                    {card.label}
+                  </p>
+                  <p className={cn('mt-1.5 text-base sm:text-lg font-black tracking-tight', accent.valueClass)}>
+                    {card.value}
+                  </p>
+                  <p className={cn('text-[9px] font-semibold mt-0.5 flex items-center gap-0.5', accent.hintClass)}>
+                    {i === 0 ? <TrendUpIcon className="size-3 shrink-0" /> : null}
+                    {card.hint}
+                  </p>
+                </article>
+              );
+            })}
+          </div>
+
+          {/* Invoices table */}
+          <section className="border border-gray-100 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-100 bg-slate-50/60">
+                    {(
+                      t('landingMocks.finance.columns', { returnObjects: true }) as string[]
+                    ).map((col) => (
+                      <th
+                        key={col}
+                        className="px-2.5 py-2 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-gray-400"
+                      >
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {invoices.map((inv, i) => (
+                    <tr key={INVOICE_NUMBERS[i]}>
+                      <td className="px-2.5 py-2">
+                        <p className="text-[10px] font-bold text-gray-800">{INVOICE_NUMBERS[i]}</p>
+                        <p className="text-[8px] font-semibold uppercase text-gray-400 mt-0.5">
+                          {INVOICE_DATES[i]}
+                        </p>
+                      </td>
+                      <td className="px-2.5 py-2">
+                        <p className="text-[10px] font-semibold text-gray-900 truncate max-w-[120px] sm:max-w-none">
+                          {inv.client}
+                        </p>
+                        <p className="text-[8px] text-gray-400 mt-0.5">{INVOICE_WORKS[i]}</p>
+                      </td>
+                      <td className="px-2.5 py-2">
+                        <p className="text-[10px] sm:text-xs font-black text-gray-950 whitespace-nowrap">
+                          {INVOICE_AMOUNTS[i]} MDL
+                        </p>
+                      </td>
+                      <td className="px-2.5 py-2">
+                        <span
+                          className={cn(
+                            'inline-block px-2 py-0.5 text-[8px] font-semibold uppercase tracking-wide',
+                            STATUS_TONES[i],
+                          )}
+                        >
+                          {inv.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {/* Weekly chart */}
+          <section className="border border-gray-100 p-3">
+            <div className="flex items-center justify-between gap-2 mb-2.5">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+                {t('landingMocks.finance.weeklyTitle')}
+              </p>
+              <span className="text-[9px] font-semibold text-violet-600 flex items-center gap-0.5">
+                {t('landingMocks.finance.viewAll')}
+                <ArrowUpRightIcon className="size-2.5" />
+              </span>
+            </div>
+            <div className="flex items-end gap-1.5 h-16 sm:h-20">
+              {BARS.map((h, i) => (
+                <div
+                  key={i}
+                  className="flex-1 bg-emerald-500/80"
+                  style={{ height: `${h}%`, opacity: 0.45 + (h / 100) * 0.55 }}
+                />
+              ))}
+            </div>
+          </section>
         </div>
       </div>
 
-      <m.div
-        initial={{ opacity: 0, y: 8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.4, duration: 0.5 }}
-        className="absolute -right-1 sm:-right-4 top-16 hidden md:block rounded-xl border border-emerald-100/80 bg-white px-3 py-2.5 shadow-lg shadow-emerald-500/5"
-      >
+      {/* Static VAT callout */}
+      <div className="absolute -right-2 sm:-right-5 top-16 hidden md:block border border-gray-200 border-l-4 border-l-emerald-500 bg-white px-3 py-2.5 shadow-md">
         <p className="text-[9px] text-gray-400">{t('landingMocks.finance.vatBadge')}</p>
         <p className="text-[11px] font-bold text-gray-800">{t('landingMocks.finance.vatValue')}</p>
-      </m.div>
-    </m.div>
+      </div>
+    </div>
   );
 }

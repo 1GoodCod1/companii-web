@@ -193,6 +193,10 @@ export const companiiRoCompanyTeam = {
       publishCatalog: 'Publică în catalog',
       saveChanges: 'Salvează modificările',
       createCompany: 'Creează companie',
+      tabs: {
+        legal: 'Date juridice',
+        contact: 'Contact & branding',
+      },
       leaveCompany: 'Părăsește compania',
       leaving: 'Se procesează...',
       toastUpdated: 'Profilul companiei a fost actualizat cu succes!',

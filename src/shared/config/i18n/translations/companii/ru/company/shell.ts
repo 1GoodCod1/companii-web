@@ -122,6 +122,10 @@ export const companiiRuCompanyShell = {
       linkAnd: 'и',
       technicianCalendarSuffix:
         '. Чтобы зарегистрировать свою компанию, выйдите из аккаунта и создайте новый аккаунт типа «Компания» на публичной странице регистрации.',
+      tabs: {
+        overview: 'Обзор',
+        analytics: 'Бизнес-аналитика',
+      },
     },
     verificationPending: {
       title: 'Кабинет на модерации',

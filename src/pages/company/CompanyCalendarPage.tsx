@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/shared/api/queryKeys';
-import { PageHero } from '@/widgets/cabinet/cabinet-ui';
 import {
   useCalendarBoardQuery,
   useUpdateInterventionMutation,
@@ -150,10 +149,14 @@ export function CompanyCalendarPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <PageHero
-        title={t('company.calendarPage.title')}
-        description={t('company.calendarPage.description', { week: weekLabel })}
-      />
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 pb-3">
+        <h1 className="text-lg font-black tracking-tight text-gray-900">
+          {t('company.calendarPage.title')}
+        </h1>
+        <span className="rounded-full bg-violet-50 px-3.5 py-1.5 text-xs font-bold text-violet-700">
+          {weekLabel}
+        </span>
+      </div>
 
       {isLoading ? (
         <p className="text-sm text-gray-400 text-center py-8">{t('company.calendarPage.loading')}</p>

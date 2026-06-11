@@ -14,7 +14,7 @@ export function CompanySpecsSidebar({ company }: CompanySpecsSidebarProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="glass-panel rounded-[28px] p-6 border border-white/40 space-y-6">
+    <div className="border border-gray-200 bg-white p-6 space-y-6">
       <div className="flex items-center gap-2 pb-4 border-b border-slate-100">
         <ShieldCheckIcon className="size-5 text-emerald-600" />
         <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">

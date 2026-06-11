@@ -5,7 +5,6 @@ import { useCompanyReviewsMeQuery } from '@/features/reviews';
 import { ReviewCard } from '@/entities/review/ui/ReviewCard';
 import { StarRating } from '@/shared/ui/reviews/StarRating';
 import {
-  PageHero,
   Panel,
   EmptyState,
   cabinetBtnSecondary,
@@ -29,22 +28,20 @@ export function CompanyReviewsPage() {
   return (
     <CompanyManagementGate>
     <div className="space-y-6 animate-fade-in">
-      <PageHero
-        eyebrow={t('company.reviewsPage.eyebrow')}
-        title={t('company.reviewsPage.title')}
-        description={t('company.reviewsPage.description')}
-        action={
-          total > 0 ? (
-            <div className="flex items-center gap-2 rounded-xl bg-amber-50 px-4 py-2 border border-amber-100">
-              <StarRating value={average} />
-              <span className="text-sm font-black text-gray-900 tabular-nums">
-                {average.toFixed(1)}
-              </span>
-              <span className="text-xs text-gray-500">{t('company.reviewsPage.reviewsCount', { count: total })}</span>
-            </div>
-          ) : null
-        }
-      />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-lg font-black tracking-tight text-gray-900">
+          {t('company.reviewsPage.title')}
+        </h1>
+        {total > 0 ? (
+          <div className="flex items-center gap-2 rounded-xl bg-amber-50 px-4 py-2 border border-amber-100">
+            <StarRating value={average} />
+            <span className="text-sm font-black text-gray-900 tabular-nums">
+              {average.toFixed(1)}
+            </span>
+            <span className="text-xs text-gray-500">{t('company.reviewsPage.reviewsCount', { count: total })}</span>
+          </div>
+        ) : null}
+      </div>
 
       <Panel>
         {isLoading && !data ? (

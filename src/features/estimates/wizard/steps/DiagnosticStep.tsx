@@ -57,7 +57,7 @@ export function DiagnosticStep({ wizard }: Props) {
   };
 
   return (
-    <Panel className="p-6 max-w-2xl space-y-5">
+    <Panel className="p-6 space-y-5">
       <h3 className="font-bold text-gray-900">
         {t('company.estimateWizard.diagnosticStep.title', { category: project.category.name })}
       </h3>
@@ -78,7 +78,7 @@ export function DiagnosticStep({ wizard }: Props) {
 
       {basicSections.map((section) => (
         <FormSection key={section.key} title={section.label}>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {section.fields.map((field) => (
               <CustomFieldInput
                 key={field.key}
@@ -115,7 +115,7 @@ export function DiagnosticStep({ wizard }: Props) {
           {showAdvanced && (
             <div className="border-t border-slate-200 p-4 sm:p-5 space-y-4">
               {advancedSections.map((section) => (
-                <div key={section.key} className="grid sm:grid-cols-2 gap-4">
+                <div key={section.key} className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
                   {section.fields.map((field) => (
                     <CustomFieldInput
                       key={field.key}
@@ -151,31 +151,33 @@ export function DiagnosticStep({ wizard }: Props) {
         disabled={isReadOnly}
       />
 
-      {isReadOnly ? (
-        <button
-          type="button"
-          onClick={() => {
-            const stagesIndex = wizard.steps.indexOf('stages');
-            wizard.setStepIndex(
-              stagesIndex >= 0
-                ? stagesIndex
-                : Math.min(wizard.stepIndex + 1, wizard.steps.length - 1),
-            );
-          }}
-          className={cabinetBtnPrimary}
-        >
-          {t('company.estimateWizard.wizard.next', { defaultValue: 'Înainte' })}
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={handleSaveDiagnostic}
-          disabled={hasBlockingErrors}
-          className={cabinetBtnPrimary}
-        >
-          {t('company.estimateWizard.diagnosticStep.save')}
-        </button>
-      )}
+      <div className="flex justify-end border-t border-gray-100 pt-4">
+        {isReadOnly ? (
+          <button
+            type="button"
+            onClick={() => {
+              const stagesIndex = wizard.steps.indexOf('stages');
+              wizard.setStepIndex(
+                stagesIndex >= 0
+                  ? stagesIndex
+                  : Math.min(wizard.stepIndex + 1, wizard.steps.length - 1),
+              );
+            }}
+            className={cabinetBtnPrimary}
+          >
+            {t('company.estimateWizard.wizard.next', { defaultValue: 'Înainte' })}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleSaveDiagnostic}
+            disabled={hasBlockingErrors}
+            className={cabinetBtnPrimary}
+          >
+            {t('company.estimateWizard.diagnosticStep.save')}
+          </button>
+        )}
+      </div>
     </Panel>
   );
 }

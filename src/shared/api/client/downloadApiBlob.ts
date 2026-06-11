@@ -25,7 +25,6 @@ export async function downloadApiBlob(
   const auth = apiClientConfig.getAuthContext ? apiClientConfig.getAuthContext() : { accessToken: null, companyId: null };
   const headers = new Headers();
   if (auth.accessToken) headers.set('Authorization', `Bearer ${auth.accessToken}`);
-  if (auth.companyId) headers.set('x-company-id', auth.companyId);
 
   const { signal, cancelTimer } = composeAbortSignal(
     options.signal ?? null,

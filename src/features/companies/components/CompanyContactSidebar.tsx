@@ -11,7 +11,7 @@ export function CompanyContactSidebar({ company }: CompanyContactSidebarProps) {
   const hasPublicContact = !!(company.contactPhone || company.contactEmail);
 
   return (
-    <div className="glass-panel rounded-[28px] p-6 border border-white/40 space-y-5">
+    <div className="border border-gray-200 bg-white p-6 space-y-5">
       <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
         <ChatIcon className="size-5 text-violet-600" />
         <h3 className="text-sm font-extrabold text-slate-900 tracking-tight uppercase">
@@ -24,7 +24,7 @@ export function CompanyContactSidebar({ company }: CompanyContactSidebarProps) {
           {company.contactPhone ? (
             <a
               href={`tel:${company.contactPhone.replace(/\s/g, '')}`}
-              className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-black text-xs uppercase tracking-wider transition-colors"
+              className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 bg-gray-900 hover:bg-gray-800 text-white font-black text-xs uppercase tracking-wider transition-colors"
             >
               <PhoneIcon className="size-4 shrink-0 transition-transform group-hover:scale-110" />
               {t('companyDetail.callCompany')}
@@ -34,7 +34,7 @@ export function CompanyContactSidebar({ company }: CompanyContactSidebarProps) {
           {company.contactEmail ? (
             <a
               href={`mailto:${company.contactEmail}`}
-              className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-sm"
+              className="group flex items-center justify-center gap-2.5 w-full py-3.5 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-extrabold text-sm"
             >
               <EnvelopeIcon className="size-4 shrink-0 text-slate-400 group-hover:text-violet-600 transition-colors" />
               {t('companyDetail.sendEmail')}
@@ -48,7 +48,7 @@ export function CompanyContactSidebar({ company }: CompanyContactSidebarProps) {
           </div>
         </div>
       ) : (
-        <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 text-center space-y-2">
+        <div className="bg-slate-50 border border-slate-100 p-4 text-center space-y-2">
           <p className="text-xs font-semibold text-slate-500 leading-relaxed text-wrap:pretty">
             {t('companyDetail.contactHidden')}
           </p>

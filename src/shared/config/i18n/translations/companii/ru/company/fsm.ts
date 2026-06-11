@@ -320,6 +320,15 @@ export const companiiRuCompanyFsm = {
           empty: 'Выберите клиента из списка для просмотра подробного профиля.',
           internalNotes: 'Внутренние заметки',
           registeredAt: 'Зарегистрирован:',
+          tabs: {
+            details: 'Детали',
+            history: 'История',
+          },
+          contact: {
+            phone: 'Телефон',
+            email: 'Email',
+            address: 'Адрес',
+          },
           toast: {
             portalLinkCopied: 'Ссылка на портал создана и скопирована в буфер обмена.',
             portalLinkGeneratedManual: 'Ссылка на портал создана. Скопируйте вручную из поля.',

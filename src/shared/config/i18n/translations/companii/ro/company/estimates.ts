@@ -4,6 +4,7 @@ export const companiiRoCompanyEstimates = {
       description:
         'Calcul de preț pe categorii — dimensiuni & volume, etape, calcul automat și deviz pentru client.',
       newBtn: 'Calcul de preț nou',
+      filterAll: 'Toate',
       loading: 'Se încarcă calculele de preț...',
       empty: 'Niciun calcul de preț realizat încă. Creați prima evaluare — alegeți categoria și urmați asistentul.',
       open: 'Deschide',

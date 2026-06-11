@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MapPinIcon, StarIcon, UsersIcon, SealCheckIcon } from '@phosphor-icons/react';
-import { cn } from '@/lib/utils';
 import { CompanyLogo } from '@/entities/company/ui/CompanyLogo';
 import {
   companyCoverImage,
@@ -15,21 +14,6 @@ import {
   getTranslatedCategoryName,
   getTranslatedCityName,
 } from '@/shared/utils/translateCityCategory';
-
-const COVER_GRADIENTS = [
-  'from-violet-500/80 via-indigo-500/70 to-purple-600/80',
-  'from-blue-500/80 via-cyan-500/70 to-teal-600/80',
-  'from-amber-500/80 via-orange-500/70 to-rose-500/80',
-  'from-emerald-500/80 via-teal-500/70 to-cyan-600/80',
-  'from-fuchsia-500/80 via-violet-500/70 to-indigo-600/80',
-  'from-sky-500/80 via-blue-500/70 to-indigo-600/80',
-];
-
-function coverGradient(slug: string): string {
-  let hash = 0;
-  for (let i = 0; i < slug.length; i += 1) hash = (hash + slug.charCodeAt(i) * 17) % COVER_GRADIENTS.length;
-  return COVER_GRADIENTS[hash];
-}
 
 function CardCover({
   company,
@@ -44,30 +28,23 @@ function CardCover({
   const showImage = coverSrc && !imageFailed;
 
   return (
-    <div className="relative h-44 shrink-0 overflow-hidden">
-      <div
-        className={cn(
-          'absolute inset-0 bg-gradient-to-br',
-          coverGradient(company.slug),
-        )}
-      />
+    <div className="relative h-32 shrink-0 overflow-hidden border-b border-gray-100 bg-slate-50">
       {showImage ? (
         <MediaImage
           src={coverSrc}
           alt=""
-          className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="absolute inset-0 size-full object-cover"
           loading="lazy"
           onError={() => setImageFailed(true)}
         />
       ) : (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-4xl font-black text-white/25 select-none">
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-violet-50 to-slate-100">
+          <span className="text-4xl font-black text-violet-200 select-none">
             {companyInitials(company.name)}
           </span>
         </div>
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
-      <span className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/95 backdrop-blur-sm px-2.5 py-1 text-[10px] font-semibold text-emerald-700 shadow-sm">
+      <span className="absolute top-3 right-3 inline-flex items-center gap-1 border border-emerald-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
         <SealCheckIcon className="size-3.5" />
         {verifiedLabel}
       </span>
@@ -84,7 +61,7 @@ export function CompanyCard({ company }: { company: PublicCompanyListItemDto }) 
   return (
     <Link
       to={lp(`/companies/${company.slug}`)}
-      className="group flex h-full flex-col overflow-hidden rounded-3xl glass-panel"
+      className="group flex h-full flex-col border border-gray-200 bg-white transition-colors hover:border-violet-300"
     >
       <CardCover
         company={company}
@@ -92,21 +69,23 @@ export function CompanyCard({ company }: { company: PublicCompanyListItemDto }) 
         verifiedLabel={t('companyCard.verified')}
       />
 
-      <div className="relative flex flex-1 flex-col px-5 pb-5 pt-0">
-        <div className="-mt-7 mb-3">
-          <CompanyLogo name={company.name} logoUrl={company.logoUrl} size="md" />
-        </div>
-
-        <div className="flex items-start justify-between gap-3 min-h-[3.25rem]">
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-start gap-3 min-h-[3.25rem]">
+          <CompanyLogo
+            name={company.name}
+            logoUrl={company.logoUrl}
+            size="sm"
+            className="rounded-none border border-gray-100 shadow-none shrink-0"
+          />
           <div className="min-w-0 flex-1">
             <h2 className="text-base font-bold text-gray-900 truncate group-hover:text-violet-700 transition-colors">
               {company.name}
             </h2>
-            <p className="text-xs text-violet-600 font-medium mt-1 truncate min-h-[1rem]">
-              {company.category ? getTranslatedCategoryName(t, company.category) : '\u00A0'}
+            <p className="text-[10px] font-black uppercase tracking-wider text-violet-600 mt-1 truncate min-h-[1rem]">
+              {company.category ? getTranslatedCategoryName(t, company.category) : ' '}
             </p>
           </div>
-          <div className="flex h-8 shrink-0 items-center gap-1 rounded-lg bg-amber-50 px-2.5">
+          <div className="flex h-7 shrink-0 items-center gap-1 border border-amber-100 bg-amber-50 px-2">
             <StarIcon className="size-3.5 text-amber-500 fill-amber-500" />
             <span className="text-xs font-bold text-gray-800 tabular-nums">{rating.toFixed(1)}</span>
           </div>
@@ -116,7 +95,7 @@ export function CompanyCard({ company }: { company: PublicCompanyListItemDto }) 
           {company.description ?? t('companyCard.fallbackDescription')}
         </p>
 
-        <div className="mt-auto pt-4 border-t border-gray-100/80">
+        <div className="mt-auto pt-4 border-t border-gray-100">
           <div className="grid grid-cols-3 gap-2 text-[11px] text-gray-500">
             <span className="inline-flex items-center gap-1 min-w-0">
               <MapPinIcon className="size-3.5 shrink-0 text-gray-400" />

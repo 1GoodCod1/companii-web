@@ -14,6 +14,7 @@ RUN apk add --no-cache dumb-init wget
 RUN addgroup -g 1001 -S nginx-app && adduser -S nginx-app -u 1001 -G nginx-app
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx-security-headers.conf /etc/nginx/snippets/security-headers.conf
 RUN chown -R nginx-app:nginx-app /usr/share/nginx/html /var/cache/nginx /var/log/nginx /etc/nginx/conf.d \
   && touch /var/run/nginx.pid && chown nginx-app:nginx-app /var/run/nginx.pid
 USER nginx-app

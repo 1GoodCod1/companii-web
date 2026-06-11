@@ -4,9 +4,7 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { LoadingStatus } from '@/shared/ui/LoadingStatus';
 import {
-  PageHero,
   Panel,
-  PanelHeader,
   EmptyState,
   SoftBadge,
   cabinetBtnPrimary,
@@ -68,11 +66,15 @@ export function CompanySubscriptionPage() {
   if (!activeCompanyId) {
     return (
       <div className="max-w-xl space-y-6 animate-fade-in">
-        <PageHero
-          title={t('company.subscriptionPage.title')}
-          description={t('company.subscriptionPage.descriptionNoCompany')}
-        />
-        <Panel className="max-w-xl">
+        <Panel className="max-w-xl p-6 space-y-4">
+          <div>
+            <h1 className="text-xl font-black tracking-tight text-gray-900">
+              {t('company.subscriptionPage.title')}
+            </h1>
+            <p className="mt-1 text-sm text-gray-500">
+              {t('company.subscriptionPage.descriptionNoCompany')}
+            </p>
+          </div>
           <Link to="/company/profile" className={cabinetBtnPrimary}>
             {t('company.subscriptionPage.createProfileBtn')}
           </Link>
@@ -84,65 +86,67 @@ export function CompanySubscriptionPage() {
   return (
     <CompanyOwnerGate>
     <div className="space-y-6 animate-fade-in">
-      <PageHero
-        title={t('company.subscriptionPage.title')}
-        description={t('company.subscriptionPage.description')}
-      />
-
       {subLoading ? (
         <p className="text-sm text-gray-400">{t('company.subscriptionPage.loading')}</p>
       ) : subscription ? (
-        <Panel className="max-w-2xl">
-          <div className="flex flex-wrap items-start justify-between gap-4">
+        <Panel className="relative overflow-hidden p-5 sm:p-6">
+          <div className="pointer-events-none absolute -right-12 -top-12 size-44 rounded-full bg-violet-400/10 blur-3xl" />
+          <div className="relative flex flex-wrap items-center justify-between gap-6">
             <div>
-              <p className="text-xs text-gray-400 mb-1">{t('company.subscriptionPage.activePlan')}</p>
-              <p className="text-xl font-black text-gray-900">{subscription.plan.name}</p>
-              <p className="text-sm font-semibold text-violet-600 mt-1">
-                {planPriceLabel(subscription.plan, t)}
+              <div className="flex items-center gap-2.5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                  {t('company.subscriptionPage.activePlan')}
+                </p>
+                <SoftBadge tone={subscription.status === 'ACTIVE' || subscription.status === 'TRIAL' ? 'violet' : 'gray'}>
+                  {subscription.status === 'TRIAL' ? t('company.subscriptionPage.statusTrial') : subscription.status}
+                </SoftBadge>
+              </div>
+              <div className="mt-1.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <p className="text-2xl font-black tracking-tight text-gray-900">{subscription.plan.name}</p>
+                <p className="text-sm font-bold text-violet-600">{planPriceLabel(subscription.plan, t)}</p>
+              </div>
+              <p className="mt-2 text-xs text-gray-500">
+                {t('company.subscriptionPage.validUntil')}{' '}
+                <strong className="text-gray-700">
+                  {formatDateLocalized(subscription.currentPeriodEnd, locale, 'long')}
+                </strong>
               </p>
             </div>
-            <SoftBadge tone={subscription.status === 'ACTIVE' || subscription.status === 'TRIAL' ? 'violet' : 'gray'}>
-              {subscription.status === 'TRIAL' ? t('company.subscriptionPage.statusTrial') : subscription.status}
-            </SoftBadge>
+
+            {subscription.usage ? (
+              <div className="flex flex-wrap gap-3">
+                <div className="min-w-[160px] rounded-2xl bg-slate-50 px-5 py-4">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    {t('company.subscriptionPage.technicians')}
+                  </p>
+                  <p className="mt-1 text-lg font-black text-gray-900">
+                    {subscription.usage.activeTechnicians + subscription.usage.pendingTechnicianInvites}
+                    {subscription.usage.maxTechnicians != null
+                      ? ` / ${subscription.usage.maxTechnicians}`
+                      : ` · ${t('company.subscriptionPage.unlimited')}`}
+                  </p>
+                </div>
+                <div className="min-w-[160px] rounded-2xl bg-slate-50 px-5 py-4">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    {t('company.subscriptionPage.jobsThisMonth')}
+                  </p>
+                  <p className="mt-1 text-lg font-black text-gray-900">
+                    {subscription.usage.interventionsThisMonth}
+                    {subscription.usage.maxInterventionsPerMonth != null
+                      ? ` / ${subscription.usage.maxInterventionsPerMonth}`
+                      : ` · ${t('company.subscriptionPage.unlimited')}`}
+                  </p>
+                </div>
+              </div>
+            ) : null}
           </div>
-          <p className="text-xs text-gray-500 mt-4">
-            {t('company.subscriptionPage.validUntil')}{' '}
-            <strong className="text-gray-700">
-              {formatDateLocalized(subscription.currentPeriodEnd, locale, 'long')}
-            </strong>
-          </p>
-          {subscription.usage ? (
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 text-xs">
-              <div className="rounded-xl bg-gray-50 border border-gray-100 px-4 py-3">
-                <p className="text-gray-400 font-semibold uppercase tracking-wider">
-                  {t('company.subscriptionPage.technicians')}
-                </p>
-                <p className="text-lg font-black text-gray-900 mt-1">
-                  {subscription.usage.activeTechnicians + subscription.usage.pendingTechnicianInvites}
-                  {subscription.usage.maxTechnicians != null
-                    ? ` / ${subscription.usage.maxTechnicians}`
-                    : ` · ${t('company.subscriptionPage.unlimited')}`}
-                </p>
-              </div>
-              <div className="rounded-xl bg-gray-50 border border-gray-100 px-4 py-3">
-                <p className="text-gray-400 font-semibold uppercase tracking-wider">
-                  {t('company.subscriptionPage.jobsThisMonth')}
-                </p>
-                <p className="text-lg font-black text-gray-900 mt-1">
-                  {subscription.usage.interventionsThisMonth}
-                  {subscription.usage.maxInterventionsPerMonth != null
-                    ? ` / ${subscription.usage.maxInterventionsPerMonth}`
-                    : ` · ${t('company.subscriptionPage.unlimited')}`}
-                </p>
-              </div>
-            </div>
-          ) : null}
+
           {onFreePlan ? (
-            <p className="text-xs text-violet-700 font-medium mt-3 bg-violet-50 rounded-xl px-4 py-3">
+            <p className="relative mt-4 rounded-xl bg-violet-50 px-4 py-3 text-xs font-medium text-violet-700">
               {t('company.subscriptionPage.freePlanHint')}
             </p>
           ) : isProPlan(currentPlanCode) ? (
-            <p className="text-xs text-indigo-700 font-medium mt-3 bg-indigo-50 rounded-xl px-4 py-3">
+            <p className="relative mt-4 rounded-xl bg-indigo-50 px-4 py-3 text-xs font-medium text-indigo-700">
               {t('company.subscriptionPage.proUpgradeHint')}
             </p>
           ) : null}
@@ -151,8 +155,10 @@ export function CompanySubscriptionPage() {
         <EmptyState message={t('company.subscriptionPage.noSubscription')} />
       )}
 
-      <Panel>
-        <PanelHeader title={onFreePlan ? t('company.subscriptionPage.plansTitleAll') : t('company.subscriptionPage.plansTitle')} />
+      <section className="space-y-4">
+        <h2 className="text-lg font-black tracking-tight text-gray-900">
+          {onFreePlan ? t('company.subscriptionPage.plansTitleAll') : t('company.subscriptionPage.plansTitle')}
+        </h2>
         {plansLoading ? (
           <LoadingStatus label={t('company.subscriptionPage.loadingPlans')}>
             <SkeletonPlanCards />
@@ -166,7 +172,7 @@ export function CompanySubscriptionPage() {
             onClaimFree={handleClaimFree}
           />
         )}
-      </Panel>
+      </section>
     </div>
     </CompanyOwnerGate>
   );

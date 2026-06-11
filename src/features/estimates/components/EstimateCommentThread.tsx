@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaperPlaneRightIcon, ChatCircleIcon } from '@phosphor-icons/react';
+import { Panel } from '@/widgets/cabinet/cabinet-ui';
+import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/entities/user/model/authStore';
 import { useEstimateComments, useAddComment } from '../api/useEstimateComments';
 import type { EstimateCommentDto } from '@/entities/estimate/model/estimates';
@@ -38,23 +40,31 @@ export function EstimateCommentThread({ projectId, isPortal = false }: Props) {
   }, [comments]);
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-        <ChatCircleIcon className="size-4" />
-        {t('comments.title', 'Comments')}
+    <Panel className="p-5">
+      <div className="mb-3 flex items-center gap-2">
+        <ChatCircleIcon className="size-4 text-violet-600" />
+        <h3 className="text-sm font-bold text-gray-900">{t('comments.title', 'Comments')}</h3>
+        {comments?.length ? (
+          <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[11px] font-bold tabular-nums text-violet-700">
+            {comments.length}
+          </span>
+        ) : null}
       </div>
 
       {/* Messages */}
-      <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
+      <div className="custom-scrollbar max-h-80 space-y-3 overflow-y-auto rounded-2xl bg-slate-50/70 p-3.5">
         {isLoading && (
-          <div className="text-xs text-muted-foreground text-center py-4">
+          <div className="py-6 text-center text-xs text-gray-400">
             {t('common.loading', 'Loading...')}
           </div>
         )}
 
         {comments && comments.length === 0 && (
-          <div className="text-xs text-muted-foreground text-center py-4">
-            {t('comments.empty', 'No comments yet. Start the conversation!')}
+          <div className="flex flex-col items-center gap-2 py-8 text-center">
+            <ChatCircleIcon className="size-6 text-gray-300" />
+            <p className="text-xs text-gray-400">
+              {t('comments.empty', 'No comments yet. Start the conversation!')}
+            </p>
           </div>
         )}
 
@@ -70,19 +80,30 @@ export function EstimateCommentThread({ projectId, isPortal = false }: Props) {
               className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
+                className={cn(
+                  'max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm shadow-sm',
                   isOwn
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground'
-                }`}
+                    ? 'rounded-br-md bg-violet-600 text-white'
+                    : 'rounded-bl-md border border-gray-100 bg-white text-gray-800',
+                )}
               >
-                <div className="text-xs opacity-70 mb-0.5">
+                <div
+                  className={cn(
+                    'mb-0.5 text-[10px] font-bold uppercase tracking-wide',
+                    isOwn ? 'text-violet-200' : 'text-gray-400',
+                  )}
+                >
                   {c.authorKind === 'CLIENT'
                     ? t('comments.client', 'Client')
                     : t('comments.contractor', 'Contractor')}
                 </div>
                 <div className="whitespace-pre-wrap break-words">{c.body}</div>
-                <div className="text-xs opacity-50 mt-1 text-right">
+                <div
+                  className={cn(
+                    'mt-1 text-right text-[10px]',
+                    isOwn ? 'text-violet-200/80' : 'text-gray-400',
+                  )}
+                >
                   {new Date(c.createdAt).toLocaleString()}
                 </div>
               </div>
@@ -93,9 +114,9 @@ export function EstimateCommentThread({ projectId, isPortal = false }: Props) {
       </div>
 
       {/* Input */}
-      <div className="flex gap-2">
+      <div className="mt-3 flex items-end gap-2">
         <textarea
-          className="flex-1 border rounded px-3 py-2 text-sm resize-none"
+          className="flex-1 resize-none rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-colors placeholder:text-gray-400 focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
           rows={2}
           aria-label={t('comments.placeholder', 'Write a comment...')}
           placeholder={t('comments.placeholder', 'Write a comment...')}
@@ -106,16 +127,17 @@ export function EstimateCommentThread({ projectId, isPortal = false }: Props) {
         />
         <button
           type="button"
-          className="btn-primary flex items-center justify-center size-10 rounded-lg flex-shrink-0"
+          className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-violet-600 text-white transition-colors hover:bg-violet-700 disabled:cursor-default disabled:opacity-40"
+          title={t('comments.placeholder', 'Write a comment...')}
           onClick={handleSend}
           disabled={!newComment.trim() || addComment.isPending}
         >
           <PaperPlaneRightIcon className="size-4" />
         </button>
       </div>
-      <div className="text-xs text-muted-foreground text-right">
+      <div className="mt-1 text-right text-[11px] tabular-nums text-gray-400">
         {newComment.length}/2000
       </div>
-    </div>
+    </Panel>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { PageHero, Panel, PanelHeader, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
+import { Panel, PanelHeader, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
 import { CompanyManagementGate } from '@/features/companies';
 import { useCategoriesQuery } from '@/features/companies/api/useCompanies';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
@@ -120,18 +120,15 @@ export function CompanyServicesPage() {
   return (
     <CompanyManagementGate>
       <div className="space-y-6 animate-fade-in">
-        <PageHero
-          title={t('company.servicesPage.title')}
-          description={t('company.servicesPage.description')}
-          action={
-            <button type="button" onClick={openCreate} className={cabinetBtnPrimary}>
-              {t('company.servicesPage.createBtn')}
-            </button>
-          }
-        />
-
         <Panel>
-          <PanelHeader title={t('company.servicesPage.catalogTitle')} />
+          <PanelHeader
+            title={t('company.servicesPage.catalogTitle')}
+            action={
+              <button type="button" onClick={openCreate} className={cabinetBtnPrimary}>
+                {t('company.servicesPage.createBtn')}
+              </button>
+            }
+          />
           <ServicesCatalogPanel
             services={services}
             isLoading={isLoading}

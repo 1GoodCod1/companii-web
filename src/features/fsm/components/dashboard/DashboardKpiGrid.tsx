@@ -1,19 +1,28 @@
+import { cn } from '@/lib/utils';
 import type { DashboardKpi } from '@/entities/fsm/model/dashboard.constants';
 
-export function DashboardKpiGrid({ kpis }: { kpis: DashboardKpi[] }) {
+export function DashboardKpiGrid({
+  kpis,
+  layout = 'row',
+}: {
+  kpis: DashboardKpi[];
+  layout?: 'row' | 'square';
+}) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
+    <div
+      className={cn(
+        'grid gap-4 sm:gap-5',
+        layout === 'square'
+          ? 'grid-cols-1 sm:grid-cols-2 h-full [grid-auto-rows:1fr]'
+          : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4',
+      )}
+    >
       {kpis.map((kpi) => (
         <article
           key={kpi.label}
-          className={`relative overflow-hidden rounded-none ${kpi.accent.tone} p-5 glass-panel`}
+          className={`relative overflow-hidden rounded-none ${kpi.accent.tone} p-5 glass-panel flex flex-col justify-center`}
         >
-          <div className="flex items-start justify-between gap-3">
-            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">{kpi.label}</span>
-            <span className={`flex size-10 items-center justify-center rounded-none text-lg ${kpi.accent.iconBg}`}>
-              {kpi.accent.icon}
-            </span>
-          </div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">{kpi.label}</span>
           <p className={`mt-5 text-2xl sm:text-3xl font-black tracking-tight text-gray-900 ${kpi.valueClass ?? ''}`}>
             {kpi.value}
           </p>

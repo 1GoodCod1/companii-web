@@ -10,6 +10,7 @@ export const companiiRuCompanyCrm = {
   customersPage: {
       title: 'Клиенты',
       description: 'Управляйте базой клиентов, историей работ и контактными данными.',
+      totalCount: 'Клиентов в базе: {{count}}',
       importBtn: 'Импорт Excel / CSV',
       addBtn: '+ Добавить клиента',
       searchPlaceholder: 'Поиск по имени, телефону или email...',

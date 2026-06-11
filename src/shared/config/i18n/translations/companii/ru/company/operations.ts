@@ -94,6 +94,7 @@ export const companiiRuCompanyOperations = {
       description:
         'Создавайте расчеты стоимости расходов, рабочие бюджеты и ценовые предложения для клиентов.',
       createBtn: '+ Создать предложение',
+      filterAll: 'Все',
     },
 
   invoicesPage: {

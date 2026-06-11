@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LoadingStatus } from '@/shared/ui/LoadingStatus';
 import {
@@ -20,6 +20,7 @@ export function TeamHierarchyPanel({
   permissions,
   onChangeRole,
   onDeactivate,
+  action,
 }: {
   members?: CompanyMemberDto[];
   roleGroups: Array<{ role: TeamRoleKey; items: CompanyMemberDto[] }>;
@@ -28,6 +29,7 @@ export function TeamHierarchyPanel({
   permissions: { canManageTeam: boolean; canInviteManagers: boolean };
   onChangeRole: (memberId: string, nextRole: InvitableCompanyRole) => void;
   onDeactivate: (memberId: string) => void;
+  action?: ReactNode;
 }) {
   const { t } = useTranslation();
   const memberCountMeta = useMemo(
@@ -44,6 +46,7 @@ export function TeamHierarchyPanel({
       <PanelHeader
         title={t('company.teamPage.hierarchyTitle')}
         meta={memberCountMeta}
+        action={action}
       />
 
       {status.isLoading ? (

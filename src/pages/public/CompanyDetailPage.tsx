@@ -70,13 +70,13 @@ function useCompanyDetailPageView() {
   if (isError || !company) {
     return (
       <div className="max-w-2xl mx-auto my-12 text-center">
-        <div className="glass-panel rounded-3xl p-12 border-red-100">
+        <div className="border border-red-200 bg-red-50 p-12">
           <p className="text-base font-semibold text-red-600 mb-6">
             {t('companyDetail.notFound')}
           </p>
           <Link
             to={lp('/companies')}
-            className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-gray-900 hover:bg-gray-800 text-xs font-black uppercase tracking-wider text-white transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 bg-gray-900 hover:bg-gray-800 text-xs font-black uppercase tracking-wider text-white transition-colors"
           >
             {t('companyDetail.backToCatalog')}
           </Link>
@@ -112,7 +112,7 @@ function useCompanyDetailPageView() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-start">
           <div className="space-y-8 min-w-0">
             {company.description ? (
-              <section className="glass-panel rounded-[28px] p-6 sm:p-8 border border-white/40">
+              <section className="border border-gray-200 bg-white p-6 sm:p-8">
                 <div className="flex items-center gap-2 mb-4">
                   <SparkleIcon className="size-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
@@ -125,7 +125,7 @@ function useCompanyDetailPageView() {
               </section>
             ) : null}
 
-            <section className="glass-panel rounded-[28px] p-6 sm:p-8 border border-white/40">
+            <section className="border border-gray-200 bg-white p-6 sm:p-8">
               <div className="mb-6">
                 <h2 className="text-lg font-black text-slate-900 tracking-tight">
                   {t('companyDetail.galleryTitle')}
@@ -138,7 +138,7 @@ function useCompanyDetailPageView() {
             </section>
 
             {(company.services?.length ?? 0) > 0 ? (
-              <section className="glass-panel rounded-[28px] p-6 sm:p-8 border border-white/40">
+              <section className="border border-gray-200 bg-white p-6 sm:p-8">
                 <div className="flex items-center gap-2 mb-2">
                   <ClockIcon className="size-5 text-violet-600" />
                   <h2 className="text-lg font-black text-slate-900 tracking-tight">
@@ -164,19 +164,15 @@ function useCompanyDetailPageView() {
                     return (
                       <article
                         key={service.id}
-                        className="group relative flex flex-col justify-between rounded-3xl bg-white border border-slate-100 hover:border-violet-200/80 shadow-[0_4px_20px_-4px_rgba(99,102,241,0.04)] p-6"
+                        className="group flex flex-col justify-between border border-gray-200 bg-white hover:border-violet-300 transition-colors p-6"
                       >
-                        {/* Premium Top Glow Bar on Hover */}
-                        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-500 rounded-t-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
                         <div className="space-y-3">
                           <div className="flex items-start justify-between gap-4">
                             <h3 className="font-extrabold text-slate-900 group-hover:text-violet-700 transition-colors tracking-tight text-wrap:pretty text-base">
                               {service.name}
                             </h3>
 
-                            {/* Price in a glowing badge */}
-                            <span className="shrink-0 inline-flex items-center bg-violet-50 text-violet-700 font-extrabold text-sm px-3.5 py-1.5 rounded-2xl border border-violet-100/50 tabular-nums">
+                            <span className="shrink-0 inline-flex items-center bg-violet-50 text-violet-700 font-extrabold text-sm px-3.5 py-1.5 border border-violet-100 tabular-nums">
                               {Number(service.defaultPrice).toLocaleString('ro-MD')}{' '}
                               {service.currency ?? 'MDL'}
                             </span>
@@ -199,12 +195,12 @@ function useCompanyDetailPageView() {
                               {t('companyDetail.serviceAvailability')}
                             </span>
                             {durationLabel ? (
-                              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-[10px] font-bold text-slate-600 rounded-xl">
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-[10px] font-bold text-slate-600">
                                 <ClockIcon className="size-3 text-slate-400" />
                                 {durationLabel}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-[10px] font-bold text-slate-400 rounded-xl">
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-[10px] font-bold text-slate-400">
                                 <ClockIcon className="size-3 text-slate-300" />
                                 {t('companyDetail.variableDuration')}
                               </span>
@@ -215,7 +211,7 @@ function useCompanyDetailPageView() {
                             <button
                               type="button"
                               onClick={() => openServiceRequest(service.id, service.name)}
-                              className="w-full py-3 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider active:scale-[0.99] transition-all cursor-pointer"
+                              className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider transition-colors cursor-pointer"
                             >
                               {t('companyDetail.requestService')}
                             </button>
@@ -229,15 +225,11 @@ function useCompanyDetailPageView() {
             ) : null}
 
             {showRequestActions ? (
-              <section className="relative rounded-[32px] overflow-hidden border border-violet-100/60 bg-gradient-to-br from-violet-50/50 via-indigo-50/20 to-white p-6 sm:p-8 glass-panel">
-                {/* Visual Glow Decorators */}
-                <div className="absolute -right-20 -bottom-20 size-64 rounded-full bg-violet-600/5 blur-3xl pointer-events-none" />
-                <div className="absolute top-0 left-0 size-48 rounded-full bg-indigo-500/5 blur-2xl pointer-events-none" />
-
-                <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <section className="border border-violet-200 bg-violet-50/50 p-6 sm:p-8">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-violet-100 text-violet-700 shrink-0">
+                      <div className="flex size-10 items-center justify-center bg-violet-100 text-violet-700 shrink-0">
                         <HardHatIcon className="size-5" />
                       </div>
                       <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
@@ -253,7 +245,7 @@ function useCompanyDetailPageView() {
                   <button
                     type="button"
                     onClick={openProjectRequest}
-                    className="shrink-0 inline-flex items-center justify-center gap-2 py-4 px-8 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                    className="shrink-0 inline-flex items-center justify-center gap-2 py-4 px-8 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider transition-colors cursor-pointer"
                   >
                     <SparkleIcon className="size-4" /> {t('companyDetail.projectCta')}
                   </button>

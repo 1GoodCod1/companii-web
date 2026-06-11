@@ -21,7 +21,7 @@ export function DashboardNewLeadsPanel({
   const { t } = useTranslation();
 
   return (
-    <Panel>
+    <Panel className="h-full">
       <PanelHeader
         title={t('company.dashboard.panels.newLeads.title')}
         action={

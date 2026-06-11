@@ -1,29 +1,15 @@
-import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { BuildingsIcon, ClipboardTextIcon, FileXlsIcon, UsersIcon, WrenchIcon } from '@phosphor-icons/react';
+import { cn } from '@/lib/utils';
 
 const STEP_ICONS = [BuildingsIcon, UsersIcon, WrenchIcon, FileXlsIcon, ClipboardTextIcon] as const;
 const STEP_TONES = [
-  'border-violet-200 bg-violet-50/50 text-violet-700',
-  'border-indigo-200 bg-indigo-50/50 text-indigo-700',
-  'border-amber-200 bg-amber-50/50 text-amber-700',
-  'border-blue-200 bg-blue-50/50 text-blue-700',
-  'border-emerald-200 bg-emerald-50/50 text-emerald-700',
+  'bg-violet-50 text-violet-700',
+  'bg-indigo-100 text-indigo-700',
+  'bg-amber-50 text-amber-700',
+  'bg-blue-50 text-blue-700',
+  'bg-emerald-50 text-emerald-700',
 ] as const;
-
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12 } },
-};
-
-const item = {
-  hidden: { opacity: 0, x: -24 },
-  show: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
-  },
-};
 
 export function LandingTimeline() {
   const { t } = useTranslation();
@@ -34,15 +20,9 @@ export function LandingTimeline() {
   }>;
 
   return (
-    <section className="relative py-24 sm:py-32 bg-white">
+    <section className="py-24 sm:py-28 bg-white">
       <div className="max-w-6xl mx-auto px-6">
-        <m.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-16"
-        >
+        <div className="max-w-3xl mb-12">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-600 mb-3">
             {t('landing.timeline.eyebrow')}
           </p>
@@ -53,54 +33,50 @@ export function LandingTimeline() {
           <p className="mt-4 text-gray-500 text-base leading-relaxed">
             {t('landing.timeline.description')}
           </p>
-        </m.div>
+        </div>
 
-        <m.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-60px' }}
-          className="relative"
-        >
-          <div className="absolute left-[1.65rem] top-4 bottom-4 w-px bg-gray-200 hidden md:block" />
+        <div className="border-t border-gray-200">
+          {steps.map((step, index) => {
+            const Icon = STEP_ICONS[index] ?? BuildingsIcon;
+            const tone = STEP_TONES[index] ?? STEP_TONES[0];
 
-          <div className="space-y-6">
-            {steps.map((step, index) => {
-              const Icon = STEP_ICONS[index] ?? BuildingsIcon;
-              const tone = STEP_TONES[index] ?? STEP_TONES[0];
-
-              return (
-                <m.article
-                  key={step.step}
-                  variants={item}
-                  className="relative md:pl-16"
+            return (
+              <article
+                key={step.step}
+                className="group grid grid-cols-[72px_1fr] sm:grid-cols-[110px_1fr_44px] lg:grid-cols-[130px_1fr_1.2fr_44px] gap-x-5 sm:gap-x-8 items-center border-b border-gray-200 px-2 sm:px-5 py-7 sm:py-8 transition-colors hover:bg-slate-50/70"
+              >
+                <span
+                  aria-hidden
+                  className="font-display text-4xl sm:text-6xl font-black leading-none text-transparent [-webkit-text-stroke:1.5px_#d1d5db] group-hover:[-webkit-text-stroke:1.5px_#c2593f]"
                 >
-                  <div
-                    className={`hidden md:flex absolute left-0 top-5 size-14 items-center justify-center rounded-none border ${tone} shadow-sm`}
-                  >
-                    <Icon className="size-6" />
-                  </div>
+                  {step.step}
+                </span>
 
-                  <div className="rounded-none border border-gray-200 bg-white p-6 sm:p-7 shadow-sm">
-                    <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-                      <div className="flex items-center gap-3 md:hidden">
-                        <div
-                          className={`flex size-11 items-center justify-center rounded-none border ${tone}`}
-                        >
-                          <Icon className="size-5" />
-                        </div>
-                        <span className="text-xs font-bold text-gray-300">{step.step}</span>
-                      </div>
-                      <span className="hidden md:inline text-xs font-bold text-gray-300">{step.step}</span>
-                      <h3 className="text-lg font-bold text-gray-900 w-full md:w-auto">{step.title}</h3>
-                    </div>
-                    <p className="text-sm text-gray-500 leading-relaxed max-w-2xl">{step.description}</p>
-                  </div>
-                </m.article>
-              );
-            })}
-          </div>
-        </m.div>
+                <div className="min-w-0">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-violet-700 transition-colors">
+                    {step.title}
+                  </h3>
+                  <p className="mt-1.5 text-sm text-gray-500 leading-relaxed lg:hidden">
+                    {step.description}
+                  </p>
+                </div>
+
+                <p className="hidden lg:block text-sm text-gray-500 leading-relaxed">
+                  {step.description}
+                </p>
+
+                <span
+                  className={cn(
+                    'hidden sm:flex size-11 shrink-0 items-center justify-center',
+                    tone,
+                  )}
+                >
+                  <Icon className="size-5" />
+                </span>
+              </article>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

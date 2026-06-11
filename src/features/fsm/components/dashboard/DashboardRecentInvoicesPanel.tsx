@@ -12,7 +12,7 @@ export function DashboardRecentInvoicesPanel({ invoices }: { invoices: InvoiceDt
   const locale = useLocale();
 
   return (
-    <Panel>
+    <Panel className="h-full">
       <PanelHeader
         title={t('company.dashboard.panels.recentInvoices.title')}
         action={

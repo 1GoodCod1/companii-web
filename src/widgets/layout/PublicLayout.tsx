@@ -153,80 +153,82 @@ export function PublicLayout() {
         <Outlet />
       </main>
 
-      <footer className="bg-white border-t border-gray-100 py-12 mt-20">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-4">
-            <div>
+      <footer className="bg-white border-t border-gray-200">
+        <div className="max-w-6xl mx-auto px-6 py-14">
+          <div className="grid grid-cols-1 md:grid-cols-[1.6fr_1fr_1fr] gap-10 lg:gap-16">
+            <div className="space-y-4 max-w-sm">
               <FaberLogo size="sm" />
+              <p className="text-sm text-gray-500 leading-relaxed">
+                {t('footer.tagline')}
+              </p>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                {t('footer.madeInMoldova.description')}
+              </p>
             </div>
-            <p className="text-xs text-gray-400 font-medium leading-relaxed">
-              {t('footer.tagline')}
-            </p>
+
+            <div>
+              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.18em] mb-5">
+                {t('footer.platform.title')}
+              </h4>
+              <ul className="space-y-3 text-sm font-medium text-gray-600">
+                <li>
+                  <Link to={lp('/how-it-works')} className="hover:text-violet-700 transition-colors">
+                    {t('footer.platform.howItWorks')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to={lp('/companies')} className="hover:text-violet-700 transition-colors">
+                    {t('footer.platform.companies')}
+                  </Link>
+                </li>
+                {user?.accountKind !== 'END_CLIENT' && (
+                  <li>
+                    <Link to={lp(`/${PUBLIC_ROUTE.SUBSCRIPTIONS}`)} className="hover:text-violet-700 transition-colors">
+                      {t('footer.platform.subscriptions')}
+                    </Link>
+                  </li>
+                )}
+                <li>
+                  <Link to={lp('/faq')} className="hover:text-violet-700 transition-colors">
+                    {t('footer.platform.faq')}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.18em] mb-5">
+                {t('footer.legal.title')}
+              </h4>
+              <ul className="space-y-3 text-sm font-medium text-gray-600">
+                <li>
+                  <Link to={lp('/privacy')} className="hover:text-violet-700 transition-colors">
+                    {t('footer.legal.privacy')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to={lp('/terms')} className="hover:text-violet-700 transition-colors">
+                    {t('footer.legal.terms')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to={lp('/contacts')} className="hover:text-violet-700 transition-colors">
+                    {t('footer.legal.contacts')}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-100">
+          <div className="max-w-6xl mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-3">
             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
               © {CURRENT_YEAR} {t('footer.copyright')}
             </p>
-          </div>
-
-          <div>
-            <h4 className="text-xs font-black text-gray-900 uppercase tracking-widest mb-4">
-              {t('footer.platform.title')}
-            </h4>
-            <ul className="space-y-2.5 text-xs font-bold text-gray-400 uppercase tracking-wider">
-              <li>
-                <Link to={lp('/how-it-works')} className="hover:text-violet-600 transition-colors">
-                  {t('footer.platform.howItWorks')}
-                </Link>
-              </li>
-              <li>
-                <Link to={lp('/companies')} className="hover:text-violet-600 transition-colors">
-                  {t('footer.platform.companies')}
-                </Link>
-              </li>
-              {user?.accountKind !== 'END_CLIENT' && (
-                <li>
-                  <Link to={lp(`/${PUBLIC_ROUTE.SUBSCRIPTIONS}`)} className="hover:text-violet-600 transition-colors">
-                    {t('footer.platform.subscriptions')}
-                  </Link>
-                </li>
-              )}
-              <li>
-                <Link to={lp('/faq')} className="hover:text-violet-600 transition-colors">
-                  {t('footer.platform.faq')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-xs font-black text-gray-900 uppercase tracking-widest mb-4">
-              {t('footer.legal.title')}
-            </h4>
-            <ul className="space-y-2.5 text-xs font-bold text-gray-400 uppercase tracking-wider">
-              <li>
-                <Link to={lp('/privacy')} className="hover:text-violet-600 transition-colors">
-                  {t('footer.legal.privacy')}
-                </Link>
-              </li>
-              <li>
-                <Link to={lp('/terms')} className="hover:text-violet-600 transition-colors">
-                  {t('footer.legal.terms')}
-                </Link>
-              </li>
-              <li>
-                <Link to={lp('/contacts')} className="hover:text-violet-600 transition-colors">
-                  {t('footer.legal.contacts')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-4 bg-gray-50/50 p-5 rounded-2xl border border-gray-100">
-            <span className="text-[10px] font-black text-violet-700 uppercase tracking-widest bg-violet-50 px-2 py-1 rounded-md border border-violet-100">
+            <span className="inline-flex items-center border border-violet-200 bg-violet-50 px-2.5 py-1 text-[10px] font-black text-violet-700 uppercase tracking-widest">
               {t('footer.madeInMoldova.badge')}
             </span>
-            <p className="text-xs text-gray-500 leading-relaxed font-medium">
-              {t('footer.madeInMoldova.description')}
-            </p>
           </div>
         </div>
       </footer>

@@ -1,10 +1,7 @@
 import { useMemo, useState, useReducer } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import {
-  PageHero,
-  cabinetBtnPrimary,
-} from '@/widgets/cabinet/cabinet-ui';
+import { cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
 import {
   useCompanyMembersQuery,
   useCompanyInvitationsQuery,
@@ -217,16 +214,6 @@ export function CompanyTeamPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <PageHero
-        title={t('company.teamPage.title')}
-        description={t('company.teamPage.description')}
-        action={
-          <button type="button" onClick={() => inviteDispatch({ type: 'OPEN_INVITE' })} className={cabinetBtnPrimary}>
-            {t('company.teamPage.inviteBtn')}
-          </button>
-        }
-      />
-
       <TeamHierarchyPanel
         members={members}
         roleGroups={roleGroups}
@@ -235,6 +222,11 @@ export function CompanyTeamPage() {
         permissions={{ canManageTeam, canInviteManagers }}
         onChangeRole={handleChangeRole}
         onDeactivate={handleDeactivate}
+        action={
+          <button type="button" onClick={() => inviteDispatch({ type: 'OPEN_INVITE' })} className={cabinetBtnPrimary}>
+            {t('company.teamPage.inviteBtn')}
+          </button>
+        }
       />
 
       <TeamInvitationsPanel

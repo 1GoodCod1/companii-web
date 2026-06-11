@@ -193,6 +193,10 @@ export const companiiRuCompanyTeam = {
       publishCatalog: 'Опубликовать в каталоге',
       saveChanges: 'Сохранить изменения',
       createCompany: 'Создать компанию',
+      tabs: {
+        legal: 'Юридические данные',
+        contact: 'Контакты и брендинг',
+      },
       leaveCompany: 'Покинуть компанию',
       leaving: 'Обработка...',
       toastUpdated: 'Профиль компании успешно обновлён!',

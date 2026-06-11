@@ -11,7 +11,6 @@ import { formatAuditActorName } from '@/shared/utils/person';
 import { formatDateTimeLocalized } from '@/shared/utils/date';
 import { useLocale } from '@/shared/hooks/useLocale';
 import {
-  PageHero,
   Panel,
   EmptyState,
   AppSelect,
@@ -74,30 +73,30 @@ export function CompanyAuditPage() {
   return (
     <CompanyOwnerGate>
       <div className="space-y-6 animate-fade-in">
-        <PageHero
-          title={t('company.auditPage.title')}
-          description={t('company.auditPage.description')}
-        />
+        {/* ── Toolbar ── */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-lg font-black tracking-tight text-gray-900">
+            {t('company.auditPage.title')}
+          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <AppSelect
+              value={actionFilter}
+              onChange={setActionFilter}
+              options={actionOptions}
+              aria-label={t('company.auditPage.filterAllActions')}
+              className="min-w-[220px]"
+              maxVisibleItems={8}
+            />
 
-        {/* ── Filters ── */}
-        <div className="flex flex-wrap gap-3">
-          <AppSelect
-            value={actionFilter}
-            onChange={setActionFilter}
-            options={actionOptions}
-            aria-label={t('company.auditPage.filterAllActions')}
-            className="min-w-[220px]"
-            maxVisibleItems={8}
-          />
-
-          <AppSelect
-            value={userFilter}
-            onChange={setUserFilter}
-            options={userOptions}
-            aria-label={t('company.auditPage.filterAllUsers')}
-            className="min-w-[220px]"
-            maxVisibleItems={8}
-          />
+            <AppSelect
+              value={userFilter}
+              onChange={setUserFilter}
+              options={userOptions}
+              aria-label={t('company.auditPage.filterAllUsers')}
+              className="min-w-[220px]"
+              maxVisibleItems={8}
+            />
+          </div>
         </div>
 
         {/* ── Table ── */}

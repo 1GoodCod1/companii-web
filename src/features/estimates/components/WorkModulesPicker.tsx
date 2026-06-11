@@ -61,7 +61,7 @@ export function WorkModulesPicker({ config, enabled, onToggle, disabled }: Props
           <legend className="text-[10px] font-bold uppercase tracking-widest text-gray-400 bg-gray-50 px-2 py-0.5 rounded-md inline-block">
             {section.label}
           </legend>
-          <div className="grid sm:grid-cols-2 gap-2">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2">
             {section.modules.map((module) => {
               const isOn = enabledSet.has(module.key);
               return (
