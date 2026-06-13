@@ -1,19 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
   <defs>
-    <linearGradient id="gTop" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="gGold" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#e6ad44" />
       <stop offset="100%" stop-color="#c98f28" />
     </linearGradient>
-    <linearGradient id="gLeft" x1="0%" y1="0%" x2="0%" y2="100%">
+    <linearGradient id="gTerracotta" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#c2593f" />
       <stop offset="100%" stop-color="#8f4030" />
     </linearGradient>
-    <linearGradient id="gRight" x1="0%" y1="0%" x2="0%" y2="100%">
+    <linearGradient id="gGraphite" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#3f3f46" />
       <stop offset="100%" stop-color="#1c1c20" />
     </linearGradient>
   </defs>
-  <path d="M 50 12 L 82 30 L 50 48 L 18 30 Z" fill="url(#gTop)" />
-  <path d="M 18 30 L 50 48 L 50 84 L 18 66 Z" fill="url(#gLeft)" />
-  <path d="M 82 30 L 82 66 L 50 84 L 50 48 Z" fill="url(#gRight)" />
+  <!-- The Faber Fold — a ribbon of crafted material bent into an "F" -->
+  <path d="M 16 10 L 84 10 L 75 27 L 33 27 Z" fill="url(#gGold)" />
+  <path d="M 16 10 L 33 27 L 33 86 L 16 94 Z" fill="url(#gGraphite)" />
+  <path d="M 33 45 L 70 45 L 61 62 L 33 62 Z" fill="url(#gTerracotta)" />
+  <path d="M 16 10 L 33 10 L 33 27 Z" fill="#000000" opacity="0.14" />
+  <path d="M 33 45 L 45 45 L 33 62 Z" fill="#000000" opacity="0.14" />
 </svg>

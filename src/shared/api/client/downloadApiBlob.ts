@@ -4,6 +4,45 @@ import { apiClientConfig } from './config';
 import { DOWNLOAD_REQUEST_TIMEOUT_MS, STREAM_DOWNLOAD_THRESHOLD_BYTES } from './constants';
 import { composeAbortSignal, throwIfNotOk } from './requestHelpers';
 
+const MIME_EXTENSIONS: Record<string, string> = {
+  'application/pdf': 'pdf',
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+  'image/heic': 'heic',
+  'text/csv': 'csv',
+};
+
+function parseContentDispositionFilename(header: string | null): string | null {
+  if (!header) return null;
+  const utf8 = /filename\*=UTF-8''([^;]+)/i.exec(header);
+  if (utf8) {
+    try {
+      return decodeURIComponent(utf8[1].trim());
+    } catch {
+      // fall through to the plain filename
+    }
+  }
+  const plain = /filename="?([^";]+)"?/i.exec(header);
+  return plain ? plain[1].trim() : null;
+}
+
+/**
+ * Uploaded files keep their real extension server-side, so when the caller
+ * passes a descriptive name without one (e.g. "Bon-ciment"), the extension is
+ * taken from the response instead of being guessed at the call site.
+ */
+function resolveDownloadFilename(provided: string | undefined, res: Response): string {
+  const serverName = parseContentDispositionFilename(res.headers.get('content-disposition'));
+  if (!provided) return serverName ?? 'download';
+  if (/\.[A-Za-z0-9]{1,8}$/.test(provided)) return provided;
+  const contentType = res.headers.get('content-type')?.split(';')[0].trim().toLowerCase() ?? '';
+  const ext =
+    MIME_EXTENSIONS[contentType] ?? /\.([A-Za-z0-9]{1,8})$/.exec(serverName ?? '')?.[1] ?? null;
+  return ext ? `${provided}.${ext}` : provided;
+}
+
 function triggerBlobDownload(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
@@ -18,7 +57,7 @@ function triggerBlobDownload(blob: Blob, filename: string): void {
 
 export async function downloadApiBlob(
   path: string,
-  filename: string,
+  filename?: string,
   retried = false,
   options: { signal?: AbortSignal } = {},
 ): Promise<void> {
@@ -54,6 +93,7 @@ export async function downloadApiBlob(
   try {
     await throwIfNotOk(res);
 
+    const resolvedFilename = resolveDownloadFilename(filename, res);
     const contentLength = Number(res.headers.get('content-length') ?? '0');
     const useStreaming =
       !!res.body &&
@@ -75,12 +115,12 @@ export async function downloadApiBlob(
         new Blob(chunks, {
           type: res.headers.get('content-type') ?? 'application/octet-stream',
         }),
-        filename,
+        resolvedFilename,
       );
       return;
     }
 
-    triggerBlobDownload(await res.blob(), filename);
+    triggerBlobDownload(await res.blob(), resolvedFilename);
   } finally {
     cancelTimer();
   }

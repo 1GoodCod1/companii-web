@@ -219,7 +219,7 @@ export function ReviewMaterialStages({ wizard }: ReviewMaterialStagesProps) {
                                       onClick={() =>
                                         downloadFile(
                                           line.receiptFileKey!,
-                                          `Bon-${line.description.replace(/\s+/g, '_')}.pdf`,
+                                          `Bon-${line.description.replace(/\s+/g, '_')}`,
                                         )
                                       }
                                       className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100 px-2 py-1 text-[10px] font-bold text-violet-700 hover:bg-violet-100 transition-colors"

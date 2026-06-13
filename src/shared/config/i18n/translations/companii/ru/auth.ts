@@ -3,6 +3,8 @@ export const companiiRuAuth = {
     login: 'Вход',
     register: 'Регистрация',
     logout: 'Выход',
+    logoutConfirmTitle: 'Подтверждение выхода',
+    logoutConfirmMessage: 'Вы уверены, что хотите выйти из аккаунта?',
     email: 'Email',
     phone: 'Телефон',
     firstName: 'Имя',

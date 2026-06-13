@@ -3,6 +3,7 @@ import { apiFetch, downloadApiBlob } from '@/shared/api/client';
 import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
 import { queryKeys } from '@/shared/api/queryKeys';
 import { useAuthStore } from '@/entities/user/model/authStore';
+import type { CursorPage } from '@/shared/api/pagination';
 import type { InvoiceDto, InvoicePaymentStatus } from '@/entities/fsm/model/types';
 import { FSM_BASE } from './fsmBase';
 
@@ -16,9 +17,10 @@ export function useInvoicesQuery(
     queryKey: status
       ? [...queryKeys.fsm.invoices, { status }]
       : queryKeys.fsm.invoices,
-    queryFn: () => {
+    queryFn: async () => {
       const qs = status ? `?status=${status}` : '';
-      return apiFetch<InvoiceDto[]>(`${FSM_BASE}/invoices${qs}`);
+      const page = await apiFetch<CursorPage<InvoiceDto>>(`${FSM_BASE}/invoices${qs}`);
+      return page.items;
     },
     ...cabinetQueryDefaults,
     enabled: !!activeCompanyId && enabled,

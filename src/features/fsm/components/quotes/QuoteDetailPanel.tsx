@@ -6,7 +6,11 @@ import {
   cabinetBtnSecondary,
 } from '@/widgets/cabinet/cabinet-ui';
 import { EntityDetailPanel } from '@/widgets/cabinet/EntityDetailPanel';
-import { QUOTE_STATUS } from '@/entities/fsm/model/quoteStatus.constants';
+import {
+  QUOTE_STATUS,
+  getAllowedQuoteTransitions,
+} from '@/entities/fsm/model/quoteStatus.constants';
+import { quoteTvaAmount } from '@/entities/fsm/model/quoteTotals';
 import type { QuoteLineDto, QuoteStatus } from '@/entities/fsm/model/types';
 import {
   useQuoteQuery,
@@ -176,23 +180,21 @@ export function QuoteDetailPanel({ selectedId, onClearSelection }: Props) {
                 {t('company.fsm.quotes.detail.statusSection.title')}
               </h4>
               <div className="flex flex-wrap gap-2">
-                {([QUOTE_STATUS.DRAFT, QUOTE_STATUS.ACCEPTED, QUOTE_STATUS.REJECTED] as QuoteStatus[]).map((st) => (
+                {(getAllowedQuoteTransitions(detail.status).filter(
+                  (st) => st !== QUOTE_STATUS.SENT,
+                ) as QuoteStatus[]).map((st) => (
                   <button
                     type="button"
                     key={st}
                     onClick={() => handleStatusChange(st)}
-                    className={`px-2.5 py-1.5 rounded-xl text-[10px] font-black border transition-all cursor-pointer ${
-                      detail.status === st
-                        ? 'bg-violet-600 text-white border-violet-600 shadow-xs'
-                        : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-100'
-                    }`}
+                    className="px-2.5 py-1.5 rounded-xl text-[10px] font-black border transition-all cursor-pointer bg-white text-gray-500 border-gray-200 hover:bg-gray-100"
                   >
                     {quoteStatusLabel(st, t)}
                   </button>
                 ))}
               </div>
 
-              {detail.status !== QUOTE_STATUS.SENT && detail.status !== QUOTE_STATUS.CONVERTED ? (
+              {detail.status === QUOTE_STATUS.DRAFT ? (
                 <button
                   type="button"
                   onClick={handleSend}
@@ -249,14 +251,34 @@ export function QuoteDetailPanel({ selectedId, onClearSelection }: Props) {
                   </div>
                 ))}
               </div>
-              <div className="border-t border-gray-100 pt-3.5 flex justify-between items-center text-sm font-bold bg-violet-50/10 p-3.5 rounded-xl border border-violet-100">
-                <span className="text-gray-600 text-xs uppercase tracking-wider font-bold">
-                  {t('company.fsm.quotes.detail.lines.total')}
-                </span>
-                <span className="text-violet-700 font-black text-lg">
-                  {Number(detail.total).toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}
-                </span>
-              </div>
+              {(() => {
+                const tva = quoteTvaAmount(detail.lines);
+                const net = Number(detail.total);
+                return (
+                  <div className="border-t border-gray-100 pt-3.5 space-y-1.5 text-sm font-bold bg-violet-50/10 p-3.5 rounded-xl border border-violet-100">
+                    {tva > 0 && (
+                      <>
+                        <div className="flex justify-between items-center text-xs text-gray-500">
+                          <span>{t('company.fsm.quotes.detail.lines.subtotal', { defaultValue: 'Subtotal (fără TVA)' })}</span>
+                          <span>{net.toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-xs text-gray-500">
+                          <span>{t('company.fsm.quotes.detail.lines.tva', { defaultValue: 'TVA' })}</span>
+                          <span>{tva.toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}</span>
+                        </div>
+                      </>
+                    )}
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 text-xs uppercase tracking-wider font-bold">
+                        {t('company.fsm.quotes.detail.lines.total')}
+                      </span>
+                      <span className="text-violet-700 font-black text-lg">
+                        {(net + tva).toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
       ) : null}

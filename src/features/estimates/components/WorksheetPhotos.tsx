@@ -113,7 +113,7 @@ export function WorksheetPhotos({ interventionId, photos, readOnly }: Props) {
               <button
                 type="button"
                 onClick={() =>
-                  downloadFile(photo.fileKey, `Foto-${photo.id.slice(0, 8)}.jpg`)
+                  downloadFile(photo.fileKey, `Foto-${photo.id.slice(0, 8)}`)
                 }
                 className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-gray-800 hover:text-violet-700 transition-colors"
               >

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import {
   Panel,
@@ -13,9 +13,11 @@ import {
   type PortalQuoteActionStatus,
 } from '@/entities/fsm/model/quoteStatus.constants';
 import { quoteStatusTone } from '@/entities/fsm/model/portalStatus';
+import { quoteTvaAmount } from '@/entities/fsm/model/quoteTotals';
 import type { PortalDashboardDto } from '@/features/portal/api/usePortal';
 import { getErrorMessage } from '@/shared/utils/errors';
 import { quoteStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import { downloadPortalQuotePdf } from '@/features/fsm';
 import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
@@ -23,6 +25,19 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
   const updateQuote = useUpdatePortalQuoteMutation();
   const { ask, dialog } = useCabinetConfirmDialog();
   const { quotes } = data;
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const handleDownloadPdf = async (quoteId: string, number: string) => {
+    setDownloadingId(quoteId);
+    try {
+      await downloadPortalQuotePdf(quoteId, `${number}.pdf`);
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, t('portal.quotesSection.toastError')));
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   const quotesMeta = useMemo(
     () => (
@@ -69,7 +84,9 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
         <EmptyState message={t('portal.quotesSection.empty')} />
       ) : (
         <ul className="space-y-3">
-          {quotes.map((item) => (
+          {quotes.map((item) => {
+            const tva = quoteTvaAmount(item.lines);
+            return (
             <li
               key={item.id}
               className="rounded-2xl bg-white/60 p-4 hover:bg-violet-50/30 transition-colors space-y-3"
@@ -83,8 +100,16 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
                     <p className="text-[11px] text-violet-600 font-semibold mt-0.5">{item.company.name}</p>
                   ) : null}
                   <p className="font-black text-violet-700 text-lg mt-0.5 tracking-tight">
-                    {Number(item.total).toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}
+                    {(Number(item.total) + tva).toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}
                   </p>
+                  {tva > 0 && (
+                    <p className="text-[10px] text-gray-400 font-semibold">
+                      {t('portal.quotesSection.tvaIncluded', {
+                        defaultValue: 'include TVA: {{amount}}',
+                        amount: tva.toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' }),
+                      })}
+                    </p>
+                  )}
                 </div>
                 <SoftBadge tone={quoteStatusTone(item.status)}>
                   {quoteStatusLabel(item.status, t)}
@@ -108,8 +133,51 @@ export function PortalQuotesSection({ data }: { data: PortalDashboardDto }) {
                   </button>
                 </div>
               ) : null}
+
+              <div className="flex flex-wrap gap-2 justify-end border-t border-gray-100 pt-3">
+                {(item.lines?.length ?? 0) > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold text-violet-700 hover:bg-violet-50 transition-colors"
+                  >
+                    {expandedId === item.id
+                      ? t('portal.quotesSection.hideDetails', 'Ascunde detaliile')
+                      : t('portal.quotesSection.showDetails', 'Vezi detaliile')}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  disabled={downloadingId === item.id}
+                  onClick={() => handleDownloadPdf(item.id, item.number)}
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                >
+                  {downloadingId === item.id
+                    ? t('portal.quotesSection.downloading', 'Se descarcă…')
+                    : t('portal.quotesSection.pdf', 'PDF')}
+                </button>
+              </div>
+
+              {expandedId === item.id && (item.lines?.length ?? 0) > 0 ? (
+                <ul className="divide-y divide-gray-100 text-xs rounded-xl bg-white/70 border border-slate-100 p-3">
+                  {item.lines!.map((line) => (
+                    <li key={line.id} className="py-2 flex justify-between items-start gap-3">
+                      <div>
+                        <p className="font-semibold text-slate-800">{line.description}</p>
+                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                          {Number(line.qty)} × {Number(line.unitPrice).toLocaleString('ro-MD')} MDL
+                        </p>
+                      </div>
+                      <span className="font-bold text-slate-900 whitespace-nowrap">
+                        {(Number(line.qty) * Number(line.unitPrice)).toLocaleString('ro-MD')} MDL
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
       {dialog}

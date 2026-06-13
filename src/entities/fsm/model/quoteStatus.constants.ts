@@ -15,6 +15,20 @@ export const PORTAL_QUOTE_ACTION_STATUSES = [
 
 export type PortalQuoteActionStatus = (typeof PORTAL_QUOTE_ACTION_STATUSES)[number];
 
+export type QuoteStatusCode = (typeof QUOTE_STATUS)[keyof typeof QUOTE_STATUS];
+
+export const QUOTE_STATUS_TRANSITIONS: Record<QuoteStatusCode, QuoteStatusCode[]> = {
+  [QUOTE_STATUS.DRAFT]: [QUOTE_STATUS.SENT, QUOTE_STATUS.ACCEPTED, QUOTE_STATUS.REJECTED],
+  [QUOTE_STATUS.SENT]: [QUOTE_STATUS.ACCEPTED, QUOTE_STATUS.REJECTED, QUOTE_STATUS.DRAFT],
+  [QUOTE_STATUS.ACCEPTED]: [QUOTE_STATUS.REJECTED],
+  [QUOTE_STATUS.REJECTED]: [QUOTE_STATUS.DRAFT],
+  [QUOTE_STATUS.CONVERTED]: [],
+};
+
+export function getAllowedQuoteTransitions(from: QuoteStatusCode): QuoteStatusCode[] {
+  return QUOTE_STATUS_TRANSITIONS[from] ?? [];
+}
+
 export const QUOTE_STATUS_BADGE_CLASSES: Record<string, string> = {
   [QUOTE_STATUS.DRAFT]: 'bg-gray-100 text-gray-700 border-gray-200',
   [QUOTE_STATUS.SENT]: 'bg-blue-50 text-blue-700 border-blue-200',

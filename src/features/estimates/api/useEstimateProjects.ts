@@ -3,6 +3,7 @@ import { apiFetch } from '@/shared/api/client';
 import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
 import { queryKeys } from '@/shared/api/queryKeys';
 import { useAuthStore } from '@/entities/user/model/authStore';
+import type { CursorPage } from '@/shared/api/pagination';
 import type { EstimateProjectListDto, EstimateProjectDto, Plan2dData } from '@/entities/estimate/model/estimates';
 import { ESTIMATES_API_BASE } from './constants';
 
@@ -10,7 +11,8 @@ export function useEstimateProjectsQuery(): UseQueryResult<EstimateProjectListDt
   const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
   return useQuery({
     queryKey: queryKeys.estimates.projects,
-    queryFn: () => apiFetch<EstimateProjectListDto[]>(`${ESTIMATES_API_BASE}/projects`),
+    queryFn: async () =>
+      (await apiFetch<CursorPage<EstimateProjectListDto>>(`${ESTIMATES_API_BASE}/projects`)).items,
     ...cabinetQueryDefaults,
     enabled: !!activeCompanyId,
   });

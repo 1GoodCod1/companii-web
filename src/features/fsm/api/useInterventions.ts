@@ -4,6 +4,7 @@ import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
 import { queryKeys } from '@/shared/api/queryKeys';
 import { QUERY_KEY_FSM, QUERY_KEY_ROOT } from '@/shared/constants/queryKeys.constants';
 import { useAuthStore } from '@/entities/user/model/authStore';
+import type { CursorPage } from '@/shared/api/pagination';
 import type { InterventionDto, InterventionNoteDto, InterventionStatus } from '@/entities/fsm/model/types';
 import { FSM_BASE } from './fsmBase';
 
@@ -15,13 +16,14 @@ export function useInterventionsQuery(
   const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
   return useQuery<InterventionDto[], Error>({
     queryKey: [...queryKeys.fsm.interventions(status), customerId, technicianId],
-    queryFn: () => {
+    queryFn: async () => {
       const params = new URLSearchParams();
       if (status) params.append('status', status);
       if (customerId) params.append('customerId', customerId);
       if (technicianId) params.append('technicianId', technicianId);
       const queryStr = params.toString() ? `?${params.toString()}` : '';
-      return apiFetch<InterventionDto[]>(`${FSM_BASE}/interventions${queryStr}`);
+      const page = await apiFetch<CursorPage<InterventionDto>>(`${FSM_BASE}/interventions${queryStr}`);
+      return page.items;
     },
     ...cabinetQueryDefaults,
     enabled: !!activeCompanyId,

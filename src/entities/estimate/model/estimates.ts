@@ -64,6 +64,8 @@ export type EstimateLineDto = {
   source: string;
   materialStore?: string | null;
   receiptFileKey?: string | null;
+  /** Late-added receipt (worksheet/actuals flow) linked via line.receiptId. */
+  receipt?: { fileKey: string | null } | null;
   vatRate?: number | null;
 };
 

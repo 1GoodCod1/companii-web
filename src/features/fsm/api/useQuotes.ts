@@ -3,6 +3,7 @@ import { apiFetch, downloadApiBlob } from '@/shared/api/client';
 import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
 import { queryKeys } from '@/shared/api/queryKeys';
 import { useAuthStore } from '@/entities/user/model/authStore';
+import type { CursorPage } from '@/shared/api/pagination';
 import type { QuoteDto, QuoteLineDto, QuoteStatus, InterventionDto } from '@/entities/fsm/model/types';
 import { FSM_BASE } from './fsmBase';
 
@@ -10,7 +11,7 @@ export function useQuotesQuery(): UseQueryResult<QuoteDto[], Error> {
   const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
   return useQuery<QuoteDto[], Error>({
     queryKey: queryKeys.fsm.quotes,
-    queryFn: () => apiFetch<QuoteDto[]>(`${FSM_BASE}/quotes`),
+    queryFn: async () => (await apiFetch<CursorPage<QuoteDto>>(`${FSM_BASE}/quotes`)).items,
     ...cabinetQueryDefaults,
     enabled: !!activeCompanyId,
   });
@@ -91,4 +92,8 @@ export function useSendQuoteMutation() {
 
 export async function downloadCompanyQuotePdf(quoteId: string, filename: string) {
   return downloadApiBlob(`${FSM_BASE}/quotes/${quoteId}/pdf`, filename);
+}
+
+export async function downloadPortalQuotePdf(quoteId: string, filename: string) {
+  return downloadApiBlob(`/portal/quotes/${quoteId}/pdf`, filename);
 }

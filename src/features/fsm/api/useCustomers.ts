@@ -3,34 +3,23 @@ import { apiFetch } from '@/shared/api/client';
 import { cabinetCustomersQueryOptions } from '@/shared/api/queryPolicies';
 import { queryKeys } from '@/shared/api/queryKeys';
 import { useAuthStore } from '@/entities/user/model/authStore';
+import type { CursorPage } from '@/shared/api/pagination';
 import type { CustomerDto, CustomerTimelineDto } from '@/entities/fsm/model/types';
 import { FSM_BASE } from './fsmBase';
 
 const CUSTOMERS_PAGE_SIZE = 100;
 
-type CustomersPage = {
-  items: CustomerDto[];
-  nextCursor: string | null;
-};
-
 async function fetchAllCustomers(): Promise<CustomerDto[]> {
-  const firstPage = await apiFetch<CustomerDto[]>(
-    `${FSM_BASE}/customers?limit=${CUSTOMERS_PAGE_SIZE}`,
-  );
-  const all = [...firstPage];
-
-  if (firstPage.length < CUSTOMERS_PAGE_SIZE) {
-    return all;
-  }
-
-  let cursor: string | undefined = firstPage[firstPage.length - 1]?.id;
-  while (cursor) {
-    const page: CustomersPage = await apiFetch<CustomersPage>(
-      `${FSM_BASE}/customers?cursor=${encodeURIComponent(cursor)}&limit=${CUSTOMERS_PAGE_SIZE}`,
+  const all: CustomerDto[] = [];
+  let cursor: string | undefined;
+  do {
+    const qs = cursor ? `&cursor=${encodeURIComponent(cursor)}` : '';
+    const page = await apiFetch<CursorPage<CustomerDto>>(
+      `${FSM_BASE}/customers?limit=${CUSTOMERS_PAGE_SIZE}${qs}`,
     );
     all.push(...page.items);
     cursor = page.nextCursor ?? undefined;
-  }
+  } while (cursor);
 
   return all;
 }

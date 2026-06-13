@@ -63,8 +63,8 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
       className="fixed inset-0 z-[9999] bg-gradient-to-tr from-[#fafbfc] via-[#ffffff] to-[#fafbfc] flex flex-col items-center justify-center overflow-hidden"
     >
       {/* Soft, glowing decorative radial circles behind the logo */}
-      <div className="absolute size-[400px] rounded-full bg-violet-100/30 blur-[80px] pointer-events-none" />
-      <div className="absolute size-[300px] rounded-full bg-indigo-100/20 blur-[60px] pointer-events-none translate-x-12 translate-y-12" />
+      <div className="absolute size-[400px] rounded-full bg-[#e6ad44]/15 blur-[80px] pointer-events-none" />
+      <div className="absolute size-[300px] rounded-full bg-[#c2593f]/10 blur-[60px] pointer-events-none translate-x-12 translate-y-12" />
 
       <div className="relative flex flex-col items-center gap-6">
         {/* LOGO ASSEMBLY & INTERACTIVE DRAW ANIMATION */}
@@ -103,7 +103,7 @@ export function FaberSplashScreen({ onComplete }: FaberSplashScreenProps) {
                   width: '100%', 
                   transition: { delay: 0.8, duration: 1.2, ease: 'easeInOut' } 
                 }}
-                className="h-[1.5px] bg-gradient-to-r from-violet-500 via-indigo-500 to-rose-400 rounded-full mx-auto" 
+                className="h-[1.5px] bg-gradient-to-r from-[#e6ad44] via-[#c2593f] to-[#3f3f46] rounded-full mx-auto"
               />
               
               <m.span 

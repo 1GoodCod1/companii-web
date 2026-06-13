@@ -3,6 +3,7 @@ import { apiFetch } from '@/shared/api/client';
 import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
 import { queryKeys } from '@/shared/api/queryKeys';
 import { useAuthStore } from '@/entities/user/model/authStore';
+import type { CursorPage } from '@/shared/api/pagination';
 import type { CompanyLeadDto, CompanyLeadStatus } from '@/entities/fsm/model/types';
 import { FSM_BASE } from './fsmBase';
 
@@ -13,9 +14,10 @@ export function useLeadsQuery(
   const activeCompanyId = useAuthStore((s) => s.user?.activeCompanyId);
   return useQuery({
     queryKey: queryKeys.fsm.leads(status),
-    queryFn: () => {
+    queryFn: async () => {
       const q = status ? `?status=${status}` : '';
-      return apiFetch<CompanyLeadDto[]>(`${FSM_BASE}/leads${q}`);
+      const page = await apiFetch<CursorPage<CompanyLeadDto>>(`${FSM_BASE}/leads${q}`);
+      return page.items;
     },
     ...cabinetQueryDefaults,
     enabled: (options?.enabled ?? true) && !!activeCompanyId,

@@ -1,5 +1,5 @@
 import { env } from '@/shared/config/env';
-import { apiFetch } from '@/shared/api/client';
+import { apiFetch, downloadApiBlob } from '@/shared/api/client';
 import { useAuthStore } from '@/entities/user/model/authStore';
 import type { FileDto, FileVisibility } from '@/shared/types/file';
 
@@ -103,26 +103,7 @@ export function fileDownloadPath(fileId: string): string {
 }
 
 export async function downloadFile(fileId: string, filename?: string): Promise<void> {
-  const { accessToken } = useAuthStore.getState();
-  const headers = new Headers();
-  if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
-
-  const res = await fetch(fileDownloadPath(fileId), {
-    credentials: 'include',
-    headers,
-  });
-  if (!res.ok) {
-    throw new Error(res.statusText || 'Download failed');
-  }
-  const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename ?? 'download';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1_500);
+  await downloadApiBlob(`/files/${fileId}/download`, filename);
 }
 
 export async function deleteFile(fileId: string): Promise<void> {

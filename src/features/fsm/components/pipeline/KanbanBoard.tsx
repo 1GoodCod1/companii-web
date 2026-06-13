@@ -6,6 +6,9 @@ import { getErrorMessage } from '@/shared/utils/errors';
 import { queryKeys } from '@/shared/api/queryKeys';
 import { EmptyState, InlineSpinner, SkeletonCard } from '@/widgets/cabinet/cabinet-ui';
 import { cn } from '@/lib/utils';
+import { LEAD_STATUS } from '@/entities/fsm/model/leadStatus.constants';
+import { INTERVENTION_STATUS } from '@/entities/fsm/model/interventionStatus.constants';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 import { usePipelineBoardQuery, fetchPipelineColumn } from '../../api/usePipelineBoard';
 import { KanbanCard } from './KanbanCard';
 import { usePipelineActions } from './usePipelineActions';
@@ -45,12 +48,12 @@ export function KanbanBoard({ entity }: { entity: PipelineEntity }) {
   const qc = useQueryClient();
   const { data, isLoading } = usePipelineBoardQuery(entity);
   const { move } = usePipelineActions();
+  const { ask, dialog } = useCabinetConfirmDialog();
 
   const [drag, setDrag] = useState<DragState | null>(null);
   const [overColumn, setOverColumn] = useState<string | null>(null);
   const [movingId, setMovingId] = useState<string | null>(null);
   const [loadingColumn, setLoadingColumn] = useState<string | null>(null);
-  // Appended pages from "load more", keyed by status. Reset after a move/refetch.
   const [extra, setExtra] = useState<Record<string, ColumnExtra>>({});
 
   const readOnlyHint = readOnlyHintKey(entity);
@@ -66,17 +69,7 @@ export function KanbanBoard({ entity }: { entity: PipelineEntity }) {
     [data?.columns, extra],
   );
 
-  async function handleDrop(toStatus: string) {
-    const active = drag;
-    setOverColumn(null);
-    setDrag(null);
-    if (!active || active.from === toStatus || !active.targets.includes(toStatus)) return;
-
-    const card = columns
-      .find((c) => c.status === active.from)
-      ?.cards.find((c) => c.id === active.cardId);
-    if (!card) return;
-
+  async function performMove(card: BoardCard, toStatus: string) {
     setMovingId(card.id);
     try {
       await move(entity, card, toStatus);
@@ -88,6 +81,37 @@ export function KanbanBoard({ entity }: { entity: PipelineEntity }) {
     } finally {
       setMovingId(null);
     }
+  }
+
+  function handleDrop(toStatus: string) {
+    const active = drag;
+    setOverColumn(null);
+    setDrag(null);
+    if (!active || active.from === toStatus || !active.targets.includes(toStatus)) return;
+
+    const card = columns
+      .find((c) => c.status === active.from)
+      ?.cards.find((c) => c.id === active.cardId);
+    if (!card) return;
+    const isDestructive =
+      (entity === 'leads' && toStatus === LEAD_STATUS.LOST) ||
+      (entity === 'interventions' && toStatus === INTERVENTION_STATUS.CANCELLED);
+
+    if (isDestructive) {
+      ask({
+        title: t('cabinet.common.confirmAction'),
+        confirmLabel: t('cabinet.common.confirmAction'),
+        variant: 'danger',
+        message: t(
+          'company.fsm.pipeline.confirmDestructiveMove',
+          'Această acțiune închide definitiv elementul. Continuați?',
+        ),
+        onConfirm: () => performMove(card, toStatus),
+      });
+      return;
+    }
+
+    void performMove(card, toStatus);
   }
 
   async function handleLoadMore(status: string, cursor: string) {
@@ -216,6 +240,7 @@ export function KanbanBoard({ entity }: { entity: PipelineEntity }) {
       {totalCount === 0 ? (
         <EmptyState message={t('company.fsm.pipeline.emptyPipeline')} compact />
       ) : null}
+      {dialog}
     </div>
   );
 }

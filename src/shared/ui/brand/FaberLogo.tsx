@@ -37,32 +37,39 @@ export function FaberLogo({
         )}
       >
         <defs>
-          {/* Top face — gold, the lit surface */}
-          <linearGradient id="faberGradientTop" x1="0%" y1="0%" x2="100%" y2="100%">
+          {/* Top bar — gold, the lit edge of the ribbon */}
+          <linearGradient id="faberGradientGold" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#e6ad44" />
             <stop offset="100%" stopColor="#c98f28" />
           </linearGradient>
-          {/* Left face — terracotta */}
-          <linearGradient id="faberGradientLeft" x1="0%" y1="0%" x2="0%" y2="100%">
+          {/* Mid bar — terracotta */}
+          <linearGradient id="faberGradientTerracotta" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#c2593f" />
             <stop offset="100%" stopColor="#8f4030" />
           </linearGradient>
-          {/* Right face — graphite, the shadowed surface */}
-          <linearGradient id="faberGradientRight" x1="0%" y1="0%" x2="0%" y2="100%">
+          {/* Stem — graphite, the backbone */}
+          <linearGradient id="faberGradientGraphite" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#3f3f46" />
             <stop offset="100%" stopColor="#1c1c20" />
           </linearGradient>
         </defs>
-        {/* Clean isometric cube — three faces meeting at the front vertex. */}
+        {/*
+          The Faber Fold — a single ribbon of crafted material bent into an "F"
+          (faber — Latin for "craftsman"). Mitered 45° joints and chisel-cut
+          ends echo workshop joinery; crease shadows mark each fold.
+        */}
         <path
-          d="M 50 12 L 82 30 L 50 48 L 18 30 Z"
-          fill="url(#faberGradientTop)"
+          d="M 16 10 L 84 10 L 75 27 L 33 27 Z"
+          fill="url(#faberGradientGold)"
           className={cn(
             animated && 'transition-transform duration-1000 ease-out hover:scale-105 origin-center'
           )}
         />
-        <path d="M 18 30 L 50 48 L 50 84 L 18 66 Z" fill="url(#faberGradientLeft)" />
-        <path d="M 82 30 L 82 66 L 50 84 L 50 48 Z" fill="url(#faberGradientRight)" />
+        <path d="M 16 10 L 33 27 L 33 86 L 16 94 Z" fill="url(#faberGradientGraphite)" />
+        <path d="M 33 45 L 70 45 L 61 62 L 33 62 Z" fill="url(#faberGradientTerracotta)" />
+        {/* Crease shadows at the folds */}
+        <path d="M 16 10 L 33 10 L 33 27 Z" fill="#000000" opacity="0.14" />
+        <path d="M 33 45 L 45 45 L 33 62 Z" fill="#000000" opacity="0.14" />
       </svg>
 
       {/* BRAND TEXT */}

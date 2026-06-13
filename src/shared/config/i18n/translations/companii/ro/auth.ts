@@ -3,6 +3,8 @@ export const companiiRoAuth = {
     login: 'Autentificare',
     register: 'Înregistrare',
     logout: 'Ieșire',
+    logoutConfirmTitle: 'Confirmare ieșire',
+    logoutConfirmMessage: 'Sigur doriți să ieșiți din cont?',
     email: 'Email',
     phone: 'Telefon',
     firstName: 'Prenume',

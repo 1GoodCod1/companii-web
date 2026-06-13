@@ -155,8 +155,16 @@ function usePortalEstimatesSectionView({ data }: { data: PortalDashboardDto }) {
                       {Number(item.grandTotalWithVat ?? item.grandTotal).toLocaleString('ro-MD', { style: 'currency', currency: 'MDL' })}
                     </p>
                   </div>
-                  <SoftBadge tone={ESTIMATE_STATUS_TONES[item.status] ?? 'gray'}>
-                    {estimateStatusLabel(item.status, t)}
+                  <SoftBadge
+                    tone={
+                      item.status === ESTIMATE_STATUS.CALCULATED
+                        ? 'amber'
+                        : ESTIMATE_STATUS_TONES[item.status] ?? 'gray'
+                    }
+                  >
+                    {item.status === ESTIMATE_STATUS.CALCULATED
+                      ? t('portal.estimatesSection.inRevision', 'În revizuire')
+                      : estimateStatusLabel(item.status, t)}
                   </SoftBadge>
                 </div>
 
@@ -362,6 +370,7 @@ function usePortalEstimatesSectionView({ data }: { data: PortalDashboardDto }) {
                               </div>
                               <ul className="text-xs text-gray-600 space-y-1.5 mt-2">
                                 {(stage.lines ?? []).map((line) => {
+                                  const receiptFileKey = line.receiptFileKey ?? line.receipt?.fileKey ?? null;
                                   const pricingRule = findPricingRuleForLine(
                                     estimateDetail.blueprint?.config,
                                     stage,
@@ -402,13 +411,13 @@ function usePortalEstimatesSectionView({ data }: { data: PortalDashboardDto }) {
                                             })}
                                           </span>
                                         )}
-                                        {!isLabor && line.receiptFileKey && (
+                                        {!isLabor && receiptFileKey && (
                                           <button
                                             type="button"
                                             onClick={() =>
                                               downloadFile(
-                                                line.receiptFileKey!,
-                                                `Bon-${line.description.replace(/\s+/g, '_')}.pdf`,
+                                                receiptFileKey,
+                                                `Bon-${line.description.replace(/\s+/g, '_')}`,
                                               )
                                             }
                                             className="inline-flex items-center gap-1 rounded-xl bg-violet-600 hover:bg-violet-700 px-2.5 py-1 text-[9px] font-extrabold text-white transition-all shadow-xs cursor-pointer"

@@ -69,8 +69,6 @@ export function columnLabel(entity: PipelineEntity, status: string, t: TFunction
   }
 }
 
-// ── Transition maps (mirror companii-api status-transitions.ts + service guards) ──
-
 const LEAD_OPEN: string[] = [
   LEAD_STATUS.NEW,
   LEAD_STATUS.CONTACTED,
@@ -87,10 +85,11 @@ const INTERVENTION_TRANSITIONS: Record<string, string[]> = {
 
 const QUOTE_TRANSITIONS: Record<string, string[]> = {
   [QUOTE_STATUS.DRAFT]: [QUOTE_STATUS.ACCEPTED, QUOTE_STATUS.REJECTED],
-  [QUOTE_STATUS.SENT]: [QUOTE_STATUS.ACCEPTED, QUOTE_STATUS.REJECTED],
+  [QUOTE_STATUS.SENT]: [QUOTE_STATUS.ACCEPTED, QUOTE_STATUS.REJECTED, QUOTE_STATUS.DRAFT],
+  [QUOTE_STATUS.ACCEPTED]: [QUOTE_STATUS.REJECTED],
+  [QUOTE_STATUS.REJECTED]: [QUOTE_STATUS.DRAFT],
 };
 
-/** Valid drop-target statuses from a given status. Empty = card is locked. */
 export function allowedTargets(entity: PipelineEntity, from: string): string[] {
   switch (entity) {
     case 'leads':
@@ -104,7 +103,6 @@ export function allowedTargets(entity: PipelineEntity, from: string): string[] {
   }
 }
 
-/** i18n key for a whole-pipeline read-only hint, or null when fully draggable. */
 export function readOnlyHintKey(entity: PipelineEntity): string | null {
   if (entity === 'quotes') return 'company.fsm.pipeline.quotesHint';
   if (entity === 'invoices') return 'company.fsm.pipeline.invoicesHint';

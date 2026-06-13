@@ -17,6 +17,8 @@ import {
   type CabinetNavSection,
 } from '@/widgets/layout/cabinet-nav';
 import { formatPersonName } from '@/shared/utils/person';
+import { useNotificationStream } from '@/features/notifications/hooks/useNotificationStream';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 function NavItemLink({
   item,
@@ -303,11 +305,15 @@ export function CabinetShell({
   banner?: ReactNode;
   children?: ReactNode;
 }) {
+  const { t } = useTranslation();
   const location = useLocation();
   const navTo = useNavigate();
   const logout = useLogoutMutation();
   const user = useAuthStore((s) => s.user);
   const { data: meData } = useMeQuery(!!user);
+  const { ask: askConfirm, dialog: confirmDialog } = useCabinetConfirmDialog();
+
+  useNotificationStream(!!user);
 
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -347,6 +353,19 @@ export function CabinetShell({
     }
   };
 
+  const requestLogout = () => {
+    askConfirm({
+      title: t('auth.logoutConfirmTitle', 'Confirmare ieșire'),
+      confirmLabel: t('auth.logout', 'Ieșire'),
+      message: (
+        <p className="text-sm text-gray-600 leading-relaxed">
+          {t('auth.logoutConfirmMessage', 'Sigur doriți să ieșiți din cont?')}
+        </p>
+      ),
+      onConfirm: handleLogout,
+    });
+  };
+
   const allPaths = flattenCabinetNavSections(sections).map((item) =>
     buildCabinetPath(basePath, item.to),
   );
@@ -361,7 +380,7 @@ export function CabinetShell({
     profileRole,
     currentPlanCode,
     sidebarExtras,
-    onLogout: () => void handleLogout(),
+    onLogout: requestLogout,
     isLoggingOut: logout.isPending,
   };
 
@@ -402,6 +421,7 @@ export function CabinetShell({
         {banner}
         {children ?? <Outlet />}
       </main>
+      {confirmDialog}
     </div>
   );
 }

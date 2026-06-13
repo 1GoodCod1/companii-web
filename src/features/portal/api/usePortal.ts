@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
 import { apiFetch } from '@/shared/api/client';
+import type { CursorPage } from '@/shared/api/pagination';
 import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
 import { queryKeys } from '@/shared/api/queryKeys';
 import type { CustomerDto, QuoteDto, InvoiceDto } from '@/entities/fsm/model/types';
@@ -40,7 +41,7 @@ export interface PortalDashboardDto {
 export function usePortalLeadsQuery(): UseQueryResult<PortalLeadDto[], Error> {
   return useQuery<PortalLeadDto[], Error>({
     queryKey: queryKeys.portal.leads,
-    queryFn: () => apiFetch<PortalLeadDto[]>('/portal/leads'),
+    queryFn: async () => (await apiFetch<CursorPage<PortalLeadDto>>('/portal/leads')).items,
     ...cabinetQueryDefaults,
   });
 }
