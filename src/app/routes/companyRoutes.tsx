@@ -4,6 +4,7 @@ import { LazyPage } from './LazyPage';
 import {
   CompanyDashboardPage,
   CompanyProfilePage,
+  CompanyNotificationsPage,
   CompanyGalleryPage,
   CompanyTeamPage,
   CompanyCustomersPage,
@@ -212,6 +213,10 @@ export const companyRoutesSection = {
     {
       path: COMPANY_ROUTE.SETTINGS,
       element: <LazyPage><SettingsPage /></LazyPage>,
+    },
+    {
+      path: COMPANY_ROUTE.NOTIFICATIONS,
+      element: <LazyPage><CompanyNotificationsPage /></LazyPage>,
     },
     {
       path: COMPANY_ROUTE.SUBSCRIPTION,

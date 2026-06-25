@@ -35,3 +35,9 @@ export const PortalFacturiPage = lazyWithRetry(() =>
     default: m.PortalFacturiPage,
   })),
 );
+
+export const PortalNotificationsPage = lazyWithRetry(() =>
+  import('@/pages/portal/PortalNotificationsPage').then((m) => ({
+    default: m.PortalNotificationsPage,
+  })),
+);

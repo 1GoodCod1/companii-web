@@ -8,6 +8,7 @@ import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth';
 import { FaberLogo } from '@/shared/ui/brand/FaberLogo';
 import { PublicHeaderAuth } from '@/widgets/layout/PublicHeaderAuth';
+import { PublicBackdrop } from '@/widgets/layout/PublicBackdrop';
 import { PUBLIC_ROUTE } from '@/shared/constants/routes.constants';
 import { stripLocalePrefix } from '@/lib/i18n/localeRoutes';
 import { cn } from '@/lib/utils';
@@ -42,7 +43,8 @@ export function PublicLayout() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f9fafb]">
+    <div className="relative min-h-screen flex flex-col">
+      <PublicBackdrop />
       <header className="public-site-header">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4 lg:gap-6">
           {/* Logo */}

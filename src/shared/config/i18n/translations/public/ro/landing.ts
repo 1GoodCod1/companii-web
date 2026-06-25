@@ -194,9 +194,9 @@ export const publicRoLanding = {
 
   landingMocks: {
     hero: {
-      windowTitle: 'companii.faber.md/company',
+      windowTitle: 'faber.md',
       eyebrow: 'Panou de control',
-      greeting: 'Bună, Voltex Instal',
+      greeting: 'Bună!',
       planBadge: 'Pro',
       kpis: [
         { label: 'Clienți', value: '48', hint: '+3 luna aceasta' },
@@ -229,7 +229,7 @@ export const publicRoLanding = {
         viewAll: 'Vezi toate',
         items: [
           { name: 'Elena Ciobanu', service: 'Instalare boiler' },
-          { name: 'SC ProConstruct', service: 'Montaj AC × 3' },
+          { name: 'Andrei Cojocaru', service: 'Montaj AC × 3' },
         ],
       },
       newBadge: 'Nou',
@@ -237,7 +237,7 @@ export const publicRoLanding = {
       statusExample: 'Reparație → În lucru',
     },
     finance: {
-      windowTitle: 'companii.faber.md/company/facturi',
+      windowTitle: 'faber.md/facturi',
       pageTitle: 'Facturi',
       pageDescription: 'Emite, urmărește plățile și exportă rapoarte.',
       filterAll: 'Toate',
@@ -253,7 +253,7 @@ export const publicRoLanding = {
       viewAll: 'Vezi raport',
       invoices: [
         { client: 'Ion Popescu', status: 'Plătită' },
-        { client: 'SC Voltex SRL', status: 'Restantă' },
+        { client: 'Andrei Cojocaru', status: 'Restantă' },
         { client: 'Maria Rusu', status: 'Plătită' },
       ],
       vatBadge: 'TVA calculat automat',

@@ -12,6 +12,12 @@ export const CompanyProfilePage = lazyWithRetry(() =>
   })),
 );
 
+export const CompanyNotificationsPage = lazyWithRetry(() =>
+  import('@/pages/company/CompanyNotificationsPage').then((m) => ({
+    default: m.CompanyNotificationsPage,
+  })),
+);
+
 export const CompanyGalleryPage = lazyWithRetry(() =>
   import('@/pages/company/CompanyGalleryPage').then((m) => ({
     default: m.CompanyGalleryPage,

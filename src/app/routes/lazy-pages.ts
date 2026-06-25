@@ -1,6 +1,7 @@
 export {
   LandingPage,
   CompaniesListPage,
+  CompaniesCatalogPage,
   CompanyDetailPage,
   HowItWorksPage,
   FaqPage,
@@ -23,6 +24,7 @@ export {
 export {
   CompanyDashboardPage,
   CompanyProfilePage,
+  CompanyNotificationsPage,
   CompanyGalleryPage,
   CompanyTeamPage,
   CompanyCustomersPage,
@@ -52,6 +54,7 @@ export {
   PortalOfertePage,
   PortalSmetePage,
   PortalFacturiPage,
+  PortalNotificationsPage,
 } from './lazy-pages/portal';
 
 export {

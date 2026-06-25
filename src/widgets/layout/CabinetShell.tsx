@@ -183,7 +183,7 @@ function SidebarContent({
   profileAvatarUrl?: string | null;
   profileRole?: string;
   currentPlanCode?: string;
-  sidebarExtras?: ReactNode;
+  sidebarExtras?: ReactNode | ((collapsed: boolean) => ReactNode);
   onLogout: () => void;
   isLoggingOut: boolean;
   onNavClick?: () => void;
@@ -201,7 +201,12 @@ function SidebarContent({
   return (
     <>
       <div className="flex-none">
-        <div className="mb-6 flex items-center justify-between px-1">
+        <div
+          className={cn(
+            'mb-6 px-1',
+            isCollapsed ? 'flex flex-col items-center gap-3' : 'flex items-center justify-between',
+          )}
+        >
           <Link to="/" className="flex items-center">
             <FaberLogo size="sm" showText={!isCollapsed} />
           </Link>
@@ -269,7 +274,7 @@ function SidebarContent({
 
       {user ? (
         <div className="flex-none mt-auto">
-          {sidebarExtras}
+          {typeof sidebarExtras === 'function' ? sidebarExtras(!!isCollapsed) : sidebarExtras}
           <CabinetProfileCard
             displayName={displayName}
             email={user.email}
@@ -301,7 +306,7 @@ export function CabinetShell({
   currentPlanCode?: string;
   profileAvatarUrl?: string | null;
   profileRole?: string;
-  sidebarExtras?: ReactNode;
+  sidebarExtras?: ReactNode | ((collapsed: boolean) => ReactNode);
   banner?: ReactNode;
   children?: ReactNode;
 }) {

@@ -194,9 +194,9 @@ export const publicRuLanding = {
 
   landingMocks: {
     hero: {
-      windowTitle: 'companii.faber.md/company',
+      windowTitle: 'faber.md',
       eyebrow: 'Панель управления',
-      greeting: 'Здравствуйте, Voltex Instal',
+      greeting: 'Здравствуйте!',
       planBadge: 'Pro',
       kpis: [
         { label: 'Клиенты', value: '48', hint: '+3 за месяц' },
@@ -229,7 +229,7 @@ export const publicRuLanding = {
         viewAll: 'Все',
         items: [
           { name: 'Elena Ciobanu', service: 'Установка бойлера' },
-          { name: 'SC ProConstruct', service: 'Монтаж AC × 3' },
+          { name: 'Andrei Cojocaru', service: 'Монтаж AC × 3' },
         ],
       },
       newBadge: 'Новая',
@@ -237,7 +237,7 @@ export const publicRuLanding = {
       statusExample: 'Ремонт → В работе',
     },
     finance: {
-      windowTitle: 'companii.faber.md/company/facturi',
+      windowTitle: 'faber.md/facturi',
       pageTitle: 'Счета',
       pageDescription: 'Выставляйте, отслеживайте оплаты и экспортируйте отчёты.',
       filterAll: 'Все',
@@ -253,7 +253,7 @@ export const publicRuLanding = {
       viewAll: 'Отчёт',
       invoices: [
         { client: 'Ion Popescu', status: 'Оплачен' },
-        { client: 'SC Voltex SRL', status: 'Просрочен' },
+        { client: 'Andrei Cojocaru', status: 'Просрочен' },
         { client: 'Maria Rusu', status: 'Оплачен' },
       ],
       vatBadge: 'НДС рассчитан автоматически',

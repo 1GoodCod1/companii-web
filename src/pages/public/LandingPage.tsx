@@ -6,6 +6,10 @@ import { SEOHead } from '@/shared/ui/seo/SEOHead';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth';
 import { LandingHeroMock } from '@/widgets/landing/LandingHeroMock';
+// --- Hero backdrop variants (only one active at a time) ---
+// import { HeroDigitalBackdrop } from '@/widgets/landing/HeroDigitalBackdrop'; // saved, disabled — digital network
+// import { HeroArchitectureColdBackdrop } from '@/widgets/landing/HeroArchitectureColdBackdrop'; // saved, disabled — cold architecture
+import { HeroPhotoBackdrop } from '@/widgets/landing/HeroPhotoBackdrop'; // active — warm terracotta architecture
 import { DecorBackdrop } from '@/widgets/cabinet/DecorBackdrop';
 import { LandingFinanceMock } from '@/widgets/landing/LandingFinanceMock';
 import { LandingStats } from '@/widgets/landing/LandingStats';
@@ -42,6 +46,9 @@ export function LandingPage() {
 
       {/* Hero — editorial, full-width, mock below the copy */}
       <section className="relative bg-white border-b border-gray-100 overflow-hidden">
+        {/* <HeroDigitalBackdrop /> */}
+        {/* <HeroArchitectureColdBackdrop /> */}
+        <HeroPhotoBackdrop />
         <DecorBackdrop />
         <div className="relative max-w-6xl mx-auto px-6 pt-16 sm:pt-24 pb-16 sm:pb-20">
           <span className="inline-flex items-center gap-2 border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-700 mb-8">
@@ -56,10 +63,10 @@ export function LandingPage() {
             </h1>
 
             <div className="lg:border-l lg:border-gray-200 lg:pl-8">
-              <p className="text-base sm:text-lg text-gray-500 leading-relaxed text-wrap:pretty">
+              <p className="text-base sm:text-lg text-gray-700 leading-relaxed text-wrap:pretty">
                 {t('landing.hero.subtitle')}
               </p>
-              <p className="mt-3 text-sm text-gray-400 leading-relaxed">
+              <p className="mt-3 text-sm text-gray-500 leading-relaxed">
                 {t('landing.hero.description')}
               </p>
             </div>

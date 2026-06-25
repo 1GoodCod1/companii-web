@@ -6,6 +6,7 @@ import { LazyPage } from './LazyPage';
 import {
   LandingPage,
   CompaniesListPage,
+  CompaniesCatalogPage,
   CompanyDetailPage,
   HowItWorksPage,
   FaqPage,
@@ -26,6 +27,7 @@ export const localizedPublicRoutes = [
   { path: PUBLIC_ROUTE.TERMS, element: <LazyPage><TermsPage /></LazyPage> },
   { path: PUBLIC_ROUTE.SUBSCRIPTIONS, element: <LazyPage><SubscriptionsPage /></LazyPage> },
   { path: PUBLIC_ROUTE.COMPANIES, element: <LazyPage><CompaniesListPage /></LazyPage> },
+  { path: PUBLIC_ROUTE.COMPANY_CATALOG, element: <LazyPage><CompaniesCatalogPage /></LazyPage> },
   { path: PUBLIC_ROUTE.COMPANY_DETAIL, element: <LazyPage><CompanyDetailPage /></LazyPage> },
   { path: '*', element: <NotFoundPage /> },
 ];

@@ -20,6 +20,23 @@ export const publicRoCompanies = {
     countMany: 'companii găsite',
     emptyCtaGuest: 'Înregistrează compania',
     emptyCtaAuthed: 'Publică profilul din cabinet',
+    catalog: {
+      seoTitle: '{{category}} în {{city}} — companii verificate',
+      seoDescription:
+        'Companii de {{category}} în {{city}}: ratinguri, recenzii, servicii și prețuri. Trimite o cerere online pe Faber — fără apeluri și așteptare.',
+      seoKeywords: '{{category}} {{city}}, {{category}} Moldova, servicii {{city}}',
+      badge: 'Catalog · {{city}}',
+      h1: '{{category}} în {{city}}',
+      intro:
+        'Companii verificate de {{category}} în {{city}}. Compară ratinguri și recenzii, vezi servicii și prețuri și trimite o cerere online — fără apeluri și așteptare.',
+      empty: 'Încă nu sunt companii de {{category}} în {{city}}.',
+      notFound: 'Această categorie sau acest oraș nu există în catalog.',
+      backToCatalog: 'Spre catalogul de companii',
+      breadcrumbCatalog: 'Companii',
+      otherCategoriesInCity: 'Alte domenii în {{city}}',
+      sameCategoryOtherCities: '{{category}} în alte orașe',
+      allCompanies: 'Vezi toate companiile',
+    },
   },
 
   companyCard: {

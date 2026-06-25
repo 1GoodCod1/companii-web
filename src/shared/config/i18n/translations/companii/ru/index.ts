@@ -6,6 +6,7 @@ import { companiiRuAdmin } from './admin';
 import { companiiRuSettings } from './settings';
 import { companiiRuMisc } from './misc';
 import { companiiRuCompany } from './company';
+import { companiiRuNotifications } from './notifications';
 
 export const companiiRu = {
   ...companiiRuNav,
@@ -16,4 +17,5 @@ export const companiiRu = {
   ...companiiRuSettings,
   ...companiiRuMisc,
   ...companiiRuCompany,
+  ...companiiRuNotifications,
 };

@@ -16,6 +16,12 @@ export const CompanyDetailPage = lazyWithRetry(() =>
   })),
 );
 
+export const CompaniesCatalogPage = lazyWithRetry(() =>
+  import('@/pages/public/CompaniesCatalogPage').then((m) => ({
+    default: m.CompaniesCatalogPage,
+  })),
+);
+
 export const HowItWorksPage = lazyWithRetry(() =>
   import('@/pages/public/HowItWorksPage').then((m) => ({
     default: m.HowItWorksPage,

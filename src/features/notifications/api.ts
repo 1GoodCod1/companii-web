@@ -27,7 +27,7 @@ function mapApiToItem(raw: RawNotificationItem): NotificationItem {
 }
 
 export function useNotificationsQuery(limit = 50, unreadOnly = false) {
-  return useQuery({
+  return useQuery<NotificationItem[]>({
     queryKey: ['notifications', { limit, unreadOnly }],
     queryFn: async () => {
       const qs = new URLSearchParams();

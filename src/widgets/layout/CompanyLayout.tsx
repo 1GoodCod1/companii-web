@@ -412,15 +412,24 @@ export function CompanyLayout() {
     })),
   }));
 
-  const sidebarExtras = useMemo(() => (
-    <div className="px-3 mb-3 flex items-center justify-between">
-      <div className="flex-1 min-w-0 mr-2">
-        <CompanySwitcher />
-      </div>
-      <GlobalSearchPalette />
-      <NotificationBell />
-    </div>
-  ), []);
+  const sidebarExtras = useMemo(
+    () => (collapsed: boolean) =>
+      collapsed ? (
+        <div className="mb-3 flex flex-col items-center gap-1">
+          <GlobalSearchPalette />
+          <NotificationBell />
+        </div>
+      ) : (
+        <div className="px-3 mb-3 flex items-center justify-between">
+          <div className="flex-1 min-w-0 mr-2">
+            <CompanySwitcher />
+          </div>
+          <GlobalSearchPalette />
+          <NotificationBell />
+        </div>
+      ),
+    [],
+  );
 
   const isProfileOrSettings =
     location.pathname.endsWith('/profile') ||

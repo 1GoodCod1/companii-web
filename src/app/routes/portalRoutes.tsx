@@ -8,6 +8,7 @@ import {
   PortalOfertePage,
   PortalFacturiPage,
   PortalSmetePage,
+  PortalNotificationsPage,
 } from './lazy-pages';
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import { ROUTE_ROOT, ROUTE_ACCESS, PORTAL_ROUTE } from '@/shared/constants/routes.constants';
@@ -26,6 +27,7 @@ export const portalRoutesSection = {
     { path: PORTAL_ROUTE.OFERTE, element: <LazyPage><PortalOfertePage /></LazyPage> },
     { path: PORTAL_ROUTE.SMETE, element: <LazyPage><PortalSmetePage /></LazyPage> },
     { path: PORTAL_ROUTE.FACTURI, element: <LazyPage><PortalFacturiPage /></LazyPage> },
+    { path: PORTAL_ROUTE.NOTIFICATIONS, element: <LazyPage><PortalNotificationsPage /></LazyPage> },
     { path: '*', element: <NotFoundPage compact /> },
   ],
 };

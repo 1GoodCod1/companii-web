@@ -5,6 +5,7 @@ import { PUBLIC_ROUTE } from '@/shared/constants/routes.constants';
 import { useLocalizedPath } from '@/shared/hooks/useLocalizedPath';
 import { usePublicAuthCta } from '@/features/auth';
 import { FaberLogo } from '@/shared/ui/brand/FaberLogo';
+import { CtaCityBackdrop } from '@/widgets/landing/CtaCityBackdrop';
 
 export function LandingCta() {
   const { t } = useTranslation();
@@ -13,8 +14,9 @@ export function LandingCta() {
   const perks = t('landing.cta.perks', { returnObjects: true }) as string[];
 
   return (
-    <section className="bg-gray-900">
-      <div className="max-w-6xl mx-auto px-6 py-20 sm:py-24">
+    <section className="relative overflow-hidden bg-gray-900">
+      <CtaCityBackdrop />
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 sm:py-24">
         <div className="grid lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-400">

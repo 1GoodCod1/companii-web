@@ -28,6 +28,7 @@ export const PUBLIC_ROUTE = {
   RESET_PASSWORD: 'reset-password',
   VERIFY_EMAIL: 'verify-email',
   COMPANIES: 'companies',
+  COMPANY_CATALOG: 'companies/:citySlug/:categorySlug',
   COMPANY_DETAIL: 'companies/:slug',
 } as const;
 
@@ -60,6 +61,7 @@ export const COMPANY_ROUTE = {
   SUBSCRIPTION: 'subscription',
   SETTINGS: 'settings',
   AUDIT: 'audit',
+  NOTIFICATIONS: 'notifications',
 } as const;
 
 export const COMPANY_CABINET_PATH = {
@@ -93,6 +95,7 @@ export const PORTAL_ROUTE = {
   OFERTE: 'oferte',
   SMETE: 'smete',
   FACTURI: 'facturi',
+  NOTIFICATIONS: 'notifications',
 } as const;
 
 export const ADMIN_ROUTE = {

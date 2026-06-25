@@ -1,6 +1,7 @@
 import { CalculatorIcon, ClipboardTextIcon, CreditCardIcon, FileTextIcon, LayoutIcon, WrenchIcon } from '@phosphor-icons/react';
 import { CabinetShell } from './CabinetShell';
 import { EmailVerificationBanner } from './EmailVerificationBanner';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 import type { CabinetNavSection } from '@/widgets/layout/cabinet-nav';
 
 const sections: CabinetNavSection[] = [
@@ -18,11 +19,23 @@ const sections: CabinetNavSection[] = [
   },
 ];
 
+const sidebarExtras = (collapsed: boolean) =>
+  collapsed ? (
+    <div className="mb-3 flex flex-col items-center gap-1">
+      <NotificationBell to="/portal/notifications" />
+    </div>
+  ) : (
+    <div className="px-3 mb-3 flex items-center justify-end">
+      <NotificationBell to="/portal/notifications" />
+    </div>
+  );
+
 export function PortalLayout() {
   return (
     <CabinetShell
       basePath="/portal"
       sections={sections}
+      sidebarExtras={sidebarExtras}
       banner={<EmailVerificationBanner />}
     />
   );

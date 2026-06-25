@@ -20,6 +20,23 @@ export const publicRuCompanies = {
     countMany: 'компаний найдено',
     emptyCtaGuest: 'Зарегистрировать компанию',
     emptyCtaAuthed: 'Опубликовать профиль из кабинета',
+    catalog: {
+      seoTitle: '{{category}} в городе {{city}} — проверенные компании',
+      seoDescription:
+        'Компании в сфере «{{category}}» в городе {{city}}: рейтинги, отзывы, услуги и цены. Оставьте заявку онлайн на Faber — без звонков и ожидания.',
+      seoKeywords: '{{category}} {{city}}, {{category}} Молдова, услуги {{city}}',
+      badge: 'Каталог · {{city}}',
+      h1: '{{category}} в городе {{city}}',
+      intro:
+        'Проверенные компании в сфере «{{category}}» в городе {{city}}. Сравните рейтинги и отзывы, изучите услуги и цены и отправьте заявку онлайн — без звонков и ожидания.',
+      empty: 'Пока нет компаний в сфере «{{category}}» в городе {{city}}.',
+      notFound: 'Такой категории или города нет в каталоге.',
+      backToCatalog: 'К каталогу компаний',
+      breadcrumbCatalog: 'Компании',
+      otherCategoriesInCity: 'Другие сферы в городе {{city}}',
+      sameCategoryOtherCities: '{{category}} в других городах',
+      allCompanies: 'Смотреть все компании',
+    },
   },
 
   companyCard: {
