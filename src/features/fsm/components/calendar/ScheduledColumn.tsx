@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { EmptyState, SoftBadge } from '@/widgets/cabinet/cabinet-ui';
+import { CalendarBlankIcon } from '@phosphor-icons/react';
+import { EmptyState } from '@/widgets/cabinet/cabinet-ui';
 import type { CalendarBoardDto, InterventionDto } from '@/entities/fsm/model/types';
 import { useLocale } from '@/shared/hooks/useLocale';
 import { InterventionCard } from './InterventionCard';
 import { formatDateLocalized } from '@/shared/utils/date';
+import { calendarDayHeaderClass, calendarDayLabelClass } from './calendarPanelUi';
 
 type ScheduledIntervention = InterventionDto & { scheduledAt: string };
 
@@ -27,10 +29,13 @@ export function ScheduledColumn({ scheduled }: { scheduled: CalendarBoardDto['sc
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {Object.entries(grouped).map(([dateStr, items]) => (
         <section key={dateStr} className="space-y-3">
-          <SoftBadge tone="violet">📅 {dateStr}</SoftBadge>
+          <div className={calendarDayHeaderClass}>
+            <CalendarBlankIcon className="size-3.5 text-[var(--dashboard-accent)]" weight="fill" />
+            <span className={calendarDayLabelClass}>{dateStr}</span>
+          </div>
           <div className="space-y-3">
             {items.map((item) => (
               <InterventionCard key={item.id} item={item} />

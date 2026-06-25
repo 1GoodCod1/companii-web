@@ -1,5 +1,6 @@
 import { useMemo, useReducer } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CalendarBlankIcon } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/shared/api/queryKeys';
@@ -16,6 +17,7 @@ import { getWeekRange } from '@/entities/fsm/model/calendar';
 import { formatWeekRangeLabel } from '@/shared/utils/date';
 import { useLocale } from '@/shared/hooks/useLocale';
 import { getErrorMessage } from '@/shared/utils/errors';
+import { calendarWeekBadgeClass } from '@/features/fsm/components/calendar/calendarPanelUi';
 
 interface CalendarScheduleState {
   schedulingId: string | null;
@@ -149,11 +151,15 @@ export function CompanyCalendarPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 pb-3">
-        <h1 className="text-lg font-black tracking-tight text-gray-900">
-          {t('company.calendarPage.title')}
-        </h1>
-        <span className="rounded-full bg-violet-50 px-3.5 py-1.5 text-xs font-bold text-violet-700">
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[var(--dashboard-divider)] pb-5">
+        <div>
+          <h1 className="text-lg font-black tracking-tight text-gray-900">
+            {t('company.calendarPage.title')}
+          </h1>
+          <p className="mt-1 text-xs text-gray-500">{t('company.calendarPage.description', { week: weekLabel })}</p>
+        </div>
+        <span className={calendarWeekBadgeClass}>
+          <CalendarBlankIcon className="size-4 text-[var(--dashboard-accent)]" weight="fill" />
           {weekLabel}
         </span>
       </div>

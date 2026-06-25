@@ -72,14 +72,16 @@ export function PanelHeader({
   description,
   meta,
   action,
+  className,
 }: {
   title: string;
   description?: string;
   meta?: ReactNode;
   action?: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+    <div className={cn('flex flex-wrap items-start justify-between gap-3 mb-4', className)}>
       <div>
         <p className="text-sm font-semibold text-gray-900">{title}</p>
         {description ? <p className="text-xs text-gray-400 mt-0.5">{description}</p> : null}
@@ -106,10 +108,10 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'rounded-none bg-slate-50/80 text-center w-full',
-        fill && 'flex min-h-[180px] flex-1 items-center justify-center px-6 py-10',
-        compact && 'px-4 py-8',
-        !fill && !compact && 'px-4 py-12',
+        'w-full rounded-none text-center',
+        fill && 'flex min-h-[140px] flex-1 items-center justify-center px-6 py-8',
+        compact && 'px-4 py-6',
+        !fill && !compact && 'px-4 py-8',
       )}
     >
       <p className={cn('font-medium text-gray-400', compact ? 'text-xs leading-relaxed' : 'text-sm')}>
@@ -151,16 +153,18 @@ export function FormSection({
   title,
   description,
   children,
+  className,
 }: {
   title: string;
   description?: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <section className="rounded-none bg-white/60 p-4 sm:p-5 space-y-4">
+    <section className={cn('space-y-4 py-5 first:pt-0', className)}>
       <div>
-        <p className="text-sm font-semibold text-gray-900">{title}</p>
-        {description ? <p className="text-xs text-gray-400 mt-0.5">{description}</p> : null}
+        <p className="text-sm font-bold text-gray-900">{title}</p>
+        {description ? <p className="mt-0.5 text-xs text-gray-400">{description}</p> : null}
       </div>
       {children}
     </section>

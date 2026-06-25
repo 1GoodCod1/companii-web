@@ -1,6 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { SoftBadge, cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
 import type { OwnedCompanyDto } from '@/entities/company/model/companies.types';
+import {
+  companyPageAccentLinkClass,
+  companyPagePanelClass,
+  companyPagePanelInsetClass,
+} from '@/features/companies/companyFormPanelUi';
 
 interface CatalogPublishSectionProps {
   ownedCompany: OwnedCompanyDto;
@@ -21,8 +26,8 @@ export function CatalogPublishSection({
 
   if (!isLegalOwner) {
     return (
-      <section className="glass-panel rounded-3xl p-5 sm:p-6 space-y-3">
-        <div className="flex flex-wrap gap-2">
+      <section className={`${companyPagePanelClass} ${companyPagePanelInsetClass} space-y-3`}>
+        <div className="flex flex-wrap justify-center gap-2 sm:justify-start">
           <SoftBadge tone={ownedCompany.isVerified ? 'emerald' : 'amber'}>
             {ownedCompany.isVerified
               ? t('company.profileEditor.verified')
@@ -35,12 +40,12 @@ export function CatalogPublishSection({
           </SoftBadge>
         </div>
         {ownedCompany.isPublished && ownedCompany.slug ? (
-          <p className="text-sm text-gray-600">
+          <p className="text-center text-sm text-gray-600 sm:text-left">
             <a
               href={`/companies/${ownedCompany.slug}`}
               target="_blank"
               rel="noreferrer"
-              className="font-semibold text-violet-700 underline underline-offset-2"
+              className={companyPageAccentLinkClass}
             >
               {t('company.profileEditor.form.viewPublicProfile')}
             </a>
@@ -53,17 +58,17 @@ export function CatalogPublishSection({
   if (!canPublishCompany) return null;
 
   return (
-    <section className="glass-panel rounded-3xl p-5 sm:p-6 space-y-4">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h2 className="text-base font-bold text-gray-900">
+    <section className={`${companyPagePanelClass} ${companyPagePanelInsetClass} space-y-4`}>
+      <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
+        <div className="max-w-xl">
+          <h2 className="text-base font-black tracking-tight text-gray-900">
             {t('company.profileEditor.form.publicCatalogTitle')}
           </h2>
           <p className="mt-1 text-sm text-gray-500">
             {t('company.profileEditor.form.publicCatalogDescription')}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap justify-center gap-2 sm:justify-end">
           <SoftBadge tone={ownedCompany.isVerified ? 'emerald' : 'amber'}>
             {ownedCompany.isVerified
               ? t('company.profileEditor.verified')
@@ -78,7 +83,7 @@ export function CatalogPublishSection({
       </div>
 
       {ownedCompany.isPublished ? (
-        <p className="text-sm text-emerald-700">
+        <p className="text-center text-sm text-[var(--dashboard-success)] sm:text-left">
           {t('company.profileEditor.form.visibleInCatalog')}
           {ownedCompany.slug ? (
             <>
@@ -87,7 +92,7 @@ export function CatalogPublishSection({
                 href={`/companies/${ownedCompany.slug}`}
                 target="_blank"
                 rel="noreferrer"
-                className="font-semibold underline underline-offset-2"
+                className={companyPageAccentLinkClass}
               >
                 {t('company.profileEditor.form.viewProfile')}
               </a>
@@ -96,15 +101,15 @@ export function CatalogPublishSection({
           .
         </p>
       ) : ownedCompany.isVerified ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-violet-50/80 px-4 py-3">
-          <p className="text-sm text-violet-900">
+        <div className="flex flex-col items-center gap-3 border border-[var(--dashboard-divider)] border-l-[3px] border-l-[var(--dashboard-accent)] bg-[var(--dashboard-accent-light)]/30 px-4 py-4 sm:flex-row sm:justify-between">
+          <p className="text-center text-sm text-gray-700 sm:text-left">
             {t('company.profileEditor.form.verifiedReadyPublish')}
           </p>
           <button
             type="button"
             onClick={() => void handlePublish()}
             disabled={publishCompanyPending}
-            className={cabinetBtnPrimary}
+            className={`${cabinetBtnPrimary} shrink-0`}
           >
             {publishCompanyPending
               ? t('company.profileEditor.publishing')
@@ -112,7 +117,7 @@ export function CatalogPublishSection({
           </button>
         </div>
       ) : (
-        <p className="text-sm text-amber-800 rounded-2xl bg-amber-50/80 px-4 py-3">
+        <p className="border border-amber-200 border-l-[3px] border-l-amber-400 bg-amber-50/50 px-4 py-3 text-center text-sm text-amber-900 sm:text-left">
           {t('company.profileEditor.form.pendingAdminVerification')}
         </p>
       )}

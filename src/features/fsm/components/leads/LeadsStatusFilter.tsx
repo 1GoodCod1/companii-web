@@ -15,7 +15,7 @@ export function LeadsStatusFilter({
 
   return (
     <div
-      className="scrollbar-none flex items-center gap-5 overflow-x-auto border-b border-gray-200"
+      className="scrollbar-none flex items-center gap-6 overflow-x-auto border-b border-[var(--dashboard-divider)]"
       role="tablist"
     >
       {LEAD_STATUS_FILTERS.map((filter) => {
@@ -28,9 +28,9 @@ export function LeadsStatusFilter({
             aria-selected={active}
             onClick={() => onChange(filter.value)}
             className={cn(
-              '-mb-px shrink-0 cursor-pointer border-b-2 px-1 pb-2.5 text-sm font-bold transition-colors',
+              '-mb-px shrink-0 cursor-pointer border-b-2 px-1 pb-3 text-sm font-bold transition-colors',
               active
-                ? 'border-violet-600 text-gray-900'
+                ? 'border-[var(--dashboard-accent)] text-gray-900'
                 : 'border-transparent text-gray-400 hover:text-gray-600',
             )}
           >

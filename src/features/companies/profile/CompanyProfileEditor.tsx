@@ -5,6 +5,13 @@ import { cabinetBtnPrimary } from '@/widgets/cabinet/cabinet-ui';
 import { cn } from '@/lib/utils';
 import { CompanyBrandingSection } from '@/entities/company/ui/CompanyBrandingSection';
 import type { CatalogOptionDto, OwnedCompanyDto } from '@/entities/company/model/companies.types';
+import {
+  companyPagePanelClass,
+  companyPagePanelHeaderClass,
+  companyPagePanelInsetClass,
+  companyPageSectionDividerClass,
+  companyPageShellClass,
+} from '@/features/companies/companyFormPanelUi';
 import { CatalogPublishSection } from './components/CatalogPublishSection';
 import { LegalInfoSection } from './components/LegalInfoSection';
 import { LocationSection } from './components/LocationSection';
@@ -96,9 +103,9 @@ export function CompanyProfileEditor({
   ];
 
   return (
-    <div className="max-w-6xl space-y-5 animate-fade-in">
+    <div className={companyPageShellClass}>
       {ownedCompany && !isLegalOwner ? (
-        <p className="text-sm text-violet-900 rounded-2xl bg-violet-50/80 px-4 py-3 border border-violet-100">
+        <p className="border border-[var(--dashboard-divider)] border-l-[3px] border-l-[var(--dashboard-accent)] bg-white px-4 py-3 text-sm text-gray-600">
           {t('company.profileEditor.form.managerHint')}
         </p>
       ) : null}
@@ -113,32 +120,35 @@ export function CompanyProfileEditor({
         />
       ) : null}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="flex items-end justify-between gap-3 border-b border-gray-200">
-          <div className="scrollbar-none flex items-center gap-5 overflow-x-auto" role="tablist">
-            {tabs.map((tab) => {
-              const active = tab.id === activeTab;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={cn(
-                    '-mb-px shrink-0 cursor-pointer border-b-2 px-1 pb-2.5 text-sm font-bold transition-colors',
-                    active
-                      ? 'border-violet-600 text-gray-900'
-                      : 'border-transparent text-gray-400 hover:text-gray-600',
-                  )}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-          <div className="shrink-0 pb-2">
-            <button type="submit" disabled={isSaving} className={cabinetBtnPrimary}>
+      <form onSubmit={handleSubmit} className={companyPagePanelClass}>
+        <div className={companyPagePanelHeaderClass}>
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div
+              className="scrollbar-none flex w-full items-center justify-center gap-6 overflow-x-auto sm:justify-start"
+              role="tablist"
+            >
+              {tabs.map((tab) => {
+                const active = tab.id === activeTab;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={cn(
+                      '-mb-px shrink-0 cursor-pointer border-b-2 px-1 pb-2.5 text-sm font-bold transition-colors',
+                      active
+                        ? 'border-[var(--dashboard-accent)] text-gray-900'
+                        : 'border-transparent text-gray-400 hover:text-gray-600',
+                    )}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+            <button type="submit" disabled={isSaving} className={`${cabinetBtnPrimary} w-full sm:w-auto`}>
               {isSaving
                 ? t('cabinet.common.saving')
                 : ownedCompany
@@ -148,40 +158,40 @@ export function CompanyProfileEditor({
           </div>
         </div>
 
-        {activeTab === 'legal' ? (
-          <div className="glass-panel rounded-3xl p-5 sm:p-6 space-y-4">
-            <LegalInfoSection
-              name={name}
-              setName={setName}
-              legalName={legalName}
-              setLegalName={setLegalName}
-              idno={idno}
-              setIdno={setIdno}
-              legalAddress={legalAddress}
-              setLegalAddress={setLegalAddress}
-              legalReadOnly={legalReadOnly}
-            />
+        <div className={companyPagePanelInsetClass}>
+          {activeTab === 'legal' ? (
+            <div className={companyPageSectionDividerClass}>
+              <LegalInfoSection
+                name={name}
+                setName={setName}
+                legalName={legalName}
+                setLegalName={setLegalName}
+                idno={idno}
+                setIdno={setIdno}
+                legalAddress={legalAddress}
+                setLegalAddress={setLegalAddress}
+                legalReadOnly={legalReadOnly}
+              />
 
-            <LocationSection
-              cityId={cityId}
-              setCityId={setCityId}
-              categoryId={categoryId}
-              setCategoryId={setCategoryId}
-              cities={cities}
-              categories={categories}
-            />
+              <LocationSection
+                cityId={cityId}
+                setCityId={setCityId}
+                categoryId={categoryId}
+                setCategoryId={setCategoryId}
+                cities={cities}
+                categories={categories}
+              />
 
-            <FiscalSection
-              isTvaPayer={isTvaPayer}
-              setIsTvaPayer={setIsTvaPayer}
-              tvaCode={tvaCode}
-              setTvaCode={setTvaCode}
-              legalReadOnly={legalReadOnly}
-            />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
-            <div className="glass-panel rounded-3xl p-5 sm:p-6">
+              <FiscalSection
+                isTvaPayer={isTvaPayer}
+                setIsTvaPayer={setIsTvaPayer}
+                tvaCode={tvaCode}
+                setTvaCode={setTvaCode}
+                legalReadOnly={legalReadOnly}
+              />
+            </div>
+          ) : (
+            <div className={companyPageSectionDividerClass}>
               <ContactSection
                 contactPhone={contactPhone}
                 setContactPhone={setContactPhone}
@@ -195,20 +205,20 @@ export function CompanyProfileEditor({
                 setDescription={setDescription}
                 isLegalOwner={isLegalOwner}
               />
-            </div>
 
-            <aside className="glass-panel rounded-3xl p-5 sm:p-6 lg:sticky lg:top-6">
-              <CompanyBrandingSection
-                variant="sidebar"
-                companyName={name}
-                logoUrl={logoUrl}
-                logoPreview={logoPreview}
-                onLogoPick={handleLogoPick}
-                disabled={isSaving}
-              />
-            </aside>
-          </div>
-        )}
+              <div className="pt-5">
+                <CompanyBrandingSection
+                  variant="sidebar"
+                  companyName={name}
+                  logoUrl={logoUrl}
+                  logoPreview={logoPreview}
+                  onLogoPick={handleLogoPick}
+                  disabled={isSaving}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </form>
 
       <LeaveTeamSection

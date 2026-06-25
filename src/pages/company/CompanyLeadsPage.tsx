@@ -7,6 +7,12 @@ import { LeadInboxItem } from '@/features/fsm';
 import { LeadsStatusFilter } from '@/features/fsm';
 import { ConvertLeadToEstimateModal } from '@/features/fsm';
 import { useLeadInbox } from '@/features/fsm';
+import {
+  leadPanelHeaderClass,
+  leadPanelListClass,
+  leadPanelShellClass,
+  leadPanelRowClass,
+} from '@/features/fsm/components/leads/leadPanelUi';
 
 export function CompanyLeadsPage() {
   const { t } = useTranslation();
@@ -14,7 +20,7 @@ export function CompanyLeadsPage() {
 
   const leadsMeta = useMemo(
     () => (
-      <span className="text-xs text-gray-400">
+      <span className="text-xs font-semibold text-gray-500">
         {t('cabinet.common.records', { count: inbox.sortedLeads.length })}
       </span>
     ),
@@ -26,19 +32,27 @@ export function CompanyLeadsPage() {
       <div className="space-y-6 animate-fade-in">
         <LeadsStatusFilter value={inbox.statusFilter} onChange={inbox.setStatusFilter} />
 
-        <Panel>
-          <PanelHeader
-            title={t('company.leadsPage.inboxTitle')}
-            meta={leadsMeta}
-          />
+        <Panel className={leadPanelShellClass}>
+          <div className={leadPanelHeaderClass}>
+            <PanelHeader
+              className="mb-0"
+              title={t('company.leadsPage.inboxTitle')}
+              meta={leadsMeta}
+            />
+          </div>
+
           {inbox.isLoading ? (
-            <LoadingStatus label={t('cabinet.common.loading')}>
-              <SkeletonList rows={5} />
-            </LoadingStatus>
+            <div className={leadPanelRowClass}>
+              <LoadingStatus label={t('cabinet.common.loading')}>
+                <SkeletonList rows={5} />
+              </LoadingStatus>
+            </div>
           ) : !inbox.sortedLeads.length ? (
-            <EmptyState message={t('company.leadsPage.empty')} />
+            <div className={leadPanelRowClass}>
+              <EmptyState message={t('company.leadsPage.empty')} />
+            </div>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className={leadPanelListClass}>
               {inbox.sortedLeads.map((lead) => (
                 <LeadInboxItem
                   key={lead.id}

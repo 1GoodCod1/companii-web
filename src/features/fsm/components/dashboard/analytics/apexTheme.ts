@@ -28,5 +28,3 @@ export const REVENUE_SERIES_COLORS = {
   invoiced: '#8b5cf6',
   collected: '#10b981', 
 };
-
-export const PIPELINE_COLORS = ['#c4b5fd', '#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9'];

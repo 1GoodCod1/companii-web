@@ -1,16 +1,15 @@
 import { Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Panel, SoftBadge, SkeletonCard } from '@/widgets/cabinet/cabinet-ui';
+import { Panel, SkeletonCard } from '@/widgets/cabinet/cabinet-ui';
 import { cn } from '@/lib/utils';
-import { formatDateLocalized } from '@/shared/utils/date';
-import { useLocale } from '@/shared/hooks/useLocale';
 import { useAuthStore } from '@/entities/user/model/authStore';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { DashboardKpiGrid } from '@/features/fsm';
 import { DashboardNewLeadsPanel } from '@/features/fsm';
 import { DashboardActiveInterventionsPanel } from '@/features/fsm';
 import { DashboardRecentInvoicesPanel } from '@/features/fsm';
+import { DashboardCollectionsPanel } from '@/features/fsm';
 import { DashboardAnalyticsSection } from '@/features/fsm';
 import { useDashboardPageData } from '@/features/fsm';
 
@@ -18,7 +17,6 @@ type DashboardTab = 'overview' | 'analytics';
 
 export function CompanyDashboardPage() {
   const { t } = useTranslation();
-  const locale = useLocale();
   const user = useAuthStore((s) => s.user);
   const { isOwner } = useCompanyPermissions();
   const dashboard = useDashboardPageData();
@@ -27,10 +25,6 @@ export function CompanyDashboardPage() {
   const displayName =
     dashboard.activeCompany?.name || user?.email?.split('@')[0] || t('cabinet.common.userFallback');
 
-  const today = new Date();
-  const todayRaw = `${formatDateLocalized(today, locale, 'weekdayLong')} ${today.getFullYear()}`;
-  const todayLabel = todayRaw.charAt(0).toUpperCase() + todayRaw.slice(1);
-
   const showTabs = dashboard.isManagement && !dashboard.onboardingRequired;
 
   const tabs: { id: DashboardTab; label: string }[] = [
@@ -38,46 +32,105 @@ export function CompanyDashboardPage() {
     { id: 'analytics', label: t('company.dashboardPage.tabs.analytics') },
   ];
 
-  const overviewContent = (
+  const managementOverview = (
     <div className="space-y-5 sm:space-y-6">
-      <div className="grid grid-cols-1 gap-5 sm:gap-6 xl:grid-cols-2 items-stretch">
-        <DashboardKpiGrid kpis={dashboard.kpis} layout="square" />
+      <DashboardKpiGrid kpis={dashboard.kpis} layout="row" isLoading={dashboard.kpisLoading} />
 
-        {dashboard.isManagement ? (
+      <div className="grid grid-cols-1 gap-5 sm:gap-6 lg:grid-cols-3 items-start">
+        <div className="lg:col-span-2 space-y-5 sm:space-y-6">
           <DashboardNewLeadsPanel
             leads={dashboard.newLeads}
             convertPending={dashboard.convertPending}
             onConvert={dashboard.handleConvertLead}
+            isLoading={dashboard.leadsLoading}
           />
-        ) : (
           <DashboardActiveInterventionsPanel
             interventions={dashboard.activeInterventions}
             isManagement={dashboard.isManagement}
+            isLoading={dashboard.interventionsLoading}
           />
-        )}
-      </div>
-
-      {dashboard.isManagement ? (
-        <div className="grid grid-cols-1 gap-5 sm:gap-6 lg:grid-cols-2 items-stretch">
-          <DashboardActiveInterventionsPanel
-            interventions={dashboard.activeInterventions}
-            isManagement={dashboard.isManagement}
-          />
-          <DashboardRecentInvoicesPanel invoices={dashboard.invoices} />
         </div>
-      ) : null}
+
+        <div className="space-y-5 sm:space-y-6">
+          <DashboardCollectionsPanel
+            totalPaid={dashboard.totalPaid}
+            totalInvoiced={dashboard.totalInvoiced}
+            invoices={dashboard.invoices}
+          />
+          <DashboardRecentInvoicesPanel
+            invoices={dashboard.invoices}
+            isLoading={dashboard.invoicesLoading}
+          />
+        </div>
+      </div>
     </div>
   );
 
+  const technicianOverview = (
+    <div className="space-y-5 sm:space-y-6">
+      <DashboardKpiGrid kpis={dashboard.kpis} layout="row" isLoading={dashboard.kpisLoading} />
+      <DashboardActiveInterventionsPanel
+        interventions={dashboard.activeInterventions}
+        isManagement={dashboard.isManagement}
+        isLoading={dashboard.interventionsLoading}
+      />
+    </div>
+  );
+
+  const overviewContent = dashboard.isManagement ? managementOverview : technicianOverview;
+
   return (
     <div className="space-y-6 animate-fade-in">
-      <section className="rounded-none bg-gray-900 px-5 py-5 sm:px-6 text-white">
+      {showTabs ? (
         <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-6 border-b border-gray-200" role="tablist">
+            {tabs.map((tab) => {
+              const active = tab.id === activeTab;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={cn(
+                    '-mb-px border-b-2 px-1 pb-3 text-sm font-bold transition-colors',
+                    active
+                      ? 'border-[var(--dashboard-accent)] text-gray-900'
+                      : 'border-transparent text-gray-400 hover:text-gray-600',
+                  )}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {dashboard.activeCompany ? (
+            isOwner ? (
+              <Link
+                to="/company/subscription"
+                className="shrink-0 text-xs font-semibold text-gray-500 hover:text-gray-800"
+              >
+                {t('company.dashboardPage.managePlan')}
+              </Link>
+            ) : null
+          ) : (
+            <Link
+              to="/company/profile"
+              className="inline-flex shrink-0 items-center bg-gray-900 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-gray-800"
+            >
+              {t('company.dashboardPage.createProfile')}
+            </Link>
+          )}
+        </div>
+      ) : (
+        <section className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">
-              {todayLabel}
+              {t('company.dashboardPage.eyebrow')}
             </p>
-            <h1 className="mt-1 text-xl sm:text-2xl font-black tracking-tight">
+            <h1 className="mt-1 text-xl sm:text-2xl font-black tracking-tight text-gray-900">
               {t('company.dashboardPage.greeting', { name: displayName })}
             </h1>
           </div>
@@ -85,32 +138,13 @@ export function CompanyDashboardPage() {
           {dashboard.onboardingRequired ? (
             <Link
               to="/company/profile"
-              className="inline-flex shrink-0 items-center rounded-xl bg-white px-4 py-2.5 text-xs font-black uppercase tracking-wider text-gray-900 transition-colors hover:bg-violet-50"
+              className="inline-flex shrink-0 items-center bg-gray-900 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-gray-800"
             >
               {t('company.dashboardPage.registerCompany')}
             </Link>
-          ) : dashboard.isManagement && dashboard.activeCompany ? (
-            <div className="flex shrink-0 items-center gap-3">
-              <SoftBadge tone="emerald">{dashboard.activePlanName}</SoftBadge>
-              {isOwner ? (
-                <Link
-                  to="/company/subscription"
-                  className="text-xs font-semibold text-gray-300 hover:text-white"
-                >
-                  {t('company.dashboardPage.managePlan')}
-                </Link>
-              ) : null}
-            </div>
-          ) : dashboard.isManagement ? (
-            <Link
-              to="/company/profile"
-              className="inline-flex shrink-0 items-center rounded-xl bg-white px-4 py-2.5 text-xs font-black uppercase tracking-wider text-gray-900 transition-colors hover:bg-violet-50"
-            >
-              {t('company.dashboardPage.createProfile')}
-            </Link>
           ) : null}
-        </div>
-      </section>
+        </section>
+      )}
 
       {dashboard.onboardingRequired ? (
         <Panel className="p-5 border border-amber-100 bg-amber-50/50">
@@ -143,46 +177,21 @@ export function CompanyDashboardPage() {
       ) : null}
 
       {showTabs ? (
-        <>
-          <div className="flex items-center gap-6 border-b border-gray-200" role="tablist">
-            {tabs.map((tab) => {
-              const active = tab.id === activeTab;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={cn(
-                    '-mb-px border-b-2 px-1 pb-3 text-sm font-bold transition-colors',
-                    active
-                      ? 'border-violet-600 text-gray-900'
-                      : 'border-transparent text-gray-400 hover:text-gray-600',
-                  )}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {activeTab === 'overview' ? (
-            overviewContent
-          ) : (
-            <Suspense
-              fallback={
-                <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                  {Array.from({ length: 4 }).map((_, index) => (
-                    <SkeletonCard key={index} className="h-[372px]" />
-                  ))}
-                </div>
-              }
-            >
-              <DashboardAnalyticsSection />
-            </Suspense>
-          )}
-        </>
+        activeTab === 'overview' ? (
+          overviewContent
+        ) : (
+          <Suspense
+            fallback={
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <SkeletonCard key={index} className="h-[372px]" />
+                ))}
+              </div>
+            }
+          >
+            <DashboardAnalyticsSection />
+          </Suspense>
+        )
       ) : (
         overviewContent
       )}

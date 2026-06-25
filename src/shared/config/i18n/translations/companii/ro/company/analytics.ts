@@ -24,14 +24,25 @@ export const companiiRoCompanyAnalytics = {
       },
       pipeline: {
         title: 'Pâlnie vânzări',
-        subtitle: 'Volumul tranzacțiilor în perioada selectată',
+        subtitle: 'Câte evenimente au avut loc la fiecare etapă în perioada selectată',
+        hint:
+          'Fiecare etapă este numărată separat — nu neapărat aceleași cereri de la început până la plată. Lățimea barei arată volumul relativ față de etapa cu cele mai multe înregistrări.',
         empty: 'Nicio activitate în perioada selectată.',
         series: 'Tranzacții',
-        leads: 'Lead-uri',
+        leads: 'Cereri',
         quotes: 'Oferte',
-        accepted: 'Acceptate',
-        completed: 'Finalizate',
-        paid: 'Plătite',
+        accepted: 'Oferte acceptate',
+        completed: 'Lucrări finalizate',
+        paid: 'Facturi plătite',
+        stageDesc: {
+          leads: 'Cereri noi create în perioada selectată',
+          quotes: 'Oferte (devize) emise în perioada selectată',
+          accepted: 'Oferte acceptate sau convertite în lucrare',
+          completed: 'Lucrări create în perioadă, deja finalizate sau facturate',
+          paid: 'Facturi emise în perioadă și plătite integral',
+        },
+        insightPaid:
+          '{{paid}} din {{completed}} lucrări finalizate au factură plătită în perioadă ({{rate}}%).',
       },
       workload: {
         title: 'Volum lucrări',

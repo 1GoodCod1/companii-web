@@ -350,6 +350,18 @@ export const companiiRuCompanyFsm = {
             title: 'История клиента',
             loading: 'Загрузка истории...',
             empty: 'Активность не зафиксирована.',
+            groupKinds: {
+              work: 'Работа',
+              request: 'Заявка',
+            },
+            stepTypes: {
+              lead: 'Заявка',
+              estimate: 'Расчёт',
+              quote: 'Смета',
+              intervention: 'Работа',
+              invoice: 'Счёт',
+              note: 'Заметка',
+            },
           },
         },
         list: {

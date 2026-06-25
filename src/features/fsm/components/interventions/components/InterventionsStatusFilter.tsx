@@ -15,8 +15,8 @@ export function InterventionsStatusFilter({ value, onChange, action }: StatusFil
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-end justify-between gap-3 border-b border-gray-200">
-      <div className="scrollbar-none flex items-center gap-5 overflow-x-auto" role="tablist">
+    <div className="flex items-end justify-between gap-3 border-b border-[var(--dashboard-divider)]">
+      <div className="scrollbar-none flex items-center gap-6 overflow-x-auto" role="tablist">
         {INTERVENTION_STATUS_TABS.map((tab) => {
           const active = value === tab.value;
           return (
@@ -27,9 +27,9 @@ export function InterventionsStatusFilter({ value, onChange, action }: StatusFil
               aria-selected={active}
               onClick={() => onChange(tab.value as InterventionStatus | '')}
               className={cn(
-                '-mb-px shrink-0 cursor-pointer border-b-2 px-1 pb-2.5 text-sm font-bold transition-colors',
+                '-mb-px shrink-0 cursor-pointer border-b-2 px-1 pb-3 text-sm font-bold transition-colors',
                 active
-                  ? 'border-violet-600 text-gray-900'
+                  ? 'border-[var(--dashboard-accent)] text-gray-900'
                   : 'border-transparent text-gray-400 hover:text-gray-600',
               )}
             >

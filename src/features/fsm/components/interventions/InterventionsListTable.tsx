@@ -3,10 +3,10 @@ import { getInterventionStatusStyle } from '@/entities/fsm/model/interventionSta
 import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 import { technicianDisplayName } from '@/entities/company/model/teamMembers';
 import { EntityListPanel } from '@/widgets/cabinet/EntityListPanel';
-import { entityListRowClass } from '@/widgets/cabinet/rowStyles';
 import { formatDateTimeLocalized } from '@/shared/utils/date';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/shared/hooks/useLocale';
+import { interventionListRowClass } from './interventionPanelUi';
 
 type Props = {
   interventions: InterventionDto[] | undefined;
@@ -27,49 +27,51 @@ export function InterventionsListTable({ interventions, isLoading, selectedId, o
       emptyMessage={t('company.fsm.interventions.list.empty')}
     >
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse text-sm">
+        <table className="w-full border-collapse text-left text-sm">
           <thead>
-            <tr className="bg-gray-50/50 border-b border-gray-100 text-gray-500 font-bold">
-              <th className="p-4 text-xs uppercase tracking-wider">
+            <tr className="border-b border-[var(--dashboard-divider)] text-gray-400">
+              <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-[0.14em]">
                 {t('company.fsm.interventions.list.colCodeType')}
               </th>
-              <th className="p-4 text-xs uppercase tracking-wider">
+              <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-[0.14em]">
                 {t('company.fsm.interventions.list.colClientAddress')}
               </th>
-              <th className="p-4 text-xs uppercase tracking-wider">
+              <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-[0.14em]">
                 {t('company.fsm.interventions.list.colScheduleTechnician')}
               </th>
-              <th className="p-4 text-xs uppercase tracking-wider">
+              <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-[0.14em]">
                 {t('company.fsm.interventions.list.colStatus')}
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-[var(--dashboard-divider)]">
             {interventions?.map((item) => (
               <tr
                 key={item.id}
                 onClick={() => onSelect(item)}
-                className={entityListRowClass(selectedId === item.id)}
+                className={interventionListRowClass(selectedId === item.id)}
               >
-                <td className="p-4">
-                  <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">{item.number}</span>
-                  <div className="font-bold text-gray-800 text-sm mt-0.5">{item.type}</div>
+                <td className="px-5 py-4">
+                  <span className="block text-[10px] font-bold uppercase tracking-wide text-gray-400">
+                    {item.number}
+                  </span>
+                  <div className="mt-0.5 text-sm font-bold text-gray-900">{item.type}</div>
                 </td>
-                <td className="p-4 text-xs">
-                  <div className="font-bold text-gray-900">{item.customer?.fullName}</div>
-                  <div className="text-gray-500 mt-0.5 max-w-xs truncate">{item.address}</div>
+                <td className="px-5 py-4 text-xs">
+                  <div className="font-semibold text-gray-900">{item.customer?.fullName}</div>
+                  <div className="mt-0.5 max-w-xs truncate text-gray-500">{item.address}</div>
                 </td>
-                <td className="p-4 text-xs text-gray-700">
-                  <div className="font-bold text-gray-800">
+                <td className="px-5 py-4 text-xs text-gray-700">
+                  <div className="font-semibold text-gray-900">
                     {item.scheduledAt
                       ? formatDateTimeLocalized(item.scheduledAt, locale, 'datetimeShort')
                       : t('company.fsm.interventions.list.unscheduled')}
                   </div>
-                  <div className="text-gray-400 mt-0.5">{technicianDisplayName(item.technician)}</div>
+                  <div className="mt-0.5 text-gray-400">{technicianDisplayName(item.technician)}</div>
                 </td>
-                <td className="p-4">
+                <td className="px-5 py-4">
                   <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black border ${getInterventionStatusStyle(
+                    className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${getInterventionStatusStyle(
                       item.status,
                     )}`}
                   >

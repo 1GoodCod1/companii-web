@@ -15,13 +15,18 @@ export function EntityListDetailLayout({ list, detail }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-1 items-stretch gap-4 sm:gap-6 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2 lg:items-start">
       <div className={cabinetSplitColumnClass}>{list}</div>
-      <div className={cabinetSplitColumnClass}>{detail}</div>
+      <div className={cn(cabinetSplitColumnClass, 'lg:self-start')}>{detail}</div>
     </div>
   );
 }
 
 export function cabinetSplitPanelClass(className?: string) {
   return cn('flex h-full min-h-[280px] flex-col', className);
+}
+
+/** Detail panel in list+detail layouts — height follows content, no trailing empty space. */
+export function cabinetSplitDetailPanelClass(className?: string) {
+  return cn('flex flex-col', className);
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -82,7 +82,7 @@ function resultDestination(item: GlobalSearchItem): string {
   return TYPE_ROUTES[item.type];
 }
 
-export function GlobalSearchPalette() {
+export function GlobalSearchPalette({ variant = 'icon' }: { variant?: 'icon' | 'bar' }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const companyRole = useAuthStore((s) => s.user?.companyRole);
@@ -93,6 +93,10 @@ export function GlobalSearchPalette() {
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [anchorRect, setAnchorRect] = useState<{ left: number; top: number; width: number } | null>(
+    null,
+  );
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -108,6 +112,24 @@ export function GlobalSearchPalette() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
+
+  // Anchor the bar dropdown to the trigger's position (recompute on open/resize/scroll).
+  useLayoutEffect(() => {
+    if (!open || variant !== 'bar') return;
+    const update = () => {
+      const el = triggerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      setAnchorRect({ left: rect.left, top: rect.top, width: rect.width });
+    };
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [open, variant]);
 
   useEffect(() => {
     if (!open) {
@@ -191,39 +213,36 @@ export function GlobalSearchPalette() {
 
   let flatIndex = -1;
 
-  const overlay =
-    open && typeof document !== 'undefined'
-      ? createPortal(
-          <dialog
-            aria-label={t('company.searchPalette.placeholder')}
-            className="fixed inset-0 z-[200] m-0 flex size-full max-h-none max-w-none items-start justify-center border-0 bg-transparent p-4 pt-[10vh] sm:p-8 sm:pt-[12vh]"
-          >
-            <button
-              type="button"
-              aria-label={t('cabinet.common.closeAria')}
-              className="absolute inset-0 cursor-default border-0 bg-black/40 p-0"
-              onClick={close}
-            />
+  const compact = variant === 'bar';
 
-            <div className="relative z-10 flex max-h-[min(78vh,780px)] w-full max-w-3xl flex-col overflow-hidden rounded-none border border-gray-200 bg-white shadow-xl animate-modal-in">
-              <div className="flex shrink-0 items-center gap-4 border-b border-gray-100 px-6 py-6 sm:px-8">
-                {isFetching ? (
-                  <SpinnerIcon className="size-7 shrink-0 animate-spin text-violet-500" />
-                ) : (
-                  <MagnifyingGlassIcon className="size-7 shrink-0 text-violet-500" />
-                )}
-                <input
-                  ref={inputRef}
-                  value={input}
-                  onChange={(event) => setInput(event.target.value)}
-                  onKeyDown={onInputKeyDown}
-                  placeholder={t('company.searchPalette.placeholder')}
-                  className="w-full appearance-none !border-0 !bg-transparent !p-0 text-lg font-bold tracking-tight text-gray-900 !shadow-none !outline-none !ring-0 placeholder:font-semibold placeholder:text-gray-300"
-                />
-                <kbd className="shrink-0 rounded-none border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-[11px] font-black uppercase tracking-wider text-gray-400">
-                  Esc
-                </kbd>
-              </div>
+  const panelBody = (
+    <>
+      <div
+        className={
+          compact
+            ? 'flex shrink-0 items-center gap-3 border-b border-gray-100 px-4 py-3'
+            : 'flex shrink-0 items-center gap-4 border-b border-gray-100 px-6 py-6 sm:px-8'
+        }
+      >
+        {isFetching ? (
+          <SpinnerIcon className={`${compact ? 'size-5' : 'size-7'} shrink-0 animate-spin text-violet-500`} />
+        ) : (
+          <MagnifyingGlassIcon className={`${compact ? 'size-5' : 'size-7'} shrink-0 text-violet-500`} />
+        )}
+        <input
+          ref={inputRef}
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
+          onKeyDown={onInputKeyDown}
+          placeholder={t('company.searchPalette.placeholder')}
+          className={`w-full appearance-none !border-0 !bg-transparent !p-0 ${compact ? 'text-sm font-semibold' : 'text-lg font-bold'} tracking-tight text-gray-900 !shadow-none !outline-none !ring-0 placeholder:font-semibold placeholder:text-gray-300`}
+        />
+        <kbd
+          className={`shrink-0 rounded-none border border-gray-200 bg-gray-50 font-black uppercase tracking-wider text-gray-400 ${compact ? 'px-2 py-1 text-[10px]' : 'px-2.5 py-1.5 text-[11px]'}`}
+        >
+          Esc
+        </kbd>
+      </div>
 
               <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto py-3">
                 {showMinCharsHint ? (
@@ -350,14 +369,67 @@ export function GlobalSearchPalette() {
                   {t('company.searchPalette.hintClose')}
                 </span>
               </div>
+    </>
+  );
+
+  const overlay =
+    open && typeof document !== 'undefined'
+      ? createPortal(
+          compact ? (
+            <div className="fixed inset-0 z-[200]">
+              <button
+                type="button"
+                aria-label={t('cabinet.common.closeAria')}
+                className="absolute inset-0 cursor-default border-0 bg-transparent p-0"
+                onClick={close}
+              />
+              {anchorRect ? (
+                <div
+                  className="absolute flex max-h-[min(72vh,620px)] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl animate-modal-in"
+                  style={{ left: anchorRect.left, top: anchorRect.top, width: anchorRect.width }}
+                >
+                  {panelBody}
+                </div>
+              ) : null}
             </div>
-          </dialog>,
+          ) : (
+            <dialog
+              aria-label={t('company.searchPalette.placeholder')}
+              className="fixed inset-0 z-[200] m-0 flex size-full max-h-none max-w-none items-start justify-center border-0 bg-transparent p-4 pt-[10vh] sm:p-8 sm:pt-[12vh]"
+            >
+              <button
+                type="button"
+                aria-label={t('cabinet.common.closeAria')}
+                className="absolute inset-0 cursor-default border-0 bg-black/40 p-0"
+                onClick={close}
+              />
+              <div className="relative z-10 flex max-h-[min(78vh,780px)] w-full max-w-3xl flex-col overflow-hidden rounded-none border border-gray-200 bg-white shadow-xl animate-modal-in">
+                {panelBody}
+              </div>
+            </dialog>
+          ),
           document.body,
         )
       : null;
 
-  return (
-    <>
+  const trigger =
+    variant === 'bar' ? (
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={() => setOpen(true)}
+        title={`${t('company.searchPalette.placeholder')} (Ctrl+K)`}
+        className="group flex h-11 w-full items-center gap-2.5 rounded-xl border border-gray-200 bg-white px-3.5 text-left shadow-sm transition-colors hover:border-[var(--dashboard-accent)]/30 hover:bg-gray-50/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dashboard-accent)] cursor-pointer"
+      >
+        <MagnifyingGlassIcon className="size-4 shrink-0 text-gray-400 group-hover:text-gray-500" />
+        <span className="min-w-0 flex-1 truncate text-sm font-medium text-gray-400">
+          {t('company.searchPalette.placeholder')}
+        </span>
+        <kbd className="hidden shrink-0 items-center rounded border border-gray-200 bg-white px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-gray-400 sm:inline-flex">
+          ⌘K
+        </kbd>
+      </button>
+    ) : (
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -366,6 +438,11 @@ export function GlobalSearchPalette() {
       >
         <MagnifyingGlassIcon className="size-5" />
       </button>
+    );
+
+  return (
+    <>
+      {trigger}
       {overlay}
     </>
   );

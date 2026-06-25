@@ -1,13 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { LoadingStatus } from '@/shared/ui/LoadingStatus';
-import {
-  EmptyState,
-  Panel,
-  PanelHeader,
-  SkeletonForm,
-  cabinetPanelContentInsetClass,
-} from '@/widgets/cabinet/cabinet-ui';
-import { cabinetSplitPanelClass } from '@/widgets/cabinet/EntityListDetailLayout';
+import { EmptyState, Panel, PanelHeader, SkeletonForm } from '@/widgets/cabinet/cabinet-ui';
+import { cabinetSplitDetailPanelClass } from '@/widgets/cabinet/EntityListDetailLayout';
 import type { CompanyRole } from '@/entities/company/model/roles.types';
 import type { CompanyMemberDto } from '@/entities/fsm/model/types';
 import { useInterventionDetail } from './hooks/useInterventionDetail';
@@ -17,6 +11,11 @@ import { InterventionStatusTransition } from './components/InterventionStatusTra
 import { InterventionNotesSection } from './components/InterventionNotesSection';
 import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 import { getInterventionStatusStyle } from '@/entities/fsm/model/interventionStatus';
+import {
+  interventionPanelHeaderClass,
+  interventionPanelSectionClass,
+  interventionPanelShellClass,
+} from './interventionPanelUi';
 
 type Props = {
   selectedId: string | null;
@@ -94,40 +93,48 @@ export function InterventionDetailPanel({
   });
 
   return (
-    <Panel className={cabinetSplitPanelClass()}>
-      <PanelHeader
-        title={t('company.fsm.interventions.detail.title')}
-        action={
-          isManagement && selectedId && !isLoadingDetail && detail ? (
-            <button
-              type="button"
-              onClick={() => handleDelete(selectedId)}
-              className="text-xs font-semibold text-red-500 hover:text-red-700 transition-colors cursor-pointer"
-            >
-              {t('cabinet.common.delete')}
-            </button>
-          ) : undefined
-        }
-      />
+    <Panel className={cabinetSplitDetailPanelClass(interventionPanelShellClass)}>
+      <div className={interventionPanelHeaderClass}>
+        <PanelHeader
+          className="mb-0"
+          title={t('company.fsm.interventions.detail.title')}
+          action={
+            isManagement && selectedId && !isLoadingDetail && detail ? (
+              <button
+                type="button"
+                onClick={() => handleDelete(selectedId)}
+                className="cursor-pointer text-xs font-semibold text-red-500 transition-colors hover:text-red-700"
+              >
+                {t('cabinet.common.delete')}
+              </button>
+            ) : undefined
+          }
+        />
+      </div>
 
-      <div className={cabinetPanelContentInsetClass}>
       {selectedId ? (
         isLoadingDetail || !detail ? (
-          <LoadingStatus
-            label={t('company.fsm.interventions.detail.loading')}
-            className="flex-1"
-          >
-            <SkeletonForm fields={5} />
-          </LoadingStatus>
+          <div className={interventionPanelSectionClass}>
+            <LoadingStatus
+              label={t('company.fsm.interventions.detail.loading')}
+              className="flex-1"
+            >
+              <SkeletonForm fields={5} />
+            </LoadingStatus>
+          </div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex justify-between items-start">
-              <div>
-                <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">{detail.number}</span>
-                <h3 className="text-lg font-black text-gray-900 mt-0.5 tracking-tight">{detail.type}</h3>
+          <>
+            <div className="flex items-start justify-between gap-4 border-b border-[var(--dashboard-divider)] px-5 py-4 sm:px-6">
+              <div className="min-w-0">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-gray-400">
+                  {detail.number}
+                </p>
+                <h3 className="mt-0.5 truncate text-lg font-black tracking-tight text-gray-900">
+                  {detail.type}
+                </h3>
               </div>
               <span
-                className={`inline-block px-3 py-1 rounded-full text-xs font-black border ${getInterventionStatusStyle(
+                className={`inline-flex shrink-0 items-center rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getInterventionStatusStyle(
                   detail.status,
                 )}`}
               >
@@ -135,64 +142,67 @@ export function InterventionDetailPanel({
               </span>
             </div>
 
-            <InterventionStatusTransition
-              detail={detail}
-              role={role}
-              statusNote={statusNote}
-              setStatusNote={setStatusNote}
-              handleStatusChange={handleStatusChange}
-              isStatusUpdating={isStatusUpdating}
-              isManagement={isManagement}
-              handleGenerateInvoice={handleGenerateInvoice}
-            />
-
-            {!isEditingDetail ? (
-              <InterventionDetailView
+            <div className={`space-y-5 ${interventionPanelSectionClass}`}>
+              <InterventionStatusTransition
                 detail={detail}
-                canEditAssignedInterventionFields={canEditAssignedInterventionFields}
+                role={role}
+                statusNote={statusNote}
+                setStatusNote={setStatusNote}
+                handleStatusChange={handleStatusChange}
+                isStatusUpdating={isStatusUpdating}
                 isManagement={isManagement}
-                handleStartEdit={handleStartEdit}
-                handlePhotoUpload={handlePhotoUpload}
+                handleGenerateInvoice={handleGenerateInvoice}
               />
-            ) : (
-              <InterventionDetailEditForm
-                isManagement={isManagement}
-                editType={editType}
-                setEditType={setEditType}
-                editDescription={editDescription}
-                setEditDescription={setEditDescription}
-                editAddress={editAddress}
-                setEditAddress={setEditAddress}
-                editTechnicianId={editTechnicianId}
-                setEditTechnicianId={setEditTechnicianId}
-                editScheduledAt={editScheduledAt}
-                setEditScheduledAt={setEditScheduledAt}
-                editEstimatedPrice={editEstimatedPrice}
-                setEditEstimatedPrice={setEditEstimatedPrice}
-                editFinalPrice={editFinalPrice}
-                setEditFinalPrice={setEditFinalPrice}
-                editInternalNotes={editInternalNotes}
-                setEditInternalNotes={setEditInternalNotes}
-                assignableTechnicians={assignableTechnicians}
-                handleSaveEdit={handleSaveEdit}
-                setIsEditingDetail={setIsEditingDetail}
-              />
-            )}
 
-            <InterventionNotesSection
-              notes={detail.notes}
-              noteBody={noteBody}
-              setNoteBody={setNoteBody}
-              handleAddNote={handleAddNote}
-              handleDeleteNote={handleDeleteNote}
-              canDeleteNote={canDeleteNote}
-            />
-          </div>
+              {!isEditingDetail ? (
+                <InterventionDetailView
+                  detail={detail}
+                  canEditAssignedInterventionFields={canEditAssignedInterventionFields}
+                  isManagement={isManagement}
+                  handleStartEdit={handleStartEdit}
+                  handlePhotoUpload={handlePhotoUpload}
+                />
+              ) : (
+                <InterventionDetailEditForm
+                  isManagement={isManagement}
+                  editType={editType}
+                  setEditType={setEditType}
+                  editDescription={editDescription}
+                  setEditDescription={setEditDescription}
+                  editAddress={editAddress}
+                  setEditAddress={setEditAddress}
+                  editTechnicianId={editTechnicianId}
+                  setEditTechnicianId={setEditTechnicianId}
+                  editScheduledAt={editScheduledAt}
+                  setEditScheduledAt={setEditScheduledAt}
+                  editEstimatedPrice={editEstimatedPrice}
+                  setEditEstimatedPrice={setEditEstimatedPrice}
+                  editFinalPrice={editFinalPrice}
+                  setEditFinalPrice={setEditFinalPrice}
+                  editInternalNotes={editInternalNotes}
+                  setEditInternalNotes={setEditInternalNotes}
+                  assignableTechnicians={assignableTechnicians}
+                  handleSaveEdit={handleSaveEdit}
+                  setIsEditingDetail={setIsEditingDetail}
+                />
+              )}
+
+              <InterventionNotesSection
+                notes={detail.notes}
+                noteBody={noteBody}
+                setNoteBody={setNoteBody}
+                handleAddNote={handleAddNote}
+                handleDeleteNote={handleDeleteNote}
+                canDeleteNote={canDeleteNote}
+              />
+            </div>
+          </>
         )
       ) : (
-        <EmptyState message={t('company.fsm.interventions.detail.empty')} fill />
+        <div className={interventionPanelSectionClass}>
+          <EmptyState message={t('company.fsm.interventions.detail.empty')} />
+        </div>
       )}
-      </div>
       {confirmDialog}
     </Panel>
   );

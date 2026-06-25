@@ -101,7 +101,7 @@ function NavCollapsibleGroup({
   const hasActiveChild = group.items.some((item) =>
     isCabinetNavItemActive(pathname, basePath, item.to, allPaths),
   );
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const isOpen = hasActiveChild || open;
 
   if (isCollapsed) {
@@ -298,6 +298,8 @@ export function CabinetShell({
   profileAvatarUrl,
   profileRole,
   sidebarExtras,
+  header,
+  stickyHeader = false,
   banner,
   children,
 }: {
@@ -307,6 +309,9 @@ export function CabinetShell({
   profileAvatarUrl?: string | null;
   profileRole?: string;
   sidebarExtras?: ReactNode | ((collapsed: boolean) => ReactNode);
+  header?: ReactNode;
+  /** Pin header above scrollable content (company dashboard global navbar). */
+  stickyHeader?: boolean;
   banner?: ReactNode;
   children?: ReactNode;
 }) {
@@ -390,10 +395,10 @@ export function CabinetShell({
   };
 
   return (
-    <div className="h-screen flex bg-gray-50/30 overflow-hidden">
+    <div className="h-screen flex bg-white overflow-hidden">
       {/* Desktop sidebar: hidden on screens < 1024px */}
       <aside className={cn(
-        'hidden lg:flex h-full border-r border-gray-100 bg-white flex-col justify-between shrink-0 overflow-hidden transition-all duration-300',
+        'hidden lg:flex h-full border-r border-[var(--cabinet-border-subtle)] bg-white flex-col justify-between shrink-0 overflow-hidden transition-all duration-300',
         isCollapsed ? 'w-20 px-3.5 py-5' : 'w-64 p-5',
       )}>
         <SidebarContent
@@ -404,7 +409,7 @@ export function CabinetShell({
       </aside>
 
       {/* Mobile hamburger bar: visible on screens < 1024px */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 flex items-center justify-between h-14 px-4 bg-white border-b border-gray-100 shadow-sm">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-30 flex items-center justify-between h-14 px-4 bg-white border-b border-[var(--cabinet-border-subtle)] shadow-sm">
         <Link to="/" className="flex-shrink-0">
           <FaberLogo size="sm" />
         </Link>
@@ -422,10 +427,28 @@ export function CabinetShell({
           <SidebarContent {...sidebarProps} onNavClick={closeMobileMenu} />
         </div>
       </MobileSheet>
-      <main className="cabinet-content flex-1 overflow-y-auto h-full p-4 sm:p-6 lg:p-8 pt-18 sm:pt-6 lg:pt-8">
-        {banner}
-        {children ?? <Outlet />}
-      </main>
+
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col pt-14 lg:pt-0">
+        {header ? (
+          stickyHeader ? (
+            <header className="cabinet-navbar shrink-0 border-b border-[var(--cabinet-border-subtle)] bg-white shadow-[0_1px_0_rgba(15,23,42,0.04),0_4px_16px_rgba(15,23,42,0.04)]">
+              <div className="border-t-2 border-t-[var(--dashboard-accent)]" />
+              <div className="flex flex-wrap items-center gap-3 px-6 py-3 sm:px-10 lg:px-12">
+                {header}
+              </div>
+            </header>
+          ) : (
+            <div className="shrink-0 px-6 pt-4 sm:px-10 sm:pt-6 lg:px-12 lg:pt-8">
+              <div className="mb-5 flex w-full flex-wrap items-center gap-3 sm:mb-6">{header}</div>
+            </div>
+          )
+        ) : null}
+
+        <main className="cabinet-content min-h-0 flex-1 overflow-y-auto px-6 py-4 sm:px-10 sm:py-6 lg:px-12 lg:py-8">
+          {banner}
+          {children ?? <Outlet />}
+        </main>
+      </div>
       {confirmDialog}
     </div>
   );

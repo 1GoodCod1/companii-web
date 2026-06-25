@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { EnvelopeSimpleIcon, MapPinIcon, PhoneIcon } from '@phosphor-icons/react';
 import {
   AppSelect,
   SoftBadge,
@@ -19,6 +20,7 @@ import { useLocale } from '@/shared/hooks/useLocale';
 import { formatDateLocalized, formatDateTimeLocalized } from '@/shared/utils/date';
 import { isEstimateExcludedCategorySlug } from '@/entities/estimate/model/estimateCategorySlugs.constants';
 import { LeadNotesEditor } from './components/LeadNotesEditor';
+import { leadMetaLinkClass, leadPanelRowClass, leadSourceTagClass } from './leadPanelUi';
 
 export function LeadInboxItem({
   lead,
@@ -58,89 +60,36 @@ export function LeadInboxItem({
     [t],
   );
 
+  const sourceTag =
+    lead.source === 'SERVICE_REQUEST'
+      ? t('company.fsm.leads.inbox.badges.service', {
+          title: lead.serviceTitle || t('company.fsm.common.unspecified'),
+        })
+      : lead.source === 'PROJECT_REQUEST'
+        ? t('company.fsm.leads.inbox.badges.project')
+        : leadSourceLabel(lead.source);
+
   return (
-    <article className="px-4 py-5 space-y-3">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <article className={leadPanelRowClass}>
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-extrabold text-slate-900 text-sm sm:text-base leading-snug">{lead.contactName}</h3>
+            <h3 className="text-base font-black tracking-tight text-gray-900">{lead.contactName}</h3>
             <SoftBadge tone={LEAD_STATUS_TONES[lead.status]}>{leadStatusLabel(lead.status, t)}</SoftBadge>
-            {lead.source === 'SERVICE_REQUEST' ? (
-              <SoftBadge tone="violet">
-                {t('company.fsm.leads.inbox.badges.service', {
-                  title: lead.serviceTitle || t('company.fsm.common.unspecified'),
-                })}
-              </SoftBadge>
-            ) : lead.source === 'PROJECT_REQUEST' ? (
-              <SoftBadge tone="blue">{t('company.fsm.leads.inbox.badges.project')}</SoftBadge>
-            ) : lead.source === 'BOOKING' ? (
-              <SoftBadge tone="emerald">{leadSourceLabel(lead.source)}</SoftBadge>
-            ) : (
-              <SoftBadge tone="gray">{leadSourceLabel(lead.source)}</SoftBadge>
-            )}
+            <span className={leadSourceTagClass}>{sourceTag}</span>
           </div>
 
-          <p className="text-xs text-slate-500 font-medium">
-            📞 {lead.contactPhone}
-            {lead.contactEmail ? ` · ✉️ ${lead.contactEmail}` : ''}
-          </p>
-
-          {lead.message ? (
-            <div className="rounded-xl bg-slate-50/80 border border-slate-100 p-3.5 text-xs text-slate-600 leading-relaxed max-w-2xl font-medium">
-              {lead.message}
-            </div>
-          ) : null}
-
-          {/* Notes & Booking Link Section with Inline Editor */}
-          <LeadNotesEditor lead={lead} onNotesChange={onNotesChange} />
-
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
-            {lead.estimatedBudget != null && Number(lead.estimatedBudget) > 0 ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-bold text-emerald-700">
-                {t('company.fsm.leads.inbox.budget')}{' '}
-                {Number(lead.estimatedBudget).toLocaleString('ro-MD')} MDL
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
+            <span className="inline-flex items-center gap-1.5">
+              <PhoneIcon className="size-3.5 shrink-0 text-gray-400" />
+              {lead.contactPhone}
+            </span>
+            {lead.contactEmail ? (
+              <span className="inline-flex items-center gap-1.5">
+                <EnvelopeSimpleIcon className="size-3.5 shrink-0 text-gray-400" />
+                {lead.contactEmail}
               </span>
             ) : null}
-            {lead.address ? (
-              <span className="text-xs text-slate-500 font-semibold">📍 {lead.address}</span>
-            ) : null}
-          </div>
-
-          {lead.estimateProject ? (
-            <p className="text-xs pt-1">
-              <Link
-                to={`/company/smete/${lead.estimateProject.id}`}
-                className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100/50 px-3 py-1 text-xs font-bold text-violet-700 hover:bg-violet-100 transition-colors"
-              >
-                {t('company.fsm.leads.inbox.estimateLink', {
-                  number: lead.estimateProject.number,
-                  title: lead.estimateProject.title,
-                })}
-              </Link>
-            </p>
-          ) : null}
-
-          {lead.interventions && lead.interventions.length > 0 ? (
-            <div className="space-y-1 pt-1">
-              {lead.interventions.map((intv) => (
-                <p key={intv.id} className="text-xs">
-                  <Link
-                    to={`/company/lucrari?selectedId=${intv.id}`}
-                    className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100/50 px-3 py-1 text-xs font-bold text-violet-700 hover:bg-violet-100 transition-colors"
-                  >
-                    {t('company.fsm.leads.inbox.interventionLink', {
-                      number: intv.number,
-                      type: intv.type,
-                    })}
-                  </Link>
-                </p>
-              ))}
-            </div>
-          ) : null}
-
-          <p className="text-[10px] text-slate-400 font-medium">
-            {t('company.fsm.leads.inbox.addedAt')}{' '}
-            {formatDateTimeLocalized(lead.createdAt, locale)}
           </p>
         </div>
 
@@ -155,6 +104,61 @@ export function LeadInboxItem({
           />
         ) : null}
       </div>
+
+      {lead.message ? (
+        <p className="border-l-2 border-[var(--dashboard-accent)]/35 pl-3 text-sm leading-relaxed text-gray-600">
+          {lead.message}
+        </p>
+      ) : null}
+
+      <LeadNotesEditor lead={lead} onNotesChange={onNotesChange} />
+
+      {(lead.estimatedBudget != null && Number(lead.estimatedBudget) > 0) || lead.address ? (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+          {lead.estimatedBudget != null && Number(lead.estimatedBudget) > 0 ? (
+            <span className="inline-flex items-center gap-1.5 font-bold text-[var(--dashboard-success)]">
+              {t('company.fsm.leads.inbox.budget')}{' '}
+              {Number(lead.estimatedBudget).toLocaleString('ro-MD')} MDL
+            </span>
+          ) : null}
+          {lead.address ? (
+            <span className="inline-flex items-center gap-1.5 text-gray-500">
+              <MapPinIcon className="size-3.5 shrink-0 text-gray-400" />
+              {lead.address}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+
+      {lead.estimateProject ? (
+        <Link to={`/company/smete/${lead.estimateProject.id}`} className={leadMetaLinkClass}>
+          {t('company.fsm.leads.inbox.estimateLink', {
+            number: lead.estimateProject.number,
+            title: lead.estimateProject.title,
+          })}
+        </Link>
+      ) : null}
+
+      {lead.interventions && lead.interventions.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {lead.interventions.map((intervention) => (
+            <Link
+              key={intervention.id}
+              to={`/company/lucrari?selectedId=${intervention.id}`}
+              className={leadMetaLinkClass}
+            >
+              {t('company.fsm.leads.inbox.interventionLink', {
+                number: intervention.number,
+                type: intervention.type,
+              })}
+            </Link>
+          ))}
+        </div>
+      ) : null}
+
+      <p className="text-[10px] font-medium text-gray-400">
+        {t('company.fsm.leads.inbox.addedAt')} {formatDateTimeLocalized(lead.createdAt, locale)}
+      </p>
 
       {isOpenLeadStatus(lead.status) ? (
         <div className="flex flex-wrap gap-2">
@@ -198,18 +202,25 @@ export function LeadInboxItem({
               {t('company.fsm.leads.inbox.actions.complete')}
             </button>
           ) : null}
-          <button type="button" onClick={() => onStatusChange(lead, LEAD_STATUS.LOST)} className={cabinetBtnSecondary}>
+          <button
+            type="button"
+            onClick={() => onStatusChange(lead, LEAD_STATUS.LOST)}
+            className={cabinetBtnSecondary}
+          >
             {t('company.fsm.leads.inbox.actions.markLost')}
           </button>
         </div>
       ) : lead.status === LEAD_STATUS.CONVERTED ? (
-        <p className="text-xs text-emerald-600 font-semibold">
+        <p className="text-xs font-semibold text-[var(--dashboard-success)]">
           {t('company.fsm.leads.inbox.converted.label')}
           {lead.convertedAt ? ` · ${formatDateLocalized(lead.convertedAt, locale)}` : ''}
           {lead.customerId ? (
             <>
               {' '}
-              · <Link to="/company/clienti" className="underline">{t('company.fsm.leads.inbox.converted.viewCustomer')}</Link>
+              ·{' '}
+              <Link to="/company/clienti" className="text-[var(--dashboard-accent)] hover:underline">
+                {t('company.fsm.leads.inbox.converted.viewCustomer')}
+              </Link>
             </>
           ) : null}
         </p>

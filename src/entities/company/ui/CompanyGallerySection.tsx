@@ -91,7 +91,7 @@ export function CompanyGallerySection({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-start sm:justify-between sm:text-left">
         <div>
           <label className={cabinetLabelClass}>{t('company.branding.galleryTitle')}</label>
           <p className="mt-1 text-xs text-gray-400">{t('company.branding.galleryLimits')}</p>
@@ -120,13 +120,13 @@ export function CompanyGallerySection({
       </div>
 
       {galleryImages.length === 0 && pendingGallery.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-12 text-center text-sm text-gray-400">
+        <div className="border border-dashed border-[var(--dashboard-divider)] px-4 py-12 text-center text-sm text-gray-400">
           {t('company.branding.galleryEmpty')}
         </div>
       ) : (
         <div
-          className={`grid gap-3 ${
-            isPage ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4' : 'grid-cols-2'
+          className={`grid justify-center gap-3 ${
+            isPage ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-2'
           }`}
         >
           {galleryImages.map((image) => {
@@ -134,7 +134,7 @@ export function CompanyGallerySection({
             return (
               <div
                 key={image.id}
-                className="group relative overflow-hidden rounded-2xl bg-slate-100 aspect-[4/3]"
+                className="group relative aspect-[4/3] w-full overflow-hidden border border-[var(--dashboard-divider)] bg-gray-50"
               >
                 <button
                   type="button"
@@ -192,7 +192,7 @@ export function CompanyGallerySection({
             const isVideo = isVideoFile(item.file);
             return (
               <div key={item.id} className="space-y-2">
-                <div className="group relative overflow-hidden rounded-2xl bg-slate-100 aspect-[4/3]">
+                <div className="group relative aspect-[4/3] w-full overflow-hidden border border-[var(--dashboard-divider)] bg-gray-50">
                   <button
                     type="button"
                     className="relative size-full cursor-pointer"

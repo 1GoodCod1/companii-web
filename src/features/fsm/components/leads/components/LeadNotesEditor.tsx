@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PencilSimpleIcon, FloppyDiskIcon, XIcon } from '@phosphor-icons/react';
+import { FloppyDiskIcon, PencilSimpleIcon, XIcon } from '@phosphor-icons/react';
 import type { CompanyLeadDto } from '@/entities/fsm/model/types';
 import { isOpenLeadStatus } from '@/entities/fsm/model/leadStatus';
+import {
+  leadAccentButtonClass,
+  leadFieldInputClass,
+  leadHighlightCardClass,
+  leadSectionTitleClass,
+} from '../leadPanelUi';
 
 interface LeadNotesEditorProps {
   lead: CompanyLeadDto;
@@ -28,78 +34,87 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
     }
   };
 
-  return (
-    <div className="max-w-2xl pt-1">
-      {isEditingNotes ? (
-        <div className="rounded-xl bg-violet-50/40 border border-violet-100 p-3 space-y-2">
-          <textarea
-            value={tempNotes}
-            onChange={(e) => setTempNotes(e.target.value)}
-            placeholder={t('company.fsm.leads.inbox.notesPlaceholder', 'Adăugați link rezervare / master / detalii...')}
-            aria-label={t('company.fsm.leads.inbox.notesPlaceholder', 'Adăugați link rezervare / master / detalii...')}
-            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-xs text-gray-800 focus:border-violet-600 focus:outline-none bg-white font-medium"
-            rows={2}
-            disabled={savingNotes}
-          />
-          <div className="flex justify-end gap-1.5">
-            <button
-              type="button"
-              onClick={() => {
-                setTempNotes(lead.notes || '');
-                setIsEditingNotes(false);
-              }}
-              disabled={savingNotes}
-              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-2 py-1 text-[11px] font-bold text-gray-500 bg-white hover:bg-gray-50"
-            >
-              <XIcon className="size-3.5" /> {t('cabinet.common.cancel')}
-            </button>
-            <button
-              type="button"
-              onClick={handleSaveNotes}
-              disabled={savingNotes}
-              className="inline-flex items-center gap-1 rounded-lg bg-violet-600 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-violet-700 disabled:opacity-50"
-            >
-              <FloppyDiskIcon className="size-3.5" /> {t('cabinet.common.save')}
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="rounded-xl bg-violet-50/30 border border-violet-100/50 p-3.5 text-xs text-violet-950 leading-relaxed flex items-start justify-between gap-4 font-medium hover:border-violet-200/80 transition-all">
-          <div className="min-w-0">
-            <span className="font-extrabold text-violet-900 block text-[10px] uppercase tracking-wider mb-1">
-              📌 {t('company.fsm.leads.inbox.notesLabel', 'Note / Link rezervare / Master')}
-            </span>
-            {lead.notes ? (
-              /^https?:\/\//i.test(lead.notes) ? (
-                <a
-                  href={lead.notes}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-violet-700 hover:underline font-bold break-all"
-                >
-                  {lead.notes}
-                </a>
-              ) : (
-                <span className="text-slate-700">{lead.notes}</span>
-              )
-            ) : (
-              <span className="text-violet-600/80 italic">
-                {t('company.fsm.leads.inbox.noNotes', 'Nu sunt note. Adăugați link de rezervare sau master.')}
-              </span>
-            )}
-          </div>
-          {isOpenLeadStatus(lead.status) && (
-            <button
-              type="button"
-              onClick={() => setIsEditingNotes(true)}
-              className="rounded-lg bg-white border border-gray-200 p-1.5 text-violet-600 hover:bg-violet-50 transition-colors shadow-2xs cursor-pointer shrink-0"
-              title={t('company.fsm.leads.inbox.editNotes', 'Editează note')}
-            >
-              <PencilSimpleIcon className="size-3.5" />
-            </button>
+  if (isEditingNotes) {
+    return (
+      <div className={`space-y-2 ${leadHighlightCardClass}`}>
+        <p className={leadSectionTitleClass}>
+          {t('company.fsm.leads.inbox.notesLabel', 'Note / Link rezervare / Master')}
+        </p>
+        <textarea
+          value={tempNotes}
+          onChange={(e) => setTempNotes(e.target.value)}
+          placeholder={t(
+            'company.fsm.leads.inbox.notesPlaceholder',
+            'Adăugați link rezervare / master / detalii...',
           )}
+          aria-label={t(
+            'company.fsm.leads.inbox.notesPlaceholder',
+            'Adăugați link rezervare / master / detalii...',
+          )}
+          className={`${leadFieldInputClass} resize-none`}
+          rows={2}
+          disabled={savingNotes}
+        />
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setTempNotes(lead.notes || '');
+              setIsEditingNotes(false);
+            }}
+            disabled={savingNotes}
+            className="inline-flex cursor-pointer items-center gap-1 border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-500"
+          >
+            <XIcon className="size-3.5" /> {t('cabinet.common.cancel')}
+          </button>
+          <button
+            type="button"
+            onClick={handleSaveNotes}
+            disabled={savingNotes}
+            className={`${leadAccentButtonClass} px-3 py-1.5 text-[11px]`}
+          >
+            <FloppyDiskIcon className="size-3.5" /> {t('cabinet.common.save')}
+          </button>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`flex items-start justify-between gap-3 ${leadHighlightCardClass}`}>
+      <div className="min-w-0">
+        <p className={leadSectionTitleClass}>
+          {t('company.fsm.leads.inbox.notesLabel', 'Note / Link rezervare / Master')}
+        </p>
+        {lead.notes ? (
+          /^https?:\/\//i.test(lead.notes) ? (
+            <a
+              href={lead.notes}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1.5 inline-block break-all text-xs font-semibold text-[var(--dashboard-accent)] hover:underline"
+            >
+              {lead.notes}
+            </a>
+          ) : (
+            <p className="mt-1.5 text-xs leading-relaxed text-gray-700">{lead.notes}</p>
+          )
+        ) : (
+          <p className="mt-1.5 text-xs italic text-gray-400">
+            {t('company.fsm.leads.inbox.noNotes', 'Nu sunt note. Adăugați link de rezervare sau master.')}
+          </p>
+        )}
+      </div>
+      {isOpenLeadStatus(lead.status) ? (
+        <button
+          type="button"
+          onClick={() => setIsEditingNotes(true)}
+          className="shrink-0 cursor-pointer border border-gray-200 bg-white p-1.5 text-gray-500 transition-colors hover:border-[var(--dashboard-accent)]/30 hover:text-[var(--dashboard-accent)]"
+          title={t('company.fsm.leads.inbox.editNotes', 'Editează note')}
+        >
+          <PencilSimpleIcon className="size-3.5" />
+        </button>
+      ) : null}
     </div>
   );
 }

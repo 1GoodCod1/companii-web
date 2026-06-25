@@ -3,6 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { memberDisplayName } from '@/entities/company/model/teamMembers';
 import { AppSelect } from '@/widgets/cabinet/cabinet-ui';
 import type { CompanyMemberDto } from '@/entities/fsm/model/types';
+import {
+  interventionAccentButtonClass,
+  interventionFieldInputClass,
+  interventionHighlightCardClass,
+  interventionSectionTitleClass,
+} from '../interventionPanelUi';
+
+const editLabelClass = `${interventionSectionTitleClass} mb-1.5 block`;
+const editInputClass = `${interventionFieldInputClass} text-xs`;
 
 interface InterventionDetailEditFormProps {
   isManagement: boolean;
@@ -63,15 +72,15 @@ export function InterventionDetailEditForm({
   );
 
   return (
-    <div className="space-y-3.5 p-4 bg-gray-50/50 border border-gray-100 rounded-xl">
-      <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+    <div className={`space-y-4 ${interventionHighlightCardClass}`}>
+      <h4 className={interventionSectionTitleClass}>
         {isManagement
           ? t('company.fsm.interventions.detail.editForm.titleManagement')
           : t('company.fsm.interventions.detail.editForm.titleTechnician')}
       </h4>
       {isManagement ? (
         <div>
-          <label htmlFor="ie-type" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+          <label htmlFor="ie-type" className={editLabelClass}>
             {t('company.fsm.interventions.detail.editForm.type')}
           </label>
           <input
@@ -79,12 +88,12 @@ export function InterventionDetailEditForm({
             type="text"
             value={editType}
             onChange={(e) => setEditType(e.target.value)}
-            className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white font-medium"
+            className={editInputClass}
           />
         </div>
       ) : null}
       <div>
-        <label htmlFor="ie-address" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+        <label htmlFor="ie-address" className={editLabelClass}>
           {t('company.fsm.interventions.detail.editForm.address')}
         </label>
         <input
@@ -92,12 +101,12 @@ export function InterventionDetailEditForm({
           type="text"
           value={editAddress}
           onChange={(e) => setEditAddress(e.target.value)}
-          className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white font-medium"
+          className={editInputClass}
         />
       </div>
       {isManagement ? (
         <div>
-          <label htmlFor="ie-description" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+          <label htmlFor="ie-description" className={editLabelClass}>
             {t('company.fsm.interventions.detail.editForm.description')}
           </label>
           <textarea
@@ -105,7 +114,7 @@ export function InterventionDetailEditForm({
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
             rows={3}
-            className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white resize-none font-medium"
+            className={`${editInputClass} resize-none`}
           />
         </div>
       ) : null}
@@ -113,7 +122,7 @@ export function InterventionDetailEditForm({
         {isManagement ? (
           <>
             <div>
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+              <label className={editLabelClass}>
                 {t('company.fsm.interventions.detail.editForm.technician')}
               </label>
               <AppSelect
@@ -124,7 +133,7 @@ export function InterventionDetailEditForm({
               />
             </div>
             <div>
-              <label htmlFor="ie-schedule" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+              <label htmlFor="ie-schedule" className={editLabelClass}>
                 {t('company.fsm.interventions.detail.editForm.schedule')}
               </label>
               <input
@@ -132,7 +141,7 @@ export function InterventionDetailEditForm({
                 type="datetime-local"
                 value={editScheduledAt}
                 onChange={(e) => setEditScheduledAt(e.target.value)}
-                className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-1.5 text-xs outline-none bg-white cursor-pointer font-medium"
+                className={`${editInputClass} cursor-pointer`}
               />
             </div>
           </>
@@ -141,7 +150,7 @@ export function InterventionDetailEditForm({
       {isManagement ? (
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label htmlFor="ie-estimated-price" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+            <label htmlFor="ie-estimated-price" className={editLabelClass}>
               {t('company.fsm.interventions.detail.editForm.estimatedPrice')}
             </label>
             <input
@@ -149,11 +158,11 @@ export function InterventionDetailEditForm({
               type="number"
               value={editEstimatedPrice}
               onChange={(e) => setEditEstimatedPrice(e.target.value)}
-              className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white font-bold"
+              className={`${editInputClass} font-bold`}
             />
           </div>
           <div>
-            <label htmlFor="ie-final-price" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+            <label htmlFor="ie-final-price" className={editLabelClass}>
               {t('company.fsm.interventions.detail.editForm.finalPrice')}
             </label>
             <input
@@ -161,14 +170,14 @@ export function InterventionDetailEditForm({
               type="number"
               value={editFinalPrice}
               onChange={(e) => setEditFinalPrice(e.target.value)}
-              className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white font-bold"
+              className={`${editInputClass} font-bold`}
             />
           </div>
         </div>
       ) : null}
       {isManagement ? (
         <div>
-          <label htmlFor="ie-internal-notes" className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">
+          <label htmlFor="ie-internal-notes" className={editLabelClass}>
             {t('company.fsm.interventions.detail.editForm.internalNotes')}
           </label>
           <input
@@ -176,22 +185,22 @@ export function InterventionDetailEditForm({
             type="text"
             value={editInternalNotes}
             onChange={(e) => setEditInternalNotes(e.target.value)}
-            className="w-full border border-gray-200 focus:border-violet-500 rounded-lg p-2 text-xs outline-none bg-white font-medium"
+            className={editInputClass}
           />
         </div>
       ) : null}
-      <div className="flex gap-2 justify-end pt-3 border-t border-gray-100">
+      <div className="flex justify-end gap-2 border-t border-[var(--dashboard-divider)] pt-4">
         <button
           type="button"
           onClick={() => setIsEditingDetail(false)}
-          className="px-3.5 py-2 border border-gray-200 hover:bg-gray-100 rounded-xl text-[10px] font-bold uppercase tracking-wider text-gray-500 cursor-pointer bg-white"
+          className="cursor-pointer border border-gray-200 bg-white px-3.5 py-2 text-[10px] font-bold uppercase tracking-wider text-gray-500 transition-colors hover:border-gray-300"
         >
           {t('cabinet.common.cancel')}
         </button>
         <button
           type="button"
           onClick={() => void handleSaveEdit()}
-          className="px-4 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider cursor-pointer"
+          className={interventionAccentButtonClass}
         >
           {t('cabinet.common.save')}
         </button>

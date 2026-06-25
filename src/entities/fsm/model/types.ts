@@ -214,9 +214,20 @@ export interface CustomerTimelineItemDto {
   meta?: Record<string, unknown>;
 }
 
+export interface CustomerTimelineGroupDto {
+  id: string;
+  kind: 'work' | 'request';
+  title: string;
+  status?: string;
+  statusType?: string;
+  at: string;
+  interventionId?: string;
+  steps: CustomerTimelineItemDto[];
+}
+
 export interface CustomerTimelineDto {
   customer: CustomerDto;
-  items: CustomerTimelineItemDto[];
+  groups: CustomerTimelineGroupDto[];
 }
 
 export interface CalendarBoardDto {

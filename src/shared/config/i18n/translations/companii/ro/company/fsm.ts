@@ -350,6 +350,18 @@ export const companiiRoCompanyFsm = {
             title: 'Istoric client',
             loading: 'Se încarcă istoricul...',
             empty: 'Nicio activitate înregistrată.',
+            groupKinds: {
+              work: 'Lucrare',
+              request: 'Cerere',
+            },
+            stepTypes: {
+              lead: 'Cerere',
+              estimate: 'Calcul preț',
+              quote: 'Deviz',
+              intervention: 'Lucrare',
+              invoice: 'Factură',
+              note: 'Notă',
+            },
           },
         },
         list: {

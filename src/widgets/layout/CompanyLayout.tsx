@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -31,7 +31,7 @@ import { useCompanyMeQuery } from '@/features/companies/api/useCompanies';
 import { useLeadsQuery } from '@/features/fsm';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
 import { COMPANY_ROUTE_MIN_PLAN, hasMinPlan } from '@/entities/subscription/model/planEntitlements';
-import { SUBSCRIPTION_PLAN } from '@/entities/subscription/model/subscriptions.constants';
+import { SUBSCRIPTION_PLAN, PLAN_LABELS } from '@/entities/subscription/model/subscriptions.constants';
 import { LEAD_STATUS } from '@/entities/fsm/model/leadStatus.constants';
 import { canAccessCompanyRoute } from '@/entities/company/model/roleAccess';
 import type { CompanySubscriptionPlanCode } from '@/entities/subscription/model/types';
@@ -413,22 +413,43 @@ export function CompanyLayout() {
   }));
 
   const sidebarExtras = useMemo(
-    () => (collapsed: boolean) =>
-      collapsed ? (
-        <div className="mb-3 flex flex-col items-center gap-1">
-          <GlobalSearchPalette />
-          <NotificationBell />
-        </div>
-      ) : (
-        <div className="px-3 mb-3 flex items-center justify-between">
-          <div className="flex-1 min-w-0 mr-2">
-            <CompanySwitcher />
-          </div>
-          <GlobalSearchPalette />
-          <NotificationBell />
-        </div>
-      ),
+    () => (collapsed: boolean) => (collapsed ? null : <CompanySwitcher />),
     [],
+  );
+
+  const header = useMemo(
+    () => (
+      <>
+        <div className="min-w-0 flex-1 lg:max-w-2xl">
+          <GlobalSearchPalette variant="bar" />
+        </div>
+        <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
+          {currentPlan ? (
+            <Link
+              to="/company/subscription"
+              title={t('company.subscription', 'Abonament')}
+              className="hidden h-11 items-center gap-2.5 rounded-xl border border-[var(--dashboard-accent-light)] bg-[var(--dashboard-accent-light)]/40 px-3.5 transition-colors hover:bg-[var(--dashboard-accent-light)]/70 sm:flex"
+            >
+              <span className="flex size-8 items-center justify-center rounded-lg bg-white text-[var(--dashboard-accent)] shadow-sm">
+                <CreditCardIcon weight="fill" className="size-4 shrink-0" />
+              </span>
+              <span className="flex flex-col leading-none">
+                <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--dashboard-accent)]/80">
+                  {t('company.subscription', 'Abonament')}
+                </span>
+                <span className="text-xs font-bold text-gray-900">
+                  {PLAN_LABELS[currentPlan as keyof typeof PLAN_LABELS] ?? currentPlan}
+                </span>
+              </span>
+            </Link>
+          ) : null}
+          <div className="flex h-11 items-center rounded-xl border border-gray-200 bg-gray-50/80 px-1">
+            <NotificationBell />
+          </div>
+        </div>
+      </>
+    ),
+    [currentPlan, t],
   );
 
   const isProfileOrSettings =
@@ -467,6 +488,8 @@ export function CompanyLayout() {
       profileAvatarUrl={activeCompany?.logoUrl}
       profileRole={profileRole}
       sidebarExtras={sidebarExtras}
+      header={header}
+      stickyHeader
       banner={banner}
     >
       {showPendingVerification ? (

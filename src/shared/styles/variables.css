@@ -3,6 +3,12 @@
   --accent-oklch: oklch(0.74 0.15 76); 
   --bg-dots-color: rgba(194, 89, 63, 0.03); 
   --bg-base: #f9fafb;
+  --cabinet-bg: #f6f4f1;
+  --cabinet-border-subtle: #e0e0e0;
+  --dashboard-accent: #c05a44;
+  --dashboard-accent-light: rgba(192, 90, 68, 0.12);
+  --dashboard-divider: #ececec;
+  --dashboard-success: #2d8a61;
   --text-base: #111827;
   --focus-ring: oklch(0.65 0.16 41.5);
   --public-header-height: 3.75rem;
@@ -47,11 +53,21 @@
   display: none;
 }
 
-/* Dashboard: invisible scrollbar until hover/scroll */
+/* Cabinet / portal main area */
 .custom-scrollbar,
 .cabinet-content {
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
+}
+
+.cabinet-navbar {
+  position: relative;
+  z-index: 20;
+}
+
+.cabinet-content {
+  background-color: var(--cabinet-bg);
+  border-top: 1px solid var(--cabinet-border-subtle);
 }
 
 .custom-scrollbar:hover,

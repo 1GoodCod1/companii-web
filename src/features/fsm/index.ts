@@ -33,6 +33,7 @@ export { DashboardKpiGrid } from './components/dashboard/DashboardKpiGrid';
 export { DashboardNewLeadsPanel } from './components/dashboard/DashboardNewLeadsPanel';
 export { DashboardActiveInterventionsPanel } from './components/dashboard/DashboardActiveInterventionsPanel';
 export { DashboardRecentInvoicesPanel } from './components/dashboard/DashboardRecentInvoicesPanel';
+export { DashboardCollectionsPanel } from './components/dashboard/DashboardCollectionsPanel';
 export { useDashboardPageData } from './hooks/useDashboardPageData';
 
 // Lazy so ApexCharts ships in its own chunk, loaded only when management opens

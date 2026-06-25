@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { cabinetSplitPanelClass } from '@/widgets/cabinet/EntityListDetailLayout';
+import { cabinetSplitDetailPanelClass } from '@/widgets/cabinet/EntityListDetailLayout';
 import {
   EmptyState,
   Panel,
@@ -14,17 +14,23 @@ import {
   cabinetPanelContentInsetClass,
 } from '@/widgets/cabinet/cabinet-ui';
 import { cn } from '@/lib/utils';
-import type { CustomerDto, CustomerTimelineItemDto } from '@/entities/fsm/model/types';
+import type { CustomerDto, CustomerTimelineGroupDto, CustomerTimelineItemDto } from '@/entities/fsm/model/types';
 import { useCustomerTimelineQuery } from '@/features/fsm/api/useCustomers';
 import {
   buildPortalInviteUrl,
   useCreatePortalInviteMutation,
 } from '@/features/companies/api/usePortalInvite';
 import { useLocale } from '@/shared/hooks/useLocale';
+import type { AppLanguage } from '@/shared/config/i18n/utils';
+import type { TFunction } from 'i18next';
 import {
+  timelineGroupKindLabel,
+  timelineGroupStatusLabel,
+  timelineGroupStatusTone,
   timelineHref,
   timelineStatusLabel,
   timelineStatusTone,
+  timelineStepTypeLabel,
 } from '@/entities/fsm/model/customerTimeline';
 import { formatDateLocalized, formatDateTimeLocalized } from '@/shared/utils/date';
 import { getErrorMessage } from '@/shared/utils/errors';
@@ -50,7 +56,7 @@ export function CustomerDetailPanel({ customer, onEdit, onDelete }: Props) {
   const { t } = useTranslation();
 
   return (
-    <Panel className={cabinetSplitPanelClass()}>
+    <Panel className={cabinetSplitDetailPanelClass()}>
       {customer ? (
         <CustomerDetailContent
           key={customer.id}
@@ -92,7 +98,7 @@ function CustomerDetailContent({
   ];
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex flex-col">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-violet-100 text-sm font-black text-violet-700">
@@ -151,7 +157,7 @@ function CustomerDetailContent({
         })}
       </div>
 
-      <div className="mt-4 min-h-0 flex-1 overflow-y-auto">
+      <div className="mt-4">
         {activeTab === 'details' ? (
           <CustomerDetailsTab customer={customer} />
         ) : (
@@ -319,42 +325,87 @@ function CustomerHistoryTab({ customer }: { customer: CustomerDto }) {
     return <p className="text-xs text-gray-400">{t('company.fsm.customers.detail.timeline.loading')}</p>;
   }
 
-  if (!timeline?.items.length) {
+  const groups = timeline?.groups ?? [];
+
+  if (!groups.length) {
     return <EmptyState message={t('company.fsm.customers.detail.timeline.empty')} />;
   }
 
   return (
-    <ol className="relative border-l border-violet-100 ml-2 space-y-4">
-      {timeline.items.map((item: CustomerTimelineItemDto) => {
-        const href = timelineHref(item);
-        const statusLabel = timelineStatusLabel(item);
-        return (
-          <li key={item.id} className="ml-4">
-            <span className="absolute -left-1.5 mt-1.5 size-3 rounded-full bg-violet-400 ring-4 ring-white" />
-            <div className="rounded-xl bg-slate-50/80 px-3 py-2.5 space-y-1">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <SoftBadge tone="violet">{item.type}</SoftBadge>
-                  {statusLabel ? (
-                    <SoftBadge tone={timelineStatusTone(item)}>{statusLabel}</SoftBadge>
+    <ol className="space-y-3">
+      {groups.map((group: CustomerTimelineGroupDto) => (
+        <CustomerTimelineGroupCard key={group.id} group={group} locale={locale} t={t} />
+      ))}
+    </ol>
+  );
+}
+
+function CustomerTimelineGroupCard({
+  group,
+  locale,
+  t,
+}: {
+  group: CustomerTimelineGroupDto;
+  locale: AppLanguage;
+  t: TFunction;
+}) {
+  const groupStatus = timelineGroupStatusLabel(group, t);
+
+  return (
+    <li className="overflow-hidden border border-[var(--dashboard-divider)] border-l-[3px] border-l-[var(--dashboard-accent)] bg-white">
+      <div className="flex flex-wrap items-start justify-between gap-3 px-4 py-3.5">
+        <div className="min-w-0 space-y-1">
+          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-gray-400">
+            {timelineGroupKindLabel(group.kind, t)}
+          </p>
+          <p className="text-sm font-black tracking-tight text-gray-900">{group.title}</p>
+        </div>
+        <div className="flex shrink-0 flex-col items-end gap-1.5">
+          {groupStatus ? (
+            <SoftBadge tone={timelineGroupStatusTone(group)}>{groupStatus}</SoftBadge>
+          ) : null}
+          <span className="text-[10px] font-medium text-gray-400">
+            {formatDateLocalized(group.at, locale, 'medium')}
+          </span>
+        </div>
+      </div>
+
+      {group.steps.length > 1 ? (
+        <ul className="divide-y divide-[var(--dashboard-divider)] border-t border-[var(--dashboard-divider)]">
+          {group.steps.map((step: CustomerTimelineItemDto) => {
+            const href = timelineHref(step);
+            const statusLabel = timelineStatusLabel(step);
+            return (
+              <li
+                key={`${group.id}-${step.type}-${step.id}`}
+                className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-gray-400">
+                    {timelineStepTypeLabel(step.type, t)}
+                  </p>
+                  {href ? (
+                    <Link
+                      to={href}
+                      className="text-xs font-semibold text-[var(--dashboard-accent)] hover:opacity-80"
+                    >
+                      {step.title}
+                    </Link>
+                  ) : (
+                    <p className="text-xs font-semibold text-gray-800">{step.title}</p>
+                  )}
+                  {step.subtitle ? (
+                    <p className="text-[11px] text-gray-500">{step.subtitle}</p>
                   ) : null}
                 </div>
-                <span className="text-[10px] text-gray-400 shrink-0">
-                  {formatDateLocalized(item.at, locale, 'medium')}
-                </span>
-              </div>
-              {href ? (
-                <Link to={href} className="text-sm font-semibold text-violet-700 hover:text-violet-800">
-                  {item.title}
-                </Link>
-              ) : (
-                <p className="text-sm font-semibold text-gray-900">{item.title}</p>
-              )}
-              {item.subtitle ? <p className="text-xs text-gray-500">{item.subtitle}</p> : null}
-            </div>
-          </li>
-        );
-      })}
-    </ol>
+                {statusLabel ? (
+                  <SoftBadge tone={timelineStatusTone(step)}>{statusLabel}</SoftBadge>
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
+      ) : null}
+    </li>
   );
 }

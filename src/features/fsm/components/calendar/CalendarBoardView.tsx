@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { PhoneIcon } from '@phosphor-icons/react';
 import {
   EmptyState,
   SoftBadge,
@@ -10,9 +11,22 @@ import {
   cabinetBtnSecondary,
 } from '@/widgets/cabinet/cabinet-ui';
 import type { CalendarBoardDto, CompanyLeadDto, CompanyMemberDto, InterventionDto } from '@/entities/fsm/model/types';
+import { LEAD_STATUS_TONES } from '@/entities/fsm/model/leads.constants';
 import { leadStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 import { InterventionCard } from './InterventionCard';
 import { ScheduledColumn } from './ScheduledColumn';
+import {
+  calendarCountBadgeClass,
+  calendarInboxLinkClass,
+  calendarLeadCardClass,
+  calendarPanelBodyClass,
+  calendarPanelHeaderClass,
+  calendarPanelShellClass,
+} from './calendarPanelUi';
+
+function ColumnCount({ count }: { count: number }) {
+  return <span className={calendarCountBadgeClass}>{count}</span>;
+}
 
 export function CalendarBoardView({
   board,
@@ -56,16 +70,16 @@ export function CalendarBoardView({
   const { t } = useTranslation();
 
   const scheduledMeta = useMemo(
-    () => <span className="text-xs text-gray-400">{board?.scheduled.length ?? 0}</span>,
+    () => <ColumnCount count={board?.scheduled.length ?? 0} />,
     [board?.scheduled.length],
   );
   const backlogMeta = useMemo(
-    () => <span className="text-xs text-gray-400">{board?.unscheduled.length ?? 0}</span>,
+    () => <ColumnCount count={board?.unscheduled.length ?? 0} />,
     [board?.unscheduled.length],
   );
   const leadsMeta = useMemo(
     () => (
-      <Link to="/company/cereri" className="text-xs font-semibold text-violet-600 hover:text-violet-700">
+      <Link to="/company/cereri" className={calendarInboxLinkClass}>
         {t('company.fsm.calendar.board.leads.inboxLink')}
       </Link>
     ),
@@ -73,101 +87,128 @@ export function CalendarBoardView({
   );
 
   return (
-    <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
-      <Panel>
-        <PanelHeader
-          title={t('company.fsm.calendar.board.scheduled.title')}
-          meta={scheduledMeta}
-        />
-        <ScheduledColumn scheduled={board?.scheduled ?? []} />
+    <div className="grid grid-cols-1 items-start gap-5 xl:grid-cols-3">
+      <Panel className={calendarPanelShellClass}>
+        <div className={calendarPanelHeaderClass}>
+          <PanelHeader
+            className="mb-0"
+            title={t('company.fsm.calendar.board.scheduled.title')}
+            meta={scheduledMeta}
+          />
+        </div>
+        <div className={calendarPanelBodyClass}>
+          <ScheduledColumn scheduled={board?.scheduled ?? []} />
+        </div>
       </Panel>
 
-      <Panel>
-        <PanelHeader
-          title={t('company.fsm.calendar.board.backlog.title')}
-          meta={backlogMeta}
-        />
-        {!board?.unscheduled.length ? (
-          <EmptyState message={t('company.fsm.calendar.board.backlog.empty')} compact />
-        ) : (
-          <div className="space-y-3">
-            {board.unscheduled.map((item: InterventionDto) => (
-              <InterventionCard
-                key={item.id}
-                item={item}
-                canDispatch={isManagement}
-                onSchedule={onScheduleIdChange}
-                scheduling={schedulingId === item.id}
-                scheduleAt={scheduleAt}
-                scheduleTechnicianId={scheduleTechnicianId}
-                assignMode={assignMode}
-                scheduleMemberIds={scheduleMemberIds}
-                scheduleCrewId={scheduleCrewId}
-                onScheduleAtChange={onScheduleAtChange}
-                onScheduleTechnicianChange={onScheduleTechnicianChange}
-                onAssignModeChange={onAssignModeChange}
-                onScheduleMemberIdsChange={onScheduleMemberIdsChange}
-                onScheduleCrewIdChange={onScheduleCrewIdChange}
-                onSubmitSchedule={onSubmitSchedule}
-                onCancelSchedule={onCancelSchedule}
-                technicians={technicians}
-              />
-            ))}
-          </div>
-        )}
+      <Panel className={calendarPanelShellClass}>
+        <div className={calendarPanelHeaderClass}>
+          <PanelHeader
+            className="mb-0"
+            title={t('company.fsm.calendar.board.backlog.title')}
+            meta={backlogMeta}
+          />
+        </div>
+        <div className={calendarPanelBodyClass}>
+          {!board?.unscheduled.length ? (
+            <EmptyState message={t('company.fsm.calendar.board.backlog.empty')} compact />
+          ) : (
+            <div className="space-y-3">
+              {board.unscheduled.map((item: InterventionDto) => (
+                <InterventionCard
+                  key={item.id}
+                  item={item}
+                  canDispatch={isManagement}
+                  onSchedule={onScheduleIdChange}
+                  scheduling={schedulingId === item.id}
+                  scheduleAt={scheduleAt}
+                  scheduleTechnicianId={scheduleTechnicianId}
+                  assignMode={assignMode}
+                  scheduleMemberIds={scheduleMemberIds}
+                  scheduleCrewId={scheduleCrewId}
+                  onScheduleAtChange={onScheduleAtChange}
+                  onScheduleTechnicianChange={onScheduleTechnicianChange}
+                  onAssignModeChange={onAssignModeChange}
+                  onScheduleMemberIdsChange={onScheduleMemberIdsChange}
+                  onScheduleCrewIdChange={onScheduleCrewIdChange}
+                  onSubmitSchedule={onSubmitSchedule}
+                  onCancelSchedule={onCancelSchedule}
+                  technicians={technicians}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </Panel>
 
-      <Panel>
-        <PanelHeader
-          title={t('company.fsm.calendar.board.leads.title')}
-          meta={leadsMeta}
-        />
-        {!board?.openLeads.length ? (
-          <EmptyState message={t('company.fsm.calendar.board.leads.empty')} compact />
-        ) : (
-          <ul className="space-y-3">
-            {board.openLeads.map((lead: CompanyLeadDto) => (
-              <li key={lead.id} className="rounded-2xl bg-white/70 px-4 py-3 space-y-2">
-                <p className="font-semibold text-sm text-gray-900">{lead.contactName}</p>
-                <p className="text-xs text-gray-500">{lead.contactPhone}</p>
-                {lead.serviceTitle ? (
-                  <p className="text-xs font-semibold text-violet-600">{lead.serviceTitle}</p>
-                ) : null}
-                <SoftBadge tone="amber">{leadStatusLabel(lead.status, t)}</SoftBadge>
-                {lead.interventions && lead.interventions.length > 0 ? (
-                  <div className="space-y-1 pt-1">
-                    {lead.interventions.map((intv) => (
-                      <p key={intv.id} className="text-xs">
-                        <Link
-                          to={`/company/lucrari?selectedId=${intv.id}`}
-                          className="inline-flex items-center gap-1 rounded-xl bg-violet-50 border border-violet-100/50 px-3 py-1 text-xs font-bold text-violet-700 hover:bg-violet-100 transition-colors"
-                        >
-                          {t('company.fsm.leads.inbox.interventionLink', {
-                            number: intv.number,
-                            type: intv.type,
-                          })}
-                        </Link>
-                      </p>
-                    ))}
+      <Panel className={calendarPanelShellClass}>
+        <div className={calendarPanelHeaderClass}>
+          <PanelHeader
+            className="mb-0"
+            title={t('company.fsm.calendar.board.leads.title')}
+            meta={leadsMeta}
+          />
+        </div>
+        <div className={calendarPanelBodyClass}>
+          {!board?.openLeads.length ? (
+            <EmptyState message={t('company.fsm.calendar.board.leads.empty')} compact />
+          ) : (
+            <ul className="space-y-3">
+              {board.openLeads.map((lead: CompanyLeadDto) => (
+                <li key={lead.id} className={calendarLeadCardClass}>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-black tracking-tight text-gray-900">{lead.contactName}</p>
+                    <SoftBadge tone={LEAD_STATUS_TONES[lead.status]}>
+                      {leadStatusLabel(lead.status, t)}
+                    </SoftBadge>
                   </div>
-                ) : isManagement ? (
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => onConvertLead(lead.id, 'intervention')}
-                      className={cabinetBtnPrimary}
-                    >
-                      {t('company.fsm.calendar.board.leads.convertIntervention')}
-                    </button>
-                    <Link to="/company/cereri" className={cabinetBtnSecondary}>
-                      {t('company.fsm.calendar.board.leads.convertEstimate')}
-                    </Link>
-                  </div>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )}
+
+                  <p className="flex items-center gap-1.5 text-xs text-gray-500">
+                    <PhoneIcon className="size-3.5 shrink-0 text-gray-400" />
+                    {lead.contactPhone}
+                  </p>
+
+                  {lead.serviceTitle ? (
+                    <p className="text-xs font-semibold text-[var(--dashboard-accent)]">
+                      {lead.serviceTitle}
+                    </p>
+                  ) : null}
+
+                  {lead.interventions && lead.interventions.length > 0 ? (
+                    <div className="space-y-1 pt-1">
+                      {lead.interventions.map((intv) => (
+                        <p key={intv.id} className="text-xs">
+                          <Link
+                            to={`/company/lucrari?selectedId=${intv.id}`}
+                            className="font-semibold text-[var(--dashboard-accent)] hover:opacity-80"
+                          >
+                            {t('company.fsm.leads.inbox.interventionLink', {
+                              number: intv.number,
+                              type: intv.type,
+                            })}
+                          </Link>
+                        </p>
+                      ))}
+                    </div>
+                  ) : isManagement ? (
+                    <div className="flex flex-wrap gap-2 border-t border-[var(--dashboard-divider)] pt-3">
+                      <button
+                        type="button"
+                        onClick={() => onConvertLead(lead.id, 'intervention')}
+                        className={cabinetBtnPrimary}
+                      >
+                        {t('company.fsm.calendar.board.leads.convertIntervention')}
+                      </button>
+                      <Link to="/company/cereri" className={cabinetBtnSecondary}>
+                        {t('company.fsm.calendar.board.leads.convertEstimate')}
+                      </Link>
+                    </div>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </Panel>
     </div>
   );

@@ -4,7 +4,8 @@ import { cabinetCustomersQueryOptions } from '@/shared/api/queryPolicies';
 import { queryKeys } from '@/shared/api/queryKeys';
 import { useAuthStore } from '@/entities/user/model/authStore';
 import type { CursorPage } from '@/shared/api/pagination';
-import type { CustomerDto, CustomerTimelineDto } from '@/entities/fsm/model/types';
+import type { CustomerDto, CustomerTimelineDto, CustomerTimelineItemDto } from '@/entities/fsm/model/types';
+import { normalizeCustomerTimeline } from '@/entities/fsm/model/customerTimeline';
 import { FSM_BASE } from './fsmBase';
 
 const CUSTOMERS_PAGE_SIZE = 100;
@@ -119,7 +120,12 @@ export function useDeleteCustomerMutation() {
 export function useCustomerTimelineQuery(id: string, enabled = true) {
   return useQuery({
     queryKey: queryKeys.fsm.customerTimeline(id),
-    queryFn: () => apiFetch<CustomerTimelineDto>(`${FSM_BASE}/customers/${id}/timeline`),
+    queryFn: async () => {
+      const data = await apiFetch<CustomerTimelineDto & { items?: CustomerTimelineItemDto[] }>(
+        `${FSM_BASE}/customers/${id}/timeline`,
+      );
+      return normalizeCustomerTimeline(data);
+    },
     ...cabinetCustomersQueryOptions,
     enabled: !!id && enabled,
   });

@@ -9,6 +9,12 @@ import { useCompanyGalleryForm } from '@/features/companies/gallery/useCompanyGa
 import { CompanyGallerySection } from '@/entities/company/ui/CompanyGallerySection';
 import { cabinetBtnPrimary, cabinetBtnSecondary, EmptyState } from '@/widgets/cabinet/cabinet-ui';
 import { ROUTE_ABS, COMPANY_CABINET_PATH } from '@/shared/constants/routes.constants';
+import {
+  companyPageBackButtonClass,
+  companyPagePanelClass,
+  companyPagePanelInsetClass,
+  companyPageShellClass,
+} from '@/features/companies/companyFormPanelUi';
 
 export function CompanyGalleryPage() {
   const { t } = useTranslation();
@@ -49,7 +55,7 @@ export function CompanyGalleryPage() {
 
   if (isPending && !companyMe) {
     return (
-      <div className="flex items-center justify-center py-20 text-sm text-gray-400">
+      <div className={`${companyPageShellClass} flex items-center justify-center py-20 text-sm text-gray-400`}>
         {t('company.galleryPage.loading')}
       </div>
     );
@@ -57,33 +63,31 @@ export function CompanyGalleryPage() {
 
   if (!activeCompany) {
     return (
-      <div className="max-w-2xl">
+      <div className={companyPageShellClass}>
         <EmptyState message={t('company.galleryPage.unavailable')} />
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl space-y-5 animate-fade-in">
-      <div className="flex min-w-0 items-center gap-3">
+    <div className={companyPageShellClass}>
+      <header className="flex items-center gap-3">
         <Link
           to={`${ROUTE_ABS.COMPANY}${COMPANY_CABINET_PATH.PROFILE}`}
           title={t('company.galleryPage.backToProfile')}
-          className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition-colors hover:border-violet-200 hover:text-violet-600"
+          className={companyPageBackButtonClass}
         >
           <ArrowLeftIcon className="size-4" />
         </Link>
-        <div className="min-w-0">
-          <h1 className="truncate text-lg sm:text-xl font-black tracking-tight text-gray-900">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-lg font-black tracking-tight text-gray-900 sm:text-xl">
             {t('company.galleryPage.title')}
           </h1>
-          <p className="truncate text-xs text-gray-400 mt-0.5">
-            {t('company.galleryPage.description')}
-          </p>
+          <p className="mt-0.5 text-xs text-gray-400">{t('company.galleryPage.description')}</p>
         </div>
-      </div>
+      </header>
 
-      <div className="glass-panel rounded-3xl p-5 sm:p-6 space-y-6">
+      <div className={`${companyPagePanelClass} ${companyPagePanelInsetClass} space-y-6`}>
         <CompanyGallerySection
           layout="page"
           galleryImages={activeCompany.galleryImages ?? []}
@@ -96,35 +100,37 @@ export function CompanyGalleryPage() {
         />
 
         {uploadProgress ? (
-          <div className="space-y-2 border-t border-slate-100 pt-4">
+          <div className="space-y-2 border-t border-[var(--dashboard-divider)] pt-4">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-slate-600">
+              <span className="font-semibold text-gray-600">
                 {t('company.galleryPage.uploading', {
                   current: Math.ceil(uploadProgress.current),
                   total: uploadProgress.total,
                 })}
               </span>
-              <span className="font-black text-violet-600">{progressPct}%</span>
+              <span className="font-black text-[var(--dashboard-accent)]">{progressPct}%</span>
             </div>
-            <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+            <div className="h-2 overflow-hidden bg-gray-100">
               <div
-                className="h-full rounded-full bg-violet-600 transition-all duration-300"
+                className="h-full bg-[var(--dashboard-accent)] transition-all duration-300"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
-            <button
-              type="button"
-              onClick={handleCancelUpload}
-              className={`${cabinetBtnSecondary} flex items-center gap-1.5 text-xs`}
-            >
-              <XIcon className="size-3.5" />
-              {t('cabinet.common.cancel')}
-            </button>
+            <div className="flex justify-center sm:justify-start">
+              <button
+                type="button"
+                onClick={handleCancelUpload}
+                className={`${cabinetBtnSecondary} flex items-center gap-1.5 text-xs`}
+              >
+                <XIcon className="size-3.5" />
+                {t('cabinet.common.cancel')}
+              </button>
+            </div>
           </div>
         ) : null}
 
         {hasPendingChanges && !isSaving ? (
-          <div className="flex justify-end border-t border-slate-100 pt-4">
+          <div className="flex justify-center border-t border-[var(--dashboard-divider)] pt-4 sm:justify-end">
             <button
               type="button"
               onClick={() => void handleSave()}

@@ -7,6 +7,12 @@ import {
 } from '@/entities/fsm/model/interventionStatus';
 import type { InterventionDto, InterventionStatus } from '@/entities/fsm/model/types';
 import type { CompanyRole } from '@/entities/company/model/roles.types';
+import {
+  interventionAccentButtonClass,
+  interventionFieldInputClass,
+  interventionHighlightCardClass,
+  interventionSectionTitleClass,
+} from '../interventionPanelUi';
 
 interface InterventionStatusTransitionProps {
   detail: InterventionDto;
@@ -31,66 +37,64 @@ export function InterventionStatusTransition({
 }: InterventionStatusTransitionProps) {
   const { t } = useTranslation();
 
+  let allowed = getAllowedInterventionTransitions(detail.status, role);
+  if (!detail.scheduledAt) {
+    allowed = allowed.filter((st) => st !== INTERVENTION_STATUS.SCHEDULED);
+  }
+  const hint = interventionStatusHint(detail.status, t);
+
   return (
-    <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100 space-y-2.5">
-      <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+    <div className={`space-y-3 ${interventionHighlightCardClass}`}>
+      <h4 className={interventionSectionTitleClass}>
         {t('company.fsm.interventions.detail.nextStep.title')}
       </h4>
-      {(() => {
-        let allowed = getAllowedInterventionTransitions(detail.status, role);
-        if (!detail.scheduledAt) {
-          allowed = allowed.filter((st) => st !== INTERVENTION_STATUS.SCHEDULED);
-        }
-        const hint = interventionStatusHint(detail.status, t);
-        if (allowed.length === 0) {
-          return (
-            <p className="text-xs text-gray-500 font-medium leading-relaxed">
-              {hint ||
-                (isTerminalInterventionStatus(detail.status)
-                  ? t('company.fsm.interventions.detail.nextStep.terminalStatus')
-                  : t('company.fsm.interventions.detail.nextStep.noActions'))}
-            </p>
-          );
-        }
-        return (
-          <>
-            <input
-              type="text"
-              value={statusNote}
-              onChange={(e) => setStatusNote(e.target.value)}
-              placeholder={t('company.fsm.interventions.detail.nextStep.statusNotePlaceholder')}
-              aria-label={t('company.fsm.interventions.detail.nextStep.statusNotePlaceholder')}
-              className="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-violet-200"
-            />
-            <div className="flex flex-wrap gap-1.5">
-              {allowed.map((st) => (
-                <button
-                  key={st}
-                  type="button"
-                  onClick={() => void handleStatusChange(st)}
-                  disabled={isStatusUpdating}
-                  className={`px-3 py-2 rounded-xl text-[10px] font-black border transition-all cursor-pointer ${
-                    st === INTERVENTION_STATUS.CANCELLED
-                      ? 'bg-white text-red-600 border-red-200 hover:bg-red-50'
-                      : 'bg-violet-600 text-white border-violet-600 hover:bg-violet-700 shadow-xs'
-                  } disabled:opacity-50`}
-                >
-                  {interventionStatusLabel(st, t)}
-                </button>
-              ))}
-            </div>
-          </>
-        );
-      })()}
-      {isManagement && detail.status === INTERVENTION_STATUS.COMPLETED && (
+
+      {allowed.length === 0 ? (
+        <p className="text-xs font-medium leading-relaxed text-gray-500">
+          {hint ||
+            (isTerminalInterventionStatus(detail.status)
+              ? t('company.fsm.interventions.detail.nextStep.terminalStatus')
+              : t('company.fsm.interventions.detail.nextStep.noActions'))}
+        </p>
+      ) : (
+        <>
+          <input
+            type="text"
+            value={statusNote}
+            onChange={(e) => setStatusNote(e.target.value)}
+            placeholder={t('company.fsm.interventions.detail.nextStep.statusNotePlaceholder')}
+            aria-label={t('company.fsm.interventions.detail.nextStep.statusNotePlaceholder')}
+            className={interventionFieldInputClass}
+          />
+          <div className="flex flex-wrap gap-2">
+            {allowed.map((status) => (
+              <button
+                key={status}
+                type="button"
+                onClick={() => void handleStatusChange(status)}
+                disabled={isStatusUpdating}
+                className={
+                  status === INTERVENTION_STATUS.CANCELLED
+                    ? 'inline-flex cursor-pointer items-center justify-center border border-red-200 bg-white px-3 py-2 text-[10px] font-bold uppercase tracking-wide text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50'
+                    : `${interventionAccentButtonClass} px-3 py-2 text-[10px]`
+                }
+              >
+                {interventionStatusLabel(status, t)}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {isManagement && detail.status === INTERVENTION_STATUS.COMPLETED ? (
         <button
           type="button"
           onClick={() => void handleGenerateInvoice()}
-          className="w-full mt-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
+          className={`${interventionAccentButtonClass} mt-1 w-full py-2.5`}
         >
           {t('company.fsm.interventions.detail.generateInvoice')}
         </button>
-      )}
+      ) : null}
     </div>
   );
 }

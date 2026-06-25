@@ -31,14 +31,14 @@ export function FiscalSection({
       }
     >
       <label
-        className={`flex items-start gap-3 rounded-xl bg-slate-50/80 px-3.5 py-3 ${
+        className={`flex items-start gap-3 border border-[var(--dashboard-divider)] px-3.5 py-3 ${
           legalReadOnly ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
         }`}
       >
         <input
           type="checkbox"
           disabled={legalReadOnly}
-          className="mt-0.5 rounded text-violet-600 focus:ring-violet-500/20 size-4 cursor-pointer disabled:cursor-not-allowed"
+          className="mt-0.5 size-4 cursor-pointer rounded accent-[var(--dashboard-accent)] disabled:cursor-not-allowed"
           checked={isTvaPayer}
           onChange={(e) => setIsTvaPayer(e.target.checked)}
         />

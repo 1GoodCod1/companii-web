@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
+  useCustomersQuery,
   useCustomersCountQuery,
   useInterventionsQuery,
   useInvoicesQuery,
@@ -16,8 +17,14 @@ import { INTERVENTION_STATUS } from '@/entities/fsm/model/interventionStatus.con
 import { LEAD_STATUS } from '@/entities/fsm/model/leadStatus.constants';
 import type { InterventionDto } from '@/entities/fsm/model/types';
 import { KPI_ACCENTS, type DashboardKpi } from '@/entities/fsm/model/dashboard.constants';
+import {
+  buildCustomerKpiSeries,
+  buildInterventionKpiSeries,
+  buildInvoicedKpiSeries,
+  buildPaidKpiSeries,
+  formatMdlKpiAmount,
+} from '@/entities/fsm/model/dashboardKpiSeries';
 import { getErrorMessage } from '@/shared/utils/errors';
-import { formatMdl } from '@/shared/utils/money';
 import { isActiveInterventionStatus } from '@/entities/fsm/model/interventionStatus';
 import { isPaidPaymentStatus } from '@/entities/fsm/model/invoicePaymentStatus';
 
@@ -26,10 +33,15 @@ export function useDashboardPageData() {
   const { isManagement, activeCompanyId } = useCompanyPermissions();
   const { data: meData } = useCompanyMeQuery();
   const { data: subData } = useMySubscriptionQuery();
+  const { data: customers, isLoading: customersLoading } = useCustomersQuery({
+    enabled: isManagement,
+  });
   const { data: customersTotal } = useCustomersCountQuery({ enabled: isManagement });
-  const { data: interventions } = useInterventionsQuery();
-  const { data: invoices } = useInvoicesQuery({ enabled: isManagement });
-  const { data: newLeads } = useLeadsQuery(LEAD_STATUS.NEW, { enabled: isManagement });
+  const { data: interventions, isLoading: interventionsLoading } = useInterventionsQuery();
+  const { data: invoices, isLoading: invoicesLoading } = useInvoicesQuery({ enabled: isManagement });
+  const { data: newLeads, isLoading: leadsLoading } = useLeadsQuery(LEAD_STATUS.NEW, {
+    enabled: isManagement,
+  });
   const convertLead = useConvertLeadMutation();
 
   const activeInterventions = useMemo(
@@ -69,38 +81,67 @@ export function useDashboardPageData() {
 
   const kpis: DashboardKpi[] = useMemo(() => {
     if (isManagement) {
+      const customerSeries = buildCustomerKpiSeries(customers);
+      const interventionSeries = buildInterventionKpiSeries(interventions);
+      const invoicedSeries = buildInvoicedKpiSeries(invoices);
+      const paidSeries = buildPaidKpiSeries(invoices);
+      const collectionRate =
+        totalInvoiced > 0 ? Math.round((totalPaid / totalInvoiced) * 100) : null;
+
       return [
         {
           label: t('company.dashboard.kpi.totalCustomers.label'),
-          value: String(customersTotal ?? 0),
+          value: String(customers?.length ?? customersTotal ?? 0),
           hint: t('company.dashboard.kpi.totalCustomers.hint'),
-          hintClass: 'text-emerald-600',
+          hintClass: 'text-gray-500',
           accent: KPI_ACCENTS[0],
+          trend: customerSeries.trend,
+          sparklinePoints: customerSeries.sparklinePoints,
+          cardStyle: 'accent-left',
         },
         {
           label: t('company.dashboard.kpi.activeInterventions.label'),
           value: String(activeInterventions.length),
           hint: t('company.dashboard.kpi.activeInterventions.hint'),
-          hintClass: 'text-amber-600',
+          hintClass: 'text-gray-500',
           accent: KPI_ACCENTS[1],
+          trend: interventionSeries.trend,
+          sparklinePoints: interventionSeries.sparklinePoints,
+          cardStyle: 'default',
         },
         {
           label: t('company.dashboard.kpi.totalInvoiced.label'),
-          value: formatMdl(totalInvoiced),
+          value: formatMdlKpiAmount(totalInvoiced),
+          valueSuffix: 'MDL',
           hint: t('company.dashboard.kpi.totalInvoiced.hint'),
-          hintClass: 'text-gray-400',
+          hintClass: 'text-gray-500',
           accent: KPI_ACCENTS[2],
+          trend: invoicedSeries.trend,
+          sparklinePoints: invoicedSeries.sparklinePoints,
+          showSparklineDot: true,
+          cardStyle: 'default',
         },
         {
           label: t('company.dashboard.kpi.confirmedPayments.label'),
-          value: formatMdl(totalPaid),
-          hint: t('company.dashboard.kpi.confirmedPayments.hint'),
-          hintClass: 'text-emerald-600',
+          value: formatMdlKpiAmount(totalPaid),
+          valueSuffix: 'MDL',
+          hint:
+            collectionRate != null
+              ? t('company.dashboard.kpi.confirmedPayments.hintRate', { rate: collectionRate })
+              : t('company.dashboard.kpi.confirmedPayments.hint'),
+          hintClass: 'text-[var(--dashboard-success)]',
           accent: KPI_ACCENTS[3],
-          valueClass: 'text-emerald-600',
+          valueClass: 'text-[var(--dashboard-success)]',
+          trend: paidSeries.trend,
+          sparklinePoints: paidSeries.sparklinePoints,
+          sparklineVariant: 'success',
+          cardStyle: 'accent-top',
+          iconVariant: 'accent',
         },
       ];
     }
+
+    const interventionSeries = buildInterventionKpiSeries(interventions);
 
     return [
       {
@@ -109,6 +150,8 @@ export function useDashboardPageData() {
         hint: t('company.dashboard.kpi.myJobs.hint'),
         hintClass: 'text-violet-600',
         accent: KPI_ACCENTS[1],
+        sparklinePoints: interventionSeries.sparklinePoints,
+        trend: interventionSeries.trend,
       },
       {
         label: t('company.dashboard.kpi.activeJobs.label'),
@@ -153,11 +196,13 @@ export function useDashboardPageData() {
   },
     [
       isManagement,
+      customers,
       customersTotal,
       activeInterventions.length,
       totalInvoiced,
       totalPaid,
       interventions,
+      invoices,
       t,
     ]);
 
@@ -174,15 +219,25 @@ export function useDashboardPageData() {
     }
   };
 
+  const kpisLoading = isManagement
+    ? customersLoading || interventionsLoading || invoicesLoading
+    : interventionsLoading;
+
   return {
     isManagement,
     onboardingRequired,
     activeCompany,
     activePlanName,
     kpis,
+    kpisLoading,
     newLeads,
+    leadsLoading,
     activeInterventions,
+    interventionsLoading,
     invoices,
+    invoicesLoading,
+    totalInvoiced,
+    totalPaid,
     convertPending: convertLead.isPending,
     handleConvertLead,
   };

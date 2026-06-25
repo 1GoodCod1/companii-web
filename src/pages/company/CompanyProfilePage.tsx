@@ -6,6 +6,7 @@ import {
 } from '@/features/companies/api/useCompanies';
 import { LoadingStatus } from '@/shared/ui/LoadingStatus';
 import { EmptyState, SkeletonPage } from '@/widgets/cabinet/cabinet-ui';
+import { companyPageShellClass } from '@/features/companies/companyFormPanelUi';
 import { useMeQuery } from '@/features/auth';
 import { resolveActiveCompany } from '@/features/companies/resolveActiveCompany';
 import { useCompanyPermissions } from '@/features/companies/hooks/useCompanyPermissions';
@@ -31,7 +32,9 @@ export function CompanyProfilePage() {
   if (isLoadingMe || isLoadingCities || isLoadingCategories) {
     return (
       <LoadingStatus label={t('company.profilePage.loading')}>
-        <SkeletonPage rows={3} />
+        <div className={companyPageShellClass}>
+          <SkeletonPage rows={3} />
+        </div>
       </LoadingStatus>
     );
   }
@@ -56,7 +59,7 @@ export function CompanyProfilePage() {
 
   if (!activeCompany) {
     return (
-      <div className="max-w-2xl">
+      <div className={companyPageShellClass}>
         <EmptyState message={t('company.profilePage.unavailable')} />
       </div>
     );
