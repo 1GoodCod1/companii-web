@@ -8,20 +8,13 @@ import { playNotificationSound } from '@/shared/utils/audio';
 
 const MAX_BACKOFF_MS = 30_000;
 
-/**
- * Real-time notification stream over SSE.
- *
- * `EventSource` can't send an Authorization header, so we pass the access token
- * as a query param (the API's JWT strategy accepts `access_token`). The stream
- * is rebuilt whenever the token changes (e.g. after a refresh) and reconnects
- * with capped backoff on errors.
- */
 export function useNotificationStream(enabled: boolean = true) {
   const queryClient = useQueryClient();
   const accessToken = useAuthStore((s) => s.accessToken);
 
   useEffect(() => {
     if (!enabled) return;
+    if (!accessToken) return;
 
     let source: EventSource | null = null;
     let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
@@ -30,10 +23,10 @@ export function useNotificationStream(enabled: boolean = true) {
 
     const connect = () => {
       if (stopped) return;
-      // env.apiUrl is relative in dev ("/api/v1") and absolute in prod.
       const url = new URL(`${env.apiUrl}/notifications/stream`, window.location.origin);
       const token = useAuthStore.getState().accessToken;
-      if (token) url.searchParams.set('access_token', token);
+      if (!token) return; 
+      url.searchParams.set('access_token', token);
 
       source = new EventSource(url.toString(), { withCredentials: true });
 
@@ -48,9 +41,14 @@ export function useNotificationStream(enabled: boolean = true) {
       };
 
       source.onerror = () => {
+        const es = source;
         source?.close();
         source = null;
         if (stopped) return;
+        if (es && 'status' in es && ((es as EventSource & { status: number }).status === 401 || (es as EventSource & { status: number }).status === 403)) {
+          return;
+        }
+
         attempts += 1;
         const delay = Math.min(MAX_BACKOFF_MS, 1_000 * 2 ** Math.min(attempts, 5));
         reconnectTimer = setTimeout(connect, delay);

@@ -82,6 +82,8 @@ export const companiiRuCompanyFsm = {
             terminalStatus: 'Финальный статус — больше нельзя изменить.',
             noActions: 'Нет доступных действий для этого статуса.',
             statusNotePlaceholder: 'Необязательная заметка к смене статуса...',
+            schedule: 'Запланировать',
+            scheduleHint: 'Запланируйте работу в календаре, чтобы перевести её в «Запланировано».',
           },
           fields: {
             client: 'КЛИЕНТ',
@@ -513,6 +515,13 @@ export const companiiRuCompanyFsm = {
             markLost: 'Отметить как потерянную',
           },
           converted: { label: 'Завершена', viewCustomer: 'Просмотр клиента' },
+          confirmLost: {
+            title: 'Отметить заявку как потерянную?',
+            message: 'Заявка будет закрыта и перемещена в «Потерянные».',
+            messageWithEstimate:
+              'Заявка будет закрыта. Связанный расчёт стоимости будет отменён, а связанное предложение — отклонено. Продолжить?',
+            confirm: 'Отметить как потерянную',
+          },
           toasts: {
             statusUpdated: 'Статус обновлён.',
             updateFailed: 'Ошибка обновления.',

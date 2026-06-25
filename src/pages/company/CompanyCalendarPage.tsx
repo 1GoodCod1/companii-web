@@ -1,4 +1,5 @@
-import { useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { CalendarBlankIcon } from '@phosphor-icons/react';
 import toast from 'react-hot-toast';
@@ -93,6 +94,25 @@ export function CompanyCalendarPage() {
 
   const technicians = useMemo(() => filterAssignableTechnicians(members), [members]);
   const weekLabel = useMemo(() => formatWeekRangeLabel(from, to, locale), [from, to, locale]);
+
+  // Deep link from the pipeline / work detail ("Programează"): auto-open the
+  // scheduler for the requested work in the backlog, then drop the query param.
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const scheduleId = searchParams.get('schedule');
+    if (!scheduleId || !board) return;
+    if (board.unscheduled.some((item) => item.id === scheduleId)) {
+      scheduleDispatch({ type: 'SET_SCHEDULING_ID', payload: scheduleId });
+    }
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete('schedule');
+        return next;
+      },
+      { replace: true },
+    );
+  }, [searchParams, board, setSearchParams]);
 
   const refreshBoard = () => {
     void qc.invalidateQueries({ queryKey: queryKeys.fsm.calendarBoard(from, to) });

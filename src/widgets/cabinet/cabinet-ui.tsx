@@ -128,6 +128,7 @@ const softBadgeTones = {
   amber: 'bg-amber-50 text-amber-700',
   blue: 'bg-blue-50 text-blue-700',
   gray: 'bg-slate-100 text-gray-600',
+  indigo: 'bg-indigo-50 text-indigo-700',
 };
 
 export function SoftBadge({
@@ -135,7 +136,7 @@ export function SoftBadge({
   tone = 'violet',
 }: {
   children: ReactNode;
-  tone?: 'violet' | 'emerald' | 'amber' | 'blue' | 'gray';
+  tone?: 'violet' | 'emerald' | 'amber' | 'blue' | 'gray' | 'indigo';
 }) {
   return (
     <span

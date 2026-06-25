@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -46,6 +47,7 @@ type ColumnExtra = { cards: BoardCard[]; nextCursor: string | null };
 export function KanbanBoard({ entity }: { entity: PipelineEntity }) {
   const { t } = useTranslation();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const { data, isLoading } = usePipelineBoardQuery(entity);
   const { move } = usePipelineActions();
   const { ask, dialog } = useCabinetConfirmDialog();
@@ -75,6 +77,9 @@ export function KanbanBoard({ entity }: { entity: PipelineEntity }) {
       await move(entity, card, toStatus);
       setExtra({});
       await qc.invalidateQueries({ queryKey: queryKeys.fsm.pipelineBoard(entity) });
+      if (entity === 'leads') {
+        void qc.invalidateQueries({ queryKey: queryKeys.fsm.leadsAll });
+      }
       toast.success(t('company.fsm.pipeline.moved'));
     } catch (err) {
       toast.error(getErrorMessage(err, t('company.fsm.pipeline.moveError')));
@@ -93,6 +98,15 @@ export function KanbanBoard({ entity }: { entity: PipelineEntity }) {
       .find((c) => c.status === active.from)
       ?.cards.find((c) => c.id === active.cardId);
     if (!card) return;
+
+    // Scheduling a work order needs a date + assignment — that's done on the
+    // calendar, so send the user there to plan this work instead of duplicating
+    // a date picker here.
+    if (entity === 'interventions' && toStatus === INTERVENTION_STATUS.SCHEDULED) {
+      navigate(`/company/calendar?schedule=${card.id}`);
+      return;
+    }
+
     const isDestructive =
       (entity === 'leads' && toStatus === LEAD_STATUS.LOST) ||
       (entity === 'interventions' && toStatus === INTERVENTION_STATUS.CANCELLED);

@@ -83,6 +83,8 @@ export function CompanyLeadsPage() {
         onClose={() => inbox.setEstimateLead(null)}
         onSubmit={inbox.handleConvertEstimate}
       />
+
+      {inbox.confirmDialog}
     </CompanyManagementGate>
   );
 }

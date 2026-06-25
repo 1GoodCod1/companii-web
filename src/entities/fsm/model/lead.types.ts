@@ -1,1 +1,1 @@
-export type LeadSoftBadgeTone = 'gray' | 'amber' | 'blue' | 'emerald' | 'violet';
+export type LeadSoftBadgeTone = 'gray' | 'amber' | 'blue' | 'emerald' | 'violet' | 'indigo';

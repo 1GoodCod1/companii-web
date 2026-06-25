@@ -82,6 +82,8 @@ export const companiiRoCompanyFsm = {
             terminalStatus: 'Status final — nu mai poate fi modificat.',
             noActions: 'Nu există acțiuni disponibile pentru acest status.',
             statusNotePlaceholder: 'Notă opțională pentru schimbarea de status...',
+            schedule: 'Programează',
+            scheduleHint: 'Planifică lucrarea în calendar pentru a o trece în „Programat”.',
           },
           fields: {
             client: 'CLIENT',
@@ -513,6 +515,13 @@ export const companiiRoCompanyFsm = {
             markLost: 'Marchează pierdut',
           },
           converted: { label: 'Finalizată', viewCustomer: 'Vezi client' },
+          confirmLost: {
+            title: 'Marcați cererea ca pierdută?',
+            message: 'Cererea va fi închisă și mutată în „Pierdute”.',
+            messageWithEstimate:
+              'Cererea va fi închisă. Calculul de preț asociat va fi anulat, iar oferta legată va fi respinsă. Continuați?',
+            confirm: 'Marchează pierdut',
+          },
           toasts: {
             statusUpdated: 'Status actualizat.',
             updateFailed: 'Eroare la actualizare.',

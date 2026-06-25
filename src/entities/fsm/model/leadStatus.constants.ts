@@ -45,7 +45,7 @@ export const LEAD_STATUS_TONES: Record<
   [LEAD_STATUS.NEW]: 'amber',
   [LEAD_STATUS.CONTACTED]: 'blue',
   [LEAD_STATUS.QUALIFIED]: 'violet',
-  [LEAD_STATUS.IN_PROGRESS]: 'blue',
+  [LEAD_STATUS.IN_PROGRESS]: 'indigo',
   [LEAD_STATUS.CONVERTED]: 'emerald',
   [LEAD_STATUS.LOST]: 'gray',
 };

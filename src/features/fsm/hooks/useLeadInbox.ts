@@ -12,10 +12,12 @@ import {
 import { LEAD_STATUS } from '@/entities/fsm/model/leadStatus.constants';
 import type { CompanyLeadDto, CompanyLeadStatus } from '@/entities/fsm/model/types';
 import { getErrorMessage } from '@/shared/utils/errors';
+import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD_STATUS.NEW) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { ask, dialog } = useCabinetConfirmDialog();
   const [statusFilter, setStatusFilter] = useState<CompanyLeadStatus | undefined>(initialStatus);
   const { data: leads, isLoading } = useLeadsQuery(statusFilter);
   const { data: categories } = useCategoriesQuery();
@@ -32,13 +34,34 @@ export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD
     [leads],
   );
 
-  const handleStatusChange = async (lead: CompanyLeadDto, status: CompanyLeadStatus) => {
+  const applyStatusChange = async (lead: CompanyLeadDto, status: CompanyLeadStatus) => {
     try {
       await updateLead.mutateAsync({ id: lead.id, status });
       toast.success(t('company.fsm.leads.inbox.toasts.statusUpdated'));
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('company.fsm.leads.inbox.toasts.updateFailed')));
     }
+  };
+
+  const handleStatusChange = async (lead: CompanyLeadDto, status: CompanyLeadStatus) => {
+    // Marking a lead lost closes it and cascades to the linked estimate/quote
+    // on the backend, so guard it behind an explicit confirmation.
+    if (status === LEAD_STATUS.LOST) {
+      const hasEstimate = !!(lead.estimateProjectId ?? lead.estimateProject?.id);
+      ask({
+        title: t('company.fsm.leads.inbox.confirmLost.title'),
+        confirmLabel: t('company.fsm.leads.inbox.confirmLost.confirm'),
+        variant: 'danger',
+        message: t(
+          hasEstimate
+            ? 'company.fsm.leads.inbox.confirmLost.messageWithEstimate'
+            : 'company.fsm.leads.inbox.confirmLost.message',
+        ),
+        onConfirm: () => applyStatusChange(lead, status),
+      });
+      return;
+    }
+    await applyStatusChange(lead, status);
   };
 
   const handleNotesChange = async (lead: CompanyLeadDto, notes: string | null) => {
@@ -114,6 +137,7 @@ export function useLeadInbox(initialStatus: CompanyLeadStatus | undefined = LEAD
     sortedLeads,
     isLoading,
     categories,
+    confirmDialog: dialog,
     estimateLead,
     categoryId,
     estimateTitle,

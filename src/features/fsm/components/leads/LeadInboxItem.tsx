@@ -192,7 +192,7 @@ export function LeadInboxItem({
               {t('company.fsm.leads.inbox.actions.convertEstimate')}
             </button>
           ) : null}
-          {lead.status === LEAD_STATUS.IN_PROGRESS ? (
+          {lead.status === LEAD_STATUS.QUALIFIED || lead.status === LEAD_STATUS.IN_PROGRESS ? (
             <button
               type="button"
               onClick={() => onComplete(lead.id)}

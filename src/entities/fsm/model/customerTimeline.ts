@@ -57,7 +57,7 @@ export function timelineStatusLabel(item: CustomerTimelineItemDto): string | und
   if (item.type === 'estimate' && isEstimateStatus(item.status)) {
     return estimateStatusLabel(item.status);
   }
-  return item.status;
+  return leadStatusLabel(item.status);
 }
 
 export function timelineGroupStatusLabel(group: CustomerTimelineGroupDto, t: TFunction): string | undefined {
@@ -74,7 +74,7 @@ export function timelineGroupStatusLabel(group: CustomerTimelineGroupDto, t: TFu
   if (group.statusType === 'quote') {
     return quoteStatusLabel(group.status, t);
   }
-  return group.status;
+  return leadStatusLabel(group.status, t);
 }
 
 export function timelineStatusTone(item: CustomerTimelineItemDto): 'gray' | 'violet' | 'blue' | 'amber' | 'emerald' {
@@ -86,6 +86,15 @@ export function timelineStatusTone(item: CustomerTimelineItemDto): 'gray' | 'vio
   }
   if (item.type === 'invoice' && item.status === 'PAID') {
     return 'emerald';
+  }
+  if (item.type === 'invoice' && item.status === 'OVERDUE') {
+    return 'gray';
+  }
+  if (item.type === 'invoice' && item.status === 'CANCELLED') {
+    return 'gray';
+  }
+  if (item.type === 'invoice' && item.status === 'PENDING_CONFIRMATION') {
+    return 'amber';
   }
   if (item.type === 'lead' && item.status === 'CONVERTED') {
     return 'emerald';

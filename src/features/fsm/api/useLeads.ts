@@ -24,13 +24,23 @@ export function useLeadsQuery(
   });
 }
 
+/**
+ * Any change to a lead's status must refresh every surface that reflects it:
+ * the inbox list, the pipeline kanban board, and the "Cereri" nav counter.
+ * Keeping these in one place prevents the views from drifting out of sync.
+ */
+function invalidateLeadSurfaces(qc: ReturnType<typeof useQueryClient>) {
+  void qc.invalidateQueries({ queryKey: queryKeys.fsm.leadsAll });
+  void qc.invalidateQueries({ queryKey: queryKeys.fsm.pipelineBoard('leads') });
+}
+
 export function useUpdateLeadMutation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, ...body }: { id: string; status?: CompanyLeadStatus; notes?: string | null }) =>
       apiFetch<CompanyLeadDto>(`${FSM_BASE}/leads/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: queryKeys.fsm.leadsAll });
+      invalidateLeadSurfaces(qc);
     },
   });
 }
@@ -54,9 +64,10 @@ export function useConvertLeadMutation() {
         body: JSON.stringify({ mode, categoryId, title }),
       }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: queryKeys.fsm.leadsAll });
+      invalidateLeadSurfaces(qc);
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.customersRoot });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.pipelineBoard('interventions') });
       void qc.invalidateQueries({ queryKey: queryKeys.estimates.projects });
     },
   });
@@ -68,7 +79,7 @@ export function useCompleteLeadMutation() {
     mutationFn: (id: string) =>
       apiFetch<CompanyLeadDto>(`${FSM_BASE}/leads/${id}/complete`, { method: 'POST' }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: queryKeys.fsm.leadsAll });
+      invalidateLeadSurfaces(qc);
     },
   });
 }
