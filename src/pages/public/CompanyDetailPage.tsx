@@ -33,6 +33,7 @@ function useCompanyDetailPageView() {
     setMessage,
     selectedSlot,
     setSelectedSlot,
+    setBookingDuration,
     projectTitle,
     setProjectTitle,
     projectAddress,
@@ -41,6 +42,9 @@ function useCompanyDetailPageView() {
     setProjectEstimatedBudget,
     projectMessage,
     setProjectMessage,
+    projectSelectedSlot,
+    setProjectSelectedSlot,
+    setProjectDuration,
     profileName,
     profilePhone,
     profileEmail,
@@ -212,7 +216,7 @@ function useCompanyDetailPageView() {
                           {showRequestActions ? (
                             <button
                               type="button"
-                              onClick={() => openServiceRequest(service.id, service.name)}
+                              onClick={() => openServiceRequest(service.id, service.name, service.durationMinutes)}
                               className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white text-xs font-black uppercase tracking-wider transition-colors cursor-pointer"
                             >
                               {t('companyDetail.requestService')}
@@ -287,6 +291,7 @@ function useCompanyDetailPageView() {
         onMessageChange={setMessage}
         selectedSlot={selectedSlot}
         onSelectSlot={setSelectedSlot}
+        onDurationChange={setBookingDuration}
         isPending={isRequestServicePending}
       />
 
@@ -309,6 +314,9 @@ function useCompanyDetailPageView() {
         onProjectAddressChange={setProjectAddress}
         projectMessage={projectMessage}
         onProjectMessageChange={setProjectMessage}
+        selectedSlot={projectSelectedSlot}
+        onSelectSlot={setProjectSelectedSlot}
+        onDurationChange={setProjectDuration}
         isPending={isRequestProjectPending}
       />
     </>

@@ -8,6 +8,7 @@ import {
   leadFieldInputClass,
   leadHighlightCardClass,
   leadSectionTitleClass,
+  leadTextActionClass,
 } from '../leadPanelUi';
 
 interface LeadNotesEditorProps {
@@ -36,7 +37,7 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
 
   if (isEditingNotes) {
     return (
-      <div className={`space-y-2 ${leadHighlightCardClass}`}>
+      <div className={`space-y-2.5 ${leadHighlightCardClass}`}>
         <p className={leadSectionTitleClass}>
           {t('company.fsm.leads.inbox.notesLabel', 'Note / Link rezervare / Master')}
         </p>
@@ -52,10 +53,10 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
             'Adăugați link rezervare / master / detalii...',
           )}
           className={`${leadFieldInputClass} resize-none`}
-          rows={2}
+          rows={3}
           disabled={savingNotes}
         />
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 border-t border-gray-200/80 pt-2.5">
           <button
             type="button"
             onClick={() => {
@@ -63,7 +64,7 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
               setIsEditingNotes(false);
             }}
             disabled={savingNotes}
-            className="inline-flex cursor-pointer items-center gap-1 border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-500"
+            className="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-bold text-gray-500 transition-colors hover:bg-gray-50"
           >
             <XIcon className="size-3.5" /> {t('cabinet.common.cancel')}
           </button>
@@ -82,7 +83,7 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
 
   return (
     <div className={`flex items-start justify-between gap-3 ${leadHighlightCardClass}`}>
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <p className={leadSectionTitleClass}>
           {t('company.fsm.leads.inbox.notesLabel', 'Note / Link rezervare / Master')}
         </p>
@@ -92,7 +93,7 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
               href={lead.notes}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1.5 inline-block break-all text-xs font-semibold text-[var(--dashboard-accent)] hover:underline"
+              className={`mt-1.5 inline-block break-all text-xs font-semibold ${leadTextActionClass}`}
             >
               {lead.notes}
             </a>
@@ -109,7 +110,7 @@ export function LeadNotesEditor({ lead, onNotesChange }: LeadNotesEditorProps) {
         <button
           type="button"
           onClick={() => setIsEditingNotes(true)}
-          className="shrink-0 cursor-pointer border border-gray-200 bg-white p-1.5 text-gray-500 transition-colors hover:border-[var(--dashboard-accent)]/30 hover:text-[var(--dashboard-accent)]"
+          className="shrink-0 cursor-pointer rounded-lg border border-gray-200 bg-white p-2 text-gray-500 transition-colors hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700"
           title={t('company.fsm.leads.inbox.editNotes', 'Editează note')}
         >
           <PencilSimpleIcon className="size-3.5" />

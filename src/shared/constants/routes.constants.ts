@@ -91,6 +91,7 @@ export const COMPANY_CABINET_PATH = {
 export const PORTAL_ROUTE = {
   DASHBOARD: '',
   CERERI: 'cereri',
+  CERERI_SUCCESS: 'cereri/success',
   LUCRARI: 'lucrari',
   OFERTE: 'oferte',
   SMETE: 'smete',

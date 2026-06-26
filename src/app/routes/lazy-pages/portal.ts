@@ -12,6 +12,12 @@ export const PortalCereriPage = lazyWithRetry(() =>
   })),
 );
 
+export const PortalRequestSuccessPage = lazyWithRetry(() =>
+  import('@/pages/portal/PortalRequestSuccessPage').then((m) => ({
+    default: m.PortalRequestSuccessPage,
+  })),
+);
+
 export const PortalLucrariPage = lazyWithRetry(() =>
   import('@/pages/portal/PortalLucrariPage').then((m) => ({
     default: m.PortalLucrariPage,

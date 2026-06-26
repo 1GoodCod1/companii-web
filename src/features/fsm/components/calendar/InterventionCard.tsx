@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ClockIcon, MapPinIcon, UserIcon, WrenchIcon } from '@phosphor-icons/react';
 import {
@@ -13,6 +13,15 @@ import { memberDisplayName, technicianDisplayName } from '@/entities/company/mod
 import type { CompanyMemberDto, InterventionDto } from '@/entities/fsm/model/types';
 import { statusTone } from '@/entities/fsm/model/calendar';
 import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
+import {
+  durationFormToMinutes,
+  formatServiceDurationI18n,
+  minutesToDurationForm,
+} from '@/entities/fsm/model/serviceDuration';
+import {
+  DURATION_UNIT_OPTIONS,
+  type DurationUnit,
+} from '@/entities/fsm/model/services.constants';
 import { formatTimeLocalized } from '@/shared/utils/date';
 import { useCrewsQuery } from '@/features/fsm/api/useCrews';
 import {
@@ -35,6 +44,7 @@ export function InterventionCard({
   scheduleMemberIds = EMPTY_SCHEDULE_MEMBER_IDS,
   scheduleCrewId = '',
   onScheduleAtChange,
+  onScheduleDurationChange,
   onScheduleTechnicianChange,
   onAssignModeChange,
   onScheduleMemberIdsChange,
@@ -53,6 +63,7 @@ export function InterventionCard({
   scheduleMemberIds?: string[];
   scheduleCrewId?: string;
   onScheduleAtChange?: (value: string) => void;
+  onScheduleDurationChange?: (value: number | null) => void;
   onScheduleTechnicianChange?: (value: string) => void;
   onAssignModeChange?: (value: 'single' | 'multiple' | 'crew') => void;
   onScheduleMemberIdsChange?: (value: string[]) => void;
@@ -112,6 +123,26 @@ export function InterventionCard({
     onScheduleMemberIdsChange(next);
   };
 
+  // Optional duration as value + unit (minutes / hours / days), seeded from the
+  // work's own estimate. Reported upward in minutes while this card is scheduling.
+  const seed = useMemo(() => minutesToDurationForm(item.durationMinutes), [item.durationMinutes]);
+  const [durationValue, setDurationValue] = useState(seed.value);
+  const [durationUnit, setDurationUnit] = useState<DurationUnit>(seed.unit);
+  const scheduleDuration = durationFormToMinutes(durationValue, durationUnit);
+
+  const durationUnitOptions = useMemo(
+    () =>
+      DURATION_UNIT_OPTIONS.map((opt) => ({
+        value: opt.value,
+        label: t(`company.fsm.services.form.durationUnits.${opt.value}`),
+      })),
+    [t],
+  );
+
+  useEffect(() => {
+    if (scheduling) onScheduleDurationChange?.(scheduleDuration);
+  }, [scheduling, scheduleDuration, onScheduleDurationChange]);
+
   return (
     <article className={calendarCardClass}>
       <div className={calendarCardBodyClass}>
@@ -156,6 +187,7 @@ export function InterventionCard({
             </span>
             <span className="font-bold text-[var(--dashboard-accent)]">
               {formatTimeLocalized(item.scheduledAt, locale)}
+              {item.durationMinutes ? ` · ${formatServiceDurationI18n(t, item.durationMinutes)}` : ''}
             </span>
           </div>
         ) : null}
@@ -170,6 +202,38 @@ export function InterventionCard({
                 aria-label={t(`${ns}.scheduledTime`)}
                 className={calendarFieldInputClass}
               />
+
+              <div>
+                <label className={calendarMetaLabelClass}>
+                  {t('company.fsm.common.durationLabel')}
+                  <span className="ml-1 font-medium normal-case text-gray-400">
+                    {t('company.fsm.common.durationOptional')}
+                  </span>
+                </label>
+                <div className="grid grid-cols-[1fr_auto] gap-2">
+                  <input
+                    type="number"
+                    min={1}
+                    step={1}
+                    value={durationValue}
+                    onChange={(e) => setDurationValue(e.target.value)}
+                    aria-label={t('company.fsm.common.durationLabel')}
+                    className={calendarFieldInputClass}
+                  />
+                  <select
+                    value={durationUnit}
+                    onChange={(e) => setDurationUnit(e.target.value as DurationUnit)}
+                    aria-label={t('company.fsm.common.durationLabel')}
+                    className={`${calendarFieldInputClass} cursor-pointer`}
+                  >
+                    {durationUnitOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
               <div className="space-y-2.5 border border-[var(--dashboard-divider)] p-3">
                 <div className="flex flex-wrap items-center gap-1.5">

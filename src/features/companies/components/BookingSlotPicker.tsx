@@ -1,12 +1,24 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CaretLeftIcon, CaretRightIcon } from '@phosphor-icons/react';
 import { useCompanyBookingSlotsQuery } from '@/features/companies/api/useCompaniesPublic';
+import {
+  durationFormToMinutes,
+  minutesToDurationForm,
+} from '@/entities/fsm/model/serviceDuration';
+import {
+  DURATION_UNIT_OPTIONS,
+  type DurationUnit,
+} from '@/entities/fsm/model/services.constants';
 
 interface BookingSlotPickerProps {
   slug: string;
   value: string | null;
   onChange: (slotStart: string | null) => void;
+  /** Service's default duration (minutes) used to seed the duration selector. */
+  defaultDurationMinutes?: number | null;
+  /** Reports the chosen approximate duration (or null when cleared). */
+  onDurationChange?: (durationMinutes: number | null) => void;
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -21,12 +33,48 @@ function shiftDate(date: string, days: number): string {
     .slice(0, 10);
 }
 
-export function BookingSlotPicker({ slug, value, onChange }: BookingSlotPickerProps) {
+export function BookingSlotPicker({
+  slug,
+  value,
+  onChange,
+  defaultDurationMinutes,
+  onDurationChange,
+}: BookingSlotPickerProps) {
   const { t, i18n } = useTranslation();
   const [windowStart, setWindowStart] = useState(todayIso);
   const [activeDate, setActiveDate] = useState<string | null>(null);
+  // Duration is optional and expressed as value + unit (minutes / hours / days).
+  const initial = useMemo(() => minutesToDurationForm(defaultDurationMinutes), [defaultDurationMinutes]);
+  const [durationValue, setDurationValue] = useState(initial.value);
+  const [durationUnit, setDurationUnit] = useState<DurationUnit>(initial.unit);
 
-  const { data, isLoading, isError } = useCompanyBookingSlotsQuery(slug, windowStart);
+  const durationMinutes = durationFormToMinutes(durationValue, durationUnit);
+
+  const { data, isLoading, isError } = useCompanyBookingSlotsQuery(
+    slug,
+    windowStart,
+    durationMinutes ?? undefined,
+  );
+
+  // Report the resolved duration (or null when cleared) so the request carries it.
+  useEffect(() => {
+    onDurationChange?.(durationMinutes);
+  }, [durationMinutes, onDurationChange]);
+
+  const durationUnitOptions = useMemo(
+    () =>
+      DURATION_UNIT_OPTIONS.map((opt) => ({
+        value: opt.value,
+        label: t(`companyDetail.booking.durationUnits.${opt.value}`),
+      })),
+    [t],
+  );
+
+  const handleDurationChange = (value: string, unit: DurationUnit) => {
+    setDurationValue(value);
+    setDurationUnit(unit);
+    onChange(null); // the previously selected slot may no longer fit
+  };
 
   const timeFormat = useMemo(
     () =>
@@ -79,6 +127,42 @@ export function BookingSlotPicker({ slug, value, onChange }: BookingSlotPickerPr
         <div className="h-20 rounded-xl bg-slate-100 animate-pulse" />
       ) : (
         <>
+          <div>
+            <label
+              htmlFor="booking-duration"
+              className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-slate-500"
+            >
+              {t('companyDetail.booking.durationLabel')}
+              <span className="ml-1 font-medium normal-case text-slate-400">
+                {t('companyDetail.booking.durationOptional')}
+              </span>
+            </label>
+            <div className="grid grid-cols-[1fr_auto] gap-2">
+              <input
+                id="booking-duration"
+                type="number"
+                min={1}
+                step={1}
+                value={durationValue}
+                onChange={(e) => handleDurationChange(e.target.value, durationUnit)}
+                placeholder={t('companyDetail.booking.durationPlaceholder')}
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-slate-700"
+              />
+              <select
+                value={durationUnit}
+                onChange={(e) => handleDurationChange(durationValue, e.target.value as DurationUnit)}
+                aria-label={t('companyDetail.booking.durationLabel')}
+                className="cursor-pointer rounded-lg border border-gray-200 px-2 py-2 text-sm text-slate-700"
+              >
+                {durationUnitOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           <div className="flex items-center gap-1.5">
             <button
               type="button"

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
+import type { InvoiceDto } from '@/entities/fsm/model/types';
 import { INTERVENTION_STATUS } from '@/entities/fsm/model/interventionStatus.constants';
 import { useCreateInvoiceMutation } from '@/features/fsm/api/useInvoices';
 import { useInterventionsQuery } from '@/features/fsm/api/useInterventions';
@@ -10,9 +11,10 @@ import { getErrorMessage } from '@/shared/utils/errors';
 
 interface UseCreateInvoiceFormProps {
   onClose: () => void;
+  onCreated?: (invoice: InvoiceDto) => void;
 }
 
-export function useCreateInvoiceForm({ onClose }: UseCreateInvoiceFormProps) {
+export function useCreateInvoiceForm({ onClose, onCreated }: UseCreateInvoiceFormProps) {
   const { t } = useTranslation();
   const { data: interventions } = useInterventionsQuery(INTERVENTION_STATUS.COMPLETED);
   const { data: companyMe } = useCompanyMeQuery();
@@ -39,12 +41,13 @@ export function useCreateInvoiceForm({ onClose }: UseCreateInvoiceFormProps) {
     }
 
     try {
-      await createInvoice.mutateAsync({
+      const invoice = await createInvoice.mutateAsync({
         interventionId,
         tvaRate: Number(resolvedTvaRate),
         dueDate: dueDate || undefined,
       });
       toast.success(t('company.fsm.invoices.createModal.toast.created'));
+      onCreated?.(invoice);
       onClose();
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('company.fsm.invoices.createModal.toast.createError')));

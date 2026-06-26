@@ -20,6 +20,7 @@ export interface BookingSlotsResponse {
   enabled: boolean;
   timezone: string;
   slotMinutes: number;
+  durationMinutes?: number;
   days: BookingSlotsDay[];
 }
 
@@ -50,11 +51,15 @@ export function useCompanyBySlugQuery(
 export function useCompanyBookingSlotsQuery(
   slug: string,
   from: string,
+  durationMinutes?: number,
   enabled = true,
 ): UseQueryResult<BookingSlotsResponse, Error> {
-  const qs = from ? `?from=${encodeURIComponent(from)}` : '';
+  const params = new URLSearchParams();
+  if (from) params.set('from', from);
+  if (durationMinutes) params.set('durationMinutes', String(durationMinutes));
+  const qs = params.toString() ? `?${params.toString()}` : '';
   return useQuery<BookingSlotsResponse, Error>({
-    queryKey: queryKeys.companies.bookingSlots(slug, from),
+    queryKey: [...queryKeys.companies.bookingSlots(slug, from), durationMinutes ?? 0],
     queryFn: () => apiFetch<BookingSlotsResponse>(`/companies/${slug}/booking-slots${qs}`),
     enabled: !!slug && enabled,
     staleTime: 30_000,
@@ -68,17 +73,22 @@ export function useRequestPublicServiceMutation(companySlug: string) {
       serviceId: string;
       message?: string;
       scheduledAt?: string;
+      durationMinutes?: number;
     }) =>
-      apiFetch<{ leadId: string; customerId: string; customerCreated: boolean }>(
-        `/companies/${companySlug}/services/${body.serviceId}/request`,
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            message: body.message,
-            scheduledAt: body.scheduledAt,
-          }),
-        },
-      ),
+      apiFetch<{
+        leadId: string;
+        customerId: string;
+        customerCreated: boolean;
+        scheduled: boolean;
+        interventionId: string | null;
+      }>(`/companies/${companySlug}/services/${body.serviceId}/request`, {
+        method: 'POST',
+        body: JSON.stringify({
+          message: body.message,
+          scheduledAt: body.scheduledAt,
+          durationMinutes: body.durationMinutes,
+        }),
+      }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: queryKeys.companies.detail(companySlug) });
       void qc.invalidateQueries({ queryKey: queryKeys.portal.leads });
@@ -95,6 +105,8 @@ export function useRequestPublicProjectMutation(companySlug: string) {
       categoryId?: string;
       projectTitle?: string;
       estimatedBudget?: number;
+      scheduledAt?: string;
+      durationMinutes?: number;
     }) =>
       apiFetch<{ leadId: string; customerId: string; customerCreated: boolean }>(
         `/companies/${companySlug}/request-project`,

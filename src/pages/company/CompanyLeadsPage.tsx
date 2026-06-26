@@ -11,7 +11,6 @@ import {
   leadPanelHeaderClass,
   leadPanelListClass,
   leadPanelShellClass,
-  leadPanelRowClass,
 } from '@/features/fsm/components/leads/leadPanelUi';
 
 export function CompanyLeadsPage() {
@@ -42,13 +41,13 @@ export function CompanyLeadsPage() {
           </div>
 
           {inbox.isLoading ? (
-            <div className={leadPanelRowClass}>
+            <div className="px-4 py-6 sm:px-6">
               <LoadingStatus label={t('cabinet.common.loading')}>
                 <SkeletonList rows={5} />
               </LoadingStatus>
             </div>
           ) : !inbox.sortedLeads.length ? (
-            <div className={leadPanelRowClass}>
+            <div className="px-4 py-10 sm:px-6">
               <EmptyState message={t('company.leadsPage.empty')} />
             </div>
           ) : (

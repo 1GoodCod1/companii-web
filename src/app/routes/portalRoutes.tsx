@@ -3,6 +3,7 @@ import { RequireAuth } from '@/features/auth';
 import { LazyPage } from './LazyPage';
 import {
   PortalCereriPage,
+  PortalRequestSuccessPage,
   PortalDashboardPage,
   PortalLucrariPage,
   PortalOfertePage,
@@ -23,6 +24,7 @@ export const portalRoutesSection = {
   children: [
     { index: true, element: <LazyPage><PortalDashboardPage /></LazyPage> },
     { path: PORTAL_ROUTE.CERERI, element: <LazyPage><PortalCereriPage /></LazyPage> },
+    { path: PORTAL_ROUTE.CERERI_SUCCESS, element: <LazyPage><PortalRequestSuccessPage /></LazyPage> },
     { path: PORTAL_ROUTE.LUCRARI, element: <LazyPage><PortalLucrariPage /></LazyPage> },
     { path: PORTAL_ROUTE.OFERTE, element: <LazyPage><PortalOfertePage /></LazyPage> },
     { path: PORTAL_ROUTE.SMETE, element: <LazyPage><PortalSmetePage /></LazyPage> },

@@ -17,12 +17,13 @@ import { CalendarBoardView } from '@/features/fsm';
 import { getWeekRange } from '@/entities/fsm/model/calendar';
 import { formatWeekRangeLabel } from '@/shared/utils/date';
 import { useLocale } from '@/shared/hooks/useLocale';
-import { getErrorMessage } from '@/shared/utils/errors';
+import { getErrorMessage, isConflictError } from '@/shared/utils/errors';
 import { calendarWeekBadgeClass } from '@/features/fsm/components/calendar/calendarPanelUi';
 
 interface CalendarScheduleState {
   schedulingId: string | null;
   scheduleAt: string;
+  scheduleDurationMinutes: number | null;
   scheduleTechnicianId: string;
   assignMode: 'single' | 'multiple' | 'crew';
   scheduleMemberIds: string[];
@@ -32,6 +33,7 @@ interface CalendarScheduleState {
 const initialScheduleState: CalendarScheduleState = {
   schedulingId: null,
   scheduleAt: '',
+  scheduleDurationMinutes: null,
   scheduleTechnicianId: '',
   assignMode: 'single',
   scheduleMemberIds: [],
@@ -41,6 +43,7 @@ const initialScheduleState: CalendarScheduleState = {
 type CalendarScheduleAction =
   | { type: 'SET_SCHEDULING_ID'; payload: string | null }
   | { type: 'SET_SCHEDULE_AT'; payload: string }
+  | { type: 'SET_SCHEDULE_DURATION'; payload: number | null }
   | { type: 'SET_SCHEDULE_TECHNICIAN_ID'; payload: string }
   | { type: 'SET_ASSIGN_MODE'; payload: 'single' | 'multiple' | 'crew' }
   | { type: 'SET_SCHEDULE_MEMBER_IDS'; payload: string[] }
@@ -56,6 +59,8 @@ function calendarScheduleReducer(
       return { ...state, schedulingId: action.payload };
     case 'SET_SCHEDULE_AT':
       return { ...state, scheduleAt: action.payload };
+    case 'SET_SCHEDULE_DURATION':
+      return { ...state, scheduleDurationMinutes: action.payload };
     case 'SET_SCHEDULE_TECHNICIAN_ID':
       return { ...state, scheduleTechnicianId: action.payload };
     case 'SET_ASSIGN_MODE':
@@ -86,6 +91,7 @@ export function CompanyCalendarPage() {
   const {
     schedulingId,
     scheduleAt,
+    scheduleDurationMinutes,
     scheduleTechnicianId,
     assignMode,
     scheduleMemberIds,
@@ -145,13 +151,18 @@ export function CompanyCalendarPage() {
       await updateIntervention.mutateAsync({
         id: schedulingId,
         scheduledAt: new Date(scheduleAt).toISOString(),
+        durationMinutes: scheduleDurationMinutes ?? undefined,
         ...assignFields,
       });
       toast.success(t('company.calendarPage.toastScheduled'));
       scheduleDispatch({ type: 'RESET' });
       refreshBoard();
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.calendarPage.toastScheduleFailed')));
+      toast.error(
+        isConflictError(err)
+          ? t('company.fsm.common.scheduleConflict')
+          : getErrorMessage(err, t('company.calendarPage.toastScheduleFailed')),
+      );
     }
   };
 
@@ -199,6 +210,7 @@ export function CompanyCalendarPage() {
           scheduleCrewId={scheduleCrewId}
           onScheduleIdChange={(val) => scheduleDispatch({ type: 'SET_SCHEDULING_ID', payload: val })}
           onScheduleAtChange={(val) => scheduleDispatch({ type: 'SET_SCHEDULE_AT', payload: val })}
+          onScheduleDurationChange={(val) => scheduleDispatch({ type: 'SET_SCHEDULE_DURATION', payload: val })}
           onScheduleTechnicianChange={(val) => scheduleDispatch({ type: 'SET_SCHEDULE_TECHNICIAN_ID', payload: val })}
           onAssignModeChange={(val) => scheduleDispatch({ type: 'SET_ASSIGN_MODE', payload: val })}
           onScheduleMemberIdsChange={(val) => scheduleDispatch({ type: 'SET_SCHEDULE_MEMBER_IDS', payload: val })}

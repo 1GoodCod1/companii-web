@@ -22,6 +22,7 @@ interface InterventionStatusTransitionProps {
   setStatusNote: (v: string) => void;
   handleStatusChange: (status: InterventionStatus) => Promise<void>;
   isStatusUpdating: boolean;
+  isGeneratingInvoice: boolean;
   isManagement: boolean;
   handleGenerateInvoice: () => Promise<void>;
 }
@@ -33,6 +34,7 @@ export function InterventionStatusTransition({
   setStatusNote,
   handleStatusChange,
   isStatusUpdating,
+  isGeneratingInvoice,
   isManagement,
   handleGenerateInvoice,
 }: InterventionStatusTransitionProps) {
@@ -124,7 +126,8 @@ export function InterventionStatusTransition({
         <button
           type="button"
           onClick={() => void handleGenerateInvoice()}
-          className={`${interventionAccentButtonClass} mt-1 w-full py-2.5`}
+          disabled={isGeneratingInvoice}
+          className={`${interventionAccentButtonClass} mt-1 w-full py-2.5 disabled:opacity-50`}
         >
           {t('company.fsm.interventions.detail.generateInvoice')}
         </button>

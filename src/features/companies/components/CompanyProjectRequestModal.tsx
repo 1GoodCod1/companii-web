@@ -8,6 +8,7 @@ import {
 } from '@/widgets/cabinet/cabinet-ui';
 import { getTranslatedCategoryName } from '@/shared/utils/translateCityCategory';
 import type { PublicCompanyDetailDto } from '@/entities/company/model/companies.types';
+import { BookingSlotPicker } from './BookingSlotPicker';
 
 interface CompanyProjectRequestModalProps {
   open: boolean;
@@ -25,6 +26,9 @@ interface CompanyProjectRequestModalProps {
   onProjectAddressChange: (val: string) => void;
   projectMessage: string;
   onProjectMessageChange: (val: string) => void;
+  selectedSlot: string | null;
+  onSelectSlot: (slotStart: string | null) => void;
+  onDurationChange: (durationMinutes: number | null) => void;
   isPending: boolean;
 }
 
@@ -65,6 +69,9 @@ export function CompanyProjectRequestModal({
   onProjectAddressChange,
   projectMessage,
   onProjectMessageChange,
+  selectedSlot,
+  onSelectSlot,
+  onDurationChange,
   isPending,
 }: CompanyProjectRequestModalProps) {
   const { t } = useTranslation();
@@ -82,6 +89,14 @@ export function CompanyProjectRequestModal({
           email={profileEmail}
           title={t('companyDetail.yourData')}
         />
+        {open ? (
+          <BookingSlotPicker
+            slug={company.slug}
+            value={selectedSlot}
+            onChange={onSelectSlot}
+            onDurationChange={onDurationChange}
+          />
+        ) : null}
         <div>
           <label className={cabinetLabelClass} htmlFor="proj-title">
             {t('companyDetail.projectTitleLabel')}

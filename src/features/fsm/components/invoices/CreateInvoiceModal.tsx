@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { InvoiceDto } from '@/entities/fsm/model/types';
 import { AppModal } from '@/shared/ui/AppModal';
 import { AppSelect, cabinetBtnPrimary, cabinetBtnSecondary } from '@/widgets/cabinet/cabinet-ui';
 import { useCreateInvoiceForm } from './hooks/useCreateInvoiceForm';
@@ -7,9 +8,10 @@ import { useCreateInvoiceForm } from './hooks/useCreateInvoiceForm';
 type Props = {
   open: boolean;
   onClose: () => void;
+  onCreated?: (invoice: InvoiceDto) => void;
 };
 
-export function CreateInvoiceModal({ open, onClose }: Props) {
+export function CreateInvoiceModal({ open, onClose, onCreated }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -19,12 +21,12 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
       title={t('company.fsm.invoices.createModal.title')}
       size="lg"
     >
-      {open ? <CreateInvoiceForm onClose={onClose} /> : null}
+      {open ? <CreateInvoiceForm onClose={onClose} onCreated={onCreated} /> : null}
     </AppModal>
   );
 }
 
-function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
+function CreateInvoiceForm({ onClose, onCreated }: Pick<Props, 'onClose' | 'onCreated'>) {
   const { t } = useTranslation();
 
   const {
@@ -38,7 +40,7 @@ function CreateInvoiceForm({ onClose }: Pick<Props, 'onClose'>) {
     setDueDate,
     handleCreateSubmit,
     isPending,
-  } = useCreateInvoiceForm({ onClose });
+  } = useCreateInvoiceForm({ onClose, onCreated });
 
   const interventionOptions = useMemo(
     () => [

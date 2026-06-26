@@ -51,6 +51,7 @@ export function useCreateInterventionMutation() {
       assigneeMemberIds?: string[];
       crewId?: string;
       scheduledAt?: string;
+      durationMinutes?: number;
       estimatedPrice?: number;
       internalNotes?: string;
     }) =>
@@ -79,6 +80,7 @@ export function useUpdateInterventionMutation() {
       assigneeMemberIds?: string[];
       crewId?: string | null;
       scheduledAt?: string | null;
+      durationMinutes?: number | null;
       estimatedPrice?: number | null;
       finalPrice?: number | null;
       internalNotes?: string | null;

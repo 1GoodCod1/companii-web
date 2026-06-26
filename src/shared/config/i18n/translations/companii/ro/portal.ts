@@ -97,6 +97,32 @@ export const companiiRoPortal = {
         BOOKING: 'Programare online',
       },
     },
+    requestSuccessPage: {
+      title: {
+        service: 'Cererea a fost trimisă!',
+        booking: 'Programarea a fost trimisă!',
+        'booking-confirmed': 'Programare confirmată!',
+        project: 'Cererea de proiect a fost trimisă!',
+      },
+      description: {
+        service: 'Compania a primit cererea ta și te va contacta în curând.',
+        booking:
+          'Ai ales un interval — compania va confirma programarea și te va contacta dacă e nevoie.',
+        'booking-confirmed':
+          'Intervalul este rezervat, lucrarea a fost adăugată în calendarul companiei.',
+        project:
+          'Compania a primit descrierea proiectului și te va contacta pentru detalii și calcul de preț.',
+      },
+      summary: '{{company}} — {{request}}',
+      requestFallback: 'cererea ta',
+      scheduledAt: 'Interval selectat: {{date}}',
+      nextSteps:
+        'Urmărește statusul în „Cererile mele”. Compania te poate contacta la telefonul sau emailul din profilul tău.',
+      viewRequests: 'Cererile mele',
+      viewWorks: 'Lucrările mele',
+      backToCompany: 'Înapoi la companie',
+      searchMore: 'Caută alte companii',
+    },
     lucrariPage: {
       title: 'Lucrările mele',
       description: 'Statusul intervențiilor, programările și recenziile după finalizare.',

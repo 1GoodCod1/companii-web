@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useInterventionsQuery } from '@/features/fsm';
 import { useCustomersQuery } from '@/features/fsm';
@@ -31,8 +32,14 @@ export function CompanyInterventionsPage() {
   } = useCompanyPermissions();
 
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const [searchParams] = useSearchParams();
   const createModal = useEntityModal();
-  const { selectedId, select, clear } = useEntitySelection();
+  const { selectedId, select, clear, setSelectedId } = useEntitySelection();
+
+  useEffect(() => {
+    const id = searchParams.get('selectedId');
+    if (id) setSelectedId(id);
+  }, [searchParams, setSelectedId]);
 
   const { data: interventions, isLoading } = useInterventionsQuery(
     (statusFilter || undefined) as InterventionStatus | undefined,

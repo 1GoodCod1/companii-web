@@ -106,6 +106,36 @@ export async function downloadFile(fileId: string, filename?: string): Promise<v
   await downloadApiBlob(`/files/${fileId}/download`, filename);
 }
 
+/**
+ * Opens a (private) file inline in a new tab — for *viewing* a photo/PDF rather
+ * than downloading it. Fetches with the auth token (the file endpoint is private
+ * and `<img src>`/plain links can't send the bearer header), then points a tab
+ * at the resulting blob URL. The tab is opened synchronously so popup blockers
+ * allow it.
+ */
+export async function openFileInNewTab(fileId: string): Promise<void> {
+  const tab = window.open('', '_blank');
+  try {
+    const { accessToken } = useAuthStore.getState();
+    const headers = new Headers();
+    if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
+
+    const res = await fetch(`${env.apiUrl}/files/${fileId}/download`, {
+      credentials: 'include',
+      headers,
+    });
+    if (!res.ok) throw new Error(`Failed to load file (${res.status})`);
+
+    const url = URL.createObjectURL(await res.blob());
+    if (tab) tab.location.href = url;
+    else window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  } catch (err) {
+    tab?.close();
+    throw err;
+  }
+}
+
 export async function deleteFile(fileId: string): Promise<void> {
   await apiFetch(`/files/${fileId}`, { method: 'DELETE' });
 }

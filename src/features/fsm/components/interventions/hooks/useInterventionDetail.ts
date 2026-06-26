@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { uploadFiles } from '@/shared/api/files';
@@ -14,7 +15,7 @@ import {
 } from '@/features/fsm/api/useInterventions';
 import { useCreateInvoiceMutation } from '@/features/fsm/api/useInvoices';
 import { interventionStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
-import { getErrorMessage } from '@/shared/utils/errors';
+import { getErrorMessage, isConflictError } from '@/shared/utils/errors';
 import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
 
 interface UseInterventionDetailProps {
@@ -35,6 +36,7 @@ export function useInterventionDetail({
   canDeleteOwnNotes,
 }: UseInterventionDetailProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { ask, dialog: confirmDialog } = useCabinetConfirmDialog();
   const { data: detail, isLoading: isLoadingDetail } = useInterventionQuery(selectedId || '');
 
@@ -97,7 +99,11 @@ export function useInterventionDetail({
       toast.success(t('company.fsm.interventions.detail.toast.saved'));
       setIsEditingDetail(false);
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.saveError')));
+      toast.error(
+        isConflictError(err)
+          ? t('company.fsm.common.scheduleConflict')
+          : getErrorMessage(err, t('company.fsm.interventions.detail.toast.saveError')),
+      );
     }
   };
 
@@ -115,7 +121,11 @@ export function useInterventionDetail({
       setStatusNote('');
       toast.success(t('cabinet.toasts.statusChanged', { status: interventionStatusLabel(newStatus, t) }));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.statusError')));
+      toast.error(
+        isConflictError(err)
+          ? t('company.fsm.common.scheduleConflict')
+          : getErrorMessage(err, t('company.fsm.interventions.detail.toast.statusError')),
+      );
     }
   };
 
@@ -165,8 +175,9 @@ export function useInterventionDetail({
   const handleGenerateInvoice = async () => {
     if (!selectedId || !detail) return;
     try {
-      await createInvoice.mutateAsync({ interventionId: selectedId });
+      const invoice = await createInvoice.mutateAsync({ interventionId: selectedId });
       toast.success(t('company.fsm.interventions.detail.toast.invoiceGenerated'));
+      navigate(`/company/facturi?selectedId=${invoice.id}`);
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('company.fsm.interventions.detail.toast.invoiceError')));
     }
@@ -218,6 +229,7 @@ export function useInterventionDetail({
     handleGenerateInvoice,
     handlePhotoUpload,
     isStatusUpdating: updateStatus.isPending,
+    isGeneratingInvoice: createInvoice.isPending,
     confirmDialog,
   };
 }

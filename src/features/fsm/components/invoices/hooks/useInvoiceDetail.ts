@@ -11,7 +11,7 @@ import {
   useRejectInvoicePaymentMutation,
   downloadCompanyInvoicePdf,
 } from '@/features/fsm/api/useInvoices';
-import { downloadFile } from '@/shared/api/files';
+import { openFileInNewTab } from '@/shared/api/files';
 import { useLocale } from '@/shared/hooks/useLocale';
 import { getErrorMessage } from '@/shared/utils/errors';
 import { useCabinetConfirmDialog } from '@/shared/hooks/useCabinetConfirmDialog';
@@ -58,10 +58,10 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
     }
   };
 
-  const handlePartialPayment = async (amount: number, note?: string) => {
+  const handlePartialPayment = async (amount: number, note?: string, proofFileId?: string) => {
     if (!selectedId || !detail) return;
     try {
-      const updated = await recordPayment.mutateAsync({ id: selectedId, amount, note });
+      const updated = await recordPayment.mutateAsync({ id: selectedId, amount, note, proofFileId });
       if (updated.paymentStatus === 'PAID') {
         toast.success(t('company.fsm.invoices.detail.payment.paidInFull', { defaultValue: 'Factura este plătită integral' }));
       } else {
@@ -117,10 +117,10 @@ export function useInvoiceDetail({ selectedId, onClearSelection }: UseInvoiceDet
   const handleDownloadPaymentProof = async () => {
     if (!detail?.paymentProofFileKey) return;
     try {
-      await downloadFile(detail.paymentProofFileKey, `dovada-${detail.number}`);
+      await openFileInNewTab(detail.paymentProofFileKey);
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('company.fsm.invoices.detail.paymentProof.downloadError', {
-        defaultValue: 'Nu s-a putut descărca dovada',
+        defaultValue: 'Nu s-a putut deschide dovada',
       })));
     }
   };

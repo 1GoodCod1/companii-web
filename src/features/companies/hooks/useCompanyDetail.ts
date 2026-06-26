@@ -11,6 +11,7 @@ import { useAuthStore } from '@/entities/user/model/authStore';
 import { useMeQuery } from '@/features/auth';
 import { formatPersonName } from '@/shared/utils/person';
 import { getErrorMessage } from '@/shared/utils/errors';
+import type { PortalRequestSuccessState } from '@/features/portal/types/requestSuccess.types';
 
 export function useCompanyDetail() {
   const { t } = useTranslation();
@@ -31,15 +32,22 @@ export function useCompanyDetail() {
   const requestService = useRequestPublicServiceMutation(slug);
   const requestProject = useRequestPublicProjectMutation(slug);
 
-  const [requestModal, setRequestModal] = useState<{ serviceId: string; serviceName: string } | null>(null);
+  const [requestModal, setRequestModal] = useState<{
+    serviceId: string;
+    serviceName: string;
+    durationMinutes?: number | null;
+  } | null>(null);
   const [projectModalOpen, setProjectModalOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [bookingDuration, setBookingDuration] = useState<number | null>(null);
   const [projectTitle, setProjectTitle] = useState('');
   const [projectAddress, setProjectAddress] = useState('');
   const [projectCategoryId, setProjectCategoryId] = useState('');
   const [projectEstimatedBudget, setProjectEstimatedBudget] = useState('');
   const [projectMessage, setProjectMessage] = useState('');
+  const [projectSelectedSlot, setProjectSelectedSlot] = useState<string | null>(null);
+  const [projectDuration, setProjectDuration] = useState<number | null>(null);
 
   const profileName = formatPersonName(
     { firstName: me?.firstName, lastName: me?.lastName, email: me?.email },
@@ -65,11 +73,16 @@ export function useCompanyDetail() {
     return true;
   }, [isAuthenticated, isEndClient, location.pathname, navigate, profilePhone, t]);
 
-  const openServiceRequest = (serviceId: string, serviceName: string) => {
+  const openServiceRequest = (
+    serviceId: string,
+    serviceName: string,
+    durationMinutes?: number | null,
+  ) => {
     if (!requireClientAuth()) return;
     setMessage('');
     setSelectedSlot(null);
-    setRequestModal({ serviceId, serviceName });
+    setBookingDuration(durationMinutes ?? null);
+    setRequestModal({ serviceId, serviceName, durationMinutes });
   };
 
   const openProjectRequest = () => {
@@ -79,26 +92,41 @@ export function useCompanyDetail() {
     setProjectCategoryId(company?.category?.id ?? '');
     setProjectEstimatedBudget('');
     setProjectMessage('');
+    setProjectSelectedSlot(null);
+    setProjectDuration(null);
     setProjectModalOpen(true);
   };
 
   const handleRequestSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!requestModal) return;
+    if (!requestModal || !company) return;
     try {
-      await requestService.mutateAsync({
+      const result = await requestService.mutateAsync({
         serviceId: requestModal.serviceId,
         message: message.trim() || undefined,
         scheduledAt: selectedSlot ?? undefined,
+        durationMinutes: selectedSlot ? bookingDuration ?? undefined : undefined,
       });
-      toast.success(
-        selectedSlot
-          ? t('companyDetail.toast.bookingSent')
-          : t('companyDetail.toast.serviceSent'),
-      );
+
+      const successState: PortalRequestSuccessState = {
+        type: selectedSlot
+          ? result.scheduled
+            ? 'booking-confirmed'
+            : 'booking'
+          : 'service',
+        companyName: company.name,
+        companySlug: company.slug,
+        serviceName: requestModal.serviceName,
+        scheduledAt: selectedSlot,
+        leadId: result.leadId,
+        interventionId: result.interventionId,
+      };
+
       setRequestModal(null);
       setMessage('');
       setSelectedSlot(null);
+      setBookingDuration(null);
+      navigate('/portal/cereri/success', { replace: true, state: successState });
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('companyDetail.toast.sendFailed')));
     }
@@ -110,10 +138,13 @@ export function useCompanyDetail() {
     setProjectCategoryId('');
     setProjectEstimatedBudget('');
     setProjectMessage('');
+    setProjectSelectedSlot(null);
+    setProjectDuration(null);
   };
 
   const handleProjectSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!company) return;
     if (!projectMessage.trim()) {
       toast.error(t('companyDetail.toast.descriptionRequired'));
       return;
@@ -126,16 +157,28 @@ export function useCompanyDetail() {
       return;
     }
     try {
-      await requestProject.mutateAsync({
+      const result = await requestProject.mutateAsync({
         message: projectMessage.trim(),
         address: projectAddress.trim() || undefined,
         categoryId: projectCategoryId || company?.category?.id || undefined,
         projectTitle: projectTitle.trim() || undefined,
         estimatedBudget: budgetValue,
+        scheduledAt: projectSelectedSlot ?? undefined,
+        durationMinutes: projectSelectedSlot ? projectDuration ?? undefined : undefined,
       });
-      toast.success(t('companyDetail.toast.projectSent'));
+
+      const successState: PortalRequestSuccessState = {
+        type: 'project',
+        companyName: company.name,
+        companySlug: company.slug,
+        projectTitle: projectTitle.trim() || undefined,
+        scheduledAt: projectSelectedSlot,
+        leadId: result.leadId,
+      };
+
       setProjectModalOpen(false);
       resetProjectForm();
+      navigate('/portal/cereri/success', { replace: true, state: successState });
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, t('companyDetail.toast.sendFailed')));
     }
@@ -158,6 +201,7 @@ export function useCompanyDetail() {
     setMessage,
     selectedSlot,
     setSelectedSlot,
+    setBookingDuration,
     projectTitle,
     setProjectTitle,
     projectAddress,
@@ -168,6 +212,9 @@ export function useCompanyDetail() {
     setProjectEstimatedBudget,
     projectMessage,
     setProjectMessage,
+    projectSelectedSlot,
+    setProjectSelectedSlot,
+    setProjectDuration,
     profileName,
     profilePhone,
     profileEmail,

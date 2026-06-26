@@ -12,7 +12,7 @@ interface CompanyServiceRequestModalProps {
   open: boolean;
   onClose: () => void;
   companySlug: string;
-  requestModal: { serviceId: string; serviceName: string } | null;
+  requestModal: { serviceId: string; serviceName: string; durationMinutes?: number | null } | null;
   onSubmit: (e: React.FormEvent) => void;
   profileName: string;
   profilePhone: string;
@@ -21,6 +21,7 @@ interface CompanyServiceRequestModalProps {
   onMessageChange: (val: string) => void;
   selectedSlot: string | null;
   onSelectSlot: (slotStart: string | null) => void;
+  onDurationChange: (durationMinutes: number | null) => void;
   isPending: boolean;
 }
 
@@ -58,6 +59,7 @@ export function CompanyServiceRequestModal({
   onMessageChange,
   selectedSlot,
   onSelectSlot,
+  onDurationChange,
   isPending,
 }: CompanyServiceRequestModalProps) {
   const { t } = useTranslation();
@@ -80,7 +82,13 @@ export function CompanyServiceRequestModal({
           title={t('companyDetail.yourData')}
         />
         {open ? (
-          <BookingSlotPicker slug={companySlug} value={selectedSlot} onChange={onSelectSlot} />
+          <BookingSlotPicker
+            slug={companySlug}
+            value={selectedSlot}
+            onChange={onSelectSlot}
+            defaultDurationMinutes={requestModal?.durationMinutes ?? null}
+            onDurationChange={onDurationChange}
+          />
         ) : null}
         <div>
           <label className={cabinetLabelClass} htmlFor="req-msg">

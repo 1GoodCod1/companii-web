@@ -1,4 +1,10 @@
-import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import { apiFetch, downloadApiBlob } from '@/shared/api/client';
 import { cabinetQueryDefaults } from '@/shared/api/queryPolicies';
 import { queryKeys } from '@/shared/api/queryKeys';
@@ -6,6 +12,16 @@ import { useAuthStore } from '@/entities/user/model/authStore';
 import type { CursorPage } from '@/shared/api/pagination';
 import type { InvoiceDto, InvoicePaymentStatus } from '@/entities/fsm/model/types';
 import { FSM_BASE } from './fsmBase';
+
+/**
+ * Invoice changes also move the related work's status (INVOICED / PAID /
+ * COMPLETED), so refresh the Lucrări and Facturi pipeline boards too — otherwise
+ * the kanban shows a stale status until a manual reload.
+ */
+function invalidatePipelineBoards(qc: QueryClient): void {
+  void qc.invalidateQueries({ queryKey: queryKeys.fsm.pipelineBoard('interventions') });
+  void qc.invalidateQueries({ queryKey: queryKeys.fsm.pipelineBoard('invoices') });
+}
 
 export function useInvoicesQuery(
   options?: { enabled?: boolean; status?: InvoicePaymentStatus },
@@ -41,9 +57,11 @@ export function useCreateInvoiceMutation() {
   return useMutation({
     mutationFn: (body: { interventionId: string; tvaRate?: number; dueDate?: string }) =>
       apiFetch<InvoiceDto>(`${FSM_BASE}/invoices`, { method: 'POST', body: JSON.stringify(body) }),
-    onSuccess: () => {
+    onSuccess: (_, { interventionId }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+      invalidatePipelineBoards(qc);
+      void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(interventionId) });
     },
   });
 }
@@ -61,10 +79,14 @@ export function useUpdateInvoiceMutation() {
       paymentReversalReason?: string;
     }) =>
       apiFetch<InvoiceDto>(`${FSM_BASE}/invoices/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
-    onSuccess: (_, { id }) => {
+    onSuccess: (invoice, { id }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoice(id) });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+      invalidatePipelineBoards(qc);
+      if (invoice.interventionId) {
+        void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(invoice.interventionId) });
+      }
     },
   });
 }
@@ -78,6 +100,7 @@ export function useDeleteInvoiceMutation() {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoice(id) });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+      invalidatePipelineBoards(qc);
     },
   });
 }
@@ -90,10 +113,14 @@ export function useCancelInvoiceMutation() {
         method: 'POST',
         body: JSON.stringify({ reason }),
       }),
-    onSuccess: (_, { id }) => {
+    onSuccess: (invoice, { id }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoice(id) });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+      invalidatePipelineBoards(qc);
+      if (invoice.interventionId) {
+        void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(invoice.interventionId) });
+      }
     },
   });
 }
@@ -101,15 +128,29 @@ export function useCancelInvoiceMutation() {
 export function useRecordInvoicePaymentMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, amount, note }: { id: string; amount: number; note?: string }) =>
+    mutationFn: ({
+      id,
+      amount,
+      note,
+      proofFileId,
+    }: {
+      id: string;
+      amount: number;
+      note?: string;
+      proofFileId?: string;
+    }) =>
       apiFetch<InvoiceDto>(`${FSM_BASE}/invoices/${id}/payments`, {
         method: 'POST',
-        body: JSON.stringify({ amount, note }),
+        body: JSON.stringify({ amount, note, proofFileId }),
       }),
-    onSuccess: (_, { id }) => {
+    onSuccess: (invoice, { id }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoice(id) });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+      invalidatePipelineBoards(qc);
+      if (invoice.interventionId) {
+        void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(invoice.interventionId) });
+      }
     },
   });
 }
@@ -134,10 +175,14 @@ export function useConfirmInvoicePaymentMutation() {
   return useMutation({
     mutationFn: (id: string) =>
       apiFetch<InvoiceDto>(`${FSM_BASE}/invoices/${id}/confirm-payment`, { method: 'POST' }),
-    onSuccess: (_, id) => {
+    onSuccess: (invoice, id) => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoice(id) });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+      invalidatePipelineBoards(qc);
+      if (invoice.interventionId) {
+        void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(invoice.interventionId) });
+      }
     },
   });
 }
@@ -150,10 +195,14 @@ export function useRejectInvoicePaymentMutation() {
         method: 'POST',
         body: JSON.stringify({ reason }),
       }),
-    onSuccess: (_, { id }) => {
+    onSuccess: (invoice, { id }) => {
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoices });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.invoice(id) });
       void qc.invalidateQueries({ queryKey: queryKeys.fsm.interventions() });
+      invalidatePipelineBoards(qc);
+      if (invoice.interventionId) {
+        void qc.invalidateQueries({ queryKey: queryKeys.fsm.intervention(invoice.interventionId) });
+      }
     },
   });
 }

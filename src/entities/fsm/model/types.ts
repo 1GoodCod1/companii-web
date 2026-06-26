@@ -117,6 +117,7 @@ export interface InterventionDto {
   address: string;
   status: InterventionStatus;
   scheduledAt?: string | null;
+  durationMinutes?: number | null;
   estimatedPrice?: number | null;
   finalPrice?: number | null;
   internalNotes?: string | null;

@@ -82,6 +82,7 @@ export function InterventionDetailPanel({
     handleGenerateInvoice,
     handlePhotoUpload,
     isStatusUpdating,
+    isGeneratingInvoice,
     confirmDialog,
   } = useInterventionDetail({
     selectedId,
@@ -150,6 +151,7 @@ export function InterventionDetailPanel({
                 setStatusNote={setStatusNote}
                 handleStatusChange={handleStatusChange}
                 isStatusUpdating={isStatusUpdating}
+                isGeneratingInvoice={isGeneratingInvoice}
                 isManagement={isManagement}
                 handleGenerateInvoice={handleGenerateInvoice}
               />

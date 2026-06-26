@@ -40,6 +40,7 @@ export function CalendarBoardView({
   scheduleCrewId,
   onScheduleIdChange,
   onScheduleAtChange,
+  onScheduleDurationChange,
   onScheduleTechnicianChange,
   onAssignModeChange,
   onScheduleMemberIdsChange,
@@ -59,6 +60,7 @@ export function CalendarBoardView({
   scheduleCrewId: string;
   onScheduleIdChange: (id: string) => void;
   onScheduleAtChange: (value: string) => void;
+  onScheduleDurationChange: (value: number | null) => void;
   onScheduleTechnicianChange: (value: string) => void;
   onAssignModeChange: (value: 'single' | 'multiple' | 'crew') => void;
   onScheduleMemberIdsChange: (value: string[]) => void;
@@ -127,6 +129,7 @@ export function CalendarBoardView({
                   scheduleMemberIds={scheduleMemberIds}
                   scheduleCrewId={scheduleCrewId}
                   onScheduleAtChange={onScheduleAtChange}
+                  onScheduleDurationChange={onScheduleDurationChange}
                   onScheduleTechnicianChange={onScheduleTechnicianChange}
                   onAssignModeChange={onAssignModeChange}
                   onScheduleMemberIdsChange={onScheduleMemberIdsChange}

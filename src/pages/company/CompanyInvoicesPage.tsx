@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { cabinetBtnPrimary, cabinetBtnSecondary } from '@/widgets/cabinet/cabinet-ui';
@@ -17,12 +18,18 @@ type StatusFilter = InvoicePaymentStatus | 'ALL';
 
 export function CompanyInvoicesPage() {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
   const { data: invoices, isLoading } = useInvoicesQuery({
     status: statusFilter === 'ALL' ? undefined : statusFilter,
   });
   const createModal = useEntityModal();
-  const { selectedId, select, clear } = useEntitySelection();
+  const { selectedId, select, clear, setSelectedId } = useEntitySelection();
+
+  useEffect(() => {
+    const id = searchParams.get('selectedId');
+    if (id) setSelectedId(id);
+  }, [searchParams, setSelectedId]);
 
   const detailPanel = useMemo(
     () => <InvoiceDetailPanel selectedId={selectedId} onClearSelection={clear} />,
@@ -95,7 +102,11 @@ export function CompanyInvoicesPage() {
           detail={detailPanel}
         />
 
-        <CreateInvoiceModal open={createModal.open} onClose={createModal.closeModal} />
+        <CreateInvoiceModal
+          open={createModal.open}
+          onClose={createModal.closeModal}
+          onCreated={(invoice) => select(invoice.id)}
+        />
       </div>
     </CompanyManagementGate>
   );

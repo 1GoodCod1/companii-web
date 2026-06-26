@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ClipboardTextIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -22,7 +23,27 @@ function leadSourceLabel(source: CompanyLeadDto['source'], t: (key: string) => s
 export function PortalCereriPage() {
   const { t } = useTranslation();
   const locale = useLocale();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const highlightId = searchParams.get('highlight');
   const { data: leads, isLoading, isError } = usePortalLeadsQuery();
+
+  useEffect(() => {
+    if (!highlightId || !leads?.length) return;
+    const el = document.getElementById(`portal-lead-${highlightId}`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const timer = window.setTimeout(() => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.delete('highlight');
+          return next;
+        },
+        { replace: true },
+      );
+    }, 8000);
+    return () => window.clearTimeout(timer);
+  }, [highlightId, leads, setSearchParams]);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -62,7 +83,15 @@ export function PortalCereriPage() {
         ) : (
           <div className="divide-y divide-gray-100">
             {leads.map((lead) => (
-              <article key={lead.id} className="px-4 py-5 sm:px-6 space-y-3">
+              <article
+                key={lead.id}
+                id={`portal-lead-${lead.id}`}
+                className={`px-4 py-5 sm:px-6 space-y-3 transition-colors ${
+                  highlightId === lead.id
+                    ? 'bg-emerald-50/80 ring-2 ring-emerald-300 ring-inset'
+                    : ''
+                }`}
+              >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="space-y-1 min-w-0">
                     <p className="text-sm font-bold text-gray-900 truncate">

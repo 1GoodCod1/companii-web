@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { paymentStatusLabel } from '@/entities/fsm/model/i18nStatusLabels';
 import { getInvoicePaymentStatusStyle } from '@/entities/fsm/model/invoicePaymentStatusStyles';
 import { formatDateLocalized } from '@/shared/utils/date';
+import { uploadFile } from '@/shared/api/files';
+import { getErrorMessage } from '@/shared/utils/errors';
 import { useInvoiceDetail } from '../hooks/useInvoiceDetail';
 import { AppModal } from '@/shared/ui/AppModal';
 import {
@@ -46,6 +48,8 @@ function useInvoiceDetailView({ hookData }: Props) {
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'transfer'>('transfer');
   const [paymentType, setPaymentType] = useState<'full' | 'partial'>('full');
   const [customAmount, setCustomAmount] = useState('');
+  const [proofFile, setProofFile] = useState<File | null>(null);
+  const [uploadingProof, setUploadingProof] = useState(false);
 
   // Reject / Cancel Modal State
   const [rejectReason, setRejectReason] = useState('');
@@ -61,6 +65,7 @@ function useInvoiceDetailView({ hookData }: Props) {
     setPaymentMethod(method);
     setPaymentType('full');
     setCustomAmount(remaining.toFixed(2));
+    setProofFile(null);
     setActiveModal('payment');
   };
 
@@ -71,11 +76,30 @@ function useInvoiceDetailView({ hookData }: Props) {
       toast.error(t('company.fsm.invoices.detail.payment.invalidAmount', { defaultValue: 'Sumă invalidă' }));
       return;
     }
-    const note = paymentMethod === 'cash' 
+    const note = paymentMethod === 'cash'
       ? (paymentType === 'full' ? 'Plată în numerar (integral)' : 'Plată în numerar (parțial)')
       : (paymentType === 'full' ? 'Transfer / Card (integral)' : 'Transfer / Card (parțial)');
 
-    await handlePartialPayment(amount, note);
+    // Optionally attach a receipt/proof the company uploads itself.
+    let proofFileId: string | undefined;
+    if (proofFile) {
+      try {
+        setUploadingProof(true);
+        proofFileId = (await uploadFile(proofFile)).id;
+      } catch (err: unknown) {
+        toast.error(
+          getErrorMessage(err, t('company.fsm.invoices.detail.payment.receiptUploadError', {
+            defaultValue: 'Nu s-a putut încărca chitanța',
+          })),
+        );
+        return;
+      } finally {
+        setUploadingProof(false);
+      }
+    }
+
+    await handlePartialPayment(amount, note, proofFileId);
+    setProofFile(null);
     setActiveModal(null);
   };
 
@@ -297,6 +321,19 @@ function useInvoiceDetailView({ hookData }: Props) {
             {t('company.fsm.invoices.detail.paymentSection.paid', { defaultValue: 'Factura este plătită în întregime. Nu sunt necesare alte acțiuni.' })}
           </p>
         )}
+
+        {/* Receipt/proof on file (client- or company-uploaded) — the pending state has its own button. */}
+        {detail.paymentProofFileKey && detail.paymentStatus !== 'PENDING_CONFIRMATION' && (
+          <button
+            type="button"
+            onClick={handleDownloadPaymentProof}
+            className="w-full py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-[10px] font-black uppercase tracking-wider hover:bg-slate-50 cursor-pointer"
+          >
+            {t('company.fsm.invoices.detail.paymentProof.viewReceipt', {
+              defaultValue: 'Vezi chitanța / dovada',
+            })}
+          </button>
+        )}
       </div>
 
       <div className="text-sm border-t border-gray-100 pt-3 space-y-3">
@@ -472,6 +509,30 @@ function useInvoiceDetailView({ hookData }: Props) {
             </div>
           )}
 
+          <div>
+            <label htmlFor="payment-receipt" className={cabinetLabelClass}>
+              {t('company.fsm.invoices.detail.payment.receiptLabel', {
+                defaultValue: 'Chitanță / bon (opțional)',
+              })}
+            </label>
+            <input
+              id="payment-receipt"
+              type="file"
+              accept="image/*,application/pdf"
+              onChange={(e) => setProofFile(e.target.files?.[0] ?? null)}
+              className="block w-full cursor-pointer text-xs text-gray-600 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-gray-700 hover:file:bg-slate-200"
+            />
+            {proofFile ? (
+              <p className="mt-1 truncate text-[11px] text-gray-500">{proofFile.name}</p>
+            ) : (
+              <p className="mt-1 text-[11px] text-gray-400">
+                {t('company.fsm.invoices.detail.payment.receiptHint', {
+                  defaultValue: 'Atașează bonul/chitanța dacă ai încasat plata tu.',
+                })}
+              </p>
+            )}
+          </div>
+
           <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
             <button
               type="button"
@@ -482,10 +543,10 @@ function useInvoiceDetailView({ hookData }: Props) {
             </button>
             <button
               type="submit"
-              disabled={recordPaymentPending}
+              disabled={recordPaymentPending || uploadingProof}
               className={cabinetBtnPrimary}
             >
-              {recordPaymentPending
+              {recordPaymentPending || uploadingProof
                 ? t('cabinet.common.loading')
                 : t('company.fsm.invoices.detail.payment.submitBtn', { defaultValue: 'Înregistrează' })}
             </button>

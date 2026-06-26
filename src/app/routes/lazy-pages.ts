@@ -50,6 +50,7 @@ export {
 export {
   PortalDashboardPage,
   PortalCereriPage,
+  PortalRequestSuccessPage,
   PortalLucrariPage,
   PortalOfertePage,
   PortalSmetePage,
