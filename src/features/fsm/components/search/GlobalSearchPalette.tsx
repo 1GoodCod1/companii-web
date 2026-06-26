@@ -99,6 +99,12 @@ export function GlobalSearchPalette({ variant = 'icon' }: { variant?: 'icon' | '
   );
 
   const close = useCallback(() => setOpen(false), []);
+  const openPalette = useCallback(() => {
+    setInput('');
+    setQuery('');
+    setActiveIndex(0);
+    setOpen(true);
+  }, []);
 
   useModalLockAndEscape(open, close);
 
@@ -106,12 +112,13 @@ export function GlobalSearchPalette({ variant = 'icon' }: { variant?: 'icon' | '
     const onKeyDown = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
-        setOpen((prev) => !prev);
+        if (open) close();
+        else openPalette();
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
+  }, [open, close, openPalette]);
 
   // Anchor the bar dropdown to the trigger's position (recompute on open/resize/scroll).
   useLayoutEffect(() => {
@@ -132,12 +139,7 @@ export function GlobalSearchPalette({ variant = 'icon' }: { variant?: 'icon' | '
   }, [open, variant]);
 
   useEffect(() => {
-    if (!open) {
-      setInput('');
-      setQuery('');
-      setActiveIndex(0);
-      return;
-    }
+    if (!open) return;
     const id = window.setTimeout(() => inputRef.current?.focus(), 10);
     return () => window.clearTimeout(id);
   }, [open]);
@@ -175,9 +177,17 @@ export function GlobalSearchPalette({ variant = 'icon' }: { variant?: 'icon' | '
     return list;
   }, [groups, navMatches]);
 
-  useEffect(() => {
+  const indexByKey = useMemo(() => {
+    const map = new Map<string, number>();
+    entries.forEach((entry, i) => map.set(entry.key, i));
+    return map;
+  }, [entries]);
+  const resetKey = `${query}:${entries.length}`;
+  const [lastResetKey, setLastResetKey] = useState(resetKey);
+  if (resetKey !== lastResetKey) {
+    setLastResetKey(resetKey);
     setActiveIndex(0);
-  }, [entries.length, query]);
+  }
 
   const execute = useCallback(
     (entry: PaletteEntry | undefined) => {
@@ -210,8 +220,6 @@ export function GlobalSearchPalette({ variant = 'icon' }: { variant?: 'icon' | '
   const showMinCharsHint = input.trim().length > 0 && input.trim().length < 2;
   const showEmpty =
     query.trim().length >= 2 && !isFetching && groups.length === 0 && navMatches.length === 0;
-
-  let flatIndex = -1;
 
   const compact = variant === 'bar';
 
@@ -265,8 +273,7 @@ export function GlobalSearchPalette({ variant = 'icon' }: { variant?: 'icon' | '
                       ) : null}
                     </p>
                     {group.items.map((item) => {
-                      flatIndex += 1;
-                      const index = flatIndex;
+                      const index = indexByKey.get(`${item.type}:${item.id}`) ?? -1;
                       const status = statusLabelFor(item);
                       return (
                         <button
@@ -314,8 +321,7 @@ export function GlobalSearchPalette({ variant = 'icon' }: { variant?: 'icon' | '
                       {t('company.searchPalette.navigation')}
                     </p>
                     {navMatches.map((cmd) => {
-                      flatIndex += 1;
-                      const index = flatIndex;
+                      const index = indexByKey.get(`nav:${cmd.to}`) ?? -1;
                       return (
                         <button
                           key={cmd.to}
@@ -417,7 +423,7 @@ export function GlobalSearchPalette({ variant = 'icon' }: { variant?: 'icon' | '
       <button
         ref={triggerRef}
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={openPalette}
         title={`${t('company.searchPalette.placeholder')} (Ctrl+K)`}
         className="group flex h-11 w-full items-center gap-2.5 rounded-xl border border-gray-200 bg-white px-3.5 text-left shadow-sm transition-colors hover:border-[var(--dashboard-accent)]/30 hover:bg-gray-50/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--dashboard-accent)] cursor-pointer"
       >
@@ -432,7 +438,7 @@ export function GlobalSearchPalette({ variant = 'icon' }: { variant?: 'icon' | '
     ) : (
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={openPalette}
         title={`${t('company.searchPalette.placeholder')} (Ctrl+K)`}
         className="flex size-10 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 cursor-pointer"
       >
