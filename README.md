@@ -465,8 +465,7 @@ npm run dev
 
 ```bash
 cp .env.docker.example .env.docker
-npm run docker:up        # dev, port 5174
-npm run docker:prod:up   # prod nginx, port 8082
+npm run docker:up:build        # dev, port 5174
 ```
 
 ---
