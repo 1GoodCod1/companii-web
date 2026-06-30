@@ -10,7 +10,7 @@ import {
 import {
   CLEANING_PARITY_VECTORS,
   assertNoNaNInMeasurements,
-} from '../../../../../companii-api/src/modules/estimates/pricing/category/cleaning/cleaning-parity.vectors';
+} from './parity/cleaning-parity.vectors';
 
 const cleaningPreviewConfig: EstimateBlueprintConfig = {
   wizardSteps: ['object', 'diagnostic', 'stages', 'review'],

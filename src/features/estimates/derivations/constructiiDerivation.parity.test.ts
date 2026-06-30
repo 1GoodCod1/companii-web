@@ -9,7 +9,7 @@ import {
 import {
   CONSTRUCTII_PARITY_VECTORS,
   assertNoNaNInMeasurements,
-} from '../../../../../companii-api/src/modules/estimates/pricing/category/constructii/constructii-parity.vectors';
+} from './parity/constructii-parity.vectors';
 
 const constructiiPreviewConfig: EstimateBlueprintConfig = {
   wizardSteps: ['object', 'diagnostic', 'stages', 'review'],

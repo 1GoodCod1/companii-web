@@ -1,8 +1,10 @@
 <div align="center">
 
+**Language:** **English** · [Русский](README.ru.md)
+
 # Faber Companii — Web
 
-**Фронтенд мультитенантной B2B/B2C платформы для сервисных компаний**
+**Frontend for a multi-tenant B2B/B2C platform for service companies**
 
 React 19 · Vite 7 · TanStack Query · Zustand · Tailwind CSS 4
 
@@ -11,35 +13,35 @@ React 19 · Vite 7 · TanStack Query · Zustand · Tailwind CSS 4
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![Tailwind](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 
-[Быстрый старт](#-быстрый-старт) · [Архитектура](#-архитектура) · [Маршруты](#-маршрутизация) · [Роли](#-роли-и-пользовательские-сценарии) · [API](#-взаимодействие-с-api)
+[Quick start](#quick-start) · [Architecture](#architecture) · [Routing](#routing) · [Roles](#roles-and-user-flows) · [API integration](#api-integration)
 
 </div>
 
 ---
 
-## Что это за проект?
+## What is this project?
 
-**companii-web** — клиентская часть платформы **Faber Companii**: публичный маркетинговый сайт, каталог компаний, три изолированных кабинета и единая система авторизации.
+**companii-web** is the client application for **Faber Companii**: a public marketing site, company catalog, three isolated cabinets, and a unified auth system.
 
-| Зона приложения | URL | Кто использует |
-|-----------------|-----|----------------|
-| **Публичный сайт** | `/{locale}/...` | Все посетители |
-| **Кабинет компании** | `/company/*` | `COMPANY_STAFF` |
-| **Клиентский портал** | `/portal/*` | `END_CLIENT` |
-| **Админка платформы** | `/admin/*` | `PLATFORM_ADMIN` |
+| App zone | URL | Who uses it |
+|----------|-----|-------------|
+| **Public site** | `/{locale}/...` | All visitors |
+| **Company cabinet** | `/company/*` | `COMPANY_STAFF` |
+| **Client portal** | `/portal/*` | `END_CLIENT` |
+| **Platform admin** | `/admin/*` | `PLATFORM_ADMIN` |
 
 Backend: **[companii-api](../companii-api)** — NestJS + PostgreSQL RLS.
 
 ---
 
-## Общая схема системы
+## System overview
 
 ```mermaid
 flowchart TB
-    subgraph Browser["Браузер пользователя"]
+    subgraph Browser["User browser"]
         subgraph WEB["companii-web"]
-            PUB["Публичные страницы<br/>ro / ru"]
-            CAB["Кабинеты<br/>company · portal · admin"]
+            PUB["Public pages<br/>ro / ru"]
+            CAB["Cabinets<br/>company · portal · admin"]
             STATE["Zustand + TanStack Query"]
         end
     end
@@ -56,15 +58,15 @@ flowchart TB
     PUB --> STATE
     CAB --> STATE
     STATE -->|"apiFetch<br/>Bearer + x-company-id"| PX
-  PX --> REST
+    PX --> REST
     STATE -->|"EventSource"| SSE
 ```
 
 ---
 
-## Архитектура
+## Architecture
 
-Проект следует принципам **Feature-Sliced Design (FSD)** — код разделён по слоям ответственности, бизнес-логика живёт в `features/`.
+The project follows **Feature-Sliced Design (FSD)** — code is split by responsibility layer, with business logic in `features/`.
 
 ```mermaid
 flowchart TB
@@ -74,13 +76,13 @@ flowchart TB
     end
 
     subgraph pages["pages/"]
-        PAGE["Тонкие страницы маршрутов"]
+        PAGE["Thin route pages"]
     end
 
     subgraph widgets["widgets/"]
-        LAYOUT["Layout-оболочки"]
-        LANDING["Landing-блоки"]
-        CABINET["Cabinet UI-kit"]
+        LAYOUT["Layout shells"]
+        LANDING["Landing blocks"]
+        CABINET["Cabinet UI kit"]
     end
 
     subgraph features["features/"]
@@ -103,7 +105,7 @@ flowchart TB
     subgraph shared["shared/"]
         API["api/client"]
         I18N["config/i18n"]
-        UI["ui/ примитивы"]
+        UI["ui/ primitives"]
     end
 
     ROUTER --> PAGE
@@ -114,19 +116,19 @@ flowchart TB
     entities --> shared
 ```
 
-### Управление состоянием
+### State management
 
 ```mermaid
 flowchart LR
-    subgraph Client["Клиентское состояние — Zustand"]
+    subgraph Client["Client state — Zustand"]
         AUTH["useAuthStore<br/>accessToken · user · status"]
         CTX["useCompanyContextStore<br/>activeCompanyId → localStorage"]
     end
 
-    subgraph Server["Серверное состояние — TanStack Query v5"]
+    subgraph Server["Server state — TanStack Query v5"]
         HOOKS["~40+ hooks<br/>features/*/api/"]
-        CACHE["Persisted cache<br/>планы · города · категории"]
-        SSE["SSE stream<br/>уведомления"]
+        CACHE["Persisted cache<br/>plans · cities · categories"]
+        SSE["SSE stream<br/>notifications"]
     end
 
     subgraph API["apiFetch"]
@@ -141,20 +143,20 @@ flowchart LR
     REFRESH --> AUTH
 ```
 
-| Инструмент | Файл | Назначение |
-|------------|------|------------|
-| **Zustand** | `src/entities/user/model/authStore.ts` | Токен, пользователь, login/logout |
-| **Zustand** | `src/entities/company/model/companyContextStore.ts` | Активная компания (persist) |
-| **TanStack Query** | `src/shared/api/queryClient.ts` | Кэш API, staleTime 5 мин |
-| **Persist** | `src/shared/api/persistQuery.ts` | IndexedDB для справочников |
+| Tool | File | Purpose |
+|------|------|---------|
+| **Zustand** | `src/entities/user/model/authStore.ts` | Token, user, login/logout |
+| **Zustand** | `src/entities/company/model/companyContextStore.ts` | Active company (persisted) |
+| **TanStack Query** | `src/shared/api/queryClient.ts` | API cache, staleTime 5 min |
+| **Persist** | `src/shared/api/persistQuery.ts` | IndexedDB for reference data |
 
-> Redux **не используется** — осознанный выбор: Zustand для UI/auth, TanStack Query для всего серверного.
+> **Redux is not used** — Zustand for UI/auth, TanStack Query for all server state.
 
 ---
 
-## Feature-модули
+## Feature modules
 
-10 бизнес-модулей в `src/features/`:
+10 business modules in `src/features/`:
 
 ```mermaid
 mindmap
@@ -162,54 +164,54 @@ mindmap
     auth
       login register guards
     companies
-      каталог профиль команда
+      catalog profile team
     fsm
-      CRM работы счета
+      CRM jobs invoices
     estimates
-      мастер сметы pricing
+      wizard pricing
     portal
-      клиентский кабинет
+      client cabinet
     admin
-      модерация справочники
+      moderation reference data
     notifications
       SSE Telegram
     subscriptions
-      тарифы upgrade
+      plans upgrade
     reviews
-      отзывы
+      reviews
     settings
-      язык пароль
+      language password
 ```
 
-| Модуль | API-хуки | UI |
-|--------|----------|-----|
-| **auth** | `useAuth.ts` | формы login/register, `AuthBootstrap` |
-| **companies** | `useCompaniesPublic`, `useCompaniesTeam` | профиль, галерея, каталог |
-| **fsm** | `useCustomers`, `useLeads`, `useInterventions`, `useQuotes`, `useInvoices` | CRM, Kanban, календарь, аналитика |
-| **estimates** | `useEstimateProjects`, `useEstimateActions` | мастер 5 шагов, worksheets |
-| **portal** | `usePortal.ts` | секции заявок, смет, счетов |
-| **admin** | `useAdminCompanies`, `useAdminStats` | модерация, blueprints |
+| Module | API hooks | UI |
+|--------|-----------|-----|
+| **auth** | `useAuth.ts` | login/register forms, `AuthBootstrap` |
+| **companies** | `useCompaniesPublic`, `useCompaniesTeam` | profile, gallery, catalog |
+| **fsm** | `useCustomers`, `useLeads`, `useInterventions`, `useQuotes`, `useInvoices` | CRM, Kanban, calendar, analytics |
+| **estimates** | `useEstimateProjects`, `useEstimateActions` | 5-step wizard, worksheets |
+| **portal** | `usePortal.ts` | requests, estimates, invoices sections |
+| **admin** | `useAdminCompanies`, `useAdminStats` | moderation, blueprints |
 | **notifications** | `api.ts` + SSE | `NotificationBell` |
 | **subscriptions** | plans API | `PlanCards`, `PlanUpgradePanel` |
 
 ---
 
-## Маршрутизация
+## Routing
 
-Конфигурация: `src/app/routes/router.tsx`  
-Константы: `src/shared/constants/routes.constants.ts`
+Configuration: `src/app/routes/router.tsx`  
+Constants: `src/shared/constants/routes.constants.ts`
 
 ```mermaid
 flowchart TD
     ROOT["/"] -->|"redirect"| LOCALE["/{locale}/"]
-    LOCALE --> PUB["Публичные страницы"]
+    LOCALE --> PUB["Public pages"]
     LOCALE --> COMPANIES["companies/:slug"]
 
     LOGIN["/login"] --> AUTH["AuthLayout"]
     REGISTER["/register"] --> AUTH
 
     COMPANY["/company/*"] --> CG["RequireAuth<br/>COMPANY_STAFF"]
-    CG --> CR["RequireCompanyRole<br/>роль + тариф"]
+    CG --> CR["RequireCompanyRole<br/>role + plan"]
     CR --> CL["CompanyLayout"]
 
     PORTAL["/portal/*"] --> PG["RequireAuth<br/>END_CLIENT"]
@@ -219,68 +221,68 @@ flowchart TD
     AG --> AL["AdminLayout"]
 ```
 
-### Публичные страницы (`/{locale}/...`)
+### Public pages (`/{locale}/...`)
 
-| Путь | Страница |
-|------|----------|
-| `/` | Лендинг |
-| `how-it-works` | Как это работает |
+| Path | Page |
+|------|------|
+| `/` | Landing |
+| `how-it-works` | How it works |
 | `faq` | FAQ |
-| `preturi` | Тарифы |
-| `companies` | Каталог компаний |
-| `companies/:slug` | Профиль компании + заявка |
-| `privacy`, `terms` | Юридические документы |
+| `preturi` | Pricing |
+| `companies` | Company catalog |
+| `companies/:slug` | Company profile + request form |
+| `privacy`, `terms` | Legal pages |
 
-**Локали:** `ro` (по умолчанию) и `ru` — префикс в URL.
+**Locales:** `ro` (default) and `ru` — URL prefix.
 
-### Кабинет компании (`/company/*`)
+### Company cabinet (`/company/*`)
 
-| Путь | Раздел | Мин. роль / план |
-|------|--------|------------------|
-| `/company` | Dashboard + аналитика | MEMBER |
-| `/company/profile` | Профиль компании | OWNER |
-| `/company/clienti` | CRM клиентов | MANAGER · PRO |
-| `/company/cereri` | Заявки (лиды) | MANAGER · PRO |
+| Path | Section | Min. role / plan |
+|------|---------|------------------|
+| `/company` | Dashboard + analytics | MEMBER |
+| `/company/profile` | Company profile | OWNER |
+| `/company/clienti` | CRM customers | MANAGER · PRO |
+| `/company/cereri` | Leads | MANAGER · PRO |
 | `/company/pipeline` | Kanban | MANAGER · BUSINESS |
-| `/company/lucrari` | Работы | MEMBER |
-| `/company/calendar` | Календарь | MEMBER |
-| `/company/smete` | Сметы | MANAGER · BUSINESS |
-| `/company/oferte` | Оферты | MANAGER · BUSINESS |
-| `/company/facturi` | Счета | MANAGER · BUSINESS |
-| `/company/team` | Команда | OWNER |
-| `/company/subscription` | Тариф | OWNER |
-| `/company/audit` | Аудит | OWNER |
+| `/company/lucrari` | Jobs | MEMBER |
+| `/company/calendar` | Calendar | MEMBER |
+| `/company/smete` | Estimates | MANAGER · BUSINESS |
+| `/company/oferte` | Quotes | MANAGER · BUSINESS |
+| `/company/facturi` | Invoices | MANAGER · BUSINESS |
+| `/company/team` | Team | OWNER |
+| `/company/subscription` | Plan | OWNER |
+| `/company/audit` | Audit log | OWNER |
 
-### Клиентский портал (`/portal/*`)
+### Client portal (`/portal/*`)
 
-| Путь | Раздел |
-|------|--------|
+| Path | Section |
+|------|---------|
 | `/portal` | Dashboard |
-| `/portal/cereri` | Мои заявки |
-| `/portal/lucrari` | Работы |
-| `/portal/oferte` | Оферты (принять/отклонить) |
-| `/portal/smete` | Сметы |
-| `/portal/facturi` | Счета + подтверждение оплаты |
+| `/portal/cereri` | My requests |
+| `/portal/lucrari` | Jobs |
+| `/portal/oferte` | Quotes (accept/decline) |
+| `/portal/smete` | Estimates |
+| `/portal/facturi` | Invoices + payment proof |
 
-### Админка (`/admin/*`)
+### Admin (`/admin/*`)
 
-| Путь | Раздел |
-|------|--------|
-| `/admin` | Статистика + модерация |
-| `/admin/companies` | Компании |
-| `/admin/cities` | Города |
-| `/admin/categories` | Категории |
-| `/admin/blueprints` | Шаблоны смет |
-| `/admin/waitlist` | Лист ожидания |
-| `/admin/audit` | Аудит платформы |
+| Path | Section |
+|------|---------|
+| `/admin` | Statistics + moderation |
+| `/admin/companies` | Companies |
+| `/admin/cities` | Cities |
+| `/admin/categories` | Categories |
+| `/admin/blueprints` | Estimate blueprints |
+| `/admin/waitlist` | Waitlist |
+| `/admin/audit` | Platform audit |
 
-Страницы загружаются **lazy** через `src/app/routes/lazy-pages/`.
+Pages are **lazy-loaded** via `src/app/routes/lazy-pages/`.
 
 ---
 
-## Роли и пользовательские сценарии
+## Roles and user flows
 
-### Три типа аккаунтов
+### Three account types
 
 ```mermaid
 flowchart LR
@@ -293,9 +295,9 @@ flowchart LR
     CS --> COMPANY["/company/*"]
     EC --> PORTAL["/portal/*"]
     PA --> ADMIN["/admin/*"]
-    PA -.->|"также"| COMPANY
+    PA -.->|"also"| COMPANY
 
-    subgraph CompanyRoles["Роли в компании"]
+    subgraph CompanyRoles["Company roles"]
         OW["OWNER"]
         MG["MANAGER"]
         MB["MEMBER"]
@@ -304,62 +306,47 @@ flowchart LR
     CS --> CompanyRoles
 ```
 
-### Сценарий: от заявки до оплаты
+### Flow: from request to payment
 
 ```mermaid
 sequenceDiagram
-    actor Client as Клиент (END_CLIENT)
-    actor Staff as Менеджер (COMPANY_STAFF)
+    actor Client as Client (END_CLIENT)
+    actor Staff as Manager (COMPANY_STAFF)
     participant WEB as companii-web
     participant API as companii-api
 
-    Client->>WEB: Заявка на companies/:slug
+    Client->>WEB: Request on companies/:slug
     WEB->>API: POST /companies/:slug/request-project
-    Staff->>WEB: /company/cereri — новый лид
-    Staff->>WEB: Конвертация → работа
-  WEB->>API: POST /fsm/leads/:id/convert
-    Staff->>WEB: /company/smete/new — мастер сметы
+    Staff->>WEB: /company/cereri — new lead
+    Staff->>WEB: Convert → job
+    WEB->>API: POST /fsm/leads/:id/convert
+    Staff->>WEB: /company/smete/new — estimate wizard
     WEB->>API: POST /estimates/projects + calculate
     Staff->>WEB: Generate quote
     WEB->>API: POST /estimates/projects/:id/generate-quote
-    Client->>WEB: /portal/oferte — принять оферту
+    Client->>WEB: /portal/oferte — accept quote
     WEB->>API: PATCH /portal/quotes/:id
-    Staff->>WEB: /company/facturi — выставить счёт
-    Client->>WEB: /portal/facturi — загрузить proof of payment
+    Staff->>WEB: /company/facturi — issue invoice
+    Client->>WEB: /portal/facturi — upload payment proof
     WEB->>API: POST /portal/invoices/:id/payment-proof
 ```
 
-### Сценарий: сотрудник компании
-
-```mermaid
-flowchart TD
-    REG["Регистрация /team/invite"] --> ONB["Onboarding<br/>/company/profile"]
-    ONB --> PUB["Публикация профиля"]
-    PUB --> LIVE["Публичная страница<br/>/{locale}/companies/:slug"]
-    LIVE --> LEADS["Заявки → /company/cereri"]
-    LEADS --> CRM["CRM → /company/clienti"]
-    CRM --> WORK["Работы → /company/lucrari"]
-    WORK --> EST["Сметы → /company/smete"]
-    EST --> QUOTE["Оферты → /company/oferte"]
-    QUOTE --> INV["Счета → /company/facturi"]
-```
-
-### Мастер сметы (5 шагов)
+### Estimate wizard (5 steps)
 
 ```mermaid
 flowchart LR
-    S1["1. Объект<br/>ObjectStep"] --> S2["2. Диагностика<br/>DiagnosticStep"]
-    S2 --> S3["3. Этапы<br/>StagesStep"]
-    S3 --> S4["4. План<br/>PlanStep"]
-    S4 --> S5["5. Обзор<br/>ReviewStep"]
-    S5 --> PDF["PDF / Оферта / Конвертация"]
+    S1["1. Object<br/>ObjectStep"] --> S2["2. Diagnostic<br/>DiagnosticStep"]
+    S2 --> S3["3. Stages<br/>StagesStep"]
+    S3 --> S4["4. Plan<br/>PlanStep"]
+    S4 --> S5["5. Review<br/>ReviewStep"]
+    S5 --> PDF["PDF / Quote / Convert"]
 ```
 
-Файлы: `src/features/estimates/wizard/steps/`
+Files: `src/features/estimates/wizard/steps/`
 
 ---
 
-## Взаимодействие с API
+## API integration
 
 ```mermaid
 sequenceDiagram
@@ -384,146 +371,121 @@ sequenceDiagram
     Hook-->>UI: { data, isLoading, error }
 ```
 
-| Файл | Назначение |
-|------|------------|
-| `src/shared/api/client/apiFetch.ts` | Основной fetch-wrapper |
+| File | Purpose |
+|------|---------|
+| `src/shared/api/client/apiFetch.ts` | Main fetch wrapper |
 | `src/shared/api/client/config.ts` | Auth context + refresh |
-| `src/entities/user/api/refreshAccessToken.ts` | Обновление токена |
+| `src/entities/user/api/refreshAccessToken.ts` | Token refresh |
 | `src/entities/user/api/authContext.ts` | Bearer + x-company-id |
 | `src/shared/config/env.ts` | `VITE_API_URL`, httpOnly cookie |
 
-**Dev proxy** (`vite.config.ts`): `/api` и `/uploads` → `http://127.0.0.1:4100`  
+**Dev proxy** (`vite.config.ts`): `/api` and `/uploads` → `http://127.0.0.1:4100`  
 **Prod** (`nginx.conf`): SPA fallback + proxy `/api/` → `http://api:4100/api/`
 
 ---
 
-## UI и дизайн-система
+## UI and design system
 
-```mermaid
-flowchart TB
-    subgraph Design["Дизайн"]
-        TW["Tailwind CSS 4"]
-        FONT["Manrope + Outfit"]
-        ICON["Phosphor Icons"]
-        MOTION["Framer Motion"]
-    end
-
-    subgraph Components["Компоненты"]
-        SHARED["shared/ui/<br/>примитивы, модалки, SEO"]
-        CABINET["widgets/cabinet/<br/>Panel, PageHero, EmptyState"]
-        LAYOUT["widgets/layout/<br/>CompanyLayout, PortalLayout"]
-        LANDING["widgets/landing/<br/>Hero, Features, CTA"]
-    end
-
-    subgraph Forms["Формы"]
-        RHF["react-hook-form"]
-        ZOD["zod validation"]
-    end
-
-    Design --> Components
-    Forms --> Components
-```
-
-| Технология | Использование |
-|------------|---------------|
-| **Tailwind CSS 4** | `@theme` в `src/index.css`, violet/indigo палитра |
+| Technology | Usage |
+|------------|-------|
+| **Tailwind CSS 4** | `@theme` in `src/index.css`, violet/indigo palette |
 | **Radix UI** | Label, Slot |
-| **TanStack Table** | Таблицы CRM, счетов |
-| **ApexCharts** | Аналитика dashboard (lazy) |
-| **react-hot-toast** | Уведомления |
+| **TanStack Table** | CRM and invoice tables |
+| **ApexCharts** | Dashboard analytics (lazy) |
+| **react-hot-toast** | Toasts |
 | **react-helmet-async** | SEO meta tags |
 
-Cabinet UI-kit: `src/widgets/cabinet/cabinet-ui.tsx` — `Panel`, `PageHero`, `SoftBadge`, glass-panel стили.
+Cabinet UI kit: `src/widgets/cabinet/cabinet-ui.tsx` — `Panel`, `PageHero`, `SoftBadge`, glass-panel styles.
 
 ---
 
-## Интернационализация (i18n)
+## Internationalization (i18n)
 
-| Параметр | Значение |
-|----------|----------|
-| Библиотека | i18next + react-i18next |
-| Языки | `ro` (fallback), `ru` |
-| Публичные URL | `/{locale}/...` |
-| Кабинеты | Язык из localStorage / i18next |
-| Lazy load | Только активный язык в initial bundle |
+| Parameter | Value |
+|-----------|-------|
+| Library | i18next + react-i18next |
+| Languages | `ro` (fallback), `ru` |
+| Public URLs | `/{locale}/...` |
+| Cabinets | Language from localStorage / i18next |
+| Lazy load | Only active language in initial bundle |
 
 ```
 src/shared/config/i18n/translations/
-├── companii/ru|ro/     # кабинет, auth, admin, portal
+├── companii/ru|ro/     # cabinet, auth, admin, portal
 ├── public/ru|ro/       # landing, marketing
-└── status.ru|ro.ts     # статусы FSM
+└── status.ru|ro.ts     # FSM statuses
 ```
 
 ---
 
-## Тарифные ограничения
+## Plan entitlements
 
 ```mermaid
 flowchart TD
-    FREE["FREE"] --> F1["Работы · Календарь · Услуги · Отзывы"]
+    FREE["FREE"] --> F1["Jobs · Calendar · Services · Reviews"]
     PRO["PRO"] --> F1
-    PRO --> P1["+ CRM · Заявки · Рабочие листы"]
+    PRO --> P1["+ CRM · Leads · Worksheets"]
     BUSINESS["BUSINESS"] --> P1
-    BUSINESS --> B1["+ Pipeline · Сметы · Оферты · Счета"]
+    BUSINESS --> B1["+ Pipeline · Estimates · Quotes · Invoices"]
 
     subgraph Guard["RequireCompanyRole"]
         CHECK{"plan >= required?"}
-        CHECK -->|нет| UPGRADE["PlanUpgradePanel"]
-        CHECK -->|да| PAGE["Страница"]
+        CHECK -->|no| UPGRADE["PlanUpgradePanel"]
+        CHECK -->|yes| PAGE["Page"]
     end
 ```
 
-Файл: `src/entities/subscription/model/planEntitlements.ts`
+File: `src/entities/subscription/model/planEntitlements.ts`
 
 ---
 
-## Быстрый старт
+## Quick start
 
-### Локальная разработка
+### Local development
 
 ```bash
-# 1. Запустите API (в соседнем репозитории)
+# 1. Start the API (sibling repo)
 cd ../companii-api
 docker compose -f docker-compose.dev.yml up -d postgres redis
 npm run start:dev
 
-# 2. Запустите фронтенд
+# 2. Start the frontend
 cd ../companii-web
 cp .env.example .env
 npm install
 npm run dev
 ```
 
-| Сервис | URL |
-|--------|-----|
-| Приложение | http://localhost:5174 |
-| API (через proxy) | http://localhost:5174/api/v1 |
+| Service | URL |
+|---------|-----|
+| App | http://localhost:5174 |
+| API (via proxy) | http://localhost:5174/api/v1 |
 
 ### Docker
 
 ```bash
 cp .env.docker.example .env.docker
-npm run docker:up        # dev, порт 5174
-npm run docker:prod:up   # prod nginx, порт 8082
+npm run docker:up        # dev, port 5174
+npm run docker:prod:up   # prod nginx, port 8082
 ```
 
 ---
 
-## Переменные окружения
+## Environment variables
 
-| Переменная | Описание | По умолчанию |
-|------------|----------|--------------|
-| `VITE_API_URL` | Base URL API | `/api/v1` |
-| `VITE_DEV_API_PROXY_TARGET` | Target Vite proxy | `http://127.0.0.1:4100` |
-| `VITE_ENV` | Окружение | `development` |
-| `VITE_USE_HTTPONLY_COOKIE` | Refresh в cookie | `true` |
-| `VITE_MEDIA_URL` | CDN для медиа (опц.) | — |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `VITE_API_URL` | API base URL | `/api/v1` |
+| `VITE_DEV_API_PROXY_TARGET` | Vite proxy target | `http://127.0.0.1:4100` |
+| `VITE_ENV` | Environment | `development` |
+| `VITE_USE_HTTPONLY_COOKIE` | Refresh in cookie | `true` |
+| `VITE_MEDIA_URL` | CDN for media (optional) | — |
 
 Production build args: `VITE_API_URL=https://api.companii.faber.md/api/v1`
 
 ---
 
-## Структура репозитория
+## Repository structure
 
 ```
 companii-web/
@@ -532,26 +494,26 @@ companii-web/
 │   ├── app/
 │   │   ├── providers.tsx       # Query, i18n, Motion
 │   │   └── routes/             # router, lazy-pages, guards
-│   ├── pages/                  # страницы маршрутов
+│   ├── pages/                  # route pages
 │   ├── widgets/
 │   │   ├── layout/             # CompanyLayout, PortalLayout, AdminLayout
-│   │   ├── landing/            # лендинг-блоки
-│   │   └── cabinet/            # UI-kit кабинета
-│   ├── features/               # 10 бизнес-модулей
+│   │   ├── landing/            # landing blocks
+│   │   └── cabinet/            # cabinet UI kit
+│   ├── features/               # 10 business modules
 │   │   ├── auth/
 │   │   ├── companies/
 │   │   ├── fsm/
-│   │   ├── estimates/          # самый крупный модуль
+│   │   ├── estimates/          # largest module
 │   │   ├── portal/
 │   │   └── admin/
-│   ├── entities/               # доменные модели + stores
+│   ├── entities/               # domain models + stores
 │   │   ├── user/model/authStore.ts
 │   │   ├── company/model/roles.constants.ts
 │   │   └── subscription/model/planEntitlements.ts
 │   └── shared/
 │       ├── api/                # apiFetch, queryClient
-│       ├── config/i18n/        # переводы ro/ru
-│       └── ui/                 # примитивы
+│       ├── config/i18n/        # ro/ru translations
+│       └── ui/                 # primitives
 ├── nginx.conf                  # prod: SPA + API proxy
 ├── docker-compose.dev.yml
 ├── docker-compose.prod.yml
@@ -560,7 +522,7 @@ companii-web/
 
 ---
 
-## Скрипты
+## Scripts
 
 ```bash
 npm run dev              # Vite dev server :5174
@@ -573,7 +535,7 @@ npm run lint             # ESLint
 
 ---
 
-## Real-time уведомления
+## Real-time notifications
 
 ```mermaid
 sequenceDiagram
@@ -590,18 +552,18 @@ sequenceDiagram
     Bell->>API: PATCH /notifications/:id/read
 ```
 
-Файлы: `src/features/notifications/hooks/useNotificationStream.ts`
+Files: `src/features/notifications/hooks/useNotificationStream.ts`
 
 ---
 
-## Связь с API
+## Backend integration
 
-| Аспект | Web | API |
+| Aspect | Web | API |
 |--------|-----|-----|
-| Авторизация | Zustand + httpOnly cookie | JWT + refresh rotation |
+| Auth | Zustand + httpOnly cookie | JWT + refresh rotation |
 | Tenant | `x-company-id` header | PostgreSQL RLS |
-| Кэш | TanStack Query + IndexedDB | Redis cache |
-| Файлы | `MediaImage`, lightbox | B2 / local uploads |
+| Cache | TanStack Query + IndexedDB | Redis cache |
+| Files | `MediaImage`, lightbox | B2 / local uploads |
 | PDF | download blob | BullMQ pdf workers |
 
 Backend: **[companii-api](../companii-api)**
